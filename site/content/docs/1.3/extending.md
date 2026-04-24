@@ -232,58 +232,58 @@ The *arg* argument must be a tuple object containing an argument list passed fro
 
 Note that while `PyArg_ParseTuple()` checks that the Python arguments have the required types, it cannot check the validity of the addresses of C variables passed to the call: if you make mistakes there, your code will probably crash or at least overwrite random bits in memory. So be careful!
 
-A format string consists of zero or more “format units”. A format unit describes one Python object; it is usually a single character or a parenthesized sequence of format units. With a few exceptions, a format unit that is not a parenthesized sequence normally corresponds to a single address argument to `PyArg_ParseTuple()`. In the following description, the quoted form is the format unit; the entry in (round) parentheses is the Python object type that matches the format unit; and the entry in \[square\] brackets is the type of the C variable(s) whose address should be passed. (Use the `&` operator to pass a variable’s address.)
+A format string consists of zero or more “format units”. A format unit describes one Python object; it is usually a single character or a parenthesized sequence of format units. With a few exceptions, a format unit that is not a parenthesized sequence normally corresponds to a single address argument to `PyArg_ParseTuple()`. In the following description, the quoted form is the format unit; the entry in (round) parentheses is the Python object type that matches the format unit; and the entry in [square] brackets is the type of the C variable(s) whose address should be passed. (Use the `&` operator to pass a variable’s address.)
 
-`s` (string) \[char \*  
-\] Convert a Python string to a C pointer to a character string. You must not provide storage for the string itself; a pointer to an existing string is stored into the character pointer variable whose address you pass. The C string is null-terminated. The Python string must not contain embedded null bytes; if it does, a `TypeError` exception is raised.
+`s` (string) [char *  
+] Convert a Python string to a C pointer to a character string. You must not provide storage for the string itself; a pointer to an existing string is stored into the character pointer variable whose address you pass. The C string is null-terminated. The Python string must not contain embedded null bytes; if it does, a `TypeError` exception is raised.
 
-`s#` (string) \[char \*, int\]  
+`s#` (string) [char *, int]  
 This variant on `’s’` stores into two C variables, the first one a pointer to a character string, the second one its length. In this case the Python string may contain embedded null bytes.
 
-`z` (string or `None`) \[char \*\]  
+`z` (string or `None`) [char *]  
 Like `s`, but the Python object may also be `None`, in which case the C pointer is set to `NULL`.
 
-`z#` (string or `None`) \[char \*, int\]  
+`z#` (string or `None`) [char *, int]  
 This is to `’s#’` as `’z’` is to `’s’`.
 
-`b` (integer) \[char\]  
+`b` (integer) [char]  
 Convert a Python integer to a tiny int, stored in a C `char`.
 
-`h` (integer) \[short int\]  
+`h` (integer) [short int]  
 Convert a Python integer to a C `short int`.
 
-`i` (integer) \[int\]  
+`i` (integer) [int]  
 Convert a Python integer to a plain C `int`.
 
-`l` (integer) \[long int\]  
+`l` (integer) [long int]  
 Convert a Python integer to a C `long int`.
 
-`c` (string of length 1) \[char\]  
+`c` (string of length 1) [char]  
 Convert a Python character, represented as a string of length 1, to a C `char`.
 
-`f` (float) \[float\]  
+`f` (float) [float]  
 Convert a Python floating point number to a C `float`.
 
-`d` (float) \[double\]  
+`d` (float) [double]  
 Convert a Python floating point number to a C `double`.
 
-`O` (object) \[PyObject \*\]  
+`O` (object) [PyObject *]  
 Store a Python object (without any conversion) in a C object pointer. The C program thus receives the actual object that was passed. The object’s reference count is not increased. The pointer stored is not `NULL`.
 
-`O!` (object) \[*typeobject*, PyObject \*\]  
+`O!` (object) [*typeobject*, PyObject *]  
 Store a Python object in a C object pointer. This is similar to `O`, but takes two C arguments: the first is the address of a Python type object, the second is the address of the C variable (of type `PyObject *`) into which the object pointer is stored. If the Python object does not have the required type, a `TypeError` exception is raised.
 
-`O&` (object) \[*converter*, *anything*\]  
+`O&` (object) [*converter*, *anything*]  
 Convert a Python object to a C variable through a *converter* function. This takes two arguments: the first is a function, the second is the address of a C variable (of arbitrary type), converted to `void *`. The *converter* function in turn is called as follows:
 
 *`status`*` = `*`converter`*`(`*`object`*`, `*`address`*`);`
 
 where *object* is the Python object to be converted and *address* is the `void *` argument that was passed to `PyArg_ConvertTuple()`. The returned *status* should be `1` for a successful conversion and `0` if the conversion has failed. When the conversion fails, the *converter* function should raise an exception.
 
-`S` (string) \[PyStringObject \*\]  
+`S` (string) [PyStringObject *]  
 Like `O` but raises a `TypeError` exception that the object is a string object. The C variable may also be declared as `PyObject *`.
 
-`(`*`items`*`)` (tuple) \[*matching-items*\]  
+`(`*`items`*`)` (tuple) [*matching-items*]  
 The object must be a Python tuple whose length is the number of format units in *items*. The C arguments must correspond to the individual format units in *items*. Format units for tuples may be nested.
 
 It is possible to pass Python long integers where integers are requested; however no proper range checking is done – the most significant bits are silently truncated when the receiving field is too small to receive the value (actually, the semantics are inherited from downcasts in C — your milage may vary).
@@ -351,59 +351,59 @@ It recognizes a set of format units similar to the ones recognized by `PyArg_Par
 
 One difference with `PyArg_ParseTuple()`: while the latter requires its first argument to be a tuple (since Python argument lists are always represented as tuples internally), `BuildValue()` does not always build a tuple. It builds a tuple only if its format string contains two or more format units. If the format string is empty, it returns `None`; if it contains exactly one format unit, it returns whatever object is described by that format unit. To force it to return a tuple of size 0 or one, parenthesize the format string.
 
-In the following description, the quoted form is the format unit; the entry in (round) parentheses is the Python object type that the format unit will return; and the entry in \[square\] brackets is the type of the C value(s) to be passed.
+In the following description, the quoted form is the format unit; the entry in (round) parentheses is the Python object type that the format unit will return; and the entry in [square] brackets is the type of the C value(s) to be passed.
 
 The characters space, tab, colon and comma are ignored in format strings (but not within format units such as `s#`). This can be used to make long format strings a tad more readable.
 
-`s` (string) \[char \*\]  
+`s` (string) [char *]  
 Convert a null-terminated C string to a Python object. If the C string pointer is `NULL`, `None` is returned.
 
-`s#` (string) \[char \*, int\]  
+`s#` (string) [char *, int]  
 Convert a C string and its length to a Python object. If the C string pointer is `NULL`, the length is ignored and `None` is returned.
 
-`z` (string or `None`) \[char \*\]  
+`z` (string or `None`) [char *]  
 Same as `s`.
 
-`z#` (string or `None`) \[char \*, int\]  
+`z#` (string or `None`) [char *, int]  
 Same as `s#`.
 
-`i` (integer) \[int\]  
+`i` (integer) [int]  
 Convert a plain C `int` to a Python integer object.
 
-`b` (integer) \[char\]  
+`b` (integer) [char]  
 Same as `i`.
 
-`h` (integer) \[short int\]  
+`h` (integer) [short int]  
 Same as `i`.
 
-`l` (integer) \[long int\]  
+`l` (integer) [long int]  
 Convert a C `long int` to a Python integer object.
 
-`c` (string of length 1) \[char\]  
+`c` (string of length 1) [char]  
 Convert a C `int` representing a character to a Python string of length 1.
 
-`d` (float) \[double\]  
+`d` (float) [double]  
 Convert a C `double` to a Python floating point number.
 
-`f` (float) \[float\]  
+`f` (float) [float]  
 Same as `d`.
 
-`O` (object) \[PyObject \*\]  
+`O` (object) [PyObject *]  
 Pass a Python object untouched (except for its reference count, which is incremented by one). If the object passed in is a `NULL` pointer, it is assumed that this was caused because the call producing the argument found an error and set an exception. Therefore, `Py_BuildValue()` will return `NULL` but won’t raise an exception. If no exception has been raised yet, `PyExc_SystemError` is set.
 
-`S` (object) \[PyObject \*\]  
+`S` (object) [PyObject *]  
 Same as `O`.
 
-`O&` (object) \[*converter*, *anything*\]  
+`O&` (object) [*converter*, *anything*]  
 Convert *anything* to a Python object through a *converter* function. The function is called with *anything* (which should be compatible with `void *`) as its argument and should return a “new” Python object, or `NULL` if an error occurred.
 
-`(`*`items`*`)` (tuple) \[*matching-items*\]  
+`(`*`items`*`)` (tuple) [*matching-items*]  
 Convert a sequence of C values to a Python tuple with the same number of items.
 
-`[`*`items`*`]` (list) \[*matching-items*\]  
+`[`*`items`*`]` (list) [*matching-items*]  
 Convert a sequence of C values to a Python list with the same number of items.
 
-`{`*`items`*`}` (dictionary) \[*matching-items*\]  
+`{`*`items`*`}` (dictionary) [*matching-items*]  
 Convert a sequence of C values to a Python dictionary. Each pair of consecutive C values adds one item to the dictionary, serving as key and value, respectively.
 
 If there is an error in the format string, the `PyExc_SystemError` exception is raised and `NULL` returned.

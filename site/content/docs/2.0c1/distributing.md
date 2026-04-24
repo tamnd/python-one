@@ -44,7 +44,7 @@ Some observations:
 
 - modules are specified by module name, not filename (the same will hold true for packages and extensions)
 
-- it’s recommended that you supply a little more meta-data, in particular your name, email address and a URL for the project (see section <a href="#setup-script" data-reference-type="ref" data-reference="setup-script">3</a> for an example)
+- it’s recommended that you supply a little more meta-data, in particular your name, email address and a URL for the project (see section <a href="#setup-script" data-reference-type="ref" data-reference="setup-script">[setup-script]</a> for an example)
 
 To create a source distribution for this module, you would create a setup script, `setup.py`, containing the above code, and run:
 
@@ -115,7 +115,7 @@ the top-level directory of your source tree (or source distribution); the direct
 
 # Writing the Setup Script
 
-The setup script is the centre of all activity in building, distributing, and installing modules using the Distutils. The main purpose of the setup script is to describe your module distribution to the Distutils, so that the various commands that operate on your modules do the right thing. As we saw in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">2.1</a> above, the setup script consists mainly of a call to `setup()`, and most information supplied to the Distutils by the module developer is supplied as keyword arguments to `setup()`.
+The setup script is the centre of all activity in building, distributing, and installing modules using the Distutils. The main purpose of the setup script is to describe your module distribution to the Distutils, so that the various commands that operate on your modules do the right thing. As we saw in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">[simple-example]</a> above, the setup script consists mainly of a call to `setup()`, and most information supplied to the Distutils by the module developer is supplied as keyword arguments to `setup()`.
 
 Here’s a slightly more involved example, which we’ll follow for the next couple of sections: the Distutils’ own setup script. (Keep in mind that although the Distutils are included with Python 1.6 and later, they also have an independent existence so that Python 1.5.2 users can use them to install other module distributions. The Distutils’ own setup script, shown here, is used to install the package into Python 1.5.2.)
 
@@ -133,7 +133,7 @@ Here’s a slightly more involved example, which we’ll follow for the next cou
            packages = ['distutils', 'distutils.command'],
           )
 
-There are only two differences between this and the trivial one-file distribution presented in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">2.1</a>: more meta-data, and the specification of pure Python modules by package, rather than by module. This is important since the Distutils consist of a couple of dozen modules split into (so far) two packages; an explicit list of every module would be tedious to generate and difficult to maintain.
+There are only two differences between this and the trivial one-file distribution presented in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">[simple-example]</a>: more meta-data, and the specification of pure Python modules by package, rather than by module. This is important since the Distutils consist of a couple of dozen modules split into (so far) two packages; an explicit list of every module would be tedious to generate and difficult to maintain.
 
 Note that any pathnames (files or directories) supplied in the setup script should be written using the Unix convention, i.e. slash-separated. The Distutils will take care of converting this platform-neutral representation into whatever is appropriate on your current platform before actually using the pathname. This makes your setup script portable across operating systems, which of course is one of the major goals of the Distutils. In this spirit, all pathnames in this document are slash-separated (Mac OS programmers should keep in mind that the *absence* of a leading slash indicates a relative path, the opposite of the Mac OS convention with colons).
 
@@ -155,7 +155,7 @@ A *`package`*`: `*`dir`* entry in the dictionary implicitly applies to all packa
 
 ## Listing individual modules
 
-For a small module distribution, you might prefer to list all modules rather than listing packages—especially the case of a single module that goes in the “root package” (i.e., no package at all). This simplest case was shown in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">2.1</a>; here is a slightly more involved example:
+For a small module distribution, you might prefer to list all modules rather than listing packages—especially the case of a single module that goes in the “root package” (i.e., no package at all). This simplest case was shown in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">[simple-example]</a>; here is a slightly more involved example:
 
     py_modules = ['mod1', 'pkg.mod2']
 
@@ -299,7 +299,7 @@ You can find out the list of options supported by a particular command with the 
       --undef (-U)         C preprocessor macros to undefine
     [...]
 
-Or consult section <a href="#reference" data-reference-type="ref" data-reference="reference">9</a> of this document (the command reference).
+Or consult section <a href="#reference" data-reference-type="ref" data-reference="reference">[reference]</a> of this document (the command reference).
 
 Note that an option spelled `--foo-bar` on the command-line is spelled in configuration files.
 
@@ -329,7 +329,7 @@ Note that the option is simply a whitespace-separated string split across multip
 
 # Creating a Source Distribution
 
-As shown in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">2.1</a>, you use the command to create a source distribution. In the simplest case,
+As shown in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">[simple-example]</a>, you use the command to create a source distribution. In the simplest case,
 
     python setup.py sdist
 
@@ -341,14 +341,14 @@ You can specify as many formats as you like using the `--formats` option, for ex
 
 to create a gzipped tarball and a zip file. The available formats are:
 
-|                            |                       |     |
-|:---------------------------|:----------------------|:----|
-| FormatDescriptionNotes zip | zip file (            |     |
-| )                          | gzip’ed tar file (    |     |
-| )                          | bzip2’ed tar file (   |     |
-| )                          | compressed tar file ( |     |
-| )                          | tar file (            |     |
-| )                          |                       |     |
+|     |                       |     |
+|:----|:----------------------|:----|
+| zip | zip file (            |     |
+| )   | gzip’ed tar file (    |     |
+| )   | bzip2’ed tar file (   |     |
+| )   | compressed tar file ( |     |
+| )   | tar file (            |     |
+| )   |                       |     |
 
 Notes:
 
@@ -386,7 +386,7 @@ The manifest template has one command per line, where each command specifies a s
     recursive-include examples *.txt *.py
     prune examples/sample?/build
 
-The meanings should be fairly clear: include all files in the distribution root matching `*.txt`, all files anywhere under the `examples` directory matching `*.txt` or `*.py`, and exclude all directories matching `examples/sample?/build`. All of this is done *after* the standard include set, so you can exclude files from the standard set with explicit instructions in the manifest template. (Or, you can use the `--no-defaults` option to disable the standard set entirely.) There are several other commands available in the manifest template mini-language; see section <a href="#sdist-cmd" data-reference-type="ref" data-reference="sdist-cmd">9.4</a>.
+The meanings should be fairly clear: include all files in the distribution root matching `*.txt`, all files anywhere under the `examples` directory matching `*.txt` or `*.py`, and exclude all directories matching `examples/sample?/build`. All of this is done *after* the standard include set, so you can exclude files from the standard set with explicit instructions in the manifest template. (Or, you can use the `--no-defaults` option to disable the standard set entirely.) There are several other commands available in the manifest template mini-language; see section <a href="#sdist-cmd" data-reference-type="ref" data-reference="sdist-cmd">[sdist-cmd]</a>.
 
 The order of commands in the manifest template matters: initially, we have the list of default files as described above, and each command in the template adds to or removes from that list of files. Once we have fully processed the manifest template, we remove files that should not be included in the source distribution:
 
@@ -400,7 +400,7 @@ You can disable the default set of included files with the `--no-defaults` optio
 
 Following the Distutils’ own manifest template, let’s trace how the command builds the list of files to include in the Distutils source distribution:
 
-1.  include all Python source files in the `distutils` and `distutils/command` subdirectories (because packages corresponding to those two directories were mentioned in the option in the setup script—see section <a href="#setup-script" data-reference-type="ref" data-reference="setup-script">3</a>)
+1.  include all Python source files in the `distutils` and `distutils/command` subdirectories (because packages corresponding to those two directories were mentioned in the option in the setup script—see section <a href="#setup-script" data-reference-type="ref" data-reference="setup-script">[setup-script]</a>)
 
 2.  include `README.txt`, `setup.py`, and `setup.cfg` (standard files)
 
@@ -466,16 +466,15 @@ would, when run on a Unix system, create `Distutils-0.8..zip`—again, this arch
 
 The available formats for built distributions are:
 
-|                              |                                      |         |
-|:-----------------------------|:-------------------------------------|:--------|
-| FormatDescriptionNotes gztar | gzipped tar file (                   |         |
-| )                            | compressed tar file (                |         |
-| )                            | tar file (                           |         |
-| )                            | zip file (                           |         |
-| )                            | RPM                                  | \(5\)   |
-| srpm                         | source RPM                           | \(5\)   |
-|                              | self-extracting ZIP file for Windows | (2),(6) |
-|                              |                                      |         |
+|       |                                      |         |
+|:------|:-------------------------------------|:--------|
+| gztar | gzipped tar file (                   |         |
+| )     | compressed tar file (                |         |
+| )     | tar file (                           |         |
+| )     | zip file (                           |         |
+| )     | RPM                                  | \(5\)   |
+| srpm  | source RPM                           | \(5\)   |
+|       | self-extracting ZIP file for Windows | (2),(6) |
 
 Notes:
 
@@ -498,12 +497,11 @@ requires external utility, version 3.0.4 or better (use `rpm --version` to find 
 
 You don’t have to use the command with the `--formats` option; you can also use the command that directly implements the format you’re interested in. Some of these “sub-commands” actually generate several similar formats; for instance, the command generates all the “dumb” archive formats (`tar`, `ztar`, `gztar`, and `zip`), and generates both binary and source RPMs. The sub-commands, and the formats generated by each, are:
 
-|                           |                       |
-|:--------------------------|:----------------------|
-| CommandFormats bdist_dumb | tar, ztar, gztar, zip |
-| bdist_rpm                 | rpm, srpm             |
-| bdist_wininst             | wininst               |
-|                           |                       |
+|               |                       |
+|:--------------|:----------------------|
+| bdist_dumb    | tar, ztar, gztar, zip |
+| bdist_rpm     | rpm, srpm             |
+| bdist_wininst | wininst               |
 
 The following sections give details on the individual commands.
 
@@ -528,24 +526,30 @@ The former allows you to specify RPM-specific options; the latter allows you to 
 
 Creating RPM packages is driven by a `.spec` file, much as using the Distutils is driven by the setup script. To make your life easier, the command normally creates a `.spec` file based on the information you supply in the setup script, on the command line, and in any Distutils configuration files. Various options and section in the `.spec` file are derived from options in the setup script as follows:
 
+<div class="tabular">
+
+ll Name & Summary (in preamble) & Version & Vendor & Copyright & Url & %description (section) &
+
+</div>
+
 Additionally, there many options in `.spec` files that don’t have corresponding options in the setup script. Most of these are handled through options to the command as follows:
 
-|  |  |  |
-|:---|:---|:---|
-| RPM `.spec` file option or section  option default value Release |  |  |
-|  |  |  |
-|  |  |  |
-|  | packager | (none) |
-| Provides | provides | (none) |
-| Requires | requires | (none) |
-| Conflicts | conflicts | (none) |
-| Obsoletes | obsoletes | (none) |
-| Distribution |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
+|              |           |        |
+|:-------------|:----------|:-------|
+| Release      |           |        |
+|              |           |        |
+|              |           |        |
+|              | packager  | (none) |
+| Provides     | provides  | (none) |
+| Requires     | requires  | (none) |
+| Conflicts    | conflicts | (none) |
+| Obsoletes    | obsoletes | (none) |
+| Distribution |           |        |
+|              |           |        |
+|              |           |        |
+|              |           |        |
 
-Obviously, supplying even a few of these options on the command-line would be tedious and error-prone, so it’s usually best to put them in the setup configuration file, `setup.cfg`—see section <a href="#setup-config" data-reference-type="ref" data-reference="setup-config">4</a>. If you distribute or package many Python module distributions, you might want to put options that apply to all of them in your personal Distutils configuration file (`~/.pydistutils.cfg`).
+Obviously, supplying even a few of these options on the command-line would be tedious and error-prone, so it’s usually best to put them in the setup configuration file, `setup.cfg`—see section <a href="#setup-config" data-reference-type="ref" data-reference="setup-config">[setup-config]</a>. If you distribute or package many Python module distributions, you might want to put options that apply to all of them in your personal Distutils configuration file (`~/.pydistutils.cfg`).
 
 There are three steps to building a binary RPM package, all of which are handled automatically by the Distutils:
 
@@ -565,7 +569,7 @@ You can also specify a custom `.spec` file with the `--spec-file` option; used i
     # ...edit dist/FooBar-1.0.spec
     > python setup.py bdist_rpm --spec-file=dist/FooBar-1.0.spec
 
-(Although a better way to do this is probably to override the standard command with one that writes whatever else you want to the `.spec` file; see section <a href="#extending" data-reference-type="ref" data-reference="extending">8</a> for information on extending the Distutils.)
+(Although a better way to do this is probably to override the standard command with one that writes whatever else you want to the `.spec` file; see section <a href="#extending" data-reference-type="ref" data-reference="extending">[extending]</a> for information on extending the Distutils.)
 
 ## Creating Windows installers
 
@@ -619,19 +623,19 @@ This command installs all (Python) scripts in the distribution.
 
 The manifest template commands are:
 
-|                            |                            |
-|:---------------------------|:---------------------------|
-| CommandDescription include |                            |
-| *pat2* ...                 |                            |
-| *pat2* ...                 |                            |
-| *pat1* *pat2* ...          |                            |
-| *pat1* *pat2* ...          |                            |
-| *pat2* ...                 |                            |
-|                            | any of the listed patterns |
-| *pat2* ...                 |                            |
-|                            | any of the listed patterns |
-|                            |                            |
-|                            |                            |
+|                   |                            |
+|:------------------|:---------------------------|
+| include           |                            |
+| *pat2* ...        |                            |
+| *pat2* ...        |                            |
+| *pat1* *pat2* ... |                            |
+| *pat1* *pat2* ... |                            |
+| *pat2* ...        |                            |
+|                   | any of the listed patterns |
+| *pat2* ...        |                            |
+|                   | any of the listed patterns |
+|                   |                            |
+|                   |                            |
 
 The patterns here are Unix-style “glob” patterns: `*` matches any sequence of regular filename characters, `?` matches any single regular filename character, and `[`*`range`*`]` matches any of the characters in *range* (e.g., `a-z`, `a-zA-Z`, `a-f0-9_.`). The definition of “regular filename character” is platform-specific: on Unix it is anything except slash; on Windows anything except backslash or colon; on Mac OS anything except colon.
 
@@ -645,7 +649,7 @@ The patterns here are Unix-style “glob” patterns: `*` matches any sequence o
 
 ### 
 
-[^1]: But be careful about putting arbitrarily expensive operations in your setup script; unlike, say, Autoconf-style configure scripts, the setup script may be run multiple times in the course of building and installing your module distribution. If you need to insert potentially expensive processing steps into the Distutils chain, see section <a href="#extending" data-reference-type="ref" data-reference="extending">8</a> on extending the Distutils.
+[^1]: But be careful about putting arbitrarily expensive operations in your setup script; unlike, say, Autoconf-style configure scripts, the setup script may be run multiple times in the course of building and installing your module distribution. If you need to insert potentially expensive processing steps into the Distutils chain, see section <a href="#extending" data-reference-type="ref" data-reference="extending">[extending]</a> on extending the Distutils.
 
 [^2]: This ideal probably won’t be achieved until auto-configuration is fully supported by the Distutils.
 

@@ -115,7 +115,7 @@ the top-level directory of your source tree (or source distribution); the direct
 
 # Writing the Setup Script
 
-The setup script is the centre of all activity in building, distributing, and installing modules using the Distutils. The main purpose of the setup script is to describe your module distribution to the Distutils, so that the various commands that operate on your modules do the right thing. As we saw in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">2.1</a> above, the setup script consists mainly of a call to `setup()`, and most information supplied to the Distutils by the module developer is supplied as keyword arguments to `setup()`.
+The setup script is the centre of all activity in building, distributing, and installing modules using the Distutils. The main purpose of the setup script is to describe your module distribution to the Distutils, so that the various commands that operate on your modules do the right thing. As we saw in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">[simple-example]</a> above, the setup script consists mainly of a call to `setup()`, and most information supplied to the Distutils by the module developer is supplied as keyword arguments to `setup()`.
 
 Here’s a slightly more involved example, which we’ll follow for the next couple of sections: the Distutils’ own setup script. (Keep in mind that although the Distutils are included with Python 1.6 and later, they also have an independent existence so that Python 1.5.2 users can use them to install other module distributions. The Distutils’ own setup script, shown here, is used to install the package into Python 1.5.2.)
 
@@ -133,7 +133,7 @@ Here’s a slightly more involved example, which we’ll follow for the next cou
            packages = ['distutils', 'distutils.command'],
           )
 
-There are only two differences between this and the trivial one-file distribution presented in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">2.1</a>: more meta-data, and the specification of pure Python modules by package, rather than by module. This is important since the Distutils consist of a couple of dozen modules split into (so far) two packages; an explicit list of every module would be tedious to generate and difficult to maintain.
+There are only two differences between this and the trivial one-file distribution presented in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">[simple-example]</a>: more meta-data, and the specification of pure Python modules by package, rather than by module. This is important since the Distutils consist of a couple of dozen modules split into (so far) two packages; an explicit list of every module would be tedious to generate and difficult to maintain.
 
 Note that any pathnames (files or directories) supplied in the setup script should be written using the Unix convention, i.e. slash-separated. The Distutils will take care of converting this platform-neutral representation into whatever is appropriate on your current platform before actually using the pathname. This makes your setup script portable across operating systems, which of course is one of the major goals of the Distutils. In this spirit, all pathnames in this document are slash-separated (Mac OS programmers should keep in mind that the *absence* of a leading slash indicates a relative path, the opposite of the Mac OS convention with colons).
 
@@ -155,7 +155,7 @@ A *`package`*`: `*`dir`* entry in the dictionary implicitly applies to all packa
 
 ## Listing individual modules
 
-For a small module distribution, you might prefer to list all modules rather than listing packages—especially the case of a single module that goes in the “root package” (i.e., no package at all). This simplest case was shown in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">2.1</a>; here is a slightly more involved example:
+For a small module distribution, you might prefer to list all modules rather than listing packages—especially the case of a single module that goes in the “root package” (i.e., no package at all). This simplest case was shown in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">[simple-example]</a>; here is a slightly more involved example:
 
     py_modules = ['mod1', 'pkg.mod2']
 
@@ -271,17 +271,16 @@ The preferred way to do this, of course, would be for you to tell the Distutils 
 
 # Creating a Source Distribution
 
-As shown in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">2.1</a>, you use the command to create a source distribution. In the simplest case,
+As shown in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">[simple-example]</a>, you use the command to create a source distribution. In the simplest case,
 
     python setup.py sdist
 
 (assuming you haven’t specified any options in the setup script or config file), creates the archive of the default format for the current platform. The default formats are:
 
-|  |  |
-|:---|:---|
-| PlatformDefault archive format for source distributions Unix | gzipped tar file ( |
-| ) | zip file |
-|  |  |
+|      |                    |
+|:-----|:-------------------|
+| Unix | gzipped tar file ( |
+| )    | zip file           |
 
 You can specify as many formats as you like using the `--formats` option, for example:
 
@@ -289,13 +288,13 @@ You can specify as many formats as you like using the `--formats` option, for ex
 
 to create a gzipped tarball and a zip file. The available formats are:
 
-|                            |                       |     |
-|:---------------------------|:----------------------|:----|
-| FormatDescriptionNotes zip | zip file (            |     |
-| )                          | gzipped tar file (    |     |
-| )                          | compressed tar file ( |     |
-| )                          | tar file (            |     |
-| )                          |                       |     |
+|     |                       |     |
+|:----|:----------------------|:----|
+| zip | zip file (            |     |
+| )   | gzipped tar file (    |     |
+| )   | compressed tar file ( |     |
+| )   | tar file (            |     |
+| )   |                       |     |
 
 Notes:
 
@@ -325,7 +324,7 @@ The manifest template has one command per line, where each command specifies a s
     recursive-include examples *.txt *.py
     prune examples/sample?/build
 
-The meanings should be fairly clear: include all files in the distribution root matching `*.txt`, all files anywhere under the `examples` directory matching `*.txt` or `*.py`, and exclude all directories matching `examples/sample?/build`. There are several other commands available in the manifest template mini-language; see section <a href="#sdist-cmd" data-reference-type="ref" data-reference="sdist-cmd">9.4</a>.
+The meanings should be fairly clear: include all files in the distribution root matching `*.txt`, all files anywhere under the `examples` directory matching `*.txt` or `*.py`, and exclude all directories matching `examples/sample?/build`. There are several other commands available in the manifest template mini-language; see section <a href="#sdist-cmd" data-reference-type="ref" data-reference="sdist-cmd">[sdist-cmd]</a>.
 
 The order of commands in the manifest template very much matters: initially, we have the list of default files as described above, and each command in the template adds to or removes from that list of files. When we have fully processed the manifest template, we have our complete list of files. This list is written to the manifest for future reference, and then used to build the source distribution archive(s).
 
@@ -395,16 +394,15 @@ would, when run on a Unix system, create `Distutils-0.8..zip`—again, this arch
 
 The available formats for built distributions are:
 
-|                            |                                      |       |
-|:---------------------------|:-------------------------------------|:------|
-| FormatDescriptionNotes zip | zip file (                           |       |
-| )                          | gzipped tar file (                   |       |
-| )                          | compressed tar file (                |       |
-| )                          | tar file (                           |       |
-| )                          | RPM                                  |       |
-| srpm                       | source RPM                           |       |
-|                            | self-extracting ZIP file for Windows | \(2\) |
-|                            |                                      |       |
+|      |                                      |       |
+|:-----|:-------------------------------------|:------|
+| zip  | zip file (                           |       |
+| )    | gzipped tar file (                   |       |
+| )    | compressed tar file (                |       |
+| )    | tar file (                           |       |
+| )    | RPM                                  |       |
+| srpm | source RPM                           |       |
+|      | self-extracting ZIP file for Windows | \(2\) |
 
 Notes:
 
@@ -416,12 +414,11 @@ default on Windows
 
 You don’t have to use the command with the `--formats` option; you can also use the command that directly implements the format you’re interested in. Some of these “sub-commands” actually generate several similar formats; for instance, the command generates all the “dumb” archive formats (`tar`, `ztar`, `gztar`, and `zip`), and generates both binary and source RPMs. The sub-commands, and the formats generated by each, are:
 
-|                           |                       |
-|:--------------------------|:----------------------|
-| CommandFormats bdist_dumb | tar, ztar, gztar, zip |
-| bdist_rpm                 | rpm, srpm             |
-| bdist_wininst             | wininst               |
-|                           |                       |
+|               |                       |
+|:--------------|:----------------------|
+| bdist_dumb    | tar, ztar, gztar, zip |
+| bdist_rpm     | rpm, srpm             |
+| bdist_wininst | wininst               |
 
 # Examples
 
@@ -473,19 +470,19 @@ This command installs all (Python) scripts in the distribution.
 
 The manifest template commands are:
 
-|                            |                            |
-|:---------------------------|:---------------------------|
-| CommandDescription include |                            |
-| *pat2* ...                 |                            |
-| *pat2* ...                 |                            |
-| *pat1* *pat2* ...          |                            |
-| *pat1* *pat2* ...          |                            |
-| *pat2* ...                 |                            |
-|                            | any of the listed patterns |
-| *pat2* ...                 |                            |
-|                            | any of the listed patterns |
-|                            |                            |
-|                            |                            |
+|                   |                            |
+|:------------------|:---------------------------|
+| include           |                            |
+| *pat2* ...        |                            |
+| *pat2* ...        |                            |
+| *pat1* *pat2* ... |                            |
+| *pat1* *pat2* ... |                            |
+| *pat2* ...        |                            |
+|                   | any of the listed patterns |
+| *pat2* ...        |                            |
+|                   | any of the listed patterns |
+|                   |                            |
+|                   |                            |
 
 The patterns here are Unix-style “glob” patterns: `*` matches any sequence of regular filename characters, `?` matches any single regular filename character, and `[`*`range`*`]` matches any of the characters in *range* (e.g., `a-z`, `a-zA-Z`, `a-f0-9_.`). The definition of “regular filename character” is platform-specific: on Unix it is anything except slash; on Windows anything except backslash or colon; on Mac OS anything except colon.
 

@@ -117,30 +117,30 @@
 
 % Python function: \begin{funcdesc}{name}{args}
 \newenvironment{funcdesc}[2]{%
-  \subsubsection*{\texttt{#1}(\textit{#2})}%
+  \subsubsection*{\texttt{#1}(#2)}%
 }{}
 
 % Python function (no index): same structure
 \newenvironment{funcdescni}[2]{%
-  \subsubsection*{\texttt{#1}(\textit{#2})}%
+  \subsubsection*{\texttt{#1}(#2)}%
 }{}
 
 % Python method: \begin{methoddesc}[class]{name}{args}
 \newenvironment{methoddesc}[3][]{%
-  \subsubsection*{\texttt{#2}(\textit{#3})}%
+  \subsubsection*{\texttt{#2}(#3)}%
 }{}
 
 \newenvironment{methoddescni}[3][]{%
-  \subsubsection*{\texttt{#2}(\textit{#3})}%
+  \subsubsection*{\texttt{#2}(#3)}%
 }{}
 
 % Python class: \begin{classdesc}{name}{args}
 \newenvironment{classdesc}[2]{%
-  \subsubsection*{class \texttt{#1}(\textit{#2})}%
+  \subsubsection*{class \texttt{#1}(#2)}%
 }{}
 
 \newenvironment{classdescni}[2]{%
-  \subsubsection*{class \texttt{#1}(\textit{#2})}%
+  \subsubsection*{class \texttt{#1}(#2)}%
 }{}
 
 % Python exception: \begin{excdesc}{name}
@@ -150,7 +150,7 @@
 
 % Python exception class: \begin{excclassdesc}{name}{args}
 \newenvironment{excclassdesc}[2]{%
-  \subsubsection*{exception \texttt{#1}(\textit{#2})}%
+  \subsubsection*{exception \texttt{#1}(#2)}%
 }{}
 
 % Python data/attribute: \begin{datadesc}{name}
@@ -173,12 +173,12 @@
 
 % Python opcode: \begin{opcodedesc}{name}{args}
 \newenvironment{opcodedesc}[2]{%
-  \subsubsection*{\texttt{#1}\ \textit{#2}}%
+  \subsubsection*{\texttt{#1}\ #2}%
 }{}
 
 % C function: \begin{cfuncdesc}{returntype}{name}{args}
 \newenvironment{cfuncdesc}[3]{%
-  \subsubsection*{\texttt{#2}(\textit{#3})}%
+  \subsubsection*{\texttt{#2}(#3)}%
 }{}
 
 % C type: \begin{ctypedesc}{name}
@@ -202,7 +202,7 @@
 
 % C macro with args: \begin{cmacrodesc}{name}{args}
 \newenvironment{cmacrodesc}[2]{%
-  \subsubsection*{\texttt{#1}(\textit{#2})}%
+  \subsubsection*{\texttt{#1}(#2)}%
 }{}
 
 % Env var: \begin{envdesc}{name}
@@ -212,7 +212,7 @@
 
 % Macro desc: \begin{macrodesc}{name}{args}
 \newenvironment{macrodesc}[2]{%
-  \subsubsection*{\texttt{#1}(\textit{#2})}%
+  \subsubsection*{\texttt{#1}(#2)}%
 }{}
 
 % ---------------------------------------------------------------------------

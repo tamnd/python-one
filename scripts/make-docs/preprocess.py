@@ -166,6 +166,10 @@ def strip_doc_structure(text: str) -> str:
     body = re.sub(r'\\(?:def|gdef|edef|xdef)\s*\\[a-zA-Z]+[^\n]*\n?', '', body)
     body = re.sub(r'\\let\s*\\[a-zA-Z]+\s*[=]?\s*\\[a-zA-Z]+[^\n]*\n?', '', body)
 
+    # Strip \label{...} -- pandoc converts these to <span id=".." label=".."></span>
+    # which leaves invalid HTML; headings already get anchor slugs from Hugo.
+    body = re.sub(r'\\label\{[^}]*\}', '', body)
+
     return body
 
 
@@ -275,61 +279,73 @@ def strip_module_decls(text: str) -> str:
     return strip_cmds_with_args(text, patterns, max_args=4)
 
 
+def _skip_braced_arg(text: str, pos: int) -> int:
+    """Return position after one braced argument (handles nested braces)."""
+    n = len(text)
+    while pos < n and text[pos] in ' \t\n':
+        pos += 1
+    if pos >= n or text[pos] != '{':
+        return pos
+    pos += 1
+    depth = 1
+    while pos < n and depth:
+        c = text[pos]
+        if c == '{':
+            depth += 1
+        elif c == '}':
+            depth -= 1
+        pos += 1
+    return pos
+
+
 def fix_tables(text: str) -> str:
     r"""
-    Convert simple Python doc table environments to something pandoc can handle.
-    The old docs use:
-      \begin{tableiii}{l|l|l}{textrm}{Col1}{Col2}{Col3}
-      \lineiii{a}{b}{c}
-      \end{tableiii}
-    Rewrite as a simple tabular so pandoc produces a Markdown table.
+    Convert Python doc table environments to something pandoc can handle.
+    Handles column specs with nested braces like {l|p{4in}\code}.
     """
-    def repl_table(m: re.Match) -> str:
-        n = int(m.group(1))        # number of columns
-        body = m.group(2)
-        cols = ' | '.join(['l'] * n)
-        # Replace \lineN{a}{b}... with tabular rows
-        def repl_line(lm: re.Match) -> str:
-            args = re.findall(r'\{([^}]*)\}', lm.group(0))
-            return ' & '.join(args) + r' \\'
-        body = re.sub(r'\\line(?:ii|iii|iv)(?:\{[^}]*\}){1,4}', repl_line, body)
-        return r'\begin{tabular}{' + cols + r'}' + '\n' + body + r'\end{tabular}'
-
     text = re.sub(
-        r'\\begin\{table(ii|iii|iv)\}[^{]*(?:\{[^}]*\}){2,4}(.*?)\\end\{table(?:ii|iii|iv)\}',
-        lambda m: repl_table_generic(m),
+        r'\\begin\{table(ii|iii|iv)\}(.*?)\\end\{table(?:ii|iii|iv)\}',
+        repl_table_generic,
         text, flags=re.DOTALL
     )
     return text
 
 
+_TABLE_NCOLS = {'ii': 2, 'iii': 3, 'iv': 4}
+
+
 def repl_table_generic(m: re.Match) -> str:
     full = m.group(0)
-    # Count columns from environment name
-    col_match = re.match(r'\\begin\{table(ii+)\}', full)
+    col_match = re.match(r'\\begin\{table(ii|iii|iv)\}', full)
     if not col_match:
         return full
-    n = len(col_match.group(1))  # ii->2, iii->3, iv->4
-    # Extract body
-    body_match = re.search(r'\}(.*)', full, re.DOTALL)
-    if not body_match:
-        return full
-    body = body_match.group(1).strip()
-    # Remove leading {format}{textrm} args
-    body = re.sub(r'^\s*\{[^}]*\}\s*\{[^}]*\}', '', body)
-    # Convert \lineN{a}{b}... rows
+    n = _TABLE_NCOLS[col_match.group(1)]
+
+    # Skip past all header args: {colspec}{format}{col1}...{colN}
+    # colspec may have nested braces like {l|p{4in}}, so use brace-aware skipper
+    pos = col_match.end()
+    for _ in range(n + 2):  # colspec + format + n header columns
+        pos = _skip_braced_arg(full, pos)
+
+    body = full[pos:]
+    # Strip closing \end{tableN}
+    body = re.sub(r'\\end\{table(?:ii|iii|iv)\}\s*$', '', body)
+
+    # Convert \lineN{a}{b}... rows (args may not contain nested braces in data)
     def repl_line(lm: re.Match) -> str:
         args = re.findall(r'\{([^}]*)\}', lm.group(0))
         return ' & '.join(args[:n]) + r' \\'
     body = re.sub(r'\\line(?:ii|iii|iv)(?:\{[^}]*\})+', repl_line, body)
-    cols = ' | '.join(['l'] * n)
-    return r'\begin{tabular}{' + cols.replace(' | ', '') + r'}' + '\n' + body.strip() + '\n' + r'\end{tabular}'
+
+    cols = 'l' * n
+    return r'\begin{tabular}{' + cols + r'}' + '\n' + body.strip() + '\n' + r'\end{tabular}'
 
 
 def fix_math(text: str) -> str:
     r"""Clean up math expressions.
     - Replace \emph{x} with x inside $ ... $ (not a valid math command).
     - Strip \catcode lines (TeX primitives pandoc can't handle).
+    - Strip \* -> * (\* is not a standard LaTeX command; used in C API docs as literal *).
     """
     # Strip \catcode`... lines anywhere
     text = re.sub(r'\\catcode[^\n]*', '', text)
@@ -339,6 +355,10 @@ def fix_math(text: str) -> str:
         content = re.sub(r'\\emph\{([^}]*)\}', r'\1', m.group(1))
         return '$' + content + '$'
     text = re.sub(r'\$([^$\n]{1,200})\$', clean_inline_math, text)
+
+    # \* is used in C API arg lists as a literal asterisk (e.g. FILE \*fp).
+    # Strip the backslash so pandoc outputs * not \* in GFM headings.
+    text = text.replace(r'\*', '*')
 
     return text
 

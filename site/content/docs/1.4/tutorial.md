@@ -1281,7 +1281,7 @@ If you still don’t understand how methods work, a look at the implementation c
 
 ## Random remarks
 
-\[These should perhaps be placed more carefully...\]
+[These should perhaps be placed more carefully...]
 
 Data attributes override method attributes with the same name; to avoid accidental name conflicts, which may cause hard-to-find bugs in large programs, it is wise to use some kind of convention that minimizes the chance of conflicts, e.g., capitalize method names, prefix data attribute names with a small unique string (perhaps just an underscore), or use verbs for methods and nouns for data attributes.
 
@@ -2187,7 +2187,7 @@ This chapter describes the major additions to the Python language and library in
 
   Include files are at `sys.prefix+"/include/python1.4"`.
 
-  It is not yet decided what the most portable way is to come up with the version number used in these pathnames. For compatibility with the 1.4beta releases, sys.version\[:3\] can be used.
+  It is not yet decided what the most portable way is to come up with the version number used in these pathnames. For compatibility with the 1.4beta releases, sys.version[:3] can be used.
 
   On non-Unix systems, these variables are meaningless.
 

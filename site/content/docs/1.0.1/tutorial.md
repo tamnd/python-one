@@ -1273,7 +1273,7 @@ If you still don’t understand how methods work, a look at the implementation c
 
 ## Random remarks
 
-\[These should perhaps be placed more carefully...\]
+[These should perhaps be placed more carefully...]
 
 Data attributes override method attributes with the same name; to avoid accidental name conflicts, which may cause hard-to-find bugs in large programs, it is wise to use some kind of convention that minimizes the chance of conflicts, e.g., capitalize method names, prefix data attribute names with a small unique string (perhaps just an underscore), or use verbs for methods and nouns for data attributes.
 

@@ -217,15 +217,15 @@ Sometimes, it is desirable to “uninitialize” Python. For instance, the appli
 
 XXX These utilities should be moved to some other section...
 
-#### `Py_FatalError`(*char \*message*)
+#### `Py_FatalError`(char *message)
 
 Print a fatal error message and kill the process. No cleanup is performed. This function should only be invoked when a condition is detected that would make it dangerous to continue using the Python interpreter; e.g., when the object administration appears to be corrupted. On Unix, the standard C library function `abort()` is called which will attempt to produce a `core` file.
 
-#### `Py_Exit`(*int status*)
+#### `Py_Exit`(int status)
 
 Exit the current process. This calls `Py_Finalize()` and then calls the standard C library function `exit(0)`.
 
-#### `Py_AtExit`(*void (\*func) ()*)
+#### `Py_AtExit`(void (*func) ())
 
 Register a cleanup function to be called by `Py_Finalize()`. The cleanup function will be called with no arguments and should return no value. At most 32 cleanup functions can be registered. When the registration is successful, `Py_AtExit` returns 0; on failure, it returns -1. The cleanup function registered last is called first. Each cleanup function will be called at most once.
 
@@ -233,21 +233,21 @@ Register a cleanup function to be called by `Py_Finalize()`. The cleanup functio
 
 The macros in this section are used for managing reference counts of Python objects.
 
-#### `Py_INCREF`(*PyObject \*o*)
+#### `Py_INCREF`(PyObject *o)
 
 Increment the reference count for object `o`. The object must not be NULL; if you aren’t sure that it isn’t NULL, use `Py_XINCREF()`.
 
-#### `Py_XINCREF`(*PyObject \*o*)
+#### `Py_XINCREF`(PyObject *o)
 
 Increment the reference count for object `o`. The object may be NULL, in which case the macro has no effect.
 
-#### `Py_DECREF`(*PyObject \*o*)
+#### `Py_DECREF`(PyObject *o)
 
 Decrement the reference count for object `o`. The object must not be NULL; if you aren’t sure that it isn’t NULL, use `Py_XDECREF()`. If the reference count reaches zero, the object’s type’s deallocation function (which must not be NULL) is invoked.
 
 **Warning:** The deallocation function can cause arbitrary Python code to be invoked (e.g. when a class instance with a `__del__()` method is deallocated). While exceptions in such code are not propagated, the executed code has free access to all Python global variables. This means that any object that is reachable from a global variable should be in a consistent state before `Py_DECREF()` is invoked. For example, code to delete an object from a list should copy a reference to the deleted object in a temporary variable, update the list data structure, and then call `Py_DECREF()` for the temporary variable.
 
-#### `Py_XDECREF`(*PyObject \*o*)
+#### `Py_XDECREF`(PyObject *o)
 
 Decrement the reference count for object `o`.The object may be NULL, in which case the macro has no effect; otherwise the effect is the same as for `Py_DECREF()`, and the same warning applies.
 
@@ -269,39 +269,39 @@ Print a standard traceback to `sys.stderr` and clear the error indicator. Call t
 
 Test whether the error indicator is set. If set, return the exception `type` (the first argument to the last call to one of the `PyErr_Set*()` functions or to `PyErr_Restore()`). If not set, return NULL. You do not own a reference to the return value, so you do not need to `Py_DECREF()` it. Note: do not compare the return value to a specific exception; use `PyErr_ExceptionMatches` instead, shown below.
 
-#### `PyErr_ExceptionMatches`(*PyObject \*exc*)
+#### `PyErr_ExceptionMatches`(PyObject *exc)
 
 **(NEW in 1.5a4!)** Equivalent to `PyErr_GivenExceptionMatches(PyErr_Occurred(), `*`exc`*`)`. This should only be called when an exception is actually set.
 
-#### `PyErr_GivenExceptionMatches`(*PyObject \*given, PyObject \*exc*)
+#### `PyErr_GivenExceptionMatches`(PyObject *given, PyObject *exc)
 
 **(NEW in 1.5a4!)** Return true if the *given* exception matches the exception in *exc*. If *exc* is a class object, this also returns true when *given* is a subclass. If *exc* is a tuple, all exceptions in the tuple (and recursively in subtuples) are searched for a match. This should only be called when an exception is actually set.
 
-#### `PyErr_NormalizeException`(*PyObject\*\*exc, PyObject\*\*val, PyObject\*\*tb*)
+#### `PyErr_NormalizeException`(PyObject**exc, PyObject**val, PyObject**tb)
 
-**(NEW in 1.5a4!)** Under certain circumstances, the values returned by `PyErr_Fetch()` below can be “unnormalized”, meaning that *\*exc* is a class object but *\*val* is not an instance of the same class. This function can be used to instantiate the class in that case. If the values are already normalized, nothing happens.
+**(NEW in 1.5a4!)** Under certain circumstances, the values returned by `PyErr_Fetch()` below can be “unnormalized”, meaning that **exc* is a class object but **val* is not an instance of the same class. This function can be used to instantiate the class in that case. If the values are already normalized, nothing happens.
 
 #### `PyErr_Clear`()
 
 Clear the error indicator. If the error indicator is not set, there is no effect.
 
-#### `PyErr_Fetch`(*PyObject \*\*ptype, PyObject \*\*pvalue, PyObject \*\*ptraceback*)
+#### `PyErr_Fetch`(PyObject **ptype, PyObject **pvalue, PyObject **ptraceback)
 
 Retrieve the error indicator into three variables whose addresses are passed. If the error indicator is not set, set all three variables to NULL. If it is set, it will be cleared and you own a reference to each object retrieved. The value and traceback object may be NULL even when the type object is not. **Note:** this function is normally only used by code that needs to handle exceptions or by code that needs to save and restore the error indicator temporarily.
 
-#### `PyErr_Restore`(*PyObject \*type, PyObject \*value, PyObject \*traceback*)
+#### `PyErr_Restore`(PyObject *type, PyObject *value, PyObject *traceback)
 
 Set the error indicator from the three objects. If the error indicator is already set, it is cleared first. If the objects are NULL, the error indicator is cleared. Do not pass a NULL type and non-NULL value or traceback. The exception type should be a string or class; if it is a class, the value should be an instance of that class. Do not pass an invalid exception type or value. (Violating these rules will cause subtle problems later.) This call takes away a reference to each object, i.e. you must own a reference to each object before the call and after the call you no longer own these references. (If you don’t understand this, don’t use this function. I warned you.) **Note:** this function is normally only used by code that needs to save and restore the error indicator temporarily.
 
-#### `PyErr_SetString`(*PyObject \*type, char \*message*)
+#### `PyErr_SetString`(PyObject *type, char *message)
 
 This is the most common way to set the error indicator. The first argument specifies the exception type; it is normally one of the standard exceptions, e.g. `PyExc_RuntimeError`. You need not increment its reference count. The second argument is an error message; it is converted to a string object.
 
-#### `PyErr_SetObject`(*PyObject \*type, PyObject \*value*)
+#### `PyErr_SetObject`(PyObject *type, PyObject *value)
 
 This function is similar to `PyErr_SetString()` but lets you specify an arbitrary Python object for the “value” of the exception. You need not increment its reference count.
 
-#### `PyErr_SetNone`(*PyObject \*type*)
+#### `PyErr_SetNone`(PyObject *type)
 
 This is a shorthand for `PyErr_SetString(`*`type`*`, Py_None`.
 
@@ -313,7 +313,7 @@ This is a shorthand for `PyErr_SetString(PyExc_TypeError, `*`message`*`)`, where
 
 This is a shorthand for `PyErr_SetNone(PyExc_MemoryError)`; it returns NULL so an object allocation function can write `return PyErr_NoMemory();` when it runs out of memory.
 
-#### `PyErr_SetFromErrno`(*PyObject \*type*)
+#### `PyErr_SetFromErrno`(PyObject *type)
 
 This is a convenience function to raise an exception when a C library function has returned an error and set the C variable `errno`. It constructs a tuple object whose first item is the integer `errno` value and whose second item is the corresponding error message (gotten from `strerror()`), and then calls `PyErr_SetObject(`*`type`*`, `*`object`*`)`. On Unix, when the `errno` value is `EINTR`, indicating an interrupted system call, this calls `PyErr_CheckSignals()`, and if that set the error indicator, leaves it set to that. The function always returns NULL, so a wrapper function around a system call can write `return PyErr_NoMemory();` when the system call returns an error.
 
@@ -329,7 +329,7 @@ This function interacts with Python’s signal handling. It checks whether a sig
 
 This function is obsolete (XXX or platform dependent?). It simulates the effect of a `SIGINT` signal arriving – the next time `PyErr_CheckSignals()` is called, `KeyboadInterrupt` will be raised.
 
-#### `PyErr_NewException`(*char \*name, PyObject \*base, PyObject \*dict*)
+#### `PyErr_NewException`(char *name, PyObject *base, PyObject *dict)
 
 **(NEW in 1.5a4!)** This utility function creates and returns a new exception object. The *name* argument must be the name of the new exception, a C string of the form `module.class`. The *base* and *dict* arguments are normally NULL. Normally, this creates a class object derived from the root for all exceptions, the built-in name `Exception` (accessible in C as `PyExc_Exception`). In this case the `__module__` attribute of the new class is set to the first part (up to the last dot) of the *name* argument, and the class name is set to the last part (after the last dot). When the user has specified the `-X` command line option to use string exceptions, for backward compatibility, or when the *base* argument is not a class object (and not NULL), a string object created from the entire *name* argument is returned. The *base* argument can be used to specify an alternate base class. The *dict* argument can be used to specify a dictionary of class variables and methods.
 
@@ -343,39 +343,39 @@ The functions in this chapter perform various utility tasks, such as parsing fun
 
 ## OS Utilities
 
-#### `Py_FdIsInteractive`(*FILE \*fp, char \*filename*)
+#### `Py_FdIsInteractive`(FILE *fp, char *filename)
 
 Return true (nonzero) if the standard I/O file `fp` with name `filename` is deemed interactive. This is the case for files for which `isatty(fileno(fp))` is true. If the global flag `Py_InteractiveFlag` is true, this function also returns true if the `name` pointer is NULL or if the name is equal to one of the strings `"<stdin>"` or `"???"`.
 
-#### `PyOS_GetLastModificationTime`(*char \*filename*)
+#### `PyOS_GetLastModificationTime`(char *filename)
 
 Return the time of last modification of the file `filename`. The result is encoded in the same way as the timestamp returned by the standard C library function `time()`.
 
 ## Importing modules
 
-#### `PyImport_ImportModule`(*char \*name*)
+#### `PyImport_ImportModule`(char *name)
 
 This is a simplified interface to `PyImport_ImportModuleEx` below, leaving the *globals* and *locals* arguments set to NULL. When the *name* argument contains a dot (i.e., when it specifies a submodule of a package), the *fromlist* argument is set to the list `[’*’]` so that the return value is the named module rather than the top-level package containing it as would otherwise be the case. (Unfortunately, this has an additional side effect when *name* in fact specifies a subpackage instead of a submodule: the submodules specified in the package’s `__all__` variable are loaded.) Return a new reference to the imported module, or NULL with an exception set on failure (the module may still be created in this case).
 
-#### `PyImport_ImportModuleEx`(*char \*name, PyObject \*globals, PyObject \*locals, PyObject \*fromlist*)
+#### `PyImport_ImportModuleEx`(char *name, PyObject *globals, PyObject *locals, PyObject *fromlist)
 
 **(NEW in 1.5a4!)** Import a module. This is best described by referring to the built-in Python function `__import()__`, as the standard `__import__()` function calls this function directly.
 
 The return value is a new reference to the imported module or top-level package, or NULL with an exception set on failure (the module may still be created in this case). Like for `__import__()`, the return value when a submodule of a package was requested is normally the top-level package, unless a non-empty *fromlist* was given.
 
-#### `PyImport_Import`(*PyObject \*name*)
+#### `PyImport_Import`(PyObject *name)
 
 This is a higher-level interface that calls the current “import hook function”. It invokes the `__import__()` function from the `__builtins__` of the current globals. This means that the import is done using whatever import hooks are installed in the current environment, e.g. by `rexec` or `ihooks`.
 
-#### `PyImport_ReloadModule`(*PyObject \*m*)
+#### `PyImport_ReloadModule`(PyObject *m)
 
 Reload a module. This is best described by referring to the built-in Python function `reload()`, as the standard `reload()` function calls this function directly. Return a new reference to the reloaded module, or NULL with an exception set on failure (the module still exists in this case).
 
-#### `PyImport_AddModule`(*char \*name*)
+#### `PyImport_AddModule`(char *name)
 
 Return the module object corresponding to a module name. The *name* argument may be of the form `package.module`). First check the modules dictionary if there’s one there, and if not, create a new one and insert in in the modules dictionary. Because the former action is most common, this does not return a new reference, and you do not own the returned reference. Return NULL with an exception set on failure.
 
-#### `PyImport_ExecCodeModule`(*char \*name, PyObject \*co*)
+#### `PyImport_ExecCodeModule`(char *name, PyObject *co)
 
 Given a module name (possibly of the form `package.module`) and a code object read from a Python bytecode file or obtained from the built-in function `compile()`, load the module. Return a new reference to the module object, or NULL with an exception set if an error occurred (the module may still be created in this case). (This function would reload the module if it was already imported.)
 
@@ -399,15 +399,15 @@ Empty the module table. For internal use only.
 
 Finalize the import mechanism. For internal use only.
 
-#### `_PyImport_FindExtension`(*char \*, char \**)
+#### `_PyImport_FindExtension`(char *, char *)
 
 For internal use only.
 
-#### `_PyImport_FixupExtension`(*char \*, char \**)
+#### `_PyImport_FixupExtension`(char *, char *)
 
 For internal use only.
 
-#### `PyImport_ImportFrozenModule`(*char \**)
+#### `PyImport_ImportFrozenModule`(char *)
 
 Load a frozen module. Return `1` for success, `0` if the module is not found, and `-1` with an exception set if the initialization failed. To access the imported module on a successful load, use `PyImport_ImportModule())`. (Note the misnomer – this function would reload the module if it was already imported.)
 
@@ -433,25 +433,25 @@ XXX Explain Py_DEBUG, Py_TRACE_REFS, Py_REF_DEBUG.
 
 The functions in this chapter will let you execute Python source code given in a file or a buffer, but they will not let you interact in a more detailed way with the interpreter.
 
-#### `PyRun_AnyFile`(*FILE \*, char \**)
+#### `PyRun_AnyFile`(FILE *, char *)
 
-#### `PyRun_SimpleString`(*char \**)
+#### `PyRun_SimpleString`(char *)
 
-#### `PyRun_SimpleFile`(*FILE \*, char \**)
+#### `PyRun_SimpleFile`(FILE *, char *)
 
-#### `PyRun_InteractiveOne`(*FILE \*, char \**)
+#### `PyRun_InteractiveOne`(FILE *, char *)
 
-#### `PyRun_InteractiveLoop`(*FILE \*, char \**)
+#### `PyRun_InteractiveLoop`(FILE *, char *)
 
-#### `PyParser_SimpleParseString`(*char \*, int*)
+#### `PyParser_SimpleParseString`(char *, int)
 
-#### `PyParser_SimpleParseFile`(*FILE \*, char \*, int*)
+#### `PyParser_SimpleParseFile`(FILE *, char *, int)
 
-#### `PyObject *PyRun_String`(*char \*, int, PyObject \*, PyObject \**)
+#### `PyObject *PyRun_String`(char *, int, PyObject *, PyObject *)
 
-#### `PyObject *PyRun_File`(*FILE \*, char \*, int, PyObject \*, PyObject \**)
+#### `PyObject *PyRun_File`(FILE *, char *, int, PyObject *, PyObject *)
 
-#### `PyObject *Py_CompileString`(*char \*, char \*, int*)
+#### `PyObject *Py_CompileString`(char *, char *, int)
 
 # Abstract Objects Layer
 
@@ -459,321 +459,321 @@ The functions in this chapter interact with Python objects regardless of their t
 
 ## Object Protocol
 
-#### `PyObject_Print`(*PyObject \*o, FILE \*fp, int flags*)
+#### `PyObject_Print`(PyObject *o, FILE *fp, int flags)
 
 Print an object `o`, on file `fp`. Returns -1 on error The flags argument is used to enable certain printing options. The only option currently supported is `Py_Print_RAW`.
 
-#### `PyObject_HasAttrString`(*PyObject \*o, char \*attr_name*)
+#### `PyObject_HasAttrString`(PyObject *o, char *attr_name)
 
 Returns 1 if o has the attribute attr_name, and 0 otherwise. This is equivalent to the Python expression: `hasattr(o,attr_name)`. This function always succeeds.
 
-#### `PyObject_GetAttrString`(*PyObject \*o, char \*attr_name*)
+#### `PyObject_GetAttrString`(PyObject *o, char *attr_name)
 
 Retrieve an attribute named attr_name from object o. Returns the attribute value on success, or NULL on failure. This is the equivalent of the Python expression: `o.attr_name`.
 
-#### `PyObject_HasAttr`(*PyObject \*o, PyObject \*attr_name*)
+#### `PyObject_HasAttr`(PyObject *o, PyObject *attr_name)
 
 Returns 1 if o has the attribute attr_name, and 0 otherwise. This is equivalent to the Python expression: `hasattr(o,attr_name)`. This function always succeeds.
 
-#### `PyObject_GetAttr`(*PyObject \*o, PyObject \*attr_name*)
+#### `PyObject_GetAttr`(PyObject *o, PyObject *attr_name)
 
 Retrieve an attribute named attr_name from object o. Returns the attribute value on success, or NULL on failure. This is the equivalent of the Python expression: o.attr_name.
 
-#### `PyObject_SetAttrString`(*PyObject \*o, char \*attr_name, PyObject \*v*)
+#### `PyObject_SetAttrString`(PyObject *o, char *attr_name, PyObject *v)
 
 Set the value of the attribute named `attr_name`, for object `o`, to the value `v`. Returns -1 on failure. This is the equivalent of the Python statement: `o.attr_name=v`.
 
-#### `PyObject_SetAttr`(*PyObject \*o, PyObject \*attr_name, PyObject \*v*)
+#### `PyObject_SetAttr`(PyObject *o, PyObject *attr_name, PyObject *v)
 
 Set the value of the attribute named `attr_name`, for object `o`, to the value `v`. Returns -1 on failure. This is the equivalent of the Python statement: `o.attr_name=v`.
 
-#### `PyObject_DelAttrString`(*PyObject \*o, char \*attr_name*)
+#### `PyObject_DelAttrString`(PyObject *o, char *attr_name)
 
 Delete attribute named `attr_name`, for object `o`. Returns -1 on failure. This is the equivalent of the Python statement: `del o.attr_name`.
 
-#### `PyObject_DelAttr`(*PyObject \*o, PyObject \*attr_name*)
+#### `PyObject_DelAttr`(PyObject *o, PyObject *attr_name)
 
 Delete attribute named `attr_name`, for object `o`. Returns -1 on failure. This is the equivalent of the Python statement: `del o.attr_name`.
 
-#### `PyObject_Cmp`(*PyObject \*o1, PyObject \*o2, int \*result*)
+#### `PyObject_Cmp`(PyObject *o1, PyObject *o2, int *result)
 
 Compare the values of `o1` and `o2` using a routine provided by `o1`, if one exists, otherwise with a routine provided by `o2`. The result of the comparison is returned in `result`. Returns -1 on failure. This is the equivalent of the Python statement: `result=cmp(o1,o2)`.
 
-#### `PyObject_Compare`(*PyObject \*o1, PyObject \*o2*)
+#### `PyObject_Compare`(PyObject *o1, PyObject *o2)
 
 Compare the values of `o1` and `o2` using a routine provided by `o1`, if one exists, otherwise with a routine provided by `o2`. Returns the result of the comparison on success. On error, the value returned is undefined. This is equivalent to the Python expression: `cmp(o1,o2)`.
 
-#### `PyObject_Repr`(*PyObject \*o*)
+#### `PyObject_Repr`(PyObject *o)
 
 Compute the string representation of object, `o`. Returns the string representation on success, NULL on failure. This is the equivalent of the Python expression: `repr(o)`. Called by the `repr()` built-in function and by reverse quotes.
 
-#### `PyObject_Str`(*PyObject \*o*)
+#### `PyObject_Str`(PyObject *o)
 
 Compute the string representation of object, `o`. Returns the string representation on success, NULL on failure. This is the equivalent of the Python expression: `str(o)`. Called by the `str()` built-in function and by the `print` statement.
 
-#### `PyCallable_Check`(*PyObject \*o*)
+#### `PyCallable_Check`(PyObject *o)
 
 Determine if the object `o`, is callable. Return 1 if the object is callable and 0 otherwise. This function always succeeds.
 
-#### `PyObject_CallObject`(*PyObject \*callable_object, PyObject \*args*)
+#### `PyObject_CallObject`(PyObject *callable_object, PyObject *args)
 
 Call a callable Python object `callable_object`, with arguments given by the tuple `args`. If no arguments are needed, then args may be NULL. Returns the result of the call on success, or NULL on failure. This is the equivalent of the Python expression: `apply(o, args)`.
 
-#### `PyObject_CallFunction`(*PyObject \*callable_object, char \*format, ...*)
+#### `PyObject_CallFunction`(PyObject *callable_object, char *format, ...)
 
 Call a callable Python object `callable_object`, with a variable number of C arguments. The C arguments are described using a mkvalue-style format string. The format may be NULL, indicating that no arguments are provided. Returns the result of the call on success, or NULL on failure. This is the equivalent of the Python expression: `apply(o,args)`.
 
-#### `PyObject_CallMethod`(*PyObject \*o, char \*m, char \*format, ...*)
+#### `PyObject_CallMethod`(PyObject *o, char *m, char *format, ...)
 
 Call the method named `m` of object `o` with a variable number of C arguments. The C arguments are described by a mkvalue format string. The format may be NULL, indicating that no arguments are provided. Returns the result of the call on success, or NULL on failure. This is the equivalent of the Python expression: `o.method(args)`. Note that Special method names, such as "`__add__`", "`__getitem__`", and so on are not supported. The specific abstract-object routines for these must be used.
 
-#### `PyObject_Hash`(*PyObject \*o*)
+#### `PyObject_Hash`(PyObject *o)
 
 Compute and return the hash value of an object `o`. On failure, return -1. This is the equivalent of the Python expression: `hash(o)`.
 
-#### `PyObject_IsTrue`(*PyObject \*o*)
+#### `PyObject_IsTrue`(PyObject *o)
 
 Returns 1 if the object `o` is considered to be true, and 0 otherwise. This is equivalent to the Python expression: `not not o`. This function always succeeds.
 
-#### `PyObject_Type`(*PyObject \*o*)
+#### `PyObject_Type`(PyObject *o)
 
 On success, returns a type object corresponding to the object type of object `o`. On failure, returns NULL. This is equivalent to the Python expression: `type(o)`.
 
-#### `PyObject_Length`(*PyObject \*o*)
+#### `PyObject_Length`(PyObject *o)
 
 Return the length of object `o`. If the object `o` provides both sequence and mapping protocols, the sequence length is returned. On error, -1 is returned. This is the equivalent to the Python expression: `len(o)`.
 
-#### `PyObject_GetItem`(*PyObject \*o, PyObject \*key*)
+#### `PyObject_GetItem`(PyObject *o, PyObject *key)
 
 Return element of `o` corresponding to the object `key` or NULL on failure. This is the equivalent of the Python expression: `o[key]`.
 
-#### `PyObject_SetItem`(*PyObject \*o, PyObject \*key, PyObject \*v*)
+#### `PyObject_SetItem`(PyObject *o, PyObject *key, PyObject *v)
 
 Map the object `key` to the value `v`. Returns -1 on failure. This is the equivalent of the Python statement: `o[key]=v`.
 
-#### `PyObject_DelItem`(*PyObject \*o, PyObject \*key, PyObject \*v*)
+#### `PyObject_DelItem`(PyObject *o, PyObject *key, PyObject *v)
 
 Delete the mapping for `key` from `*o`. Returns -1 on failure. This is the equivalent of the Python statement: `del o[key]`.
 
 ## Number Protocol
 
-#### `PyNumber_Check`(*PyObject \*o*)
+#### `PyNumber_Check`(PyObject *o)
 
 Returns 1 if the object `o` provides numeric protocols, and false otherwise. This function always succeeds.
 
-#### `PyNumber_Add`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Add`(PyObject *o1, PyObject *o2)
 
 Returns the result of adding `o1` and `o2`, or null on failure. This is the equivalent of the Python expression: `o1+o2`.
 
-#### `PyNumber_Subtract`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Subtract`(PyObject *o1, PyObject *o2)
 
 Returns the result of subtracting `o2` from `o1`, or null on failure. This is the equivalent of the Python expression: `o1-o2`.
 
-#### `PyNumber_Multiply`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Multiply`(PyObject *o1, PyObject *o2)
 
 Returns the result of multiplying `o1` and `o2`, or null on failure. This is the equivalent of the Python expression: `o1*o2`.
 
-#### `PyNumber_Divide`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Divide`(PyObject *o1, PyObject *o2)
 
 Returns the result of dividing `o1` by `o2`, or null on failure. This is the equivalent of the Python expression: `o1/o2`.
 
-#### `PyNumber_Remainder`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Remainder`(PyObject *o1, PyObject *o2)
 
 Returns the remainder of dividing `o1` by `o2`, or null on failure. This is the equivalent of the Python expression: `o1%o2`.
 
-#### `PyNumber_Divmod`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Divmod`(PyObject *o1, PyObject *o2)
 
 See the built-in function divmod. Returns NULL on failure. This is the equivalent of the Python expression: `divmod(o1,o2)`.
 
-#### `PyNumber_Power`(*PyObject \*o1, PyObject \*o2, PyObject \*o3*)
+#### `PyNumber_Power`(PyObject *o1, PyObject *o2, PyObject *o3)
 
 See the built-in function pow. Returns NULL on failure. This is the equivalent of the Python expression: `pow(o1,o2,o3)`, where `o3` is optional.
 
-#### `PyNumber_Negative`(*PyObject \*o*)
+#### `PyNumber_Negative`(PyObject *o)
 
 Returns the negation of `o` on success, or null on failure. This is the equivalent of the Python expression: `-o`.
 
-#### `PyNumber_Positive`(*PyObject \*o*)
+#### `PyNumber_Positive`(PyObject *o)
 
 Returns `o` on success, or NULL on failure. This is the equivalent of the Python expression: `+o`.
 
-#### `PyNumber_Absolute`(*PyObject \*o*)
+#### `PyNumber_Absolute`(PyObject *o)
 
 Returns the absolute value of `o`, or null on failure. This is the equivalent of the Python expression: `abs(o)`.
 
-#### `PyNumber_Invert`(*PyObject \*o*)
+#### `PyNumber_Invert`(PyObject *o)
 
 Returns the bitwise negation of `o` on success, or NULL on failure. This is the equivalent of the Python expression: `õ`.
 
-#### `PyNumber_Lshift`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Lshift`(PyObject *o1, PyObject *o2)
 
 Returns the result of left shifting `o1` by `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1 << o2`.
 
-#### `PyNumber_Rshift`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Rshift`(PyObject *o1, PyObject *o2)
 
 Returns the result of right shifting `o1` by `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1 >> o2`.
 
-#### `PyNumber_And`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_And`(PyObject *o1, PyObject *o2)
 
 Returns the result of "anding" `o2` and `o2` on success and NULL on failure. This is the equivalent of the Python expression: `o1 and o2`.
 
-#### `PyNumber_Xor`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Xor`(PyObject *o1, PyObject *o2)
 
 Returns the bitwise exclusive or of `o1` by `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1^o2`.
 
-#### `PyNumber_Or`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Or`(PyObject *o1, PyObject *o2)
 
 Returns the result of `o1` and `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1 or o2`.
 
-#### `PyNumber_Coerce`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Coerce`(PyObject *o1, PyObject *o2)
 
 This function takes the addresses of two variables of type `PyObject*`.
 
 If the objects pointed to by `*p1` and `*p2` have the same type, increment their reference count and return 0 (success). If the objects can be converted to a common numeric type, replace `*p1` and `*p2` by their converted value (with ’new’ reference counts), and return 0. If no conversion is possible, or if some other error occurs, return -1 (failure) and don’t increment the reference counts. The call `PyNumber_Coerce(&o1, &o2)` is equivalent to the Python statement `o1, o2 = coerce(o1, o2)`.
 
-#### `PyNumber_Int`(*PyObject \*o*)
+#### `PyNumber_Int`(PyObject *o)
 
 Returns the `o` converted to an integer object on success, or NULL on failure. This is the equivalent of the Python expression: `int(o)`.
 
-#### `PyNumber_Long`(*PyObject \*o*)
+#### `PyNumber_Long`(PyObject *o)
 
 Returns the `o` converted to a long integer object on success, or NULL on failure. This is the equivalent of the Python expression: `long(o)`.
 
-#### `PyNumber_Float`(*PyObject \*o*)
+#### `PyNumber_Float`(PyObject *o)
 
 Returns the `o` converted to a float object on success, or NULL on failure. This is the equivalent of the Python expression: `float(o)`.
 
 ## Sequence protocol
 
-#### `PySequence_Check`(*PyObject \*o*)
+#### `PySequence_Check`(PyObject *o)
 
 Return 1 if the object provides sequence protocol, and 0 otherwise. This function always succeeds.
 
-#### `PySequence_Concat`(*PyObject \*o1, PyObject \*o2*)
+#### `PySequence_Concat`(PyObject *o1, PyObject *o2)
 
 Return the concatenation of `o1` and `o2` on success, and NULL on failure. This is the equivalent of the Python expression: `o1+o2`.
 
-#### `PySequence_Repeat`(*PyObject \*o, int count*)
+#### `PySequence_Repeat`(PyObject *o, int count)
 
 Return the result of repeating sequence object `o` `count` times, or NULL on failure. This is the equivalent of the Python expression: `o*count`.
 
-#### `PySequence_GetItem`(*PyObject \*o, int i*)
+#### `PySequence_GetItem`(PyObject *o, int i)
 
 Return the ith element of `o`, or NULL on failure. This is the equivalent of the Python expression: `o[i]`.
 
-#### `PySequence_GetSlice`(*PyObject \*o, int i1, int i2*)
+#### `PySequence_GetSlice`(PyObject *o, int i1, int i2)
 
 Return the slice of sequence object `o` between `i1` and `i2`, or NULL on failure. This is the equivalent of the Python expression, `o[i1:i2]`.
 
-#### `PySequence_SetItem`(*PyObject \*o, int i, PyObject \*v*)
+#### `PySequence_SetItem`(PyObject *o, int i, PyObject *v)
 
 Assign object `v` to the `i`th element of `o`. Returns -1 on failure. This is the equivalent of the Python statement, `o[i]=v`.
 
-#### `PySequence_DelItem`(*PyObject \*o, int i*)
+#### `PySequence_DelItem`(PyObject *o, int i)
 
 Delete the `i`th element of object `v`. Returns -1 on failure. This is the equivalent of the Python statement: `del o[i]`.
 
-#### `PySequence_SetSlice`(*PyObject \*o, int i1, int i2, PyObject \*v*)
+#### `PySequence_SetSlice`(PyObject *o, int i1, int i2, PyObject *v)
 
 Assign the sequence object `v` to the slice in sequence object `o` from `i1` to `i2`. This is the equivalent of the Python statement, `o[i1:i2]=v`.
 
-#### `PySequence_DelSlice`(*PyObject \*o, int i1, int i2*)
+#### `PySequence_DelSlice`(PyObject *o, int i1, int i2)
 
 Delete the slice in sequence object, `o`, from `i1` to `i2`. Returns -1 on failure. This is the equivalent of the Python statement: `del o[i1:i2]`.
 
-#### `PySequence_Tuple`(*PyObject \*o*)
+#### `PySequence_Tuple`(PyObject *o)
 
 Returns the `o` as a tuple on success, and NULL on failure. This is equivalent to the Python expression: `tuple(o)`.
 
-#### `PySequence_Count`(*PyObject \*o, PyObject \*value*)
+#### `PySequence_Count`(PyObject *o, PyObject *value)
 
 Return the number of occurrences of `value` on `o`, that is, return the number of keys for which `o[key]==value`. On failure, return -1. This is equivalent to the Python expression: `o.count(value)`.
 
-#### `PySequence_In`(*PyObject \*o, PyObject \*value*)
+#### `PySequence_In`(PyObject *o, PyObject *value)
 
 Determine if `o` contains `value`. If an item in `o` is equal to `value`, return 1, otherwise return 0. On error, return -1. This is equivalent to the Python expression: `value in o`.
 
-#### `PySequence_Index`(*PyObject \*o, PyObject \*value*)
+#### `PySequence_Index`(PyObject *o, PyObject *value)
 
 Return the first index for which `o[i]==value`. On error, return -1. This is equivalent to the Python expression: `o.index(value)`.
 
 ## Mapping protocol
 
-#### `PyMapping_Check`(*PyObject \*o*)
+#### `PyMapping_Check`(PyObject *o)
 
 Return 1 if the object provides mapping protocol, and 0 otherwise. This function always succeeds.
 
-#### `PyMapping_Length`(*PyObject \*o*)
+#### `PyMapping_Length`(PyObject *o)
 
 Returns the number of keys in object `o` on success, and -1 on failure. For objects that do not provide sequence protocol, this is equivalent to the Python expression: `len(o)`.
 
-#### `PyMapping_DelItemString`(*PyObject \*o, char \*key*)
+#### `PyMapping_DelItemString`(PyObject *o, char *key)
 
 Remove the mapping for object `key` from the object `o`. Return -1 on failure. This is equivalent to the Python statement: `del o[key]`.
 
-#### `PyMapping_DelItem`(*PyObject \*o, PyObject \*key*)
+#### `PyMapping_DelItem`(PyObject *o, PyObject *key)
 
 Remove the mapping for object `key` from the object `o`. Return -1 on failure. This is equivalent to the Python statement: `del o[key]`.
 
-#### `PyMapping_HasKeyString`(*PyObject \*o, char \*key*)
+#### `PyMapping_HasKeyString`(PyObject *o, char *key)
 
 On success, return 1 if the mapping object has the key `key` and 0 otherwise. This is equivalent to the Python expression: `o.has_key(key)`. This function always succeeds.
 
-#### `PyMapping_HasKey`(*PyObject \*o, PyObject \*key*)
+#### `PyMapping_HasKey`(PyObject *o, PyObject *key)
 
 Return 1 if the mapping object has the key `key` and 0 otherwise. This is equivalent to the Python expression: `o.has_key(key)`. This function always succeeds.
 
-#### `PyMapping_Keys`(*PyObject \*o*)
+#### `PyMapping_Keys`(PyObject *o)
 
 On success, return a list of the keys in object `o`. On failure, return NULL. This is equivalent to the Python expression: `o.keys()`.
 
-#### `PyMapping_Values`(*PyObject \*o*)
+#### `PyMapping_Values`(PyObject *o)
 
 On success, return a list of the values in object `o`. On failure, return NULL. This is equivalent to the Python expression: `o.values()`.
 
-#### `PyMapping_Items`(*PyObject \*o*)
+#### `PyMapping_Items`(PyObject *o)
 
 On success, return a list of the items in object `o`, where each item is a tuple containing a key-value pair. On failure, return NULL. This is equivalent to the Python expression: `o.items()`.
 
-#### `PyMapping_Clear`(*PyObject \*o*)
+#### `PyMapping_Clear`(PyObject *o)
 
 Make object `o` empty. Returns 1 on success and 0 on failure. This is equivalent to the Python statement: `for key in o.keys(): del o[key]`
 
-#### `PyMapping_GetItemString`(*PyObject \*o, char \*key*)
+#### `PyMapping_GetItemString`(PyObject *o, char *key)
 
 Return element of `o` corresponding to the object `key` or NULL on failure. This is the equivalent of the Python expression: `o[key]`.
 
-#### `PyMapping_SetItemString`(*PyObject \*o, char \*key, PyObject \*v*)
+#### `PyMapping_SetItemString`(PyObject *o, char *key, PyObject *v)
 
 Map the object `key` to the value `v` in object `o`. Returns -1 on failure. This is the equivalent of the Python statement: `o[key]=v`.
 
 ## Constructors
 
-#### `PyFile_FromString`(*char \*file_name, char \*mode*)
+#### `PyFile_FromString`(char *file_name, char *mode)
 
 On success, returns a new file object that is opened on the file given by `file_name`, with a file mode given by `mode`, where `mode` has the same semantics as the standard C routine, fopen. On failure, return -1.
 
-#### `PyFile_FromFile`(*FILE \*fp, char \*file_name, char \*mode, int close_on_del*)
+#### `PyFile_FromFile`(FILE *fp, char *file_name, char *mode, int close_on_del)
 
 Return a new file object for an already opened standard C file pointer, `fp`. A file name, `file_name`, and open mode, `mode`, must be provided as well as a flag, `close_on_del`, that indicates whether the file is to be closed when the file object is destroyed. On failure, return -1.
 
-#### `PyFloat_FromDouble`(*double v*)
+#### `PyFloat_FromDouble`(double v)
 
 Returns a new float object with the value `v` on success, and NULL on failure.
 
-#### `PyInt_FromLong`(*long v*)
+#### `PyInt_FromLong`(long v)
 
 Returns a new int object with the value `v` on success, and NULL on failure.
 
-#### `PyList_New`(*int l*)
+#### `PyList_New`(int l)
 
 Returns a new list of length `l` on success, and NULL on failure.
 
-#### `PyLong_FromLong`(*long v*)
+#### `PyLong_FromLong`(long v)
 
 Returns a new long object with the value `v` on success, and NULL on failure.
 
-#### `PyLong_FromDouble`(*double v*)
+#### `PyLong_FromDouble`(double v)
 
 Returns a new long object with the value `v` on success, and NULL on failure.
 
@@ -781,15 +781,15 @@ Returns a new long object with the value `v` on success, and NULL on failure.
 
 Returns a new empty dictionary on success, and NULL on failure.
 
-#### `PyString_FromString`(*char \*v*)
+#### `PyString_FromString`(char *v)
 
 Returns a new string object with the value `v` on success, and NULL on failure.
 
-#### `PyString_FromStringAndSize`(*char \*v, int l*)
+#### `PyString_FromStringAndSize`(char *v, int l)
 
 Returns a new string object with the value `v` and length `l` on success, and NULL on failure.
 
-#### `PyTuple_New`(*int l*)
+#### `PyTuple_New`(int l)
 
 Returns a new tuple of length `l` on success, and NULL on failure.
 
@@ -799,13 +799,13 @@ The functions in this chapter are specific to certain Python object types. Passi
 
 # Defining New Object Types
 
-#### `_PyObject_New`(*PyTypeObject \*type*)
+#### `_PyObject_New`(PyTypeObject *type)
 
-#### `_PyObject_NewVar`(*PyTypeObject \*type, int size*)
+#### `_PyObject_NewVar`(PyTypeObject *type, int size)
 
-#### `_PyObject_NEW`(*TYPE, PyTypeObject \**)
+#### `_PyObject_NEW`(TYPE, PyTypeObject *)
 
-#### `_PyObject_NEW_VAR`(*TYPE, PyTypeObject \*, int size*)
+#### `_PyObject_NEW_VAR`(TYPE, PyTypeObject *, int size)
 
 # Initialization, Finalization, and Threads
 
@@ -835,11 +835,11 @@ Extension modules are shared between (sub-)interpreters as follows: the first ti
 
 *Bugs and caveats:* Because sub-interpreters (and the main interpreter) are part of the same process, the insulation between them isn’t perfect – for example, using low-level file operations like `os.close()` they can (accidentally or maliciously) affect each other’s open files. Because of the way extensions are shared between (sub-)interpreters, some extensions may not work properly; this is especially likely when the extension makes use of (static) global variables, or when the extension manipulates its module’s dictionary after its initialization. It is possible to insert objects created in one sub-interpreter into a namespace of another sub-interpreter; this should be done with great care to avoid sharing user-defined functions, methods, instances or classes between sub-interpreters, since import operations executed by such objects may affect the wrong (sub-)interpreter’s dictionary of loaded modules. (XXX This is a hard-to-fix bug that will be addressed in a future release.)
 
-#### `Py_EndInterpreter`(*PyThreadState \*tstate*)
+#### `Py_EndInterpreter`(PyThreadState *tstate)
 
 **(NEW in 1.5a3!)** Destroy the (sub-)interpreter represented by the given thread state. The given thread state must be the current thread state. See the discussion of thread states below. When the call returns, the current thread state is NULL. All thread states associated with this interpreted are destroyed. (The global interpreter lock must be held before calling this function and is still held when it returns.) `Py_Finalize()` will destroy all sub-interpreters that haven’t been explicitly destroyed at that point.
 
-#### `Py_SetProgramName`(*char \*name*)
+#### `Py_SetProgramName`(char *name)
 
 **(NEW in 1.5a3!)** This function should be called before `Py_Initialize()` is called for the first time, if it is called at all. It tells the interpreter the value of the `argv[0]` argument to the `main()` function of the program. This is used by `Py_GetPath()` and some other functions below to find the Python run-time libraries relative to the interpreter executable. The default value is `"python"`. The argument should point to a zero-terminated character string in static storage whose contents will not change for the duration of the program’s execution. No code in the Python interpreter will change the contents of this storage.
 
@@ -906,7 +906,7 @@ Return information about the sequence number and build date and time of the curr
 
 The returned string points into static storage; the caller should not modify its value. The value is available to Python code as part of the variable `sys.version`.
 
-#### `PySys_SetArgv`(*int argc, char \*\*argv*)
+#### `PySys_SetArgv`(int argc, char **argv)
 
 ## Thread State and the Global Interpreter Lock
 
@@ -994,11 +994,11 @@ This function is not available when thread support is disabled at compile time.
 
 **(NEW in 1.5a3!)** Release the global interpreter lock. The lock must have been created earlier. This function is not available when thread support is disabled at compile time.
 
-#### `PyEval_AcquireThread`(*PyThreadState \*tstate*)
+#### `PyEval_AcquireThread`(PyThreadState *tstate)
 
 **(NEW in 1.5a3!)** Acquire the global interpreter lock and then set the current thread state to *tstate*, which should not be NULL. The lock must have been created earlier. If this thread already has the lock, deadlock ensues. This function is not available when thread support is disabled at compile time.
 
-#### `PyEval_ReleaseThread`(*PyThreadState \*tstate*)
+#### `PyEval_ReleaseThread`(PyThreadState *tstate)
 
 **(NEW in 1.5a3!)** Reset the current thread state to NULL and release the global interpreter lock. The lock must have been created earlier and must be held by the current thread. The *tstate* argument, which must not be NULL, is only used to check that it represents the current thread state – if it isn’t, a fatal error is reported. This function is not available when thread support is disabled at compile time.
 
@@ -1006,7 +1006,7 @@ This function is not available when thread support is disabled at compile time.
 
 **(Different return type in 1.5a3!)** Release the interpreter lock (if it has been created and thread support is enabled) and reset the thread state to NULL, returning the previous thread state (which is not NULL). If the lock has been created, the current thread must have acquired it. (This function is available even when thread support is disabled at compile time.)
 
-#### `PyEval_RestoreThread`(*PyThreadState \*tstate*)
+#### `PyEval_RestoreThread`(PyThreadState *tstate)
 
 **(Different argument type in 1.5a3!)** Acquire the interpreter lock (if it has been created and thread support is enabled) and set the thread state to *tstate*, which must not be NULL. If the lock has been created, the current thread must not have acquired it, otherwise deadlock ensues. (This function is available even when thread support is disabled at compile time.)
 
@@ -1032,23 +1032,23 @@ All of the following functions are only available when thread support is enabled
 
 Create a new interpreter state object. The interpreter lock must be held.
 
-#### `PyInterpreterState_Clear`(*PyInterpreterState \*interp*)
+#### `PyInterpreterState_Clear`(PyInterpreterState *interp)
 
 Reset all information in an interpreter state object. The interpreter lock must be held.
 
-#### `PyInterpreterState_Delete`(*PyInterpreterState \*interp*)
+#### `PyInterpreterState_Delete`(PyInterpreterState *interp)
 
 Destroy an interpreter state object. The interpreter lock need not be held. The interpreter state must have been reset with a previous call to `PyInterpreterState_Clear()`.
 
-#### `PyThreadState_New`(*PyInterpreterState \*interp*)
+#### `PyThreadState_New`(PyInterpreterState *interp)
 
 Create a new thread state object belonging to the given interpreter object. The interpreter lock must be held.
 
-#### `PyThreadState_Clear`(*PyThreadState \*tstate*)
+#### `PyThreadState_Clear`(PyThreadState *tstate)
 
 Reset all information in a thread state object. The interpreter lock must be held.
 
-#### `PyThreadState_Delete`(*PyThreadState \*tstate*)
+#### `PyThreadState_Delete`(PyThreadState *tstate)
 
 Destroy a thread state object. The interpreter lock need not be held. The thread state must have been reset with a previous call to `PyThreadState_Clear()`.
 
@@ -1056,7 +1056,7 @@ Destroy a thread state object. The interpreter lock need not be held. The thread
 
 Return the current thread state. The interpreter lock must be held. When the current thread state is NULL, this issues a fatal error (so that the caller needn’t check for NULL).
 
-#### `PyThreadState_Swap`(*PyThreadState \*tstate*)
+#### `PyThreadState_Swap`(PyThreadState *tstate)
 
 Swap the current thread state with the thread state given by the argument *tstate*, which may be NULL. The interpreter lock must be held.
 
@@ -1084,11 +1084,11 @@ DL_IMPORT
 
 PyType_Type
 
-Py\*\_Check
+Py*_Check
 
-Py_None, \_Py_NoneStruct
+Py_None, _Py_NoneStruct
 
-\_PyObject_New, \_PyObject_NewVar
+_PyObject_New, _PyObject_NewVar
 
 PyObject_NEW, PyObject_NEW_VAR
 
@@ -1126,31 +1126,31 @@ This subtype of `PyObject` represents a Python string object.
 
 This instance of `PyTypeObject` represents the Python string type.
 
-#### `PyString_Check`(*PyObject \*o*)
+#### `PyString_Check`(PyObject *o)
 
-#### `PyString_FromStringAndSize`(*const char \*, int*)
+#### `PyString_FromStringAndSize`(const char *, int)
 
-#### `PyString_FromString`(*const char \**)
+#### `PyString_FromString`(const char *)
 
-#### `PyString_Size`(*PyObject \**)
+#### `PyString_Size`(PyObject *)
 
-#### `PyString_AsString`(*PyObject \**)
+#### `PyString_AsString`(PyObject *)
 
-#### `PyString_Concat`(*PyObject \*\*, PyObject \**)
+#### `PyString_Concat`(PyObject **, PyObject *)
 
-#### `PyString_ConcatAndDel`(*PyObject \*\*, PyObject \**)
+#### `PyString_ConcatAndDel`(PyObject **, PyObject *)
 
-#### `_PyString_Resize`(*PyObject \*\*, int*)
+#### `_PyString_Resize`(PyObject **, int)
 
-#### `PyString_Format`(*PyObject \*, PyObject \**)
+#### `PyString_Format`(PyObject *, PyObject *)
 
-#### `PyString_InternInPlace`(*PyObject \*\**)
+#### `PyString_InternInPlace`(PyObject **)
 
-#### `PyString_InternFromString`(*const char \**)
+#### `PyString_InternFromString`(const char *)
 
-#### `PyString_AS_STRING`(*PyStringObject \**)
+#### `PyString_AS_STRING`(PyStringObject *)
 
-#### `PyString_GET_SIZE`(*PyStringObject \**)
+#### `PyString_GET_SIZE`(PyStringObject *)
 
 ### Tuple Objects
 
@@ -1162,39 +1162,39 @@ This subtype of `PyObject` represents a Python tuple object.
 
 This instance of `PyTypeObject` represents the Python tuple type.
 
-#### `PyTuple_Check`(*PyObject \*p*)
+#### `PyTuple_Check`(PyObject *p)
 
 Return true if the argument is a tuple object.
 
-#### `PyTuple_New`(*int s*)
+#### `PyTuple_New`(int s)
 
 Return a new tuple object of size `s`
 
-#### `PyTuple_Size`(*PyTupleObject \*p*)
+#### `PyTuple_Size`(PyTupleObject *p)
 
 akes a pointer to a tuple object, and returns the size of that tuple.
 
-#### `PyTuple_GetItem`(*PyTupleObject \*p, int pos*)
+#### `PyTuple_GetItem`(PyTupleObject *p, int pos)
 
 returns the object at position `pos` in the tuple pointed to by `p`.
 
-#### `PyTuple_GET_ITEM`(*PyTupleObject \*p, int pos*)
+#### `PyTuple_GET_ITEM`(PyTupleObject *p, int pos)
 
 does the same, but does no checking of it’s arguments.
 
-#### `PyTuple_GetSlice`(*PyTupleObject \*p, int low, int high*)
+#### `PyTuple_GetSlice`(PyTupleObject *p, int low, int high)
 
 takes a slice of the tuple pointed to by `p` from `low` to `high` and returns it as a new tuple.
 
-#### `PyTuple_SetItem`(*PyTupleObject \*p, int pos, PyObject \*o*)
+#### `PyTuple_SetItem`(PyTupleObject *p, int pos, PyObject *o)
 
 inserts a reference to object `o` at position `pos` of the tuple pointed to by `p`. It returns 0 on success.
 
-#### `PyTuple_SET_ITEM`(*PyTupleObject \*p, int pos, PyObject \*o*)
+#### `PyTuple_SET_ITEM`(PyTupleObject *p, int pos, PyObject *o)
 
 does the same, but does no error checking, and should *only* be used to fill in brand new tuples.
 
-#### `_PyTuple_Resize`(*PyTupleObject \*p, int new, int last_is_sticky*)
+#### `_PyTuple_Resize`(PyTupleObject *p, int new, int last_is_sticky)
 
 can be used to resize a tuple. Because tuples are *supposed* to be immutable, this should only be used if there is only one module referencing the object. Do *not* use this if the tuple may already be known to some other part of the code. `last_is_sticky` is a flag - if set, the tuple will grow or shrink at the front, otherwise it will grow or shrink at the end. Think of this as destroying the old tuple and creating a new one, only more efficiently.
 
@@ -1208,35 +1208,35 @@ This subtype of `PyObject` represents a Python list object.
 
 This instance of `PyTypeObject` represents the Python list type.
 
-#### `PyList_Check`(*PyObject \*p*)
+#### `PyList_Check`(PyObject *p)
 
 returns true if it’s argument is a `PyListObject`
 
-#### `PyList_New`(*int size*)
+#### `PyList_New`(int size)
 
-#### `PyList_Size`(*PyObject \**)
+#### `PyList_Size`(PyObject *)
 
-#### `PyList_GetItem`(*PyObject \*, int*)
+#### `PyList_GetItem`(PyObject *, int)
 
-#### `PyList_SetItem`(*PyObject \*, int, PyObject \**)
+#### `PyList_SetItem`(PyObject *, int, PyObject *)
 
-#### `PyList_Insert`(*PyObject \*, int, PyObject \**)
+#### `PyList_Insert`(PyObject *, int, PyObject *)
 
-#### `PyList_Append`(*PyObject \*, PyObject \**)
+#### `PyList_Append`(PyObject *, PyObject *)
 
-#### `PyList_GetSlice`(*PyObject \*, int, int*)
+#### `PyList_GetSlice`(PyObject *, int, int)
 
-#### `PyList_SetSlice`(*PyObject \*, int, int, PyObject \**)
+#### `PyList_SetSlice`(PyObject *, int, int, PyObject *)
 
-#### `PyList_Sort`(*PyObject \**)
+#### `PyList_Sort`(PyObject *)
 
-#### `PyList_Reverse`(*PyObject \**)
+#### `PyList_Reverse`(PyObject *)
 
-#### `PyList_AsTuple`(*PyObject \**)
+#### `PyList_AsTuple`(PyObject *)
 
-#### `PyList_GET_ITEM`(*PyObject \*list, int i*)
+#### `PyList_GET_ITEM`(PyObject *list, int i)
 
-#### `PyList_GET_SIZE`(*PyObject \*list*)
+#### `PyList_GET_SIZE`(PyObject *list)
 
 ## Mapping Objects
 
@@ -1250,7 +1250,7 @@ This subtype of `PyObject` represents a Python dictionary object.
 
 This instance of `PyTypeObject` represents the Python dictionary type.
 
-#### `PyDict_Check`(*PyObject \*p*)
+#### `PyDict_Check`(PyObject *p)
 
 returns true if it’s argument is a PyDictObject
 
@@ -1258,51 +1258,51 @@ returns true if it’s argument is a PyDictObject
 
 returns a new empty dictionary.
 
-#### `PyDict_Clear`(*PyDictObject \*p*)
+#### `PyDict_Clear`(PyDictObject *p)
 
 empties an existing dictionary and deletes it.
 
-#### `PyDict_SetItem`(*PyDictObject \*p, PyObject \*key, PyObject \*val*)
+#### `PyDict_SetItem`(PyDictObject *p, PyObject *key, PyObject *val)
 
 inserts `value` into the dictionary with a key of `key`. Both `key` and `value` should be PyObjects, and `key` should be hashable.
 
-#### `PyDict_SetItemString`(*PyDictObject \*p, char \*key, PyObject \*val*)
+#### `PyDict_SetItemString`(PyDictObject *p, char *key, PyObject *val)
 
-inserts `value` into the dictionary using `key` as a key. `key` should be a char \*
+inserts `value` into the dictionary using `key` as a key. `key` should be a char *
 
-#### `PyDict_DelItem`(*PyDictObject \*p, PyObject \*key*)
+#### `PyDict_DelItem`(PyDictObject *p, PyObject *key)
 
 removes the entry in dictionary `p` with key `key`. `key` is a PyObject.
 
-#### `PyDict_DelItemString`(*PyDictObject \*p, char \*key*)
+#### `PyDict_DelItemString`(PyDictObject *p, char *key)
 
 removes the entry in dictionary `p` which has a key specified by the `char *``key`.
 
-#### `PyDict_GetItem`(*PyDictObject \*p, PyObject \*key*)
+#### `PyDict_GetItem`(PyDictObject *p, PyObject *key)
 
 returns the object from dictionary `p` which has a key `key`.
 
-#### `PyDict_GetItemString`(*PyDictObject \*p, char \*key*)
+#### `PyDict_GetItemString`(PyDictObject *p, char *key)
 
 does the same, but `key` is specified as a `char *`, rather than a `PyObject *`.
 
-#### `PyDict_Items`(*PyDictObject \*p*)
+#### `PyDict_Items`(PyDictObject *p)
 
 returns a PyListObject containing all the items from the dictionary, as in the mapping method `items()` (see the Reference Guide)
 
-#### `PyDict_Keys`(*PyDictObject \*p*)
+#### `PyDict_Keys`(PyDictObject *p)
 
 returns a PyListObject containing all the keys from the dictionary, as in the mapping method `keys()` (see the Reference Guide)
 
-#### `PyDict_Values`(*PyDictObject \*p*)
+#### `PyDict_Values`(PyDictObject *p)
 
 returns a PyListObject containing all the values from the dictionary, as in the mapping method `values()` (see the Reference Guide)
 
-#### `PyDict_Size`(*PyDictObject \*p*)
+#### `PyDict_Size`(PyDictObject *p)
 
 returns the number of items in the dictionary.
 
-#### `PyDict_Next`(*PyDictObject \*p, int ppos, PyObject \*\*pkey, PyObject \*\*pvalue*)
+#### `PyDict_Next`(PyDictObject *p, int ppos, PyObject **pkey, PyObject **pvalue)
 
 ## Numeric Objects
 
@@ -1316,19 +1316,19 @@ This subtype of `PyObject` represents a Python integer object.
 
 This instance of `PyTypeObject` represents the Python plain integer type.
 
-#### `PyInt_Check`(*PyObject \**)
+#### `PyInt_Check`(PyObject *)
 
-#### `PyInt_FromLong`(*long ival*)
+#### `PyInt_FromLong`(long ival)
 
 creates a new integer object with a value of `ival`.
 
 The current implementation keeps an array of integer objects for all integers between -1 and 100, when you create an int in that range you actually just get back a reference to the existing object. So it should be possible to change the value of 1. I suspect the behaviour of python in this case is undefined. :-)
 
-#### `PyInt_AS_LONG`(*PyIntObject \*io*)
+#### `PyInt_AS_LONG`(PyIntObject *io)
 
 returns the value of the object `io`.
 
-#### `PyInt_AsLong`(*PyObject \*io*)
+#### `PyInt_AsLong`(PyObject *io)
 
 will first attempt to cast the object to a PyIntObject, if it is not already one, and the return it’s value.
 
@@ -1346,23 +1346,23 @@ This subtype of `PyObject` represents a Python long integer object.
 
 This instance of `PyTypeObject` represents the Python long integer type.
 
-#### `PyLong_Check`(*PyObject \*p*)
+#### `PyLong_Check`(PyObject *p)
 
 returns true if it’s argument is a `PyLongObject`
 
-#### `PyLong_FromLong`(*long*)
+#### `PyLong_FromLong`(long)
 
-#### `PyLong_FromUnsignedLong`(*unsigned long*)
+#### `PyLong_FromUnsignedLong`(unsigned long)
 
-#### `PyLong_FromDouble`(*double*)
+#### `PyLong_FromDouble`(double)
 
-#### `PyLong_AsLong`(*PyObject \**)
+#### `PyLong_AsLong`(PyObject *)
 
-#### `PyLong_AsUnsignedLong`(*PyObject* )
+#### `PyLong_AsUnsignedLong`(PyObject )
 
-#### `PyLong_AsDouble`(*PyObject \**)
+#### `PyLong_AsDouble`(PyObject *)
 
-#### `*PyLong_FromString`(*char \*, char \*\*, int*)
+#### `*PyLong_FromString`(char *, char **, int)
 
 ### Floating Point Objects
 
@@ -1374,15 +1374,15 @@ This subtype of `PyObject` represents a Python floating point object.
 
 This instance of `PyTypeObject` represents the Python floating point type.
 
-#### `PyFloat_Check`(*PyObject \*p*)
+#### `PyFloat_Check`(PyObject *p)
 
 returns true if it’s argument is a `PyFloatObject`
 
-#### `PyFloat_FromDouble`(*double*)
+#### `PyFloat_FromDouble`(double)
 
-#### `PyFloat_AsDouble`(*PyObject \**)
+#### `PyFloat_AsDouble`(PyObject *)
 
-#### `PyFloat_AS_DOUBLE`(*PyFloatObject \**)
+#### `PyFloat_AS_DOUBLE`(PyFloatObject *)
 
 ### Complex Number Objects
 
@@ -1398,31 +1398,31 @@ This subtype of `PyObject` represents a Python complex number object.
 
 This instance of `PyTypeObject` represents the Python complex number type.
 
-#### `PyComplex_Check`(*PyObject \*p*)
+#### `PyComplex_Check`(PyObject *p)
 
 returns true if it’s argument is a `PyComplexObject`
 
-#### `_Py_c_sum`(*Py_complex, Py_complex*)
+#### `_Py_c_sum`(Py_complex, Py_complex)
 
-#### `_Py_c_diff`(*Py_complex, Py_complex*)
+#### `_Py_c_diff`(Py_complex, Py_complex)
 
-#### `_Py_c_neg`(*Py_complex*)
+#### `_Py_c_neg`(Py_complex)
 
-#### `_Py_c_prod`(*Py_complex, Py_complex*)
+#### `_Py_c_prod`(Py_complex, Py_complex)
 
-#### `_Py_c_quot`(*Py_complex, Py_complex*)
+#### `_Py_c_quot`(Py_complex, Py_complex)
 
-#### `_Py_c_pow`(*Py_complex, Py_complex*)
+#### `_Py_c_pow`(Py_complex, Py_complex)
 
-#### `PyComplex_FromCComplex`(*Py_complex*)
+#### `PyComplex_FromCComplex`(Py_complex)
 
-#### `PyComplex_FromDoubles`(*double real, double imag*)
+#### `PyComplex_FromDoubles`(double real, double imag)
 
-#### `PyComplex_RealAsDouble`(*PyObject \*op*)
+#### `PyComplex_RealAsDouble`(PyObject *op)
 
-#### `PyComplex_ImagAsDouble`(*PyObject \*op*)
+#### `PyComplex_ImagAsDouble`(PyObject *op)
 
-#### `PyComplex_AsCComplex`(*PyObject \*op*)
+#### `PyComplex_AsCComplex`(PyObject *op)
 
 ## Other Objects
 
@@ -1436,43 +1436,43 @@ This subtype of `PyObject` represents a Python file object.
 
 This instance of `PyTypeObject` represents the Python file type.
 
-#### `PyFile_Check`(*PyObject \*p*)
+#### `PyFile_Check`(PyObject *p)
 
 returns true if it’s argument is a `PyFileObject`
 
-#### `PyFile_FromString`(*char \*name, char \*mode*)
+#### `PyFile_FromString`(char *name, char *mode)
 
 creates a new PyFileObject pointing to the file specified in `name` with the mode specified in `mode`
 
-#### `PyFile_FromFile`(*FILE \*fp, char \*name, char \*mode, int (\*close*)
+#### `PyFile_FromFile`(FILE *fp, char *name, char *mode, int (*close)
 
 ) creates a new PyFileObject from the already-open `fp`. The function `close` will be called when the file should be closed.
 
-#### `PyFile_AsFile`(*PyFileObject \*p*)
+#### `PyFile_AsFile`(PyFileObject *p)
 
 returns the file object associated with `p` as a `FILE *`
 
-#### `PyFile_GetLine`(*PyObject \*p, int n*)
+#### `PyFile_GetLine`(PyObject *p, int n)
 
 undocumented as yet
 
-#### `PyFile_Name`(*PyObject \*p*)
+#### `PyFile_Name`(PyObject *p)
 
 returns the name of the file specified by `p` as a PyStringObject
 
-#### `PyFile_SetBufSize`(*PyFileObject \*p, int n*)
+#### `PyFile_SetBufSize`(PyFileObject *p, int n)
 
 on systems with `setvbuf` only
 
-#### `PyFile_SoftSpace`(*PyFileObject \*p, int newflag*)
+#### `PyFile_SoftSpace`(PyFileObject *p, int newflag)
 
 same as the file object method `softspace`
 
-#### `PyFile_WriteObject`(*PyObject \*obj, PyFileObject \*p*)
+#### `PyFile_WriteObject`(PyObject *obj, PyFileObject *p)
 
 writes object `obj` to file object `p`
 
-#### `PyFile_WriteString`(*char \*s, PyFileObject \*p*)
+#### `PyFile_WriteString`(char *s, PyFileObject *p)
 
 writes string `s` to file object `p`
 

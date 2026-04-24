@@ -294,13 +294,13 @@ These represent finite sets of objects indexed by arbitrary index sets. The subs
 Dictionaries  
 These represent finite sets of objects indexed by almost arbitrary values. The only types of values not acceptable as keys are values containing lists or dictionaries or other mutable types that are compared by value rather than by object identity — the reason being that the implementation requires that a key’s hash value be constant. Numeric types used for keys obey the normal rules for numeric comparison: if two numbers compare equal (e.g. 1 and 1.0) then they can be used interchangeably to index the same dictionary entry.
 
-Dictionaries are mutable; they are created by the `{...}` notation (see section <a href="#dict" data-reference-type="ref" data-reference="dict">5.2.5</a>).
+Dictionaries are mutable; they are created by the `{...}` notation (see section <a href="#dict" data-reference-type="ref" data-reference="dict">[dict]</a>).
 
 Callable types  
 These are the types to which the function call (invocation) operation, written as `function(argument, argument, ...)`, can be applied:
 
 User-defined functions  
-A user-defined function object is created by a function definition (see section <a href="#function" data-reference-type="ref" data-reference="function">7.5</a>). It should be called with an argument list containing the same number of items as the function’s formal parameter list. Special read-only attributes: `func_code` is the code object representing the compiled function body, and `func_globals` is (a reference to) the dictionary that holds the function’s global variables — it implements the global name space of the module in which the function was defined.
+A user-defined function object is created by a function definition (see section <a href="#function" data-reference-type="ref" data-reference="function">[function]</a>). It should be called with an argument list containing the same number of items as the function’s formal parameter list. Special read-only attributes: `func_code` is the code object representing the compiled function body, and `func_globals` is (a reference to) the dictionary that holds the function’s global variables — it implements the global name space of the module in which the function was defined.
 
 User-defined methods  
 A user-defined method (a.k.a. *object closure*) is a pair of a class instance object and a user-defined function. It should be called with an argument list containing one item less than the number of items in the function’s formal parameter list. When called, the class instance becomes the first argument, and the call arguments are shifted one to the right. Special read-only attributes: `im_self` is the class instance object, `im_func` is the function object.
@@ -315,15 +315,15 @@ Classes
 Class objects are described below. When a class object is called as a function, a new class instance (also described below) is created and returned. This implies a call to the class’s `__init__` method if it has one. Any arguments are passed on to the `__init__` method – if there is `__init__` method, the class must be called without arguments.
 
 Modules  
-Modules are imported by the `import` statement (see section <a href="#import" data-reference-type="ref" data-reference="import">6.10</a>). A module object is a container for a module’s name space, which is a dictionary (the same dictionary as referenced by the `func_globals` attribute of functions defined in the module). Module attribute references are translated to lookups in this dictionary. A module object does not contain the code object used to initialize the module (since it isn’t needed once the initialization is done). Attribute assignment update the module’s name space dictionary.
+Modules are imported by the `import` statement (see section <a href="#import" data-reference-type="ref" data-reference="import">[import]</a>). A module object is a container for a module’s name space, which is a dictionary (the same dictionary as referenced by the `func_globals` attribute of functions defined in the module). Module attribute references are translated to lookups in this dictionary. A module object does not contain the code object used to initialize the module (since it isn’t needed once the initialization is done). Attribute assignment update the module’s name space dictionary.
 
 Special read-only attributes: `__dict__` yields the module’s name space as a dictionary object; `__name__` yields the module’s name as a string object.
 
 Classes  
-Class objects are created by class definitions (see section <a href="#class" data-reference-type="ref" data-reference="class">7.6</a>). A class is a container for a dictionary containing the class’s name space. Class attribute references are translated to lookups in this dictionary. When an attribute name is not found there, the attribute search continues in the base classes. The search is depth-first, left-to-right in the order of their occurrence in the base class list. Class attribute assignments update the class’s dictionary, never the dictionary of a base class. A class can be called as a function to yield a class instance (see above). Special read-only attributes: `__dict__` yields the dictionary containing the class’s name space; `__bases__` yields a tuple (possibly empty or a singleton) containing the base classes, in the order of their occurrence in the base class list.
+Class objects are created by class definitions (see section <a href="#class" data-reference-type="ref" data-reference="class">[class]</a>). A class is a container for a dictionary containing the class’s name space. Class attribute references are translated to lookups in this dictionary. When an attribute name is not found there, the attribute search continues in the base classes. The search is depth-first, left-to-right in the order of their occurrence in the base class list. Class attribute assignments update the class’s dictionary, never the dictionary of a base class. A class can be called as a function to yield a class instance (see above). Special read-only attributes: `__dict__` yields the dictionary containing the class’s name space; `__bases__` yields a tuple (possibly empty or a singleton) containing the base classes, in the order of their occurrence in the base class list.
 
 Class instances  
-A class instance is created by calling a class object as a function. A class instance has a dictionary in which attribute references are searched. When an attribute is not found there, and the instance’s class has an attribute by that name, and that class attribute is a user-defined function (and in no other cases), the instance attribute reference yields a user-defined method object (see above) constructed from the instance and the function. Attribute assignments update the instance’s dictionary. Class instances can pretend to be numbers, sequences, or mappings if they have methods with certain special names. These are described in section <a href="#specialnames" data-reference-type="ref" data-reference="specialnames">3.3</a>. Special read-only attributes: `__dict__` yields the attribute dictionary; `__class__` yields the instance’s class.
+A class instance is created by calling a class object as a function. A class instance has a dictionary in which attribute references are searched. When an attribute is not found there, and the instance’s class has an attribute by that name, and that class attribute is a user-defined function (and in no other cases), the instance attribute reference yields a user-defined method object (see above) constructed from the instance and the function. Attribute assignments update the instance’s dictionary. Class instances can pretend to be numbers, sequences, or mappings if they have methods with certain special names. These are described in section <a href="#specialnames" data-reference-type="ref" data-reference="specialnames">[specialnames]</a>. Special read-only attributes: `__dict__` yields the attribute dictionary; `__class__` yields the instance’s class.
 
 Files  
 A file object represents an open file. (It is a wrapper around a C `stdio` file pointer.) File objects are created by the `open()` built-in function, and also by `posix.popen()` and the `makefile` method of socket objects. `sys.stdin`, `sys.stdout` and `sys.stderr` are file objects corresponding the the interpreter’s standard input, output and error streams. See the Python Library Reference for methods of file objects and other details.
@@ -338,7 +338,7 @@ Frame objects
 Frame objects represent execution frames. They may occur in traceback objects (see below). Special read-only attributes: `f_back` is to the previous stack frame (towards the caller), or `None` if this is the bottom stack frame; `f_code` is the code object being executed in this frame; `f_globals` is the dictionary used to look up global variables; `f_locals` is used for local variables; `f_lineno` gives the line number and `f_lasti` gives the precise instruction (this is an index into the instruction string of the code object).
 
 Traceback objects  
-<span id="traceback" label="traceback"></span> Traceback objects represent a stack trace of an exception. A traceback object is created when an exception occurs. When the search for an exception handler unwinds the execution stack, at each unwound level a traceback object is inserted in front of the current traceback. When an exception handler is entered (see also section <a href="#try" data-reference-type="ref" data-reference="try">7.4</a>), the stack trace is made available to the program as `sys.exc_traceback`. When the program contains no suitable handler, the stack trace is written (nicely formatted) to the standard error stream; if the interpreter is interactive, it is also made available to the user as `sys.last_traceback`. Special read-only attributes: `tb_next` is the next level in the stack trace (towards the frame where the exception occurred), or `None` if there is no next level; `tb_frame` points to the execution frame of the current level; `tb_lineno` gives the line number where the exception occurred; `tb_lasti` indicates the precise instruction. The line number and last instruction in the traceback may differ from the line number of its frame object if the exception occurred in a `try` statement with no matching `except` clause or with a `finally` clause.
+Traceback objects represent a stack trace of an exception. A traceback object is created when an exception occurs. When the search for an exception handler unwinds the execution stack, at each unwound level a traceback object is inserted in front of the current traceback. When an exception handler is entered (see also section <a href="#try" data-reference-type="ref" data-reference="try">[try]</a>), the stack trace is made available to the program as `sys.exc_traceback`. When the program contains no suitable handler, the stack trace is written (nicely formatted) to the standard error stream; if the interpreter is interactive, it is also made available to the user as `sys.last_traceback`. Special read-only attributes: `tb_next` is the next level in the stack trace (towards the frame where the exception occurred), or `None` if there is no next level; `tb_frame` points to the execution frame of the current level; `tb_lineno` gives the line number where the exception occurred; `tb_lasti` indicates the precise instruction. The line number and last instruction in the traceback may differ from the line number of its frame object if the exception occurred in a `try` statement with no matching `except` clause or with a `finally` clause.
 
 ## Special method names
 
@@ -556,7 +556,7 @@ Python knows string and numeric literals:
 
     literal:        stringliteral | integer | longinteger | floatnumber
 
-Evaluation of a literal yields an object of the given type (string, integer, long integer, floating point number) with the given value. The value may be approximated in the case of floating point literals. See section <a href="#literals" data-reference-type="ref" data-reference="literals">2.4</a> for details.
+Evaluation of a literal yields an object of the given type (string, integer, long integer, floating point number) with the given value. The value may be approximated in the case of floating point literals. See section <a href="#literals" data-reference-type="ref" data-reference="literals">[literals]</a> for details.
 
 All literals correspond to immutable data types, and hence the object’s identity is less important than its value. Multiple evaluations of literals with the same value (either the same occurrence in the program text or a different occurrence) may obtain the same object or a different object with the same value. (In the original implementation, all literals in the same code block with the same type and value yield the same object.)
 
@@ -588,7 +588,7 @@ A dictionary display is a possibly empty series of key/datum pairs enclosed in c
 
 A dictionary display yields a new dictionary object. The key/datum pairs are evaluated from left to right to define the entries of the dictionary: each key object is used as a key into the dictionary to store the corresponding datum.
 
-Restrictions on the types of the key values are listed earlier in section <a href="#types" data-reference-type="ref" data-reference="types">3.2</a>. Clashes between duplicate keys are not detected; the last datum (textually rightmost in the display) stored for a given key value prevails.
+Restrictions on the types of the key values are listed earlier in section <a href="#types" data-reference-type="ref" data-reference="types">[types]</a>. Clashes between duplicate keys are not detected; the last datum (textually rightmost in the display) stored for a given key value prevails.
 
 ### String conversions
 
@@ -651,7 +651,7 @@ The primary must evaluate to a callable object (user-defined functions, built-in
 A call always returns some value, possibly `None`, unless it raises an exception. How this value is computed depends on the type of the callable object. If it is:
 
 a user-defined function:  
-the code block for the function is executed, passing it the argument list. The first thing the code block will do is bind the formal parameters to the arguments; this is described in section <a href="#function" data-reference-type="ref" data-reference="function">7.5</a>. When the code block executes a `return` statement, this specifies the return value of the function call.
+the code block for the function is executed, passing it the argument list. The first thing the code block will do is bind the formal parameters to the arguments; this is described in section <a href="#function" data-reference-type="ref" data-reference="function">[function]</a>. When the code block executes a `return` statement, this specifies the return value of the function call.
 
 a built-in function or method:  
 the result is up to the interpreter; see the library reference manual for the descriptions of built-in functions and methods.
@@ -761,7 +761,7 @@ The condition $`x ~\verb|or|~ y`$ first evaluates $`x`$; if $`x`$ is true, its v
 
 (Note that `and` and `or` do not restrict the value and type they return to 0 and 1, but rather return the last evaluated argument. This is sometimes useful, e.g. if `s` is a string that should be replaced by a default value if it is empty, the expression `s or 'foo'` yields the desired value. Because `not` has to invent a value anyway, it does not bother to return a value of the same type as its argument, so e.g. `not 'foo'` yields `0`, not `''`.)
 
-Lambda forms (lambda expressions) have the same syntactic position as conditions. They are a shorthand to create anonymous functions; the expression *`lambda` arguments`:` condition* yields a function object that behaves virtually identical to one defined with *`def` name `(`arguments`): return` condition*. See section <a href="#function" data-reference-type="ref" data-reference="function">7.5</a> for the syntax of parameter lists. Note that functions created with lambda forms cannot contain statements. <span id="lambda" label="lambda"></span>
+Lambda forms (lambda expressions) have the same syntactic position as conditions. They are a shorthand to create anonymous functions; the expression *`lambda` arguments`:` condition* yields a function object that behaves virtually identical to one defined with *`def` name `(`arguments`): return` condition*. See section <a href="#function" data-reference-type="ref" data-reference="function">[function]</a> for the syntax of parameter lists. Note that functions created with lambda forms cannot contain statements.
 
 ## Expression lists and condition lists
 
@@ -798,7 +798,7 @@ Expression statements are used (mostly interactively) to compute and write a val
 
     expression_stmt: expression_list
 
-An expression statement evaluates the expression list (which may be a single expression). If the value is not `None`, it is converted to a string using the rules for string conversions (expressions in reverse quotes), and the resulting string is written to standard output (see section <a href="#print" data-reference-type="ref" data-reference="print">6.5</a>) on a line by itself. (The exception for `None` is made so that procedure calls, which are syntactically equivalent to expressions, do not cause any output. A tuple with only `None` items is written normally.)
+An expression statement evaluates the expression list (which may be a single expression). If the value is not `None`, it is converted to a string using the rules for string conversions (expressions in reverse quotes), and the resulting string is written to standard output (see section <a href="#print" data-reference-type="ref" data-reference="print">[print]</a>) on a line by itself. (The exception for `None` is made so that procedure calls, which are syntactically equivalent to expressions, do not cause any output. A tuple with only `None` items is written normally.)
 
 ## Assignment statements
 
@@ -809,9 +809,9 @@ Assignment statements are used to (re)bind names to values and to modify attribu
     target:          identifier | "(" target_list ")" | "[" target_list "]"
                    | attributeref | subscription | slicing
 
-(See section <a href="#primaries" data-reference-type="ref" data-reference="primaries">5.3</a> for the syntax definitions for the last three symbols.)
+(See section <a href="#primaries" data-reference-type="ref" data-reference="primaries">[primaries]</a> for the syntax definitions for the last three symbols.)
 
-An assignment statement evaluates the expression list (remember that this can be a single expression or a comma-separated list, the latter yielding a tuple) and assigns the single resulting object to each of the target lists, from left to right. Assignment is defined recursively depending on the form of the target (list). When a target is part of a mutable object (an attribute reference, subscription or slicing), the mutable object must ultimately perform the assignment and decide about its validity, and may raise an exception if the assignment is unacceptable. The rules observed by various types and the exceptions raised are given with the definition of the object types (see section <a href="#types" data-reference-type="ref" data-reference="types">3.2</a>). Assignment of an object to a target list is recursively defined as follows.
+An assignment statement evaluates the expression list (remember that this can be a single expression or a comma-separated list, the latter yielding a tuple) and assigns the single resulting object to each of the target lists, from left to right. Assignment is defined recursively depending on the form of the target (list). When a target is part of a mutable object (an attribute reference, subscription or slicing), the mutable object must ultimately perform the assignment and decide about its validity, and may raise an exception if the assignment is unacceptable. The rules observed by various types and the exceptions raised are given with the definition of the object types (see section <a href="#types" data-reference-type="ref" data-reference="types">[types]</a>). Assignment of an object to a target list is recursively defined as follows.
 
 - If the target list is a single target: the object is assigned to that target.
 
@@ -839,7 +839,7 @@ Assignment of an object to a single target is recursively defined as follows.
 
 (In the current implementation, the syntax for targets is taken to be the same as for expressions, and invalid syntax is rejected during the code generation phase, causing less detailed error messages.)
 
-WARNING: Although the definition of assignment implies that overlaps between the left-hand side and the right-hand side are ‘safe’ (e.g. `a, b = b, a` swaps two variables), overlaps within the collection of assigned-to variables are not safe! For instance, the following program prints `@`\[0, 2\]@:
+WARNING: Although the definition of assignment implies that overlaps between the left-hand side and the right-hand side are ‘safe’ (e.g. `a, b = b, a` swaps two variables), overlaps within the collection of assigned-to variables are not safe! For instance, the following program prints `@`[0, 2]@:
 
     x = [0, 1]
     i = 0
@@ -966,7 +966,7 @@ The `if` statement is used for conditional execution:
                    ("elif" condition ":" suite)*
                    ["else" ":" suite]
 
-It selects exactly one of the suites by evaluating the conditions one by one until one is found to be true (see section <a href="#Booleans" data-reference-type="ref" data-reference="Booleans">5.9</a> for the definition of true and false); then that suite is executed (and no other part of the `if` statement is executed or evaluated). If all conditions are false, the suite of the `else` clause, if present, is executed.
+It selects exactly one of the suites by evaluating the conditions one by one until one is found to be true (see section <a href="#Booleans" data-reference-type="ref" data-reference="Booleans">[Booleans]</a> for the definition of true and false); then that suite is executed (and no other part of the `if` statement is executed or evaluated). If all conditions are false, the suite of the `else` clause, if present, is executed.
 
 ## The `while` statement
 
@@ -1016,7 +1016,7 @@ Before an except clause’s suite is executed, details about the exception are a
 
 ## Function definitions
 
-A function definition defines a user-defined function object (see section <a href="#types" data-reference-type="ref" data-reference="types">3.2</a>):
+A function definition defines a user-defined function object (see section <a href="#types" data-reference-type="ref" data-reference="types">[types]</a>):
 
     funcdef:        "def" funcname "(" [parameter_list] ")" ":" suite
     parameter_list: (defparameter ",")* ("*" identifier | defparameter [","])
@@ -1027,7 +1027,7 @@ A function definition defines a user-defined function object (see section <a hre
 
 A function definition is an executable statement. Its execution binds the function name in the current local name space to a function object (a wrapper around the executable code for the function). This function object contains a reference to the current global name space as the global name space to be used when the function is called. The function definition does not execute the function body; this gets executed only when the function is called.
 
-When one or more top-level parameters have the form *parameter = condition*, the function is said to have “default parameter values”. Default parameter values are evaluated when the function definition is executed. For a parameter with a default value, the correponding argument may be omitted from a call, in which case the parameter’s default value is substituted. If a parameter has a default value, all following parameters must also have a default value — this is a syntactic restriction that is not expressed by the grammar. [^6] Function call semantics are described in section <a href="#calls" data-reference-type="ref" data-reference="calls">5.3.4</a>. When a user-defined function is called, first missing arguments for which a default value exists are supplied; then the arguments (a.k.a. actual parameters) are bound to the (formal) parameters, as follows:
+When one or more top-level parameters have the form *parameter = condition*, the function is said to have “default parameter values”. Default parameter values are evaluated when the function definition is executed. For a parameter with a default value, the correponding argument may be omitted from a call, in which case the parameter’s default value is substituted. If a parameter has a default value, all following parameters must also have a default value — this is a syntactic restriction that is not expressed by the grammar. [^6] Function call semantics are described in section <a href="#calls" data-reference-type="ref" data-reference="calls">[calls]</a>. When a user-defined function is called, first missing arguments for which a default value exists are supplied; then the arguments (a.k.a. actual parameters) are bound to the (formal) parameters, as follows:
 
 - If there are no formal parameters, there must be no arguments.
 
@@ -1041,13 +1041,13 @@ It is also possible to create anonymous functions (functions not bound to a name
 
 ## Class definitions
 
-A class definition defines a class object (see section <a href="#types" data-reference-type="ref" data-reference="types">3.2</a>):
+A class definition defines a class object (see section <a href="#types" data-reference-type="ref" data-reference="types">[types]</a>):
 
     classdef:       "class" classname [inheritance] ":" suite
     inheritance:    "(" [condition_list] ")"
     classname:      identifier
 
-A class definition is an executable statement. It first evaluates the inheritance list, if present. Each item in the inheritance list should evaluate to a class object. The class’s suite is then executed in a new execution frame (see section <a href="#execframes" data-reference-type="ref" data-reference="execframes">4.1</a>), using a newly created local name space and the original global name space. (Usually, the suite contains only function definitions.) When the class’s suite finishes execution, its execution frame is discarded but its local name space is saved. A class object is then created using the inheritance list for the base classes and the saved local name space for the attribute dictionary. The class name is bound to this class object in the original local name space.
+A class definition is an executable statement. It first evaluates the inheritance list, if present. Each item in the inheritance list should evaluate to a class object. The class’s suite is then executed in a new execution frame (see section <a href="#execframes" data-reference-type="ref" data-reference="execframes">[execframes]</a>), using a newly created local name space and the original global name space. (Usually, the suite contains only function definitions.) When the class’s suite finishes execution, its execution frame is discarded but its local name space is saved. A class object is then created using the inheritance list for the base classes and the saved local name space for the attribute dictionary. The class name is bound to this class object in the original local name space.
 
 # Top-level components
 

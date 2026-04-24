@@ -232,58 +232,58 @@ The *arg* argument must be a tuple object containing an argument list passed fro
 
 Note that while `PyArg_ParseTuple()` checks that the Python arguments have the required types, it cannot check the validity of the addresses of C variables passed to the call: if you make mistakes there, your code will probably crash or at least overwrite random bits in memory. So be careful!
 
-A format string consists of zero or more “format units”. A format unit describes one Python object; it is usually a single character or a parenthesized sequence of format units. With a few exceptions, a format unit that is not a parenthesized sequence normally corresponds to a single address argument to `PyArg_ParseTuple()`. In the following description, the quoted form is the format unit; the entry in (round) parentheses is the Python object type that matches the format unit; and the entry in \[square\] brackets is the type of the C variable(s) whose address should be passed. (Use the `&` operator to pass a variable’s address.)
+A format string consists of zero or more “format units”. A format unit describes one Python object; it is usually a single character or a parenthesized sequence of format units. With a few exceptions, a format unit that is not a parenthesized sequence normally corresponds to a single address argument to `PyArg_ParseTuple()`. In the following description, the quoted form is the format unit; the entry in (round) parentheses is the Python object type that matches the format unit; and the entry in [square] brackets is the type of the C variable(s) whose address should be passed. (Use the `&` operator to pass a variable’s address.)
 
-`s` (string) \[char \*  
-\] Convert a Python string to a C pointer to a character string. You must not provide storage for the string itself; a pointer to an existing string is stored into the character pointer variable whose address you pass. The C string is null-terminated. The Python string must not contain embedded null bytes; if it does, a `TypeError` exception is raised.
+`s` (string) [char *  
+] Convert a Python string to a C pointer to a character string. You must not provide storage for the string itself; a pointer to an existing string is stored into the character pointer variable whose address you pass. The C string is null-terminated. The Python string must not contain embedded null bytes; if it does, a `TypeError` exception is raised.
 
-`s#` (string) \[char \*, int\]  
+`s#` (string) [char *, int]  
 This variant on `’s’` stores into two C variables, the first one a pointer to a character string, the second one its length. In this case the Python string may contain embedded null bytes.
 
-`z` (string or `None`) \[char \*\]  
+`z` (string or `None`) [char *]  
 Like `s`, but the Python object may also be `None`, in which case the C pointer is set to `NULL`.
 
-`z#` (string or `None`) \[char \*, int\]  
+`z#` (string or `None`) [char *, int]  
 This is to `’s#’` as `’z’` is to `’s’`.
 
-`b` (integer) \[char\]  
+`b` (integer) [char]  
 Convert a Python integer to a tiny int, stored in a C `char`.
 
-`h` (integer) \[short int\]  
+`h` (integer) [short int]  
 Convert a Python integer to a C `short int`.
 
-`i` (integer) \[int\]  
+`i` (integer) [int]  
 Convert a Python integer to a plain C `int`.
 
-`l` (integer) \[long int\]  
+`l` (integer) [long int]  
 Convert a Python integer to a C `long int`.
 
-`c` (string of length 1) \[char\]  
+`c` (string of length 1) [char]  
 Convert a Python character, represented as a string of length 1, to a C `char`.
 
-`f` (float) \[float\]  
+`f` (float) [float]  
 Convert a Python floating point number to a C `float`.
 
-`d` (float) \[double\]  
+`d` (float) [double]  
 Convert a Python floating point number to a C `double`.
 
-`O` (object) \[PyObject \*\]  
+`O` (object) [PyObject *]  
 Store a Python object (without any conversion) in a C object pointer. The C program thus receives the actual object that was passed. The object’s reference count is not increased. The pointer stored is not `NULL`.
 
-`O!` (object) \[*typeobject*, PyObject \*\]  
+`O!` (object) [*typeobject*, PyObject *]  
 Store a Python object in a C object pointer. This is similar to `O`, but takes two C arguments: the first is the address of a Python type object, the second is the address of the C variable (of type `PyObject *`) into which the object pointer is stored. If the Python object does not have the required type, a `TypeError` exception is raised.
 
-`O&` (object) \[*converter*, *anything*\]  
+`O&` (object) [*converter*, *anything*]  
 Convert a Python object to a C variable through a *converter* function. This takes two arguments: the first is a function, the second is the address of a C variable (of arbitrary type), converted to `void *`. The *converter* function in turn is called as follows:
 
 *`status`*` = `*`converter`*`(`*`object`*`, `*`address`*`);`
 
 where *object* is the Python object to be converted and *address* is the `void *` argument that was passed to `PyArg_ConvertTuple()`. The returned *status* should be `1` for a successful conversion and `0` if the conversion has failed. When the conversion fails, the *converter* function should raise an exception.
 
-`S` (string) \[PyStringObject \*\]  
+`S` (string) [PyStringObject *]  
 Like `O` but raises a `TypeError` exception that the object is a string object. The C variable may also be declared as `PyObject *`.
 
-`(`*`items`*`)` (tuple) \[*matching-items*\]  
+`(`*`items`*`)` (tuple) [*matching-items*]  
 The object must be a Python tuple whose length is the number of format units in *items*. The C arguments must correspond to the individual format units in *items*. Format units for tuples may be nested.
 
 It is possible to pass Python long integers where integers are requested; however no proper range checking is done – the most significant bits are silently truncated when the receiving field is too small to receive the value (actually, the semantics are inherited from downcasts in C — your milage may vary).
@@ -351,59 +351,59 @@ It recognizes a set of format units similar to the ones recognized by `PyArg_Par
 
 One difference with `PyArg_ParseTuple()`: while the latter requires its first argument to be a tuple (since Python argument lists are always represented as tuples internally), `BuildValue()` does not always build a tuple. It builds a tuple only if its format string contains two or more format units. If the format string is empty, it returns `None`; if it contains exactly one format unit, it returns whatever object is described by that format unit. To force it to return a tuple of size 0 or one, parenthesize the format string.
 
-In the following description, the quoted form is the format unit; the entry in (round) parentheses is the Python object type that the format unit will return; and the entry in \[square\] brackets is the type of the C value(s) to be passed.
+In the following description, the quoted form is the format unit; the entry in (round) parentheses is the Python object type that the format unit will return; and the entry in [square] brackets is the type of the C value(s) to be passed.
 
 The characters space, tab, colon and comma are ignored in format strings (but not within format units such as `s#`). This can be used to make long format strings a tad more readable.
 
-`s` (string) \[char \*\]  
+`s` (string) [char *]  
 Convert a null-terminated C string to a Python object. If the C string pointer is `NULL`, `None` is returned.
 
-`s#` (string) \[char \*, int\]  
+`s#` (string) [char *, int]  
 Convert a C string and its length to a Python object. If the C string pointer is `NULL`, the length is ignored and `None` is returned.
 
-`z` (string or `None`) \[char \*\]  
+`z` (string or `None`) [char *]  
 Same as `s`.
 
-`z#` (string or `None`) \[char \*, int\]  
+`z#` (string or `None`) [char *, int]  
 Same as `s#`.
 
-`i` (integer) \[int\]  
+`i` (integer) [int]  
 Convert a plain C `int` to a Python integer object.
 
-`b` (integer) \[char\]  
+`b` (integer) [char]  
 Same as `i`.
 
-`h` (integer) \[short int\]  
+`h` (integer) [short int]  
 Same as `i`.
 
-`l` (integer) \[long int\]  
+`l` (integer) [long int]  
 Convert a C `long int` to a Python integer object.
 
-`c` (string of length 1) \[char\]  
+`c` (string of length 1) [char]  
 Convert a C `int` representing a character to a Python string of length 1.
 
-`d` (float) \[double\]  
+`d` (float) [double]  
 Convert a C `double` to a Python floating point number.
 
-`f` (float) \[float\]  
+`f` (float) [float]  
 Same as `d`.
 
-`O` (object) \[PyObject \*\]  
+`O` (object) [PyObject *]  
 Pass a Python object untouched (except for its reference count, which is incremented by one). If the object passed in is a `NULL` pointer, it is assumed that this was caused because the call producing the argument found an error and set an exception. Therefore, `Py_BuildValue()` will return `NULL` but won’t raise an exception. If no exception has been raised yet, `PyExc_SystemError` is set.
 
-`S` (object) \[PyObject \*\]  
+`S` (object) [PyObject *]  
 Same as `O`.
 
-`O&` (object) \[*converter*, *anything*\]  
+`O&` (object) [*converter*, *anything*]  
 Convert *anything* to a Python object through a *converter* function. The function is called with *anything* (which should be compatible with `void *`) as its argument and should return a “new” Python object, or `NULL` if an error occurred.
 
-`(`*`items`*`)` (tuple) \[*matching-items*\]  
+`(`*`items`*`)` (tuple) [*matching-items*]  
 Convert a sequence of C values to a Python tuple with the same number of items.
 
-`[`*`items`*`]` (list) \[*matching-items*\]  
+`[`*`items`*`]` (list) [*matching-items*]  
 Convert a sequence of C values to a Python list with the same number of items.
 
-`{`*`items`*`}` (dictionary) \[*matching-items*\]  
+`{`*`items`*`}` (dictionary) [*matching-items*]  
 Convert a sequence of C values to a Python dictionary. Each pair of consecutive C values adds one item to the dictionary, serving as key and value, respectively.
 
 If there is an error in the format string, the `PyExc_SystemError` exception is raised and `NULL` returned.
@@ -622,7 +622,7 @@ If your extension modules uses additional system libraries, you must create a fi
 
 From the viewpoint of of C access to Python services, we have:
 
-1.  "Very high level layer": two or three functions that let you exec or eval arbitrary Python code given as a string in a module whose name is given, passing C values in and getting C values out using mkvalue/getargs style format strings. This does not require the user to declare any variables of type "PyObject \*". This should be enough to write a simple application that gets Python code from the user, execs it, and returns the output or errors.
+1.  "Very high level layer": two or three functions that let you exec or eval arbitrary Python code given as a string in a module whose name is given, passing C values in and getting C values out using mkvalue/getargs style format strings. This does not require the user to declare any variables of type "PyObject *". This should be enough to write a simple application that gets Python code from the user, execs it, and returns the output or errors.
 
 2.  "Abstract objects layer": which is the subject of this proposal. It has many functions operating on objects, and lest you do many things from C that you can also write in Python, without going through the Python parser.
 
@@ -638,321 +638,321 @@ The Python C object interface provides four protocols: object, numeric, sequence
 
 ## Object Protocol
 
-#### `PyObject_Print`(*PyObject \*o, FILE \*fp, int flags*)
+#### `PyObject_Print`(PyObject *o, FILE *fp, int flags)
 
 Print an object `o`, on file `fp`. Returns -1 on error The flags argument is used to enable certain printing options. The only option currently supported is `Py_Print_RAW`.
 
-#### `PyObject_HasAttrString`(*PyObject \*o, char \*attr_name*)
+#### `PyObject_HasAttrString`(PyObject *o, char *attr_name)
 
 Returns 1 if o has the attribute attr_name, and 0 otherwise. This is equivalent to the Python expression: `hasattr(o,attr_name)`. This function always succeeds.
 
-#### `PyObject_AttrString`(*PyObject \*o, char \*attr_name*)
+#### `PyObject_AttrString`(PyObject *o, char *attr_name)
 
 Retrieve an attributed named attr_name form object o. Returns the attribute value on success, or NULL on failure. This is the equivalent of the Python expression: `o.attr_name`.
 
-#### `PyObject_HasAttr`(*PyObject \*o, PyObject \*attr_name*)
+#### `PyObject_HasAttr`(PyObject *o, PyObject *attr_name)
 
 Returns 1 if o has the attribute attr_name, and 0 otherwise. This is equivalent to the Python expression: `hasattr(o,attr_name)`. This function always succeeds.
 
-#### `PyObject_GetAttr`(*PyObject \*o, PyObject \*attr_name*)
+#### `PyObject_GetAttr`(PyObject *o, PyObject *attr_name)
 
 Retrieve an attributed named attr_name form object o. Returns the attribute value on success, or NULL on failure. This is the equivalent of the Python expression: o.attr_name.
 
-#### `PyObject_SetAttrString`(*PyObject \*o, char \*attr_name, PyObject \*v*)
+#### `PyObject_SetAttrString`(PyObject *o, char *attr_name, PyObject *v)
 
 Set the value of the attribute named `attr_name`, for object `o`, to the value `v`. Returns -1 on failure. This is the equivalent of the Python statement: `o.attr_name=v`.
 
-#### `PyObject_SetAttr`(*PyObject \*o, PyObject \*attr_name, PyObject \*v*)
+#### `PyObject_SetAttr`(PyObject *o, PyObject *attr_name, PyObject *v)
 
 Set the value of the attribute named `attr_name`, for object `o`, to the value `v`. Returns -1 on failure. This is the equivalent of the Python statement: `o.attr_name=v`.
 
-#### `PyObject_DelAttrString`(*PyObject \*o, char \*attr_name*)
+#### `PyObject_DelAttrString`(PyObject *o, char *attr_name)
 
 Delete attribute named `attr_name`, for object `o`. Returns -1 on failure. This is the equivalent of the Python statement: `del o.attr_name`.
 
-#### `PyObject_DelAttr`(*PyObject \*o, PyObject \*attr_name*)
+#### `PyObject_DelAttr`(PyObject *o, PyObject *attr_name)
 
 Delete attribute named `attr_name`, for object `o`. Returns -1 on failure. This is the equivalent of the Python statement: `del o.attr_name`.
 
-#### `PyObject_Cmp`(*PyObject \*o1, PyObject \*o2, int \*result*)
+#### `PyObject_Cmp`(PyObject *o1, PyObject *o2, int *result)
 
 Compare the values of `o1` and `o2` using a routine provided by `o1`, if one exists, otherwise with a routine provided by `o2`. The result of the comparison is returned in `result`. Returns -1 on failure. This is the equivalent of the Python statement: `result=cmp(o1,o2)`.
 
-#### `PyObject_Compare`(*PyObject \*o1, PyObject \*o2*)
+#### `PyObject_Compare`(PyObject *o1, PyObject *o2)
 
 Compare the values of `o1` and `o2` using a routine provided by `o1`, if one exists, otherwise with a routine provided by `o2`. Returns the result of the comparison on success. On error, the value returned is undefined. This is equivalent to the Python expression: `cmp(o1,o2)`.
 
-#### `PyObject_Repr`(*PyObject \*o*)
+#### `PyObject_Repr`(PyObject *o)
 
 Compute the string representation of object, `o`. Returns the string representation on success, NULL on failure. This is the equivalent of the Python expression: `repr(o)`. Called by the `repr()` built-in function and by reverse quotes.
 
-#### `PyObject_Str`(*PyObject \*o*)
+#### `PyObject_Str`(PyObject *o)
 
 Compute the string representation of object, `o`. Returns the string representation on success, NULL on failure. This is the equivalent of the Python expression: `str(o)`. Called by the `str()` built-in function and by the `print` statement.
 
-#### `PyCallable_Check`(*PyObject \*o*)
+#### `PyCallable_Check`(PyObject *o)
 
 Determine if the object `o`, is callable. Return 1 if the object is callable and 0 otherwise. This function always succeeds.
 
-#### `PyObject_CallObject`(*PyObject \*callable_object, PyObject \*args*)
+#### `PyObject_CallObject`(PyObject *callable_object, PyObject *args)
 
 Call a callable Python object `callable_object`, with arguments given by the tuple `args`. If no arguments are needed, then args may be NULL. Returns the result of the call on success, or NULL on failure. This is the equivalent of the Python expression: `apply(o, args)`.
 
-#### `PyObject_CallFunction`(*PyObject \*callable_object, char \*format, ...*)
+#### `PyObject_CallFunction`(PyObject *callable_object, char *format, ...)
 
 Call a callable Python object `callable_object`, with a variable number of C arguments. The C arguments are described using a mkvalue-style format string. The format may be NULL, indicating that no arguments are provided. Returns the result of the call on success, or NULL on failure. This is the equivalent of the Python expression: `apply(o,args)`.
 
-#### `PyObject_CallMethod`(*PyObject \*o, char \*m, char \*format, ...*)
+#### `PyObject_CallMethod`(PyObject *o, char *m, char *format, ...)
 
 Call the method named `m` of object `o` with a variable number of C arguments. The C arguments are described by a mkvalue format string. The format may be NULL, indicating that no arguments are provided. Returns the result of the call on success, or NULL on failure. This is the equivalent of the Python expression: `o.method(args)`. Note that Special method names, such as "`__add__`", "`__getitem__`", and so on are not supported. The specific abstract-object routines for these must be used.
 
-#### `PyObject_Hash`(*PyObject \*o*)
+#### `PyObject_Hash`(PyObject *o)
 
 Compute and return the hash value of an object `o`. On failure, return -1. This is the equivalent of the Python expression: `hash(o)`.
 
-#### `PyObject_IsTrue`(*PyObject \*o*)
+#### `PyObject_IsTrue`(PyObject *o)
 
 Returns 1 if the object `o` is considered to be true, and 0 otherwise. This is equivalent to the Python expression: `not not o`. This function always succeeds.
 
-#### `PyObject_Type`(*PyObject \*o*)
+#### `PyObject_Type`(PyObject *o)
 
 On success, returns a type object corresponding to the object type of object `o`. On failure, returns NULL. This is equivalent to the Python expression: `type(o)`.
 
-#### `PyObject_Length`(*PyObject \*o*)
+#### `PyObject_Length`(PyObject *o)
 
 Return the length of object `o`. If the object `o` provides both sequence and mapping protocols, the sequence length is returned. On error, -1 is returned. This is the equivalent to the Python expression: `len(o)`.
 
-#### `PyObject_GetItem`(*PyObject \*o, PyObject \*key*)
+#### `PyObject_GetItem`(PyObject *o, PyObject *key)
 
 Return element of `o` corresponding to the object `key` or NULL on failure. This is the equivalent of the Python expression: `o[key]`.
 
-#### `PyObject_SetItem`(*PyObject \*o, PyObject \*key, PyObject \*v*)
+#### `PyObject_SetItem`(PyObject *o, PyObject *key, PyObject *v)
 
 Map the object `key` to the value `v`. Returns -1 on failure. This is the equivalent of the Python statement: `o[key]=v`.
 
-#### `PyObject_DelItem`(*PyObject \*o, PyObject \*key, PyObject \*v*)
+#### `PyObject_DelItem`(PyObject *o, PyObject *key, PyObject *v)
 
-Delete the mapping for `key` from `*o`. Returns -1 on failure. This is the equivalent of the Python statement: del o\[key\].
+Delete the mapping for `key` from `*o`. Returns -1 on failure. This is the equivalent of the Python statement: del o[key].
 
 ## Number Protocol
 
-#### `PyNumber_Check`(*PyObject \*o*)
+#### `PyNumber_Check`(PyObject *o)
 
 Returns 1 if the object `o` provides numeric protocols, and false otherwise. This function always succeeds.
 
-#### `PyNumber_Add`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Add`(PyObject *o1, PyObject *o2)
 
 Returns the result of adding `o1` and `o2`, or null on failure. This is the equivalent of the Python expression: `o1+o2`.
 
-#### `PyNumber_Subtract`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Subtract`(PyObject *o1, PyObject *o2)
 
 Returns the result of subtracting `o2` from `o1`, or null on failure. This is the equivalent of the Python expression: `o1-o2`.
 
-#### `PyNumber_Multiply`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Multiply`(PyObject *o1, PyObject *o2)
 
 Returns the result of multiplying `o1` and `o2`, or null on failure. This is the equivalent of the Python expression: `o1*o2`.
 
-#### `PyNumber_Divide`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Divide`(PyObject *o1, PyObject *o2)
 
 Returns the result of dividing `o1` by `o2`, or null on failure. This is the equivalent of the Python expression: `o1/o2`.
 
-#### `PyNumber_Remainder`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Remainder`(PyObject *o1, PyObject *o2)
 
 Returns the remainder of dividing `o1` by `o2`, or null on failure. This is the equivalent of the Python expression: `o1%o2`.
 
-#### `PyNumber_Divmod`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Divmod`(PyObject *o1, PyObject *o2)
 
 See the built-in function divmod. Returns NULL on failure. This is the equivalent of the Python expression: `divmod(o1,o2)`.
 
-#### `PyNumber_Power`(*PyObject \*o1, PyObject \*o2, PyObject \*o3*)
+#### `PyNumber_Power`(PyObject *o1, PyObject *o2, PyObject *o3)
 
 See the built-in function pow. Returns NULL on failure. This is the equivalent of the Python expression: `pow(o1,o2,o3)`, where `o3` is optional.
 
-#### `PyNumber_Negative`(*PyObject \*o*)
+#### `PyNumber_Negative`(PyObject *o)
 
 Returns the negation of `o` on success, or null on failure. This is the equivalent of the Python expression: `-o`.
 
-#### `PyNumber_Positive`(*PyObject \*o*)
+#### `PyNumber_Positive`(PyObject *o)
 
 Returns `o` on success, or NULL on failure. This is the equivalent of the Python expression: `+o`.
 
-#### `PyNumber_Absolute`(*PyObject \*o*)
+#### `PyNumber_Absolute`(PyObject *o)
 
 Returns the absolute value of `o`, or null on failure. This is the equivalent of the Python expression: `abs(o)`.
 
-#### `PyNumber_Invert`(*PyObject \*o*)
+#### `PyNumber_Invert`(PyObject *o)
 
 Returns the bitwise negation of `o` on success, or NULL on failure. This is the equivalent of the Python expression: ` o`.
 
-#### `PyNumber_Lshift`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Lshift`(PyObject *o1, PyObject *o2)
 
 Returns the result of left shifting `o1` by `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1 << o2`.
 
-#### `PyNumber_Rshift`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Rshift`(PyObject *o1, PyObject *o2)
 
 Returns the result of right shifting `o1` by `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1 >> o2`.
 
-#### `PyNumber_And`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_And`(PyObject *o1, PyObject *o2)
 
 Returns the result of "anding" `o2` and `o2` on success and NULL on failure. This is the equivalent of the Python expression: `o1 and o2`.
 
-#### `PyNumber_Xor`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Xor`(PyObject *o1, PyObject *o2)
 
 Returns the bitwise exclusive or of `o1` by `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1^o2`.
 
-#### `PyNumber_Or`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Or`(PyObject *o1, PyObject *o2)
 
 Returns the result or `o1` and `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1 or o2`.
 
-#### `PyNumber_Coerce`(*PyObject \*o1, PyObject \*o2*)
+#### `PyNumber_Coerce`(PyObject *o1, PyObject *o2)
 
 This function takes the addresses of two variables of type `PyObject*`.
 
 If the objects pointed to by `*p1` and `*p2` have the same type, increment their reference count and return 0 (success). If the objects can be converted to a common numeric type, replace `*p1` and `*p2` by their converted value (with ’new’ reference counts), and return 0. If no conversion is possible, or if some other error occurs, return -1 (failure) and don’t increment the reference counts. The call `PyNumber_Coerce(&o1, &o2)` is equivalent to the Python statement `o1, o2 = coerce(o1, o2)`.
 
-#### `PyNumber_Int`(*PyObject \*o*)
+#### `PyNumber_Int`(PyObject *o)
 
 Returns the `o` converted to an integer object on success, or NULL on failure. This is the equivalent of the Python expression: `int(o)`.
 
-#### `PyNumber_Long`(*PyObject \*o*)
+#### `PyNumber_Long`(PyObject *o)
 
 Returns the `o` converted to a long integer object on success, or NULL on failure. This is the equivalent of the Python expression: `long(o)`.
 
-#### `PyNumber_Float`(*PyObject \*o*)
+#### `PyNumber_Float`(PyObject *o)
 
 Returns the `o` converted to a float object on success, or NULL on failure. This is the equivalent of the Python expression: `float(o)`.
 
 ## Sequence protocol
 
-#### `PySequence_Check`(*PyObject \*o*)
+#### `PySequence_Check`(PyObject *o)
 
 Return 1 if the object provides sequence protocol, and 0 otherwise. This function always succeeds.
 
-#### `PySequence_Concat`(*PyObject \*o1, PyObject \*o2*)
+#### `PySequence_Concat`(PyObject *o1, PyObject *o2)
 
 Return the concatination of `o1` and `o2` on success, and NULL on failure. This is the equivalent of the Python expression: `o1+o2`.
 
-#### `PySequence_Repeat`(*PyObject \*o, int count*)
+#### `PySequence_Repeat`(PyObject *o, int count)
 
 Return the result of repeating sequence object `o` count times, or NULL on failure. This is the equivalent of the Python expression: `o*count`.
 
-#### `PySequence_GetItem`(*PyObject \*o, int i*)
+#### `PySequence_GetItem`(PyObject *o, int i)
 
 Return the ith element of `o`, or NULL on failure. This is the equivalent of the Python expression: `o[i]`.
 
-#### `PySequence_GetSlice`(*PyObject \*o, int i1, int i2*)
+#### `PySequence_GetSlice`(PyObject *o, int i1, int i2)
 
 Return the slice of sequence object `o` between `i1` and `i2`, or NULL on failure. This is the equivalent of the Python expression, `o[i1:i2]`.
 
-#### `PySequence_SetItem`(*PyObject \*o, int i, PyObject \*v*)
+#### `PySequence_SetItem`(PyObject *o, int i, PyObject *v)
 
 Assign object `v` to the `i`th element of `o`. Returns -1 on failure. This is the equivalent of the Python statement, `o[i]=v`.
 
-#### `PySequence_DelItem`(*PyObject \*o, int i*)
+#### `PySequence_DelItem`(PyObject *o, int i)
 
 Delete the `i`th element of object `v`. Returns -1 on failure. This is the equivalent of the Python statement: `del o[i]`.
 
-#### `PySequence_SetSlice`(*PyObject \*o, int i1, int i2, PyObject \*v*)
+#### `PySequence_SetSlice`(PyObject *o, int i1, int i2, PyObject *v)
 
 Assign the sequence object `v` to the slice in sequence object `o` from `i1` to `i2`. This is the equivalent of the Python statement, `o[i1:i2]=v`.
 
-#### `PySequence_DelSlice`(*PyObject \*o, int i1, int i2*)
+#### `PySequence_DelSlice`(PyObject *o, int i1, int i2)
 
 Delete the slice in sequence object, `o`, from `i1` to `i2`. Returns -1 on failure. This is the equivalent of the Python statement: `del o[i1:i2]`.
 
-#### `PySequence_Tuple`(*PyObject \*o*)
+#### `PySequence_Tuple`(PyObject *o)
 
 Returns the `o` as a tuple on success, and NULL on failure. This is equivalent to the Python expression: `tuple(o)`.
 
-#### `PySequence_Count`(*PyObject \*o, PyObject \*value*)
+#### `PySequence_Count`(PyObject *o, PyObject *value)
 
 Return the number of occurrences of `value` on `o`, that is, return the number of keys for which `o[key]==value`. On failure, return -1. This is equivalent to the Python expression: `o.count(value)`.
 
-#### `PySequence_In`(*PyObject \*o, PyObject \*value*)
+#### `PySequence_In`(PyObject *o, PyObject *value)
 
 Determine if `o` contains `value`. If an item in `o` is equal to `value`, return 1, otherwise return 0. On error, return -1. This is equivalent to the Python expression: `value in o`.
 
-#### `PySequence_Index`(*PyObject \*o, PyObject \*value*)
+#### `PySequence_Index`(PyObject *o, PyObject *value)
 
 Return the first index for which `o[i]=value`. On error, return -1. This is equivalent to the Python expression: `o.index(value)`.
 
 ## Mapping protocol
 
-#### `PyMapping_Check`(*PyObject \*o*)
+#### `PyMapping_Check`(PyObject *o)
 
 Return 1 if the object provides mapping protocol, and 0 otherwise. This function always succeeds.
 
-#### `PyMapping_Length`(*PyObject \*o*)
+#### `PyMapping_Length`(PyObject *o)
 
 Returns the number of keys in object `o` on success, and -1 on failure. For objects that do not provide sequence protocol, this is equivalent to the Python expression: `len(o)`.
 
-#### `PyMapping_DelItemString`(*PyObject \*o, char \*key*)
+#### `PyMapping_DelItemString`(PyObject *o, char *key)
 
 Remove the mapping for object `key` from the object `o`. Return -1 on failure. This is equivalent to the Python statement: `del o[key]`.
 
-#### `PyMapping_DelItem`(*PyObject \*o, PyObject \*key*)
+#### `PyMapping_DelItem`(PyObject *o, PyObject *key)
 
 Remove the mapping for object `key` from the object `o`. Return -1 on failure. This is equivalent to the Python statement: `del o[key]`.
 
-#### `PyMapping_HasKeyString`(*PyObject \*o, char \*key*)
+#### `PyMapping_HasKeyString`(PyObject *o, char *key)
 
 On success, return 1 if the mapping object has the key `key` and 0 otherwise. This is equivalent to the Python expression: `o.has_key(key)`. This function always succeeds.
 
-#### `PyMapping_HasKey`(*PyObject \*o, PyObject \*key*)
+#### `PyMapping_HasKey`(PyObject *o, PyObject *key)
 
 Return 1 if the mapping object has the key `key` and 0 otherwise. This is equivalent to the Python expression: `o.has_key(key)`. This function always succeeds.
 
-#### `PyMapping_Keys`(*PyObject \*o*)
+#### `PyMapping_Keys`(PyObject *o)
 
 On success, return a list of the keys in object `o`. On failure, return NULL. This is equivalent to the Python expression: `o.keys()`.
 
-#### `PyMapping_Values`(*PyObject \*o*)
+#### `PyMapping_Values`(PyObject *o)
 
 On success, return a list of the values in object `o`. On failure, return NULL. This is equivalent to the Python expression: `o.values()`.
 
-#### `PyMapping_Items`(*PyObject \*o*)
+#### `PyMapping_Items`(PyObject *o)
 
 On success, return a list of the items in object `o`, where each item is a tuple containing a key-value pair. On failure, return NULL. This is equivalent to the Python expression: `o.items()`.
 
-#### `PyMapping_Clear`(*PyObject \*o*)
+#### `PyMapping_Clear`(PyObject *o)
 
 Make object `o` empty. Returns 1 on success and 0 on failure. This is equivalent to the Python statement: `for key in o.keys(): del o[key]`
 
-#### `PyMapping_GetItemString`(*PyObject \*o, char \*key*)
+#### `PyMapping_GetItemString`(PyObject *o, char *key)
 
 Return element of `o` corresponding to the object `key` or NULL on failure. This is the equivalent of the Python expression: `o[key]`.
 
-#### `PyMapping_SetItemString`(*PyObject \*o, char \*key, PyObject \*v*)
+#### `PyMapping_SetItemString`(PyObject *o, char *key, PyObject *v)
 
 Map the object `key` to the value `v` in object `o`. Returns -1 on failure. This is the equivalent of the Python statement: `o[key]=v`.
 
 ## Constructors
 
-#### `PyFile_FromString`(*char \*file_name, char \*mode*)
+#### `PyFile_FromString`(char *file_name, char *mode)
 
 On success, returns a new file object that is opened on the file given by `file_name`, with a file mode given by `mode`, where `mode` has the same semantics as the standard C routine, fopen. On failure, return -1.
 
-#### `PyFile_FromFile`(*FILE \*fp, char \*file_name, char \*mode, int close_on_del*)
+#### `PyFile_FromFile`(FILE *fp, char *file_name, char *mode, int close_on_del)
 
 Return a new file object for an already opened standard C file pointer, `fp`. A file name, `file_name`, and open mode, `mode`, must be provided as well as a flag, `close_on_del`, that indicates whether the file is to be closed when the file object is destroyed. On failure, return -1.
 
-#### `PyFloat_FromDouble`(*double v*)
+#### `PyFloat_FromDouble`(double v)
 
 Returns a new float object with the value `v` on success, and NULL on failure.
 
-#### `PyInt_FromLong`(*long v*)
+#### `PyInt_FromLong`(long v)
 
 Returns a new int object with the value `v` on success, and NULL on failure.
 
-#### `PyList_New`(*int l*)
+#### `PyList_New`(int l)
 
 Returns a new list of length `l` on success, and NULL on failure.
 
-#### `PyLong_FromLong`(*long v*)
+#### `PyLong_FromLong`(long v)
 
 Returns a new long object with the value `v` on success, and NULL on failure.
 
-#### `PyLong_FromDouble`(*double v*)
+#### `PyLong_FromDouble`(double v)
 
 Returns a new long object with the value `v` on success, and NULL on failure.
 
@@ -960,15 +960,15 @@ Returns a new long object with the value `v` on success, and NULL on failure.
 
 Returns a new empty dictionary on success, and NULL on failure.
 
-#### `PyString_FromString`(*char \*v*)
+#### `PyString_FromString`(char *v)
 
 Returns a new string object with the value `v` on success, and NULL on failure.
 
-#### `PyString_FromStringAndSize`(*char \*v, int l*)
+#### `PyString_FromStringAndSize`(char *v, int l)
 
 Returns a new string object with the value `v` and length `l` on success, and NULL on failure.
 
-#### `PyTuple_New`(*int l*)
+#### `PyTuple_New`(int l)
 
 Returns a new tuple of length `l` on success, and NULL on failure.
 

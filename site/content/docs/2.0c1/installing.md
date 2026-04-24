@@ -35,11 +35,11 @@ However, if such instructions exist at all, they are often woefully inadequate a
 
 Additionally, while there has not previously been a standard installation mechanism, Python has had some standard machinery for building extensions on Unix since Python . This machinery (the `Makefile.pre.in` file) is superseded by the Distutils, but it will no doubt live on in older module distributions for a while. This `Makefile.pre.in` mechanism is documented in the “Extending & Embedding Python” manual, but that manual is aimed at module developers—hence, we include documentation for builders/installers here.
 
-All of the pre-Distutils material is tucked away in section <a href="#pre-distutils" data-reference-type="ref" data-reference="pre-distutils">7</a>.
+All of the pre-Distutils material is tucked away in section <a href="#pre-distutils" data-reference-type="ref" data-reference="pre-distutils">[pre-distutils]</a>.
 
 # Standard Build and Install
 
-As described in section <a href="#new-standard" data-reference-type="ref" data-reference="new-standard">1.2</a>, building and installing a module distribution using the Distutils is usually one simple command:
+As described in section <a href="#new-standard" data-reference-type="ref" data-reference="new-standard">[new-standard]</a>, building and installing a module distribution using the Distutils is usually one simple command:
 
     python setup.py install
 
@@ -87,7 +87,7 @@ As implied above, the command is responsible for putting the files to install in
 
     python setup.py build --build-base=/tmp/pybuild/foo-1.0
 
-(Or you could do this permanently with a directive in your system or personal Distutils configuration file; see section <a href="#config-files" data-reference-type="ref" data-reference="config-files">6</a>.) Normally, this isn’t necessary.
+(Or you could do this permanently with a directive in your system or personal Distutils configuration file; see section <a href="#config-files" data-reference-type="ref" data-reference="config-files">[config-files]</a>.) Normally, this isn’t necessary.
 
 The default layout for the build tree is as follows:
 
@@ -106,11 +106,14 @@ After the command runs (whether you run it explicitly, or the command does it fo
 
 If you don’t choose an installation directory—i.e., if you just run `setup.py install`—then the command installs to the standard location for third-party Python modules. This location varies by platform and by how you built/installed Python itself. On Unix and Mac OS, it also depends on whether the module distribution being installed is pure Python or contains extensions (“non-pure”):
 
-<div class="tableiv">
-
-l\|l\|l\|ctextrm PlatformStandard installation locationDefault valueNotes `/lib/python2.0/site-packages` `/usr/local/lib/python2.0/site-packages` (1) `/lib/python2.0/site-packages` `/usr/local/lib/python2.0/site-packages` (1) `C:\Python` (2) `:Lib` `Python:Lib` :Mac:PlugIns `Python:Mac:PlugIns`
-
-</div>
+|  |  |  |  |
+|:---|:---|:---|:---|
+| Unix (pure) |  |  |  |
+| `/lib/python2.0/site-packages` `/usr/local/lib/python2.0/site-packages` (1) Unix (non-pure) |  |  |  |
+| `/lib/python2.0/site-packages` `/usr/local/lib/python2.0/site-packages` (1) Windows |  |  |  |
+| `C:\Python` (2) Mac OS (pure) |  |  |  |
+| `:Lib` `Python:Lib`  Mac OS (non-pure) |  |  |  |
+| :Mac:PlugIns `Python:Mac:PlugIns` |  |  |  |
 
 Notes:
 
@@ -132,13 +135,13 @@ and stand for the directories that Python is installed to, and where it finds it
 
 If you don’t want to install to the standard location, or if you don’t have permission to write there, then you need to read about alternate installations in the next section.
 
-|  |  |  |
-|:---|:---|:---|
-| Type of file Installation Directory Override option pure module distribution |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
-|  |  |  |
+|                          |     |     |
+|:-------------------------|:----|:----|
+| pure module distribution |     |     |
+|                          |     |     |
+|                          |     |     |
+|                          |     |     |
+|                          |     |     |
 
 # Building Extensions: Tips and Tricks
 
@@ -212,11 +215,11 @@ Like Windows, Mac OS has no notion of home directories (or even of users), and 
 
 prefix:Lib:site-packages prefix:Scripts prefix:Data
 
-See section <a href="#platform-variations" data-reference-type="ref" data-reference="platform-variations">2.1</a> for information on supplying command-line arguments to the setup script with MacPython.
+See section <a href="#platform-variations" data-reference-type="ref" data-reference="platform-variations">[platform-variations]</a> for information on supplying command-line arguments to the setup script with MacPython.
 
 # Custom Installation
 
-Sometimes, the alternate installation schemes described in section <a href="#alt-install" data-reference-type="ref" data-reference="alt-install">4</a> just don’t do what you want. You might want to tweak just one or two directories while keeping everything under the same base directory, or you might want to completely redefine the installation scheme. In either case, you’re creating a *custom installation scheme*.
+Sometimes, the alternate installation schemes described in section <a href="#alt-install" data-reference-type="ref" data-reference="alt-install">[alt-install]</a> just don’t do what you want. You might want to tweak just one or two directories while keeping everything under the same base directory, or you might want to completely redefine the installation scheme. In either case, you’re creating a *custom installation scheme*.
 
 You probably noticed the column of “override options” in the tables describing the alternate installation schemes above. Those options are how you define a custom installation scheme. These override options can be relative, absolute, or explicitly defined in terms of one of the installation base directories. (There are two installation base directories, and they are normally the same—they only differ when you use the Unix “prefix scheme” and supply different `--prefix` and `--exec-prefix` options.)
 
@@ -254,7 +257,7 @@ or, equivalently,
 
 `$PLAT` is not (necessarily) an environment variable—it will be expanded by the Distutils as it parses your command line options (just as it does when parsing your configuration file(s)).
 
-Obviously, specifying the entire installation scheme every time you install a new module distribution would be very tedious. Thus, you can put these options into your Distutils config file (see section <a href="#config-files" data-reference-type="ref" data-reference="config-files">6</a>):
+Obviously, specifying the entire installation scheme every time you install a new module distribution would be very tedious. Thus, you can put these options into your Distutils config file (see section <a href="#config-files" data-reference-type="ref" data-reference="config-files">[config-files]</a>):
 
     [install]
     install-base=$HOME
@@ -278,7 +281,7 @@ Note that these two are *not* equivalent if you supply a different installation 
 
 would install pure modules to in the first case, and to in the second case. (For the second case, you probably want to supply an installation base of `/tmp/python`.)
 
-You probably noticed the use of `$HOME` and `$PLAT` in the sample configuration file input. These are Distutils configuration variables, which bear a strong resemblance to environment variables. In fact, you can use environment variables in config files—on platforms that have such a notion—but the Distutils additionally define a few extra variables that may not be in your environment, such as `$PLAT`. (And of course, you can only use the configuration variables supplied by the Distutils on systems that don’t have environment variables, such as Mac OS ().) See section <a href="#config-files" data-reference-type="ref" data-reference="config-files">6</a> for details.
+You probably noticed the use of `$HOME` and `$PLAT` in the sample configuration file input. These are Distutils configuration variables, which bear a strong resemblance to environment variables. In fact, you can use environment variables in config files—on platforms that have such a notion—but the Distutils additionally define a few extra variables that may not be in your environment, such as `$PLAT`. (And of course, you can only use the configuration variables supplied by the Distutils on systems that don’t have environment variables, such as Mac OS ().) See section <a href="#config-files" data-reference-type="ref" data-reference="config-files">[config-files]</a> for details.
 
 # Distutils Configuration Files
 

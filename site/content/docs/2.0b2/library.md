@@ -9,13 +9,13 @@ weight: 20
 
 This module provides support for reading and writing AIFF and AIFF-C files. AIFF is Audio Interchange File Format, a format for storing digital audio samples in a file. AIFF-C is a newer version of the format that includes the ability to compress the audio data. **Caveat:** Some operations may only work under IRIX; these will raise `ImportError` when attempting to import the `cl` module, which is only available on IRIX.
 
-Audio files have a number of parameters that describe the audio data. The sampling rate or frame rate is the number of times per second the sound is sampled. The number of channels indicate if the audio is mono, stereo, or quadro. Each frame consists of one sample per channel. The sample size is the size in bytes of each sample. Thus a frame consists of *nchannels*\**samplesize* bytes, and a second’s worth of audio consists of *nchannels*\**samplesize*\**framerate* bytes.
+Audio files have a number of parameters that describe the audio data. The sampling rate or frame rate is the number of times per second the sound is sampled. The number of channels indicate if the audio is mono, stereo, or quadro. Each frame consists of one sample per channel. The sample size is the size in bytes of each sample. Thus a frame consists of *nchannels***samplesize* bytes, and a second’s worth of audio consists of *nchannels***samplesize***framerate* bytes.
 
-For example, CD quality audio has a sample size of two bytes (16 bits), uses two channels (stereo) and has a frame rate of 44,100 frames/second. This gives a frame size of 4 bytes (2\*2), and a second’s worth occupies 2\*2\*44100 bytes, i.e. 176,400 bytes.
+For example, CD quality audio has a sample size of two bytes (16 bits), uses two channels (stereo) and has a frame rate of 44,100 frames/second. This gives a frame size of 4 bytes (2*2), and a second’s worth occupies 2*2*44100 bytes, i.e. 176,400 bytes.
 
 Module `aifc` defines the following function:
 
-### `open`(*file*)
+### `open`(file)
 
 Open an AIFF or AIFF-C file and return an object instance with methods that are described below. The argument *file* is either a string naming a file or a file object. *mode* must be `’r’` or `’rb’` when the file must be opened for reading, or `’w’` or `’wb’` when the file must be opened for writing. If omitted, *`file`*`.mode` is used if it exists, otherwise `’rb’` is used. When used for writing, the file object should be seekable, unless you know ahead of time how many samples you are going to write in total and use `writeframesraw()` and `setnframes()`.
 
@@ -53,11 +53,11 @@ Return a tuple consisting of all of the above values in the above order.
 
 Return a list of markers in the audio file. A marker consists of a tuple of three elements. The first is the mark ID (an integer), the second is the mark position in frames from the beginning of the data (an integer), the third is the name of the mark (a string).
 
-### `getmark`(*id*)
+### `getmark`(id)
 
 Return the tuple as described in `getmarkers()` for the mark with the given *id*.
 
-### `readframes`(*nframes*)
+### `readframes`(nframes)
 
 Read and return the next *nframes* frames from the audio file. The returned data is a string containing for each frame the uncompressed samples of all channels.
 
@@ -65,7 +65,7 @@ Read and return the next *nframes* frames from the audio file. The returned data
 
 Rewind the read pointer. The next `readframes()` will start from the beginning.
 
-### `setpos`(*pos*)
+### `setpos`(pos)
 
 Seek to the specified frame number.
 
@@ -87,31 +87,31 @@ Create an AIFF file. The default is that an AIFF-C file is created, unless the n
 
 Create an AIFF-C file. The default is that an AIFF-C file is created, unless the name of the file ends in `’.aiff’` in which case the default is an AIFF file.
 
-### `setnchannels`(*nchannels*)
+### `setnchannels`(nchannels)
 
 Specify the number of channels in the audio file.
 
-### `setsampwidth`(*width*)
+### `setsampwidth`(width)
 
 Specify the size in bytes of audio samples.
 
-### `setframerate`(*rate*)
+### `setframerate`(rate)
 
 Specify the sampling frequency in frames per second.
 
-### `setnframes`(*nframes*)
+### `setnframes`(nframes)
 
 Specify the number of frames that are to be written to the audio file. If this parameter is not set, or not set correctly, the file needs to support seeking.
 
-### `setcomptype`(*type, name*)
+### `setcomptype`(type, name)
 
 Specify the compression type. If not specified, the audio data will not be compressed. In AIFF files, compression is not possible. The name parameter should be a human-readable description of the compression type, the type parameter should be a four-character string. Currently the following compression types are supported: NONE, ULAW, ALAW, G722.
 
-### `setparams`(*nchannels, sampwidth, framerate, comptype, compname*)
+### `setparams`(nchannels, sampwidth, framerate, comptype, compname)
 
 Set all the above parameters at once. The argument is a tuple consisting of the various parameters. This means that it is possible to use the result of a `getparams()` call as argument to `setparams()`.
 
-### `setmark`(*id, pos, name*)
+### `setmark`(id, pos, name)
 
 Add a mark with the given id (larger than 0), and the given name at the given position. This method can be called at any time before `close()`.
 
@@ -119,11 +119,11 @@ Add a mark with the given id (larger than 0), and the given name at the given po
 
 Return the current write position in the output file. Useful in combination with `setmark()`.
 
-### `writeframes`(*data*)
+### `writeframes`(data)
 
 Write data to the output file. This method can only be called after the audio file parameters have been set.
 
-### `writeframesraw`(*data*)
+### `writeframesraw`(data)
 
 Like `writeframes()`, except that the header of the audio file is not updated.
 
@@ -144,7 +144,7 @@ Symbolic constants from the C header file `<audio.h>` are defined in the standar
 
 The module defines the following functions:
 
-### `openport`(*name, direction*)
+### `openport`(name, direction)
 
 The name and direction arguments are strings. The optional *config* argument is a configuration object as returned by `newconfig()`. The return value is an *audio port object*; methods of audio port objects are described below.
 
@@ -152,19 +152,19 @@ The name and direction arguments are strings. The optional *config* argument is 
 
 The return value is a new *audio configuration object*; methods of audio configuration objects are described below.
 
-### `queryparams`(*device*)
+### `queryparams`(device)
 
 The device argument is an integer. The return value is a list of integers containing the data returned by .
 
-### `getparams`(*device, list*)
+### `getparams`(device, list)
 
 The *device* argument is an integer. The list argument is a list such as returned by `queryparams()`; it is modified in place (!).
 
-### `setparams`(*device, list*)
+### `setparams`(device, list)
 
 The *device* argument is an integer. The *list* argument is a list such as returned by `queryparams()`.
 
-## Configuration Objects <span id="al-config-objects" label="al-config-objects"></span>
+## Configuration Objects 
 
 Configuration objects (returned by `newconfig()` have the following methods:
 
@@ -172,7 +172,7 @@ Configuration objects (returned by `newconfig()` have the following methods:
 
 Return the queue size.
 
-### `setqueuesize`(*size*)
+### `setqueuesize`(size)
 
 Set the queue size.
 
@@ -180,7 +180,7 @@ Set the queue size.
 
 Get the sample width.
 
-### `setwidth`(*width*)
+### `setwidth`(width)
 
 Set the sample width.
 
@@ -188,7 +188,7 @@ Set the sample width.
 
 Get the channel count.
 
-### `setchannels`(*nchannels*)
+### `setchannels`(nchannels)
 
 Set the channel count.
 
@@ -196,7 +196,7 @@ Set the channel count.
 
 Get the sample format.
 
-### `setsampfmt`(*sampfmt*)
+### `setsampfmt`(sampfmt)
 
 Set the sample format.
 
@@ -204,11 +204,11 @@ Set the sample format.
 
 Get the maximum value for floating sample formats.
 
-### `setfloatmax`(*floatmax*)
+### `setfloatmax`(floatmax)
 
 Set the maximum value for floating sample formats.
 
-## Port Objects <span id="al-port-objects" label="al-port-objects"></span>
+## Port Objects 
 
 Port objects, as returned by `openport()`, have the following methods:
 
@@ -228,11 +228,11 @@ Return the number of filled samples.
 
 Return the number of fillable samples.
 
-### `readsamps`(*nsamples*)
+### `readsamps`(nsamples)
 
 Read a number of samples from the queue, blocking if necessary. Return the data as a string containing the raw data, (e.g., 2 bytes per sample in big-endian byte order (high byte, low byte) if you have set the sample width to 2 bytes).
 
-### `writesamps`(*samples*)
+### `writesamps`(samples)
 
 Write samples into the queue, blocking if necessary. The samples are encoded as described for the `readsamps()` return value.
 
@@ -240,7 +240,7 @@ Write samples into the queue, blocking if necessary. The samples are encoded as 
 
 Return the ‘fill point’.
 
-### `setfillpoint`(*fillpoint*)
+### `setfillpoint`(fillpoint)
 
 Set the ‘fill point’.
 
@@ -248,11 +248,11 @@ Set the ‘fill point’.
 
 Return a configuration object containing the current configuration of the port.
 
-### `setconfig`(*config*)
+### `setconfig`(config)
 
 Set the configuration from the argument, a configuration object.
 
-### `getstatus`(*list*)
+### `getstatus`(list)
 
 Get status information on last error.
 
@@ -264,7 +264,7 @@ This module defines symbolic constants needed to use the built-in module `al` (s
 
     import al
     from AL import *
-# Generic Operating System Services <span id="allos" label="allos"></span>
+# Generic Operating System Services 
 
 The modules described in this chapter provide interfaces to operating system features that are available on (almost) all operating systems, such as files and a clock. The interfaces are generally modeled after the Unix or C interfaces, but they are available on most other systems as well. Here’s an overview:
 # Amoeba Specific Services
@@ -277,19 +277,19 @@ This module provides some object types and operations useful for Amoeba applicat
 
 The module `amoeba` defines the following items:
 
-#### `name_append`(*path, cap*)
+#### `name_append`(path, cap)
 
 Stores a capability in the Amoeba directory tree. Arguments are the pathname (a string) and the capability (a capability object as returned by `name_lookup()`).
 
-#### `name_delete`(*path*)
+#### `name_delete`(path)
 
 Deletes a capability from the Amoeba directory tree. Argument is the pathname.
 
-#### `name_lookup`(*path*)
+#### `name_lookup`(path)
 
 Looks up a capability. Argument is the pathname. Returns a *capability* object, to which various interesting operations apply, described below.
 
-#### `name_replace`(*path, cap*)
+#### `name_replace`(path, cap)
 
 Replaces a capability in the Amoeba directory tree. Arguments are the pathname and the new capability. (This differs from `name_append()` in the behavior when the pathname already exists: `name_append()` finds this an error while `name_replace()` allows it, as its name suggests.)
 
@@ -301,7 +301,7 @@ A table representing the capability environment at the time the interpreter was 
 
 The exception raised when an Amoeba function returns an error. The value accompanying this exception is a pair containing the numeric error code and the corresponding string, as returned by the C function .
 
-#### `timeout`(*msecs*)
+#### `timeout`(msecs)
 
 Sets the transaction timeout, in milliseconds. Returns the previous timeout. Initially, the timeout is set to 2 seconds by the Python interpreter.
 
@@ -319,7 +319,7 @@ The following methods are defined for capability objects.
 
 Returns a list of the names of the entries in an Amoeba directory.
 
-#### `b_read`(*offset, maxsize*)
+#### `b_read`(offset, maxsize)
 
 Reads (at most) *maxsize* bytes from a bullet file at offset *offset.* The data is returned as a string. EOF is reported as an empty string.
 
@@ -329,7 +329,7 @@ Returns the size of a bullet file.
 
 #### `dir_append`()
 
-Like the corresponding `name_`\* functions, but with a path relative to the capability. (For paths beginning with a slash the capability is ignored, since this is the defined semantics for Amoeba.)
+Like the corresponding `name_`* functions, but with a path relative to the capability. (For paths beginning with a slash the capability is ignored, since this is the defined semantics for Amoeba.)
 
 #### `std_info`()
 
@@ -339,7 +339,7 @@ Returns the standard info string of the object.
 
 Returns the time (in seconds since the Epoch, in UCT, as for POSIX) from a time server.
 
-#### `tod_settime`(*t*)
+#### `tod_settime`(t)
 
 Sets the time kept by a time server.
 # `anydbm` — Generic access to DBM-style databases
@@ -348,7 +348,7 @@ Sets the time kept by a time server.
 
 `anydbm` is a generic interface to variants of the DBM database — `dbhash`(requires `bsddb`), `gdbm`, or `dbm`. If none of these modules is installed, the slow-but-simple implementation in module `dumbdbm`will be used.
 
-### `open`(*filename*)
+### `open`(filename)
 
 Open the database file *filename* and return a corresponding object.
 
@@ -374,7 +374,7 @@ The object returned by `open()` supports most of the same functionality as dicti
 
 A simple and slow database implemented entirely in Python. This should only be used when no other DBM-style database is available.
 
-### `open`(*filename*)
+### `open`(filename)
 
 Open the database file *filename* and return a corresponding object. The optional *flag* argument can be `’r’` to open an existing database for reading only, `’w’` to open an existing database for reading and writing, `’c’` to create the database if it doesn’t exist, or `’n’`, which will always create a new empty database. If not specified, the default value is `’r’`.
 
@@ -393,26 +393,25 @@ Raised for errors not reported as `KeyError` errors.
 
 This module defines a new object type which can efficiently represent an array of basic values: characters, integers, floating point numbers. Arraysare sequence types and behave very much like lists, except that the type of objects stored in them is constrained. The type is specified at object creation time by using a *type code*, which is a single character. The following type codes are defined:
 
-|                                          |              |     |
-|:-----------------------------------------|:-------------|:----|
-| Type codeC TypeMinimum size in bytes ’c’ | character    | 1   |
-| ’b’                                      | signed int   | 1   |
-| ’B’                                      | unsigned int | 1   |
-| ’h’                                      | signed int   | 2   |
-| ’H’                                      | unsigned int | 2   |
-| ’i’                                      | signed int   | 2   |
-| ’I’                                      | unsigned int | 2   |
-| ’l’                                      | signed int   | 4   |
-| ’L’                                      | unsigned int | 4   |
-| ’f’                                      | float        | 4   |
-| ’d’                                      | double       | 8   |
-|                                          |              |     |
+|     |              |     |
+|:----|:-------------|:----|
+| ’c’ | character    | 1   |
+| ’b’ | signed int   | 1   |
+| ’B’ | unsigned int | 1   |
+| ’h’ | signed int   | 2   |
+| ’H’ | unsigned int | 2   |
+| ’i’ | signed int   | 2   |
+| ’I’ | unsigned int | 2   |
+| ’l’ | signed int   | 4   |
+| ’L’ | unsigned int | 4   |
+| ’f’ | float        | 4   |
+| ’d’ | double       | 8   |
 
 The actual representation of values is determined by the machine architecture (strictly speaking, by the C implementation). The actual size can be accessed through the `itemsize` attribute. The values stored for `’L’` and `’I’` items will be represented as Python long integers when retrieved, because Python’s plain integer type cannot represent the full range of C’s unsigned (long) integers.
 
 The module defines the following function and type object:
 
-### `array`(*typecode*)
+### `array`(typecode)
 
 Return a new array whose items are restricted by *typecode*, and initialized from the optional *initializer* value, which must be a list or a string. The list or string is passed to the new array’s `fromlist()` or `fromstring()` method (see below) to add initial items to the array.
 
@@ -430,7 +429,7 @@ The typecode character used to create the array.
 
 The length in bytes of one array item in the internal representation.
 
-### `append`(*x*)
+### `append`(x)
 
 Append a new item with value *x* to the end of the array.
 
@@ -442,31 +441,31 @@ Return a tuple `(`*`address`*`, `*`length`*`)` giving the current memory address
 
 “Byteswap” all items of the array. This is only supported for values which are 1, 2, 4, or 8 bytes in size; for other types of values, `RuntimeError` is raised. It is useful when reading data from a file written on a machine with a different byte order.
 
-### `count`(*x*)
+### `count`(x)
 
 Return the number of occurences of *x* in the array.
 
-### `extend`(*a*)
+### `extend`(a)
 
 Append array items from *a* to the end of the array.
 
-### `fromfile`(*f, n*)
+### `fromfile`(f, n)
 
 Read *n* items (as machine values) from the file object *f* and append them to the end of the array. If less than *n* items are available, `EOFError` is raised, but the items that were available are still inserted into the array. *f* must be a real built-in file object; something else with a `read()` method won’t do.
 
-### `fromlist`(*list*)
+### `fromlist`(list)
 
 Append items from the list. This is equivalent to `for x in `*`list`*`: a.append(x)` except that if there is a type error, the array is unchanged.
 
-### `fromstring`(*s*)
+### `fromstring`(s)
 
 Appends items from the string, interpreting the string as an array of machine values (i.e. as if it had been read from a file using the `fromfile()` method).
 
-### `index`(*x*)
+### `index`(x)
 
 Return the smallest *i* such that *i* is the index of the first occurence of *x* in the array.
 
-### `insert`(*i, x*)
+### `insert`(i, x)
 
 Insert a new item with value *x* in the array before position *i*.
 
@@ -474,11 +473,11 @@ Insert a new item with value *x* in the array before position *i*.
 
 Removes the item with the index *i* from the array and returns it. The optional argument defaults to `-1`, so that by default the last item is removed and returned.
 
-### `read`(*f, n*)
+### `read`(f, n)
 
 *Deprecated since version 1.5.1: Use the `fromfile()` method.* Read *n* items (as machine values) from the file object *f* and append them to the end of the array. If less than *n* items are available, `EOFError` is raised, but the items that were available are still inserted into the array. *f* must be a real built-in file object; something else with a `read()` method won’t do.
 
-### `remove`(*x*)
+### `remove`(x)
 
 Remove the first occurence of *x* from the array.
 
@@ -486,7 +485,7 @@ Remove the first occurence of *x* from the array.
 
 Reverse the order of the items in the array.
 
-### `tofile`(*f*)
+### `tofile`(f)
 
 Write all items (as machine values) to the file object *f*.
 
@@ -498,7 +497,7 @@ Convert the array to an ordinary list with the same items.
 
 Convert the array to an array of machine values and return the string representation (the same sequence of bytes that would be written to a file by the `tofile()` method.)
 
-### `write`(*f*)
+### `write`(f)
 
 *Deprecated since version 1.5.1: Use the `tofile()` method.* Write all items (as machine values) to the file object *f*.
 
@@ -520,7 +519,7 @@ The `curses.ascii` module supplies name constants for ASCII characters and funct
 
 |                    |                                           |
 |:-------------------|:------------------------------------------|
-| NameMeaning NUL    |                                           |
+| NUL                |                                           |
 | SOH                | Start of heading, console interrupt       |
 | STX                | Start of text                             |
 | ETX                | End of text                               |
@@ -556,69 +555,68 @@ The `curses.ascii` module supplies name constants for ASCII characters and funct
 | US                 | Unit separator                            |
 | SP                 | Space                                     |
 | DEL                | Delete                                    |
-|                    |                                           |
 
 Note that many of these have little practical use in modern usage.
 
 The module supplies the following functions, patterned on those in the standard C library:
 
-### `isalnum`(*c*)
+### `isalnum`(c)
 
 Checks for an ASCII alphanumeric character; it is equivalent to `isalpha(`*`c`*`) or isdigit(`*`c`*`)`.
 
-### `isalpha`(*c*)
+### `isalpha`(c)
 
 Checks for an ASCII alphabetic character; it is equivalent to `isupper(`*`c`*`) or islower(`*`c`*`)`.
 
-### `isascii`(*c*)
+### `isascii`(c)
 
 Checks for a character value that fits in the 7-bit ASCII set.
 
-### `isblank`(*c*)
+### `isblank`(c)
 
 Checks for an ASCII whitespace character.
 
-### `iscntrl`(*c*)
+### `iscntrl`(c)
 
 Checks for an ASCII control character (in the range 0x00 to 0x1f).
 
-### `isdigit`(*c*)
+### `isdigit`(c)
 
 Checks for an ASCII decimal digit, `0` through `9`. This is equivalent to *`c`*` in string.digits`.
 
-### `isgraph`(*c*)
+### `isgraph`(c)
 
 Checks for ASCII any printable character except space.
 
-### `islower`(*c*)
+### `islower`(c)
 
 Checks for an ASCII lower-case character.
 
-### `isprint`(*c*)
+### `isprint`(c)
 
 Checks for any ASCII printable character including space.
 
-### `ispunct`(*c*)
+### `ispunct`(c)
 
 Checks for any printable ASCII character which is not a space or an alphanumeric character.
 
-### `isspace`(*c*)
+### `isspace`(c)
 
 Checks for ASCII white-space characters; space, tab, line feed, carriage return, form feed, horizontal tab, vertical tab.
 
-### `isupper`(*c*)
+### `isupper`(c)
 
 Checks for an ASCII uppercase letter.
 
-### `isxdigit`(*c*)
+### `isxdigit`(c)
 
 Checks for an ASCII hexadecimal digit. This is equivalent to *`c`*` in string.hexdigits`.
 
-### `isctrl`(*c*)
+### `isctrl`(c)
 
 Checks for an ASCII control character (ordinal values 0 to 31).
 
-### `ismeta`(*c*)
+### `ismeta`(c)
 
 Checks for a non-ASCII character (ordinal values 0x80 and above).
 
@@ -628,21 +626,21 @@ Note that all these functions check ordinal bit values derived from the first ch
 
 The following two functions take either a single-character string or integer byte value; they return a value of the same type.
 
-### `ascii`(*c*)
+### `ascii`(c)
 
 Return the ASCII value corresponding to the low 7 bits of *c*.
 
-### `ctrl`(*c*)
+### `ctrl`(c)
 
 Return the control character corresponding to the given character (the character bit value is bitwise-anded with 0x1f).
 
-### `alt`(*c*)
+### `alt`(c)
 
 Return the 8-bit character corresponding to the given ASCII character (the character bit value is bitwise-ored with 0x80).
 
 The following function takes either a single-character string or integer value; it returns a string.
 
-### `unctrl`(*c*)
+### `unctrl`(c)
 
 Return a string representation of the ASCII character *c*. If *c* is printable, this string is the character itself. If the character is a control character (0x00-0x1f) the string consists of a caret (`^`) followed by the corresponding uppercase letter. If the character is an ASCII delete (0x7f) the string is `’^?’`. If the character has its meta bit (0x80) set, the meta bit is stripped, the preceding rules applied, and `!` prepended to the result.
 
@@ -665,12 +663,11 @@ The direct interface between the select loop and the socket object are the `hand
 
 The firing of these low-level events can tell us whether certain higher-level events have taken place, depending on the timing and the state of the connection. For example, if we have asked for a socket to connect to another host, we know that the connection has been made when the socket fires a write event (at this point you know that you may write to it with the expectation of success). The implied higher-level events are:
 
-|  |  |
-|:---|:---|
-| EventDescription handle_connect() | Implied by a write event |
-| handle_close() | Implied by a read event with no data available |
-| handle_accept() | Implied by a read event on a listening socket |
-|  |  |
+|                  |                                                |
+|:-----------------|:-----------------------------------------------|
+| handle_connect() | Implied by a write event                       |
+| handle_close()   | Implied by a read event with no data available |
+| handle_accept()  | Implied by a read event on a listening socket  |
 
 This set of user-level events is larger than the basics. The full set of methods that can be overridden in your subclass are:
 
@@ -712,19 +709,19 @@ Each time through the `select()` loop, the set of sockets is scanned, and this m
 
 In addition, there are the basic methods needed to construct and manipulate “channels,” which are what we will call the socket connections in this context. Note that most of these are nearly identical to their socket partners.
 
-### `create_socket`(*family, type*)
+### `create_socket`(family, type)
 
 This is identical to the creation of a normal socket, and will use the same options for creation. Refer to the `socket` documentation for information on creating sockets.
 
-### `connect`(*address*)
+### `connect`(address)
 
 As with the normal socket object, *address* is a tuple with the first element the host to connect to, and the second the port.
 
-### `send`(*data*)
+### `send`(data)
 
 Send *data* out the socket.
 
-### `recv`(*buffer_size*)
+### `recv`(buffer_size)
 
 Read at most *buffer_size* bytes from the socket.
 
@@ -732,7 +729,7 @@ Read at most *buffer_size* bytes from the socket.
 
 Listen for connections made to the socket. The *backlog* argument specifies the maximum number of queued connections and should be at least 1; the maximum value is system-dependent (usually 5).
 
-### `bind`(*address*)
+### `bind`(address)
 
 Bind the socket to *address*. The socket must not already be bound. (The format of *address* depends on the address family — see above.)
 
@@ -744,7 +741,7 @@ Accept a connection. The socket must be bound to an address and listening for co
 
 Close the socket. All future operations on the socket object will fail. The remote end will receive no more data (after queued data is flushed). Sockets are automatically closed when they are garbage-collected.
 
-## Example basic HTTP client <span id="asyncore-example" label="asyncore-example"></span>
+## Example basic HTTP client 
 
 As a basic example, below is a very basic HTTP client that uses the `dispatcher` class to implement its socket handling:
 
@@ -781,7 +778,7 @@ Note: the functions registered via this module are not called when the program i
 
 This is an alternate interface to the functionality provided by the `sys.exitfunc` variable. Note: This module is unlikely to work correctly when used with other code that sets `sys.exitfunc`. In particular, other core Python modules are free to use `atexit` without the programmer’s knowledge. Authors who use `sys.exitfunc` should convert their code to use `atexit` instead. The simplest way to convert code that sets `sys.exitfunc` is to import `atexit` and register the function that had been bound to `sys.exitfunc`.
 
-### `register`(*func*)
+### `register`(func)
 
 Register *func* as a function to be executed at termination. Any optional arguments that are to be passed to *func* must be passed as arguments to `register()`.
 
@@ -791,7 +788,7 @@ At normal program termination (for instance, if `sys.exit()` is called or the ma
 
 — readlineUseful example of `atexit` to read and write `readline` history files.
 
-## `atexit` Example <span id="atexit-example" label="atexit-example"></span>
+## `atexit` Example 
 
 The following simple example demonstrates how a module can initialize a counter from a file when it is imported and save the counter’s updated value automatically when the program terminates without relying on the application making an explicit call into this module at termination.
 
@@ -823,89 +820,89 @@ The module defines the following variables and functions:
 
 This exception is raised on all errors, such as unknown number of bytes per sample, etc.
 
-### `add`(*fragment1, fragment2, width*)
+### `add`(fragment1, fragment2, width)
 
 Return a fragment which is the addition of the two samples passed as parameters. *width* is the sample width in bytes, either `1`, `2` or `4`. Both fragments should have the same length.
 
-### `adpcm2lin`(*adpcmfragment, width, state*)
+### `adpcm2lin`(adpcmfragment, width, state)
 
 Decode an Intel/DVI ADPCM coded fragment to a linear fragment. See the description of `lin2adpcm()` for details on ADPCM coding. Return a tuple `(`*`sample`*`, `*`newstate`*`)` where the sample has the width specified in *width*.
 
-### `adpcm32lin`(*adpcmfragment, width, state*)
+### `adpcm32lin`(adpcmfragment, width, state)
 
 Decode an alternative 3-bit ADPCM code. See `lin2adpcm3()` for details.
 
-### `avg`(*fragment, width*)
+### `avg`(fragment, width)
 
 Return the average over all samples in the fragment.
 
-### `avgpp`(*fragment, width*)
+### `avgpp`(fragment, width)
 
 Return the average peak-peak value over all samples in the fragment. No filtering is done, so the usefulness of this routine is questionable.
 
-### `bias`(*fragment, width, bias*)
+### `bias`(fragment, width, bias)
 
 Return a fragment that is the original fragment with a bias added to each sample.
 
-### `cross`(*fragment, width*)
+### `cross`(fragment, width)
 
 Return the number of zero crossings in the fragment passed as an argument.
 
-### `findfactor`(*fragment, reference*)
+### `findfactor`(fragment, reference)
 
 Return a factor *F* such that `rms(add(`*`fragment`*`, mul(`*`reference`*`, -`*`F`*`)))` is minimal, i.e., return the factor with which you should multiply *reference* to make it match as well as possible to *fragment*. The fragments should both contain 2-byte samples.
 
 The time taken by this routine is proportional to `len(`*`fragment`*`)`.
 
-### `findfit`(*fragment, reference*)
+### `findfit`(fragment, reference)
 
 Try to match *reference* as well as possible to a portion of *fragment* (which should be the longer fragment). This is (conceptually) done by taking slices out of *fragment*, using `findfactor()` to compute the best match, and minimizing the result. The fragments should both contain 2-byte samples. Return a tuple `(`*`offset`*`, `*`factor`*`)` where *offset* is the (integer) offset into *fragment* where the optimal match started and *factor* is the (floating-point) factor as per `findfactor()`.
 
-### `findmax`(*fragment, length*)
+### `findmax`(fragment, length)
 
 Search *fragment* for a slice of length *length* samples (not bytes!) with maximum energy, i.e., return *i* for which `rms(fragment[i*2:(i+length)*2])` is maximal. The fragments should both contain 2-byte samples.
 
 The routine takes time proportional to `len(`*`fragment`*`)`.
 
-### `getsample`(*fragment, width, index*)
+### `getsample`(fragment, width, index)
 
 Return the value of sample *index* from the fragment.
 
-### `lin2lin`(*fragment, width, newwidth*)
+### `lin2lin`(fragment, width, newwidth)
 
 Convert samples between 1-, 2- and 4-byte formats.
 
-### `lin2adpcm`(*fragment, width, state*)
+### `lin2adpcm`(fragment, width, state)
 
 Convert samples to 4 bit Intel/DVI ADPCM encoding. ADPCM coding is an adaptive coding scheme, whereby each 4 bit number is the difference between one sample and the next, divided by a (varying) step. The Intel/DVI ADPCM algorithm has been selected for use by the IMA, so it may well become a standard.
 
 *state* is a tuple containing the state of the coder. The coder returns a tuple `(`*`adpcmfrag`*`, `*`newstate`*`)`, and the *newstate* should be passed to the next call of `lin2adpcm()`. In the initial call, `None` can be passed as the state. *adpcmfrag* is the ADPCM coded fragment packed 2 4-bit values per byte.
 
-### `lin2adpcm3`(*fragment, width, state*)
+### `lin2adpcm3`(fragment, width, state)
 
 This is an alternative ADPCM coder that uses only 3 bits per sample. It is not compatible with the Intel/DVI ADPCM coder and its output is not packed (due to laziness on the side of the author). Its use is discouraged.
 
-### `lin2ulaw`(*fragment, width*)
+### `lin2ulaw`(fragment, width)
 
 Convert samples in the audio fragment to u-LAW encoding and return this as a Python string. u-LAW is an audio encoding format whereby you get a dynamic range of about 14 bits using only 8 bit samples. It is used by the Sun audio hardware, among others.
 
-### `minmax`(*fragment, width*)
+### `minmax`(fragment, width)
 
 Return a tuple consisting of the minimum and maximum values of all samples in the sound fragment.
 
-### `max`(*fragment, width*)
+### `max`(fragment, width)
 
 Return the maximum of the *absolute value* of all samples in a fragment.
 
-### `maxpp`(*fragment, width*)
+### `maxpp`(fragment, width)
 
 Return the maximum peak-peak value in the sound fragment.
 
-### `mul`(*fragment, width, factor*)
+### `mul`(fragment, width, factor)
 
 Return a fragment that has all samples in the original fragment multiplied by the floating-point value *factor*. Overflow is silently ignored.
 
-### `ratecv`(*fragment, width, nchannels, inrate, outrate, state*)
+### `ratecv`(fragment, width, nchannels, inrate, outrate, state)
 
 Convert the frame rate of the input fragment.
 
@@ -913,11 +910,11 @@ Convert the frame rate of the input fragment.
 
 The *weightA* and *weightB* arguments are parameters for a simple digital filter and default to `1` and `0` respectively.
 
-### `reverse`(*fragment, width*)
+### `reverse`(fragment, width)
 
 Reverse the samples in a fragment and returns the modified fragment.
 
-### `rms`(*fragment, width*)
+### `rms`(fragment, width)
 
 Return the root-mean-square of the fragment, i.e.
 ``` math
@@ -925,15 +922,15 @@ Return the root-mean-square of the fragment, i.e.
 ```
 This is a measure of the power in an audio signal.
 
-### `tomono`(*fragment, width, lfactor, rfactor*)
+### `tomono`(fragment, width, lfactor, rfactor)
 
 Convert a stereo fragment to a mono fragment. The left channel is multiplied by *lfactor* and the right channel by *rfactor* before adding the two channels to give a mono signal.
 
-### `tostereo`(*fragment, width, lfactor, rfactor*)
+### `tostereo`(fragment, width, lfactor, rfactor)
 
 Generate a stereo fragment from a mono fragment. Each pair of samples in the stereo fragment are computed from the mono sample, whereby left channel samples are multiplied by *lfactor* and right channel samples by *rfactor*.
 
-### `ulaw2lin`(*fragment, width*)
+### `ulaw2lin`(fragment, width)
 
 Convert sound fragments in u-LAW encoding to linearly encoded sound fragments. u-LAW encoding always uses 8 bits samples, so *width* refers only to the sample width of the output fragment here.
 
@@ -972,19 +969,19 @@ The `find*()` routines might look a bit funny at first sight. They are primarily
 
 This module performs base64 encoding and decoding of arbitrary binary strings into text strings that can be safely emailed or posted. The encoding scheme is defined in RFC 1521 (*MIME (Multipurpose Internet Mail Extensions) Part One: Mechanisms for Specifying and Describing the Format of Internet Message Bodies*, section 5.2, “Base64 Content-Transfer-Encoding”) and is used for MIME email and various other Internet-related applications; it is not the same as the output produced by the program. For example, the string `’www.python.org’` is encoded as the string `’d3d3LnB5dGhvbi5vcmc=n’`.
 
-### `decode`(*input, output*)
+### `decode`(input, output)
 
 Decode the contents of the *input* file and write the resulting binary data to the *output* file. *input* and *output* must either be file objects or objects that mimic the file object interface. *input* will be read until *`input`*`.read()` returns an empty string.
 
-### `decodestring`(*s*)
+### `decodestring`(s)
 
 Decode the string *s*, which must contain one or more lines of base64 encoded data, and return a string containing the resulting binary data.
 
-### `encode`(*input, output*)
+### `encode`(input, output)
 
 Encode the contents of the *input* file and write the resulting base64 encoded data to the *output* file. *input* and *output* must either be file objects or objects that mimic the file object interface. *input* will be read until *`input`*`.read()` returns an empty string.
 
-### `encodestring`(*s*)
+### `encodestring`(s)
 
 Encode the string *s*, which can contain arbitrary binary data, and return a string containing one or more lines of base64 encoded data.
 
@@ -1005,11 +1002,11 @@ The first class, `HTTPServer`, is a `SocketServer.TCPServer` subclass. It create
         httpd = server_class(server_address, handler_class)
         httpd.serve_forever()
 
-### class `HTTPServer`(*server_address, RequestHandlerClass*)
+### class `HTTPServer`(server_address, RequestHandlerClass)
 
 This class builds on the `TCPServer` class by storing the server address as instance variables named `server_name` and `server_port`. The server is accessible by the handler, typically through the handler’s `server` instance variable.
 
-### class `BaseHTTPRequestHandler`(*request, client_address, server*)
+### class `BaseHTTPRequestHandler`(request, client_address, server)
 
 This class is used to handle the HTTP requests that arrive at the server. By itself, it cannot respond to any actual HTTP requests; it must be subclassed to handle each request method (e.g. GET or POST). `BaseHTTPRequestHandler` provides a number of class and instance variables, and methods for use by subclasses.
 
@@ -1049,7 +1046,7 @@ Contains the output stream for writing a response back to the client. Proper adh
 
 ### `server_version`
 
-Specifies the server software version. You may want to override this. The format is multiple whitespace-separated strings, where each string is of the form name\[/version\]. For example, `’BaseHTTP/0.2’`.
+Specifies the server software version. You may want to override this. The format is multiple whitespace-separated strings, where each string is of the form name[/version]. For example, `’BaseHTTP/0.2’`.
 
 ### `sys_version`
 
@@ -1077,15 +1074,15 @@ A `BaseHTTPRequestHandler` instance has the following methods:
 
 Overrides the superclass’ `handle()` method to provide the specific handler behavior. This method will parse and dispatch the request to the appropriate `do_*()` method.
 
-### `send_error`(*code*)
+### `send_error`(code)
 
 Sends and logs a complete error reply to the client. The numeric *code* specifies the HTTP error code, with *message* as optional, more specific text. A complete set of headers is sent, followed by text composed using the `error_message_format` class variable.
 
-### `send_response`(*code*)
+### `send_response`(code)
 
 Sends a response header and logs the accepted request. The HTTP response line is sent, followed by *Server* and *Date* headers. The values for these two headers are picked up from the `version_string()` and `date_time_string()` methods, respectively.
 
-### `send_header`(*keyword, value*)
+### `send_header`(keyword, value)
 
 Writes a specific MIME header to the output stream. *keyword* should specify the header keyword, with *value* specifying its value.
 
@@ -1097,11 +1094,11 @@ Sends a blank line, indicating the end of the MIME headers in the response.
 
 Logs an accepted (successful) request. *code* should specify the numeric HTTP code associated with the response. If a size of the response is available, then it should be passed as the *size* parameter.
 
-### `log_error`(*...*)
+### `log_error`(...)
 
 Logs an error when a request cannot be fulfilled. By default, it passes the message to `log_message()`, so it takes the same arguments (*format* and additional values).
 
-### `log_message`(*format, ...*)
+### `log_message`(format, ...)
 
 Logs an arbitrary message to `sys.stderr`. This is typically overridden to create custom error logging mechanisms. The *format* argument is a standard printf-style format string, where the additional arguments to `log_message()` are applied as inputs to the formatting. The client address and current date and time are prefixed to every message logged.
 
@@ -1130,7 +1127,7 @@ Returns the client address, formatted for logging. A name lookup is performed on
 
 *Providing restricted access to objects.* According to the dictionary, a bastion is “a fortified area or position”, or “something that is considered a stronghold.” It’s a suitable name for this module, which provides a way to forbid access to certain attributes of an object. It must always be used with the `rexec` module, in order to allow restricted-mode programs access to certain safe attributes of an object, while denying access to other, unsafe attributes.
 
-### `Bastion`(*object*)
+### `Bastion`(object)
 
 Protect the object *object*, returning a bastion for the object. Any attempt to access one of the object’s attributes will have to be approved by the *filter* function; if the access is denied an `AttributeError` exception will be raised.
 
@@ -1138,7 +1135,7 @@ If present, *filter* must be a function that accepts a string containing an attr
 
 *class*, if present, should be a subclass of `BastionClass`; see the code in `bastion.py` for the details. Overriding the default `BastionClass` will rarely be required.
 
-### class `BastionClass`(*getfunc, name*)
+### class `BastionClass`(getfunc, name)
 
 Class which actually implements bastion objects. This is the default class used by `Bastion()`. The *getfunc* parameter is a function which returns the value of an attribute which should be exposed to the restricted execution environment when called with the name of the attribute as the only parameter. *name* is used to construct the `repr()` of the `BastionClass` instance.
 # `binascii` — Convert between binary and ASCII
@@ -1149,43 +1146,43 @@ The `binascii` module contains a number of methods to convert between binary and
 
 The `binascii` module defines the following functions:
 
-### `a2b_uu`(*string*)
+### `a2b_uu`(string)
 
 Convert a single line of uuencoded data back to binary and return the binary data. Lines normally contain 45 (binary) bytes, except for the last line. Line data may be followed by whitespace.
 
-### `b2a_uu`(*data*)
+### `b2a_uu`(data)
 
 Convert binary data to a line of ASCII characters, the return value is the converted line, including a newline char. The length of *data* should be at most 45.
 
-### `a2b_base64`(*string*)
+### `a2b_base64`(string)
 
 Convert a block of base64 data back to binary and return the binary data. More than one line may be passed at a time.
 
-### `b2a_base64`(*data*)
+### `b2a_base64`(data)
 
 Convert binary data to a line of ASCII characters in base64 coding. The return value is the converted line, including a newline char. The length of *data* should be at most 57 to adhere to the base64 standard.
 
-### `a2b_hqx`(*string*)
+### `a2b_hqx`(string)
 
 Convert binhex4 formatted ASCII data to binary, without doing RLE-decompression. The string should contain a complete number of binary bytes, or (in case of the last portion of the binhex4 data) have the remaining bits zero.
 
-### `rledecode_hqx`(*data*)
+### `rledecode_hqx`(data)
 
 Perform RLE-decompression on the data, as per the binhex4 standard. The algorithm uses `0x90` after a byte as a repeat indicator, followed by a count. A count of `0` specifies a byte value of `0x90`. The routine returns the decompressed data, unless data input data ends in an orphaned repeat indicator, in which case the `Incomplete` exception is raised.
 
-### `rlecode_hqx`(*data*)
+### `rlecode_hqx`(data)
 
 Perform binhex4 style RLE-compression on *data* and return the result.
 
-### `b2a_hqx`(*data*)
+### `b2a_hqx`(data)
 
 Perform hexbin4 binary-to-ASCII translation and return the resulting string. The argument should already be RLE-coded, and have a length divisible by 3 (except possibly the last fragment).
 
-### `crc_hqx`(*data, crc*)
+### `crc_hqx`(data, crc)
 
 Compute the binhex4 crc value of *data*, starting with an initial *crc* and returning the result.
 
-### `crc32`(*data*)
+### `crc32`(data)
 
 Compute CRC-32, the 32-bit checksum of data, starting with an initial crc. This is consistent with the ZIP file checksum. Use as follows:
 
@@ -1195,11 +1192,11 @@ Compute CRC-32, the 32-bit checksum of data, starting with an initial crc. This 
         crc = binascii.crc32(" world", crc)
         print crc
 
-### `b2a_hex`(*data*)
+### `b2a_hex`(data)
 
 Return the hexadecimal representation of the binary *data*. Every byte of *data* is converted into the corresponding 2-digit hex representation. The resulting string is therefore twice as long as the length of *data*.
 
-### `a2b_hex`(*hexstr*)
+### `a2b_hex`(hexstr)
 
 Return the binary data represented by the hexadecimal string *hexstr*. This function is the inverse of `b2a_hex()`. *hexstr* must contain an even number of hexadecimal digits (which can be upper or lower case), otherwise a `TypeError` is raised.
 
@@ -1226,11 +1223,11 @@ This module encodes and decodes files in binhex4 format, a format allowing repre
 
 The `binhex` module defines the following functions:
 
-### `binhex`(*input, output*)
+### `binhex`(input, output)
 
 Convert a binary file with filename *input* to binhex file *output*. The *output* parameter can either be a filename or a file-like object (any object supporting a `write()` and `close()` method).
 
-### `hexbin`(*input*)
+### `hexbin`(input)
 
 Decode a binhex file *input*. *input* may be a filename or a file-like object supporting `read()` and `close()` methods. The resulting file is written to a file named *output*, unless the argument is omitted in which case the output filename is read from the binhex file.
 
@@ -1238,7 +1235,7 @@ Decode a binhex file *input*. *input* may be a filename or a file-like object su
 
 — binasciisupport module containing ASCII-to-binary and binary-to-ASCII conversions
 
-## Notes <span id="binhex-notes" label="binhex-notes"></span>
+## Notes 
 
 There is an alternative, more powerful interface to the coder and decoder, see the source for details.
 
@@ -1251,11 +1248,11 @@ As of this writing, `hexbin()` appears to not work in all cases.
 
 The following functions are provided:
 
-### `bisect`(*list, item*)
+### `bisect`(list, item)
 
 Locate the proper insertion point for *item* in *list* to maintain sorted order. The parameters *lo* and *hi* may be used to specify a subset of the list which should be considered. The return value is suitable for use as the first parameter to *`list`*`.insert()`.
 
-### `insort`(*list, item*)
+### `insort`(list, item)
 
 Insert *item* in *list* in sorted order. This is equivalent to *`list`*`.insert(bisect.bisect(`*`list`*`, `*`item`*`, `*`lo`*`, `*`hi`*`), `*`item`*`)`.
 
@@ -1286,15 +1283,15 @@ There are two incompatible versions of the underlying library. Version 1.85 is w
 
 The `bsddb` module defines the following functions that create objects that access the appropriate type of Berkeley DB file. The first two arguments of each function are the same. For ease of portability, only the first two arguments should be used in most instances.
 
-### `hashopen`(*filename*)
+### `hashopen`(filename)
 
 Open the hash format file named *filename*. The optional *flag* identifies the mode used to open the file. It may be `r` (read only), `w` (read-write), `c` (read-write - create if necessary) or `n` (read-write - truncate to zero length). The other arguments are rarely used and are just passed to the low-level function. Consult the Berkeley DB documentation for their use and interpretation.
 
-### `btopen`(*filename*)
+### `btopen`(filename)
 
 Open the btree format file named *filename*. The optional *flag* identifies the mode used to open the file. It may be `r` (read only), `w` (read-write), `c` (read-write - create if necessary) or `n` (read-write - truncate to zero length). The other arguments are rarely used and are just passed to the low-level dbopen function. Consult the Berkeley DB documentation for their use and interpretation.
 
-### `rnopen`(*filename*)
+### `rnopen`(filename)
 
 Open a DB record format file named *filename*. The optional *flag* identifies the mode used to open the file. It may be `r` (read only), `w` (read-write), `c` (read-write - create if necessary) or `n` (read-write - truncate to zero length). The other arguments are rarely used and are just passed to the low-level dbopen function. Consult the Berkeley DB documentation for their use and interpretation.
 
@@ -1302,7 +1299,7 @@ Open a DB record format file named *filename*. The optional *flag* identifies th
 
 — dbhashDBM-style interface to the `bsddb`
 
-## Hash, BTree and Record Objects <span id="bsddb-objects" label="bsddb-objects"></span>
+## Hash, BTree and Record Objects 
 
 Once instantiated, hash, btree and record objects support the following methods:
 
@@ -1314,11 +1311,11 @@ Close the underlying file. The object can no longer be accessed. Since there is 
 
 Return the list of keys contained in the DB file. The order of the list is unspecified and should not be relied on. In particular, the order of the list returned is different for different file formats.
 
-### `has_key`(*key*)
+### `has_key`(key)
 
 Return `1` if the DB file contains the argument as a key.
 
-### `set_location`(*key*)
+### `set_location`(key)
 
 Set the cursor to the item indicated by the key and return it.
 
@@ -1368,7 +1365,7 @@ Example:
 
 *General functions for working with the calendar, including some emulation of the Unix program.* This module allows you to output calendars like the Unix program, and provides additional useful functions related to the calendar. By default, these calendars have Monday as the first day of the week, and Sunday as the last (the European convention). Use `setfirstweekday()` to set the first day of the week to Sunday (6) or to any other weekday.
 
-### `setfirstweekday`(*weekday*)
+### `setfirstweekday`(weekday)
 
 Sets the weekday (`0` is Monday, `6` is Sunday) to start each week. The values , , , , , , and are provided for convenience. For example, to set the first weekday to Sunday:
 
@@ -1379,43 +1376,43 @@ Sets the weekday (`0` is Monday, `6` is Sunday) to start each week. The values ,
 
 Returns the current setting for the weekday to start each week.
 
-### `isleap`(*year*)
+### `isleap`(year)
 
 Returns true if *year* is a leap year.
 
-### `leapdays`(*y1, y2*)
+### `leapdays`(y1, y2)
 
-Returns the number of leap years in the range \[*y1*…*y2*\].
+Returns the number of leap years in the range [*y1*…*y2*].
 
-### `weekday`(*year, month, day*)
+### `weekday`(year, month, day)
 
 Returns the day of the week (`0` is Monday) for *year* (`1970`–…), *month* (`1`–`12`), *day* (`1`–`31`).
 
-### `monthrange`(*year, month*)
+### `monthrange`(year, month)
 
 Returns weekday of first day of the month and number of days in month, for the specified *year* and *month*.
 
-### `monthcalendar`(*year, month*)
+### `monthcalendar`(year, month)
 
 Returns a matrix representing a month’s calendar. Each row represents a week; days outside of the month a represented by zeros. Each week begins with Monday unless set by `setfirstweekday()`.
 
-### `prmonth`(*theyear, themonth*)
+### `prmonth`(theyear, themonth)
 
 Prints a month’s calendar as returned by `month()`.
 
-### `month`(*theyear, themonth*)
+### `month`(theyear, themonth)
 
 Returns a month’s calendar in a multi-line string. If *w* is provided, it specifies the width of the date columns, which are centered. If *l* is given, it specifies the number of lines that each week will use. Depends on the first weekday as set by `setfirstweekday()`.
 
-### `prcal`(*year*)
+### `prcal`(year)
 
 Prints the calendar for an entire year as returned by `calendar()`.
 
-### `calendar`(*year*)
+### `calendar`(year)
 
 Returns a 3-column calendar for an entire year as a multi-line string. Optional parameters *w*, *l*, and *c* are for date column width, lines per week, and number of spaces between month columns, respectively. Depends on the first weekday as set by `setfirstweekday()`.
 
-### `timegm`(*tuple*)
+### `timegm`(tuple)
 
 An unrelated but handy function that takes a time tuple such as returned by the `gmtime()` function in the `time` module, and returns the corresponding Unix timestamp value, assuming an epoch of 1970, and the POSIX encoding. In fact, `time.gmtime()` and `timegm()` are each others’ inverse.
 
@@ -1440,7 +1437,7 @@ Module `cd` defines the following functions and constants:
 
 Create and return an opaque parser object. The methods of the parser object are described below.
 
-### `msftoframe`(*minutes, seconds, frames*)
+### `msftoframe`(minutes, seconds, frames)
 
 Converts a `(`*`minutes`*`, `*`seconds`*`, `*`frames`*`)` triple representing time in absolute time code into the corresponding CD frame number.
 
@@ -1520,27 +1517,27 @@ Ejects the caddy from the CD-ROM drive.
 
 Returns information pertaining to the current state of the CD-ROM drive. The returned information is a tuple with the following values: *state*, *track*, *rtime*, *atime*, *ttime*, *first*, *last*, *scsi_audio*, *cur_block*. *rtime* is the time relative to the start of the current track; *atime* is the time relative to the beginning of the disc; *ttime* is the total time on the disc. For more information on the meaning of the values, see the man page . The value of *state* is one of the following: , , , , , , or .
 
-### `gettrackinfo`(*track*)
+### `gettrackinfo`(track)
 
 Returns information about the specified track. The returned information is a tuple consisting of two elements, the start time of the track and the duration of the track.
 
-### `msftoblock`(*min, sec, frame*)
+### `msftoblock`(min, sec, frame)
 
 Converts a minutes, seconds, frames triple representing a time in absolute time code into the corresponding logical block number for the given CD-ROM drive. You should use `msftoframe()` rather than `msftoblock()` for comparing times. The logical block number differs from the frame number by an offset required by certain CD-ROM drives.
 
-### `play`(*start, play*)
+### `play`(start, play)
 
 Starts playback of an audio CD in the CD-ROM drive at the specified track. The audio output appears on the CD-ROM drive’s headphone and audio jacks (if fitted). Play stops at the end of the disc. *start* is the number of the track at which to start playing the CD; if *play* is 0, the CD will be set to an initial paused state. The method `togglepause()` can then be used to commence play.
 
-### `playabs`(*minutes, seconds, frames, play*)
+### `playabs`(minutes, seconds, frames, play)
 
 Like `play()`, except that the start is given in minutes, seconds, and frames instead of a track number.
 
-### `playtrack`(*start, play*)
+### `playtrack`(start, play)
 
 Like `play()`, except that playing stops at the end of the track.
 
-### `playtrackabs`(*track, minutes, seconds, frames, play*)
+### `playtrackabs`(track, minutes, seconds, frames, play)
 
 Like `play()`, except that playing begins at the specified absolute time and ends at the end of the specified track.
 
@@ -1548,19 +1545,19 @@ Like `play()`, except that playing begins at the specified absolute time and end
 
 Locks the eject button on the CD-ROM drive thus preventing the user from arbitrarily ejecting the caddy.
 
-### `readda`(*num_frames*)
+### `readda`(num_frames)
 
 Reads the specified number of frames from an audio CD mounted in the CD-ROM drive. The return value is a string representing the audio frames. This string can be passed unaltered to the `parseframe()` method of the parser object.
 
-### `seek`(*minutes, seconds, frames*)
+### `seek`(minutes, seconds, frames)
 
 Sets the pointer that indicates the starting point of the next read of digital audio data from a CD-ROM. The pointer is set to an absolute time code location specified in *minutes*, *seconds*, and *frames*. The return value is the logical block number to which the pointer has been set.
 
-### `seekblock`(*block*)
+### `seekblock`(block)
 
 Sets the pointer that indicates the starting point of the next read of digital audio data from a CD-ROM. The pointer is set to the specified logical block number. The return value is the logical block number to which the pointer has been set.
 
-### `seektrack`(*track*)
+### `seektrack`(track)
 
 Sets the pointer that indicates the starting point of the next read of digital audio data from a CD-ROM. The pointer is set to the specified track. The return value is the logical block number to which the pointer has been set.
 
@@ -1576,25 +1573,30 @@ Pauses the CD if it is playing, and makes it play if it is paused.
 
 Parser objects (returned by `createparser()`) have the following methods:
 
-### `addcallback`(*type, func, arg*)
+### `addcallback`(type, func, arg)
 
 Adds a callback for the parser. The parser has callbacks for eight different types of data in the digital audio data stream. Constants for these types are defined at the `cd` module level (see above). The callback is called as follows: *`func`*`(`*`arg`*`, type, data)`, where *arg* is the user supplied argument, *type* is the particular type of callback, and *data* is the data returned for this *type* of callback. The type of the data depends on the *type* of callback as follows:
 
-<div class="tableii">
-
-l\|p4incodeTypeValue
-
-</div>
+|  |  |
+|:---|:---|
+| audio | String which can be passed unmodified to |
+| . | Integer giving the program (track) number. |
+| index | Integer giving the index number. |
+| ptime | Tuple consisting of the program time in minutes, seconds, and frames. |
+| atime | Tuple consisting of the absolute time in minutes, seconds, and frames. |
+| catalog | String of 13 characters, giving the catalog number of the CD. |
+| ident | String of 12 characters, giving the ISRC identification number of the recording. The string consists of two characters country code, three characters owner code, two characters giving the year, and five characters giving a serial number. |
+| control | Integer giving the control bits from the CD subcode data |
 
 ### `deleteparser`()
 
 Deletes the parser and frees the memory it was using. The object should not be used after this call. This call is done automatically when the last reference to the object is removed.
 
-### `parseframe`(*frame*)
+### `parseframe`(frame)
 
 Parses one or more frames of digital audio data from a CD such as returned by `readda()`. It determines which subcodes are present in the data. If these subcodes have changed since the last frame, then `parseframe()` executes a callback of the appropriate type passing to it the subcode data found in the frame. Unlike the C function, more than one frame of digital audio data can be passed to this method.
 
-### `removecallback`(*type*)
+### `removecallback`(type)
 
 Removes the callback for the given *type*.
 
@@ -1618,7 +1620,7 @@ Default values can be specified by passing them into the `ConfigParser` construc
 
 ### class `ConfigParser`()
 
-Return a new instance of the `ConfigParser` class. When *defaults* is given, it is initialized into the dictionary of intrinsic defaults. They keys must be strings, and the values must be appropriate for the `%()s` string interpolation. Note that *\_\_name\_\_* is always an intrinsic default; its value is the section name.
+Return a new instance of the `ConfigParser` class. When *defaults* is given, it is initialized into the dictionary of intrinsic defaults. They keys must be strings, and the values must be appropriate for the `%()s` string interpolation. Note that *__name__* is always an intrinsic default; its value is the section name.
 
 ### exception `NoSectionError`
 
@@ -1648,7 +1650,7 @@ Exception raised when errors occur attempting to parse a file.
 
 — shlexSupport for a creating Unix shell-like minilanguages which can be used as an alternate format for application configuration files.
 
-## ConfigParser Objects <span id="ConfigParser-objects" label="ConfigParser-objects"></span>
+## ConfigParser Objects 
 
 `ConfigParser` instances have the following methods:
 
@@ -1660,59 +1662,59 @@ Return a dictionary containing the instance-wide defaults.
 
 Return a list of the sections available; `DEFAULT` is not included in the list.
 
-### `add_section`(*section*)
+### `add_section`(section)
 
 Add a section named *section* to the instance. If a section by the given name already exists, `DuplicateSectionError` is raised.
 
-### `has_section`(*section*)
+### `has_section`(section)
 
 Indicates whether the named section is present in the configuration. The `DEFAULT` section is not acknowledged.
 
-### `options`(*section*)
+### `options`(section)
 
 Returns a list of options available in the specified *section*.
 
-### `has_option`(*section, option*)
+### `has_option`(section, option)
 
 If the given section exists, and contains the given option. return 1; otherwise return 0. (New in 1.6)
 
-### `read`(*filenames*)
+### `read`(filenames)
 
 Read and parse a list of filenames. If *filenames* is a string or Unicode string, it is treated as a single filename.
 
-### `readfp`(*fp*)
+### `readfp`(fp)
 
 Read and parse configuration data from the file or file-like object in *fp* (only the `readline()` method is used). If *filename* is omitted and *fp* has a `name` attribute, that is used for *filename*; the default is `<???>`.
 
-### `get`(*section, option*)
+### `get`(section, option)
 
 Get an *option* value for the provided *section*. All the `%` interpolations are expanded in the return values, based on the defaults passed into the constructor, as well as the options *vars* provided, unless the *raw* argument is true.
 
-### `getint`(*section, option*)
+### `getint`(section, option)
 
 A convenience method which coerces the *option* in the specified *section* to an integer.
 
-### `getfloat`(*section, option*)
+### `getfloat`(section, option)
 
 A convenience method which coerces the *option* in the specified *section* to a floating point number.
 
-### `getboolean`(*section, option*)
+### `getboolean`(section, option)
 
 A convenience method which coerces the *option* in the specified *section* to a boolean value. Note that the only accepted values for the option are `0` and `1`, any others will raise `ValueError`.
 
-### `set`(*section, option, value*)
+### `set`(section, option, value)
 
 If the given section exists, set the given option to the specified value; otherwise raise `NoSectionError`. (New in 1.6)
 
-### `write`(*fileobject*)
+### `write`(fileobject)
 
 Write a representation of the configuration to the specified file object. This representation can be parsed by a future `read()` call. (New in 1.6)
 
-### `remove_option`(*section, option*)
+### `remove_option`(section, option)
 
 Remove the specified *option* from the specified *section*. If the section does not exist, raise `NoSectionError`. If the option existed to be removed, return 1; otherwise return 0. (New in 1.6)
 
-### `remove_section`(*section*)
+### `remove_section`(section)
 
 Remove the specified *section* from the configuration. If the section in fact existed, return 1. Otherwise return 0.
 # `cgi` — Common Gateway Interface support.
@@ -1803,11 +1805,11 @@ Other classes (`FormContent`, `InterpFormContentDict`) are present for backwards
 
 These are useful if you want more control, or if you want to employ some of the algorithms implemented in this module in other circumstances.
 
-### `parse`(*fp*)
+### `parse`(fp)
 
 Parse a query in the environment or from a file (default `sys.stdin`).
 
-### `parse_qs`(*qs*)
+### `parse_qs`(qs)
 
 Parse a query string given as a string argument (data of type ). Data are returned as a dictionary. The dictionary keys are the unique query variable names and the values are lists of values for each name.
 
@@ -1815,7 +1817,7 @@ The optional argument *keep_blank_values* is a flag indicating whether blank val
 
 The optional argument *strict_parsing* is a flag indicating what to do with parsing errors. If false (the default), errors are silently ignored. If true, errors raise a ValueError exception.
 
-### `parse_qsl`(*qs*)
+### `parse_qsl`(qs)
 
 Parse a query string given as a string argument (data of type ). Data are returned as a list of name, value pairs.
 
@@ -1823,7 +1825,7 @@ The optional argument *keep_blank_values* is a flag indicating whether blank val
 
 The optional argument *strict_parsing* is a flag indicating what to do with parsing errors. If false (the default), errors are silently ignored. If true, errors raise a ValueError exception.
 
-### `parse_multipart`(*fp, pdict*)
+### `parse_multipart`(fp, pdict)
 
 Parse input of type (for file uploads). Arguments are *fp* for the input file and *pdict* for a dictionary containing other parameters in the `Content-Type` header.
 
@@ -1831,7 +1833,7 @@ Returns a dictionary just like `parse_qs()` keys are the field names, each value
 
 Note that this does not parse nested multipart parts — use `FieldStorage` for that.
 
-### `parse_header`(*string*)
+### `parse_header`(string)
 
 Parse a MIME header (such as `Content-Type`) into a main value and a dictionary of parameters.
 
@@ -1843,7 +1845,7 @@ Robust test CGI script, usable as main program. Writes minimal HTTP headers and 
 
 Format the shell environment in HTML.
 
-### `print_form`(*form*)
+### `print_form`(form)
 
 Format a form in HTML.
 
@@ -1855,7 +1857,7 @@ Format the current directory in HTML.
 
 Print a list of useful (used by CGI) environment variables in HTML.
 
-### `escape`(*s*)
+### `escape`(s)
 
 Convert the characters `&`, `<` and `>` in string *s* to HTML-safe sequences. Use this if you need to display text that might contain such characters in HTML. If the optional flag *quote* is true, the double quote character (`"`) is also translated; this helps for inclusion in an HTML attribute value, e.g. in `<A HREF="...">`.
 
@@ -1973,7 +1975,7 @@ The `CGIHTTPServer` module defines a request-handler class, interface compatible
 
 The `CGIHTTPServer` module defines the following class:
 
-### class `CGIHTTPRequestHandler`(*request, client_address, server*)
+### class `CGIHTTPRequestHandler`(request, client_address, server)
 
 This class is used to serve either files or output of CGI scripts from the current directory and below. Note that mapping HTTP hierarchic structure to local directory structure is exactly as in `SimpleHTTPServer.SimpleHTTPRequestHandler`.
 
@@ -2006,13 +2008,13 @@ For example usage, see the implementation of the `test()` function.
 
 A chunk has the following structure:
 
-|  |  |  |
-|:---|:---|:---|
-| OffsetLengthContents 0 | 4 | Chunk ID |
-| 4 | 4 | Size of chunk in big-endian byte order, not including the header |
-| 8 |  |  |
-|  |  |  |
-|  |  |  |
+|     |     |                                                                  |
+|:----|:----|:-----------------------------------------------------------------|
+| 0   | 4   | Chunk ID                                                         |
+| 4   | 4   | Size of chunk in big-endian byte order, not including the header |
+| 8   |     |                                                                  |
+|     |     |                                                                  |
+|     |     |                                                                  |
 
 The ID is a 4-byte string which identifies the type of chunk.
 
@@ -2020,7 +2022,7 @@ The size field (a 32-bit value, encoded using big-endian byte order) gives the s
 
 Usually an IFF-type file consists of one or more chunks. The proposed usage of the `Chunk` class defined here is to instantiate an instance at the start of each chunk and read from the instance until it reaches the end, after which a new instance can be instantiated. At the end of the file, creating a new instance will fail with a `EOFError` exception.
 
-### class `Chunk`(*file*)
+### class `Chunk`(file)
 
 Class which represents a chunk. The *file* argument is expected to be a file-like object. An instance of this class is specifically allowed. The only method that is needed is `read()`. If the methods `seek()` and `tell()` are present and don’t raise an exception, they are also used. If these methods are present and raise an exception, they are expected to not have altered the object. If the optional argument *align* is true, chunks are assumed to be aligned on 2-byte boundaries. If *align* is false, no alignment is assumed. The default value is true. If the optional argument *bigendian* is false, the chunk size is assumed to be in little-endian order. This is needed for WAVE audio files. The default value is true. If the optional argument *inclheader* is true, the size given in the chunk header includes the size of the header. The default value is false.
 
@@ -2044,7 +2046,7 @@ The remaining methods will raise `IOError` if called after the `close()` method 
 
 Returns `0`.
 
-### `seek`(*pos*)
+### `seek`(pos)
 
 Set the chunk’s current position. The *whence* argument is optional and defaults to `0` (absolute file positioning); other values are `1` (seek relative to the current position) and `2` (seek relative to the file’s end). There is no return value. If the underlying file does not allow seek, only forward seeks are allowed.
 
@@ -2067,67 +2069,67 @@ Skip to the end of the chunk. All further calls to `read()` for the chunk will r
 
 This module is always available. It provides access to mathematical functions for complex numbers. The functions are:
 
-### `acos`(*x*)
+### `acos`(x)
 
 Return the arc cosine of *x*.
 
-### `acosh`(*x*)
+### `acosh`(x)
 
 Return the hyperbolic arc cosine of *x*.
 
-### `asin`(*x*)
+### `asin`(x)
 
 Return the arc sine of *x*.
 
-### `asinh`(*x*)
+### `asinh`(x)
 
 Return the hyperbolic arc sine of *x*.
 
-### `atan`(*x*)
+### `atan`(x)
 
 Return the arc tangent of *x*.
 
-### `atanh`(*x*)
+### `atanh`(x)
 
 Return the hyperbolic arc tangent of *x*.
 
-### `cos`(*x*)
+### `cos`(x)
 
 Return the cosine of *x*.
 
-### `cosh`(*x*)
+### `cosh`(x)
 
 Return the hyperbolic cosine of *x*.
 
-### `exp`(*x*)
+### `exp`(x)
 
 Return the exponential value `e**`*`x`*.
 
-### `log`(*x*)
+### `log`(x)
 
 Return the natural logarithm of *x*.
 
-### `log10`(*x*)
+### `log10`(x)
 
 Return the base-10 logarithm of *x*.
 
-### `sin`(*x*)
+### `sin`(x)
 
 Return the sine of *x*.
 
-### `sinh`(*x*)
+### `sinh`(x)
 
 Return the hyperbolic sine of *x*.
 
-### `sqrt`(*x*)
+### `sqrt`(x)
 
 Return the square root of *x*.
 
-### `tan`(*x*)
+### `tan`(x)
 
 Return the tangent of *x*.
 
-### `tanh`(*x*)
+### `tanh`(x)
 
 Return the hyperbolic tangent of *x*.
 
@@ -2170,7 +2172,7 @@ An interpreter instance will recognize a command name `foo` if and only if it ha
 
 All subclasses of `Cmd` inherit a predefined `do_help`. This method, called with an argument `bar`, invokes the corresponding method `help_bar()`. With no argument, `do_help()` lists all available help topics (that is, all commands with corresponding `help_*()` methods), and also lists any undocumented commands.
 
-### `onecmd`(*str*)
+### `onecmd`(str)
 
 Interpret the argument as though it had been typed in in response to the prompt.
 
@@ -2178,7 +2180,7 @@ Interpret the argument as though it had been typed in in response to the prompt.
 
 Method called when an empty line is entered in response to the prompt. If this method is not overridden, it repeats the last nonempty command entered.
 
-### `default`(*line*)
+### `default`(line)
 
 Method called on an input line when the command prefix is not recognized. If this method is not overridden, it prints an error message and returns.
 
@@ -2241,7 +2243,7 @@ The `cmp` module defines a function to compare files, taking all sort of short-c
 
 The `cmp` module defines the following function:
 
-### `cmp`(*f1, f2*)
+### `cmp`(f1, f2)
 
 Compare two files given as names. The following tricks are used to optimize the comparisons:
 
@@ -2287,7 +2289,7 @@ Closely emulate the behavior of the interactive Python interpreter. This class b
 
 Convenience function to run a read-eval-print loop. This creates a new instance of `InteractiveConsole` and sets *readfunc* to be used as the `raw_input()` method, if provided. If *local* is provided, it is passed to the `InteractiveConsole` constructor for use as the default namespace for the interpreter loop. The `interact()` method of the instance is then run with *banner* passed as the banner to use, if provided. The console object is discarded after use.
 
-### `compile_command`(*source*)
+### `compile_command`(source)
 
 This function is useful for programs that want to emulate Python’s interpreter main loop (a.k.a. the read-eval-print loop). The tricky part is to determine when the user has entered an incomplete command that can be completed by entering more text (as opposed to a complete command or a syntax error). This function *almost* always makes the same decision as the real interpreter main loop.
 
@@ -2295,9 +2297,9 @@ This function is useful for programs that want to emulate Python’s interpreter
 
 Returns a code object (the same as `compile(`*`source`*`, `*`filename`*`, `*`symbol`*`)`) if the command is complete and valid; `None` if the command is incomplete; raises `SyntaxError` if the command is complete and contains a syntax error, or raises `OverflowError` if the command includes a numeric constant which exceeds the range of the appropriate numeric type.
 
-## Interactive Interpreter Objects <span id="interpreter-objects" label="interpreter-objects"></span>
+## Interactive Interpreter Objects 
 
-### `runsource`(*source*)
+### `runsource`(source)
 
 Compile and run some source in the interpreter. Arguments are the same as for `compile_command()`; the default for *filename* is `’<input>’`, and for *symbol* is `’single’`. One several things can happen:
 
@@ -2309,7 +2311,7 @@ Compile and run some source in the interpreter. Arguments are the same as for `c
 
 The return value can be used to decide whether to use `sys.ps1` or `sys.ps2` to prompt the next line.
 
-### `runcode`(*code*)
+### `runcode`(code)
 
 Execute a code object. When an exception occurs, `showtraceback()` is called to display a traceback. All exceptions are caught except `SystemExit`, which is allowed to propagate.
 
@@ -2323,11 +2325,11 @@ Display the syntax error that just occurred. This does not display a stack trace
 
 Display the exception that just occurred. We remove the first stack item because it is within the interpreter object implementation. The output is written by the `write()` method.
 
-### `write`(*data*)
+### `write`(data)
 
 Write a string to the standard error stream (`sys.stderr`). Derived classes should override this to provide the appropriate output handling as needed.
 
-## Interactive Console Objects <span id="console-objects" label="console-objects"></span>
+## Interactive Console Objects 
 
 The `InteractiveConsole` class is a subclass of `InteractiveInterpreter`, and so offers all the methods of the interpreter objects as well as the following additions.
 
@@ -2335,7 +2337,7 @@ The `InteractiveConsole` class is a subclass of `InteractiveInterpreter`, and so
 
 Closely emulate the interactive Python console. The optional banner argument specify the banner to print before the first interaction; by default it prints a banner similar to the one printed by the standard Python interpreter, followed by the class name of the console object in parentheses (so as not to confuse this with the real interpreter – since it’s so close!).
 
-### `push`(*line*)
+### `push`(line)
 
 Push a line of source text to the interpreter. The line should not have a trailing newline; it may have internal newlines. The line is appended to a buffer and the interpreter’s `runsource()` method is called with the concatenated contents of the buffer as source. If this indicates that the command was executed or invalid, the buffer is reset; otherwise, the command is incomplete, and the buffer is left as it was after the line was appended. The return value is `1` if more input is required, `0` if the line was dealt with in some way (this is the same as `runsource()`).
 
@@ -2352,7 +2354,7 @@ Write a prompt and read a line. The returned line does not include the trailing 
 
 It defines the following functions:
 
-### `register`(*search_function*)
+### `register`(search_function)
 
 Register a codec search function. Search functions are expected to take one argument, the encoding name in all lower case letters, and return a tuple of functions `(`*`encoder`*`, `*`decoder`*`, `*`stream_reader`*`, `*`stream_writer`*`)` taking the following arguments:
 
@@ -2368,7 +2370,7 @@ Possible values for errors are `’strict’` (raise an exception in case of an 
 
 In case a search function cannot find a given encoding, it should return `None`.
 
-### `lookup`(*encoding*)
+### `lookup`(encoding)
 
 Looks up a codec tuple in the Python codec registry and returns the function tuple as defined above.
 
@@ -2376,7 +2378,7 @@ Encodings are first looked up in the registry’s cache. If not found, the list 
 
 To simplify working with encoded files or stream, the module also defines these utility functions:
 
-### `open`(*filename, mode*)
+### `open`(filename, mode)
 
 Open an encoded file using the given *mode* and return a wrapped version providing transparent encoding/decoding.
 
@@ -2388,7 +2390,7 @@ Open an encoded file using the given *mode* and return a wrapped version providi
 
 *buffering* has the same meaning as for the built-in `open()` function. It defaults to line buffered.
 
-### `EncodedFile`(*file, input*)
+### `EncodedFile`(file, input)
 
 Return a wrapped version of file which provides transparent encoding translation.
 
@@ -2413,7 +2415,7 @@ The `codeop` module provides a function to compile Python code with hints on whe
 
 The `codeop` module defines the following function:
 
-### `compile_command`(*source*)
+### `compile_command`(source)
 
 Tries to compile *source*, which should be a string of Python code and return a code object if *source* is valid Python code. In that case, the filename attribute of the code object will be *filename*, which defaults to `’<input>’`. Returns `None` if *source* is *not* valid Python code, but is a prefix of valid Python code.
 
@@ -2430,27 +2432,27 @@ More information about color spaces can be found at `http://www.inforamp.net/%7e
 
 The `colorsys` module defines the following functions:
 
-### `rgb_to_yiq`(*r, g, b*)
+### `rgb_to_yiq`(r, g, b)
 
 Convert the color from RGB coordinates to YIQ coordinates.
 
-### `yiq_to_rgb`(*y, i, q*)
+### `yiq_to_rgb`(y, i, q)
 
 Convert the color from YIQ coordinates to RGB coordinates.
 
-### `rgb_to_hls`(*r, g, b*)
+### `rgb_to_hls`(r, g, b)
 
 Convert the color from RGB coordinates to HLS coordinates.
 
-### `hls_to_rgb`(*h, l, s*)
+### `hls_to_rgb`(h, l, s)
 
 Convert the color from HLS coordinates to RGB coordinates.
 
-### `rgb_to_hsv`(*r, g, b*)
+### `rgb_to_hsv`(r, g, b)
 
 Convert the color from RGB coordinates to HSV coordinates.
 
-### `hsv_to_rgb`(*h, s, v*)
+### `hsv_to_rgb`(h, s, v)
 
 Convert the color from HSV coordinates to RGB coordinates.
 
@@ -2467,15 +2469,15 @@ Example:
 
 The `commands` module defines the following functions:
 
-### `getstatusoutput`(*cmd*)
+### `getstatusoutput`(cmd)
 
 Execute the string *cmd* in a shell with `os.popen()` and return a 2-tuple `(`*`status`*`, `*`output`*`)`. *cmd* is actually run as `{ `*`cmd`*` ; } 2>&1`, so that the returned output will contain output or error messages. A trailing newline is stripped from the output. The exit status for the command can be interpreted according to the rules for the C function .
 
-### `getoutput`(*cmd*)
+### `getoutput`(cmd)
 
 Like `getstatusoutput()`, except the exit status is ignored and the return value is a string containing the command’s output.
 
-### `getstatus`(*file*)
+### `getstatus`(file)
 
 Return the output of `ls -ld `*`file`* as a string. This function uses the `getoutput()` function, and properly escapes backslashes and dollar signs in the argument.
 
@@ -2500,7 +2502,7 @@ This module provides some utility functions to support installing Python librari
 
 The source file for this module may also be used as a script to compile Python sources in directories named on the command line or in `sys.path`.
 
-### `compile_dir`(*dir*)
+### `compile_dir`(dir)
 
 Recursively descend the directory tree named by *dir*, compiling all `.py` files along the way. The *maxlevels* parameter is used to limit the depth of the recursion; it defaults to `10`. If *ddir* is given, it is used as the base path from which the filenames used in error messages will be generated. If *force* is true, modules are re-compiled even if the timestamps are up to date.
 
@@ -2545,13 +2547,13 @@ The same security warning from `SerialCookie` applies here.
 
 #### See also:
 
-## Cookie Objects <span id="cookie-objects" label="cookie-objects"></span>
+## Cookie Objects 
 
-### `value_decode`(*val*)
+### `value_decode`(val)
 
 Return a decoded value from a string representation. Return value can be any type. This method does nothing in `BaseCookie` — it exists so it can be overridden.
 
-### `value_encode`(*val*)
+### `value_encode`(val)
 
 Return an encoded value. *val* can be any type, but return value must be a string. This method does nothing in `BaseCookie` — it exists so it can be overridden
 
@@ -2567,14 +2569,14 @@ Return an embeddable JavaScript snippet, which, if run on a browser which suppor
 
 The meaning for *attrs* is the same as in `output()`.
 
-### `load`(*rawdata*)
+### `load`(rawdata)
 
 If *rawdata* is a string, parse it as an `HTTP_COOKIE` and add the values found there as `Morsel`s. If it is a dictionary, it is equivalent to:
 
     for k, v in rawdata.items():
         cookie[k] = v
 
-## Morsel Objects <span id="morsel-objects" label="morsel-objects"></span>
+## Morsel Objects 
 
 ### class `Morsel`()
 
@@ -2610,11 +2612,11 @@ The encoded value of the cookie — this is what should be sent.
 
 The name of the cookie.
 
-### `set`(*key, value, coded_value*)
+### `set`(key, value, coded_value)
 
 Set the *key*, *value* and *coded_value* members.
 
-### `isReservedKey`(*K*)
+### `isReservedKey`(K)
 
 Whether *K* is a member of the set of keys of a `Morsel`.
 
@@ -2634,7 +2636,7 @@ Return a string representing the Morsel, without any surrounding HTTP or JavaScr
 
 The meaning for *attrs* is the same as in `output()`.
 
-## Example <span id="cookie-example" label="cookie-example"></span>
+## Example 
 
 The following example demonstrates how to open a can of spam using the `spam` module.
 
@@ -2748,18 +2750,18 @@ Classes can use the same interfaces to control copying that they use to control 
 
 The `copy_reg` module provides support for the `pickle`and `cPickle`modules. The `copy`module is likely to use this in the future as well. It provides configuration information about object constructors which are not classes. Such constructors may be factory functions or class instances.
 
-### `constructor`(*object*)
+### `constructor`(object)
 
 Declares *object* to be a valid constructor.
 
-### `pickle`(*type, function*)
+### `pickle`(type, function)
 
 Declares that *function* should be used as a “reduction” function for objects of type or class *type*. *function* should return either a string or a tuple. The optional *constructor* parameter, if provided, is a callable object which can be used to reconstruct the object when called with the tuple of arguments returned by *function* at pickling time.
 # `crypt` — Function to check Unix passwords
 
 *The function used to check Unix passwords.* This module implements an interface to the routine, which is a one-way hash function based upon a modified DESalgorithm; see the Unix man page for further details. Possible uses include allowing Python scripts to accept typed passwords from the user, or attempting to crack Unix passwords with a dictionary.
 
-### `crypt`(*word, salt*)
+### `crypt`(word, salt)
 
 *word* will usually be a user’s password as typed at a prompt or in a graphical interface. *salt* is usually a random two-character string which will be used to perturb the DES algorithm in one of 4096 ways. The characters in *salt* must be in the set `[./a-zA-Z0-9]`. Returns the hashed password as a string, which will be composed of characters from the same alphabet as the salt (the first two characters represent the salt itself).
 
@@ -2794,7 +2796,7 @@ While curses is most widely used in the Unix environment, versions are available
 
 — curses.asciiUtilities for working with ASCII characters, regardless of your locale settings. — curses.textpadEditable text widget for curses supporting -like bindings. — curses.wrapperConvenience function to ensure proper terminal setup and resetting on application entry and exit. Curses Programming with Python
 
-## Functions <span id="curses-functions" label="curses-functions"></span>
+## Functions 
 
 The module `curses` defines the following exception:
 
@@ -2822,15 +2824,15 @@ Returns true or false, depending on whether the programmer can change the colors
 
 Enter cbreak mode. In cbreak mode (sometimes called “rare” mode) normal tty line buffering is turned off and characters are available to be read one by one. However, unlike raw mode, special characters (interrupt, quit, suspend, and flow control) retain their effects on the tty driver and calling program. Calling first `raw()` then `cbreak()` leaves the terminal in cbreak mode.
 
-### `color_content`(*color_number*)
+### `color_content`(color_number)
 
 Returns the intensity of the red, green, and blue (RGB) components in the color *color_number*, which must be between 0 and COLORS. A 3-tuple is returned, containing the R,G,B values for the given color, which will be between 0 (no component) and 1000 (maximum amount of component).
 
-### `color_pair`(*color_number*)
+### `color_pair`(color_number)
 
 Returns the attribute value for displaying text in the specified color. This attribute value can be combined with , , and the other attributes. `pair_number()` is the counterpart to this function.
 
-### `curs_set`(*visibility*)
+### `curs_set`(visibility)
 
 Sets the cursor state. *visibility* can be set to 0, 1, or 2, for invisible, normal, or very visible. If the terminal supports the visibility requested, the previous cursor state is returned; otherwise, an exception is raised. On many terminals, the “visible” mode is an underline cursor and the “very visible” mode is a block cursor.
 
@@ -2842,7 +2844,7 @@ Saves the current terminal mode as the “program” mode, the mode when the run
 
 Saves the current terminal mode as the “shell” mode, the mode when the running program is not using curses. (Its counterpart is the “program” mode, when the program is using curses capabilities.) Subsequent calls to `reset_shell_mode()` will restore this mode.
 
-### `delay_output`(*ms*)
+### `delay_output`(ms)
 
 Inserts an *ms* millisecond pause in output.
 
@@ -2884,7 +2886,7 @@ After `getch()` returns to signal a mouse event, this method should be call to r
 
 Returns the current coordinates of the virtual screen cursor in y and x. If leaveok is currently true, then -1,-1 is returned.
 
-### `getwin`(*file*)
+### `getwin`(file)
 
 Reads window related data stored in the file by an earlier `putwin()` call. The routine then creates and initializes a new window using that data, returning the new window object.
 
@@ -2900,19 +2902,19 @@ Returns true if the terminal has insert- and delete- character capabilities. Thi
 
 Returns true if the terminal has insert- and delete-line capabilities, or can simulate them using scrolling regions. This function is included for historical reasons only, as all modern software terminal emulators have such capabilities.
 
-### `has_key`(*ch*)
+### `has_key`(ch)
 
 Takes a key value *ch*, and returns true if the current terminal type recognizes a key with that value.
 
-### `halfdelay`(*tenths*)
+### `halfdelay`(tenths)
 
 Used for half-delay mode, which is similar to cbreak mode in that characters typed by the user are immediately available to the program. However, after blocking for *tenths* tenths of seconds, an exception is raised if nothing has been typed. The value of *tenths* must be a number between 1 and 255. Use `nocbreak()` to leave half-delay mode.
 
-### `init_color`(*color_number, r, g, b*)
+### `init_color`(color_number, r, g, b)
 
 Changes the definition of a color, taking the number of the color to be changed followed by three RGB values (for the amounts of red, green, and blue components). The value of *color_number* must be between 0 and COLORS. Each of *r*, *g*, *b*, must be a value between 0 and 1000. When `init_color()` is used, all occurrences of that color on the screen immediately change to the new definition. This function is a no-op on most terminals; it is active only if `can_change_color()` returns 1.
 
-### `init_pair`(*pair_number, fg, bg*)
+### `init_pair`(pair_number, fg, bg)
 
 Changes the definition of a color-pair. It takes three arguments: the number of the color-pair to be changed, the foreground color number, and the background color number. The value of *pair_number* must be between 1 and COLOR_PAIRS-1 (the 0 color pair is wired to white on black and cannot be changed). The value of *fg* and *bg* arguments must be between 0 and COLORS. If the color-pair was previously initialized, the screen is refreshed and all occurrences of that color-pair are changed to the new definition.
 
@@ -2924,7 +2926,7 @@ Initialize the library. Returns a `WindowObject` which represents the whole scre
 
 Returns true if `endwin()` has been called (that is, the curses library has been deinitialized).
 
-### `keyname`(*k*)
+### `keyname`(k)
 
 Return the name of the key numbered *k*. The name of a key generating printable ASCII character is the key’s character. The name of a control-key combination is a two-character string consisting of a caret followed by the corresponding printable ASCII character. The name of an alt-key combination (128-255) is a string consisting of the prefix ‘M-’ followed by the name of the corresponding ASCII character.
 
@@ -2936,25 +2938,25 @@ Returns the user’s current line kill character. Under Unix operating systems t
 
 Returns a string containing the terminfo long name field describing the current terminal. The maximum length of a verbose description is 128 characters. It is defined only after the call to `initscr()`.
 
-### `meta`(*yes*)
+### `meta`(yes)
 
 If *yes* is 1, allow 8-bit characters to be input. If *yes* is 0, allow only 7-bit chars.
 
-### `mouseinterval`(*interval*)
+### `mouseinterval`(interval)
 
 Sets the maximum time in milliseconds that can elapse between press and release events in order for them to be recognized as a click, and returns the previous interval value. The default value is 200 msec, or one fifth of a second.
 
-### `mousemask`(*mousemask*)
+### `mousemask`(mousemask)
 
 Sets the mouse events to be reported, and returns a tuple `(`*`availmask`*`, `*`oldmask`*`)`. *availmask* indicates which of the specified mouse events can be reported; on complete failure it returns 0. *oldmask* is the previous value of the given window’s mouse event mask. If this function is never called, no mouse events are ever reported.
 
-### `newpad`(*nlines, ncols*)
+### `newpad`(nlines, ncols)
 
 Creates and returns a pointer to a new pad data structure with the given number of lines and columns. A pad is returned as a window object.
 
 A pad is like a window, except that it is not restricted by the screen size, and is not necessarily associated with a particular part of the screen. Pads can be used when a large window is needed, and only a part of the window will be on the screen at one time. Automatic refreshes of pads (e.g., from scrolling or echoing of input) do not occur. The `refresh()` and `noutrefresh()` methods of a pad require 6 arguments to specify the part of the pad to be displayed and the location on the screen to be used for the display. The arguments are pminrow, pmincol, sminrow, smincol, smaxrow, smaxcol; the p arguments refer to the upper left corner of the the pad region to be displayed and the s arguments define a clipping box on the screen within which the pad region is to be displayed.
 
-### `newwin`( *begin_y, begin_x*)
+### `newwin`( begin_y, begin_x)
 
 Return a new window, whose left-upper corner is at `(`*`begin_y`*`, `*`begin_x`*`)`, and whose height/width is *nlines*/*ncols*.
 
@@ -2984,19 +2986,19 @@ When the noqiflush routine is used, normal flush of input and output queues asso
 
 Leave raw mode. Return to normal “cooked” mode with line buffering.
 
-### `pair_content`(*pair_number*)
+### `pair_content`(pair_number)
 
 Returns a tuple *(fg,bg)* containing the colors for the requested color pair. The value of *pair_number* must be between 0 and COLOR_PAIRS-1.
 
-### `pair_number`(*attr*)
+### `pair_number`(attr)
 
 Returns the number of the color-pair set by the attribute value *attr*. `color_pair()` is the counterpart to this function.
 
-### `putp`(*string*)
+### `putp`(string)
 
 Equivalent to `tputs(str, 1, putchar)`; emits the value of a specified terminfo capability for the current terminal. Note that the output of putp always goes to standard output.
 
-### `qiflush`(  )
+### `qiflush`( )
 
 If *flag* is false, the effect is the same as calling `noqiflush()`. If *flag* is true, or no argument is provided, the queues will be flushed when these control characters are read.
 
@@ -3012,7 +3014,7 @@ Restores the terminal to “program” mode, as previously saved by `def_prog_mo
 
 Restores the terminal to “shell” mode, as previously saved by `def_shell_mode()`.
 
-### `setsyx`(*y, x*)
+### `setsyx`(y, x)
 
 Sets the virtual screen cursor to *y*, *x*. If *y* and *x* are both -1, then leaveok is set.
 
@@ -3030,71 +3032,71 @@ Returns a logical OR of all video attributes supported by the terminal. This inf
 
 Returns the value of the environment variable TERM, truncated to 14 characters.
 
-### `tigetflag`(*capname*)
+### `tigetflag`(capname)
 
 Returns the value of the Boolean capability corresponding to the terminfo capability name *capname*. The value -1 is returned if *capname* is not a Boolean capability, or 0 if it is canceled or absent from the terminal description.
 
-### `tigetnum`(*capname*)
+### `tigetnum`(capname)
 
 Returns the value of the numeric capability corresponding to the terminfo capability name *capname*. The value -2 is returned if *capname* is not a numeric capability, or -1 if it is canceled or absent from the terminal description.
 
-### `tigetstr`(*capname*)
+### `tigetstr`(capname)
 
 Returns the value of the string capability corresponding to the terminfo capability name *capname*. `None` is returned if *capname* is not a string capability, or is canceled or absent from the terminal description.
 
-### `typeahead`(*fd*)
+### `typeahead`(fd)
 
 Specifies that the file descriptor *fd* be used for typeahead checking. If *fd* is -1, then no typeahead checking is done.
 
 The curses library does “line-breakout optimization” by looking for typeahead periodically while updating the screen. If input is found, and it is coming from a tty, the current update is postponed until refresh or doupdate is called again, allowing faster response to commands typed in advance. This function allows specifying a different file descriptor for typeahead checking.
 
-### `unctrl`(*ch*)
+### `unctrl`(ch)
 
 Returns a string which is a printable representation of the character *ch*. Control characters are displayed as a caret followed by the character, for example as `^C`. Printing characters are left as they are.
 
-### `ungetch`(*ch*)
+### `ungetch`(ch)
 
 Push *ch* so the next `getch()` will return it. **Note:** only one *ch* can be pushed before `getch()` is called.
 
-### `ungetmouse`(*id, x, y, z, bstate*)
+### `ungetmouse`(id, x, y, z, bstate)
 
 Push a event onto the input queue, associating the given state data with it.
 
-### `use_env`(*flag*)
+### `use_env`(flag)
 
 If used, this function should be called before `initscr` or newterm are called. When *flag* is false, the values of lines and columns specified in the terminfo database will be used, even if environment variables LINES and COLUMNS (used by default) are set, or if curses is running in a window (in which case default behavior would be to use the window size if LINES and COLUMNS are not set).
 
-## Window Objects <span id="curses-window-objects" label="curses-window-objects"></span>
+## Window Objects 
 
 Window objects, as returned by `initscr()` and `newwin()` above, have the following methods:
 
-### `addch`( *ch*)
+### `addch`( ch)
 
 **Note:** A *character* means a C character (i.e., an ASCII code), rather then a Python character (a string of length 1). (This note is true whenever the documentation mentions a character.) The builtin `ord()` is handy for conveying strings to codes.
 
 Paint character *ch* at `(`*`y`*`, `*`x`*`)` with attributes *attr*, overwriting any character previously painter at that location. By default, the character position and attributes are the current settings for the window object.
 
-### `addnstr`( *str, n*)
+### `addnstr`( str, n)
 
 Paint at most *n* characters of the string *str* at `(`*`y`*`, `*`x`*`)` with attributes *attr*, overwriting anything previously on the display.
 
-### `addstr`( *str*)
+### `addstr`( str)
 
 Paint the string *str* at `(`*`y`*`, `*`x`*`)` with attributes *attr*, overwriting anything previously on the display.
 
-### `attroff`(*attr*)
+### `attroff`(attr)
 
 Remove attribute *attr* from the “background” set applied to all writes to the current window.
 
-### `attron`(*attr*)
+### `attron`(attr)
 
 Add attribute *attr* from the “background” set applied to all writes to the current window.
 
-### `attrset`(*attr*)
+### `attrset`(attr)
 
 Set the “background” set of attributes to *attr*. This set is initially 0 (no attributes).
 
-### `bkgd`(*ch*)
+### `bkgd`(ch)
 
 Sets the background property of the window to the character *ch*, with attributes *attr*. The change is then applied to every character position in that window:
 
@@ -3102,7 +3104,7 @@ Sets the background property of the window to the character *ch*, with attribute
 
 - Wherever the former background character appears, it is changed to the new background character.
 
-### `bkgdset`(*ch*)
+### `bkgdset`(ch)
 
 Sets the window’s background. A window’s background consists of a character and any combination of attributes. The attribute part of the background is combined (OR’ed) with all non-blank characters that are written into the window. Both the character and attribute parts of the background are combined with the blank characters. The background becomes a property of the character and moves with the character through any scrolling and insert/delete line/character operations.
 
@@ -3112,17 +3114,17 @@ Draw a border around the edges of the window. Each parameter specifies the chara
 
 **Note:** A `0` value for any parameter will cause the default character to be used for that parameter. Keyword parameters can *not* be used. The defaults are listed in this table:
 
-|                                      |                     |     |
-|:-------------------------------------|:--------------------|:----|
-| ParameterDescriptionDefault value ls | Left side           |     |
-|                                      | Right side          |     |
-|                                      | Top                 |     |
-|                                      | Bottom              |     |
-|                                      | Upper-left corner   |     |
-|                                      | Upper-right corner  |     |
-|                                      | Bottom-left corner  |     |
-|                                      | Bottom-right corner |     |
-|                                      |                     |     |
+|     |                     |     |
+|:----|:--------------------|:----|
+| ls  | Left side           |     |
+|     | Right side          |     |
+|     | Top                 |     |
+|     | Bottom              |     |
+|     | Upper-left corner   |     |
+|     | Upper-right corner  |     |
+|     | Bottom-left corner  |     |
+|     | Bottom-right corner |     |
+|     |                     |     |
 
 ### `box`()
 
@@ -3132,7 +3134,7 @@ Similar to `border()`, but both *ls* and *rs* are *vertch* and both *ts* and bs 
 
 Like `erase()`, but also causes the whole window to be repainted upon next call to `refresh()`.
 
-### `clearok`(*yes*)
+### `clearok`(yes)
 
 If *yes* is 1, the next call to `refresh()` will clear the window completely.
 
@@ -3156,15 +3158,15 @@ Delete any character at `(`*`y`*`, `*`x`*`)`.
 
 Delete the line under the cursor. All following lines are moved up by 1 line.
 
-### `derwin`( *begin_y, begin_y*)
+### `derwin`( begin_y, begin_y)
 
 An abbreviation for “derive window”, `derwin()` is the same as calling `subwin()`, except that *begin_y* and *begin_x* are relative to the origin of the window, rather than relative to the entire screen. Returns a window object for the derived window.
 
-### `echochar`(*ch*)
+### `echochar`(ch)
 
 Add character *ch* with attribute *attr*, and immediately call `refresh` on the window.
 
-### `enclose`(*y, x*)
+### `enclose`(y, x)
 
 Tests whether the given pair of screen-relative character-cell coordinates are enclosed by the given window, returning true or false. It is useful for determining what subset of the screen windows enclose the location of a mouse event.
 
@@ -3200,19 +3202,19 @@ Read a string from the user, with primitive line editing capacity.
 
 Return a tuple `(`*`y`*`, `*`x`*`)` of current cursor position relative to the window’s upper-left corner.
 
-### `hline`( *ch, n*)
+### `hline`( ch, n)
 
 Display a horizontal line starting at `(`*`y`*`, `*`x`*`)` with length *n* consisting of the character *ch*.
 
-### `idcok`(*flag*)
+### `idcok`(flag)
 
 If *flag* is false, curses no longer considers using the hardware insert/delete character feature of the terminal; if *flag* is true, use of character insertion and deletion is enabled. When curses is first initialized, use of character insert/delete is enabled by default.
 
-### `idlok`(*yes*)
+### `idlok`(yes)
 
 If called with *yes* equal to 1, `curses` will try and use hardware line editing facilities. Otherwise, line insertion/deletion are disabled.
 
-### `immedok`(*flag*)
+### `immedok`(flag)
 
 If *flag* is true, any change in the window image automatically causes the window to be refreshed; you no longer have to call `refresh()` yourself. However, it may degrade performance considerably, due to repeated calls to wrefresh. This option is disabled by default.
 
@@ -3220,11 +3222,11 @@ If *flag* is true, any change in the window image automatically causes the windo
 
 Return the character at the given position in the window. The bottom 8 bits are the character proper, and upper bits are the attributes.
 
-### `insch`( *ch*)
+### `insch`( ch)
 
 Paint character *ch* at `(`*`y`*`, `*`x`*`)` with attributes *attr*, moving the line from position *x* right by one character.
 
-### `insdelln`(*nlines*)
+### `insdelln`(nlines)
 
 Inserts *nlines* lines into the specified window above the current line. The *nlines* bottom lines are lost. For negative *nlines*, delete *nlines* lines starting with the one under the cursor, and move the remaining lines up. The bottom *nlines* lines are cleared. The current cursor position remains the same.
 
@@ -3232,19 +3234,19 @@ Inserts *nlines* lines into the specified window above the current line. The *nl
 
 Insert a blank line under the cursor. All following lines are moved down by 1 line.
 
-### `insnstr`( *str, n* )
+### `insnstr`( str, n )
 
 Insert a character string (as many characters as will fit on the line) before the character under the cursor, up to *n* characters. If *n* is zero or negative, the entire string is inserted. All characters to the right of the cursor are shifted right, with the the rightmost characters on the line being lost. The cursor position does not change (after moving to *y*, *x*, if specified).
 
-### `insstr`( *str* )
+### `insstr`( str )
 
 Insert a character string (as many characters as will fit on the line) before the character under the cursor. All characters to the right of the cursor are shifted right, with the the rightmost characters on the line being lost. The cursor position does not change (after moving to *y*, *x*, if specified).
 
-### `instr`(  )
+### `instr`( )
 
 Returns a string of characters, extracted from the window starting at the current cursor position, or at *y*, *x* if specified. Attributes are stripped from the characters. If *n* is specified, `instr()` returns return a string at most *n* characters long (exclusive of the trailing NUL).
 
-### `is_linetouched`(line)
+### `is_linetouched`(*line*)
 
 Returns true if the specified line was modified since the last call to `refresh()`; otherwise returns false. Raises a `curses.error` exception if *line* is not valid for the given window.
 
@@ -3252,33 +3254,33 @@ Returns true if the specified line was modified since the last call to `refresh(
 
 Returns true if the specified window was modified since the last call to `refresh()`; otherwise returns false.
 
-### `keypad`(*yes*)
+### `keypad`(yes)
 
 If *yes* is 1, escape sequences generated by some keys (keypad, function keys) will be interpreted by `curses`. If *yes* is 0, escape sequences will be left as is in the input stream.
 
-### `leaveok`(*yes*)
+### `leaveok`(yes)
 
 If *yes* is 1, cursor is left where it is on update, instead of being at “cursor position.” This reduces cursor movement where possible. If possible the cursor will be made invisible.
 
 If *yes* is 0, cursor will always be at “cursor position” after an update.
 
-### `move`(*new_y, new_x*)
+### `move`(new_y, new_x)
 
 Move cursor to `(`*`new_y`*`, `*`new_x`*`)`.
 
-### `mvderwin`(*y, x*)
+### `mvderwin`(y, x)
 
 Moves the window inside its parent window. The screen-relative parameters of the window are not changed. This routine is used to display different parts of the parent window at the same physical position on the screen.
 
-### `mvwin`(*new_y, new_x*)
+### `mvwin`(new_y, new_x)
 
 Move the window so its upper-left corner is at `(`*`new_y`*`, `*`new_x`*`)`.
 
-### `nodelay`(*yes*)
+### `nodelay`(yes)
 
 If *yes* is 1, `getch()` will be non-blocking.
 
-### `notimeout`(*yes*)
+### `notimeout`(yes)
 
 If *yes* is 1, escape sequences will not be timed out.
 
@@ -3288,11 +3290,11 @@ If *yes* is 0, after a few milliseconds, an escape sequence will not be interpre
 
 Mark for refresh but wait. This function updates the data structure representing the desired state of the window, but does not force an update of the physical screen.
 
-### `putwin`(*file*)
+### `putwin`(file)
 
 Writes all data associated with the window into the provided file object. This information can be later retrieved using the `getwin()` function.
 
-### `redrawln`(*beg, num*)
+### `redrawln`(beg, num)
 
 Indicates that the *num* screen lines, starting at line *beg*, are corrupted and should be completely redrawn on the next `refresh()` call.
 
@@ -3300,7 +3302,7 @@ Indicates that the *num* screen lines, starting at line *beg*, are corrupted and
 
 Touches the entire window, causing it to be completely redrawn on the next `refresh()` call.
 
-### `refresh`(  )
+### `refresh`( )
 
 Update the display immediately (sync actual screen with previous drawing/deleting methods).
 
@@ -3310,11 +3312,11 @@ The 6 optional arguments can only be specified when the window is a pad created 
 
 Scroll the screen upward by *lines* lines.
 
-### `scrollok`(*flag*)
+### `scrollok`(flag)
 
 Controls what happens when the cursor of a window is moved off the edge of the window or scrolling region, either as a result of a newline action on the bottom line, or typing the last character of the last line. If *flag* is false, the cursor is left on the bottom line. If *flag* is true, the window is scrolled up one line. Note that in order to get the physical scrolling effect on the terminal, it is also necessary to call `idlok()`.
 
-### `setscrreg`(*top, bottom*)
+### `setscrreg`(top, bottom)
 
 Set the scrolling region from line *top* to line *bottom*. All scrolling actions will take place in this region.
 
@@ -3326,11 +3328,11 @@ Turn off the standout attribute. On some terminals this has the side effect of t
 
 Turn on attribute *A_STANDOUT*.
 
-### `subpad`( *begin_y, begin_y*)
+### `subpad`( begin_y, begin_y)
 
 Return a sub-window, whose upper-left corner is at `(`*`begin_y`*`, `*`begin_x`*`)`, and whose width/height is *ncols*/*nlines*.
 
-### `subwin`( *begin_y, begin_y*)
+### `subwin`( begin_y, begin_y)
 
 Return a sub-window, whose upper-left corner is at `(`*`begin_y`*`, `*`begin_x`*`)`, and whose width/height is *ncols*/*nlines*.
 
@@ -3340,7 +3342,7 @@ By default, the sub-window will extend from the specified position to the lower 
 
 Touches each location in the window that has been touched in any of its ancestor windows. This routine is called by `refresh()`, so it should almost never be necessary to call it manually.
 
-### `syncok`(*flag*)
+### `syncok`(flag)
 
 If called with *flag* set to true, then `syncup()` is called automatically whenever there is a change in the window.
 
@@ -3348,11 +3350,11 @@ If called with *flag* set to true, then `syncup()` is called automatically whene
 
 Touches all locations in ancestors of the window that have been changed in the window.
 
-### `timeout`(*delay*)
+### `timeout`(delay)
 
 Sets blocking or non-blocking read behavior for the window. If *delay* is negative, blocking read is used, which will wait indefinitely for input). If *delay* is zero, then non-blocking read is used, and -1 will be returned by `getch()` if no input is waiting. If *delay* is positive, then `getch()` will block for *delay* milliseconds, and return -1 if there is still no input at the end of that time.
 
-### `touchline`(*start, count*)
+### `touchline`(start, count)
 
 Pretend *count* lines have been changed, starting with line *start*.
 
@@ -3364,7 +3366,7 @@ Pretend the whole window has been changed, for purposes of drawing optimizations
 
 Marks all lines in the window as unchanged since the last call to `refresh()`.
 
-### `vline`( *ch, n*)
+### `vline`( ch, n)
 
 Display a vertical line starting at `(`*`y`*`, `*`x`*`)` with length *n* consisting of the character *ch*.
 
@@ -3378,16 +3380,15 @@ A string representing the current version of the module. Also available as .
 
 Several constants are available to specify character cell attributes:
 
-|                               |                               |
-|:------------------------------|:------------------------------|
-| AttributeMeaning A_ALTCHARSET | Alternate character set mode. |
-| A_BLINK                       | Blink mode.                   |
-| A_BOLD                        | Bold mode.                    |
-| A_DIM                         | Dim mode.                     |
-| A_NORMAL                      | Normal attribute.             |
-| A_STANDOUT                    | Standout mode.                |
-| A_UNDERLINE                   | Underline mode.               |
-|                               |                               |
+|              |                               |
+|:-------------|:------------------------------|
+| A_ALTCHARSET | Alternate character set mode. |
+| A_BLINK      | Blink mode.                   |
+| A_BOLD       | Bold mode.                    |
+| A_DIM        | Dim mode.                     |
+| A_NORMAL     | Normal attribute.             |
+| A_STANDOUT   | Standout mode.                |
+| A_UNDERLINE  | Underline mode.               |
 
 Keys are referred to by integer constants with names starting with `KEY_`. The exact keycaps available are system dependent.
 
@@ -3397,15 +3398,14 @@ Keys are referred to by integer constants with names starting with `KEY_`. The e
 
 On VT100s and their software emulations, such as X terminal emulators, there are normally at least four function keys (, , , ) available, and the arrow keys mapped to , , and in the obvious way. If your machine has a PC keybboard, it is safe to expect arrow keys and twelve function keys (older PC keyboards may have only ten function keys); also, the following keypad mappings are standard:
 
-|                       |           |
-|:----------------------|:----------|
-| KeycapConstant Insert | KEY_IC    |
-| Delete                | KEY_DC    |
-| Home                  | KEY_HOME  |
-| End                   | KEY_END   |
-| Page Up               | KEY_NPAGE |
-| Page Down             | KEY_PPAGE |
-|                       |           |
+|           |           |
+|:----------|:----------|
+| Insert    | KEY_IC    |
+| Delete    | KEY_DC    |
+| Home      | KEY_HOME  |
+| End       | KEY_END   |
+| Page Up   | KEY_NPAGE |
+| Page Down | KEY_PPAGE |
 
 The following table lists characters from the alternate character set. These are inherited from the VT100 terminal, and will generally be available on software emulations such as X terminals. When there is no graphic available, curses falls back on a crude printable ASCII approximation. **Note:** These are available only after `initscr()` has been called.
 
@@ -3415,17 +3415,16 @@ The following table lists characters from the alternate character set. These are
 
 The following table lists the predefined colors:
 
-|                           |                            |
-|:--------------------------|:---------------------------|
-| ConstantColor COLOR_BLACK | Black                      |
-| COLOR_BLUE                | Blue                       |
-| COLOR_CYAN                | Cyan (light greenish blue) |
-| COLOR_GREEN               | Green                      |
-| COLOR_MAGENTA             | Magenta (purplish red)     |
-| COLOR_RED                 | Red                        |
-| COLOR_WHITE               | White                      |
-| COLOR_YELLOW              | Yellow                     |
-|                           |                            |
+|               |                            |
+|:--------------|:---------------------------|
+| COLOR_BLACK   | Black                      |
+| COLOR_BLUE    | Blue                       |
+| COLOR_CYAN    | Cyan (light greenish blue) |
+| COLOR_GREEN   | Green                      |
+| COLOR_MAGENTA | Magenta (purplish red)     |
+| COLOR_RED     | Red                        |
+| COLOR_WHITE   | White                      |
+| COLOR_YELLOW  | Yellow                     |
 
 # `curses.textpad` — Text input widget for curses programs
 
@@ -3435,15 +3434,15 @@ The `curses.textpad` module provides a `Textbox` class that handles elementary t
 
 The module `curses.textpad` defines the following function:
 
-### `rectangle`(*win, uly, ulx, lry, lrx*)
+### `rectangle`(win, uly, ulx, lry, lrx)
 
 Draw a rectangle. The first argument must be a window object; the remaining arguments are coordinates relative to that window. The second and third arguments are the y and x coordinates of the upper left hand corner of the rectangle To be drawn; the fourth and fifth arguments are the y and x coordinates of the lower right hand corner. The rectangle will be drawn using VT100/IBM PC forms characters on terminals that make this possible (including xterm and most other software terminal emulators). Otherwise it will be drawn with ASCII dashes, vertical bars, and plus signs.
 
-## Textbox objects <span id="curses-textpad-objects" label="curses-textpad-objects"></span>
+## Textbox objects 
 
 You can instantiate a `Textbox` object as follows:
 
-### class `Textbox`(*win*)
+### class `Textbox`(win)
 
 Return a textbox widget object. The *win* argument should be a curses `WindowObject` in which the textbox is to be contained. The edit cursor of the textbox is initially located at the upper left hand corner of the containin window, with coordinates `(0, 0)`. The instance’s `stripspaces` flag is initially on.
 
@@ -3453,13 +3452,13 @@ Return a textbox widget object. The *win* argument should be a curses `WindowObj
 
 This is the entry point you will normally use. It accepts editing keystrokes until one of the termination keystrokes is entered. If *validator* is supplied, it must be a function. It will be called for each keystroke entered with the keystroke as a parameter; command dispatch is done on the result. This method returns the window contents as a string; whether blanks in the window are included is affected by the `stripspaces` member.
 
-### `do_command`(*ch*)
+### `do_command`(ch)
 
 Process a single command keystroke. Here are the supported special keystrokes:
 
 |  |  |
 |:---|:---|
-| KeystrokeAction Ctrl-A | Go to left edge of window. |
+| Ctrl-A | Go to left edge of window. |
 | Ctrl-B | Cursor left, wrapping to previous line if appropriate. |
 | Ctrl-D | Delete character under cursor. |
 | Ctrl-E | Go to right edge (stripspaces off) or end of line (stripspaces on). |
@@ -3472,18 +3471,17 @@ Process a single command keystroke. Here are the supported special keystrokes:
 | Ctrl-N | Cursor down; move down one line. |
 | Ctrl-O | Insert a blank line at cursor location. |
 | Ctrl-P | Cursor up; move up one line. |
-|  |  |
 
 Move operations do nothing if the cursor is at an edge where the movement is not possible. The following synonyms are supported where possible:
 
-|                            |     |
-|:---------------------------|:----|
-| ConstantKeystroke KEY_LEFT |     |
-|                            |     |
-|                            |     |
-|                            |     |
-|                            |     |
-|                            |     |
+|          |     |
+|:---------|:----|
+| KEY_LEFT |     |
+|          |     |
+|          |     |
+|          |     |
+|          |     |
+|          |     |
 
 All other keystrokes are treated as a command to insert the given character and move right (with line wrapping).
 
@@ -3501,7 +3499,7 @@ This data member is a flag which controls the interpretation of blanks in the wi
 
 This module supplies one function, `wrapper()`, which runs another function which should be the rest of your curses-using application. If the application raises an exception, `wrapper()` will restore the terminal to a sane state before passing it further up the stack and generating a traceback.
 
-### `wrapper`(*func,* )
+### `wrapper`(func, )
 
 Wrapper function that initializes curses and calls another function, *func*, restoring normal keyboard/screen behavior on error. The callable object *func* is then passed the main window ’stdscr’ as its first argument, followed by any other arguments passed to `wrapper()`.
 
@@ -3516,7 +3514,7 @@ This module provides an exception and a function:
 
 Exception raised on database errors other than `KeyError`. It is a synonym for `bsddb.error`.
 
-### `open`(*path, flag*)
+### `open`(path, flag)
 
 Open a `db` database and return the database object. The *path* argument is the name of the database file.
 
@@ -3528,7 +3526,7 @@ The optional *mode* parameter is used to indicate the Unix permission bits that 
 
 — anydbmGeneric interface to `dbm`-style databases. — bsddbLower-level interface to the BSD `db` library. — whichdbUtility module used to determine the type of an existing database.
 
-## Database Objects <span id="dbhash-objects" label="dbhash-objects"></span>
+## Database Objects 
 
 The database objects returned by `open()` provide the methods common to all the DBM-style databases. The following methods are available in addition to the standard methods.
 
@@ -3540,7 +3538,7 @@ It’s possible to loop over every key in the database using this method and the
 
 Return the last key in a database traversal. This may be used to begin a reverse-order traversal; see `previous()`.
 
-### `next`(*key*)
+### `next`(key)
 
 Returns the key that follows *key* in the traversal. The following code prints every key in the database `db`, without having to create a list in memory that contains them all:
 
@@ -3549,7 +3547,7 @@ Returns the key that follows *key* in the traversal. The following code prints e
         print k
         k = db.next(k)
 
-### `previous`(*key*)
+### `previous`(key)
 
 Return the key that comes before *key* in a forward-traversal of the database. In conjunction with `last()`, this may be used to implement a reverse-order traversal.
 
@@ -3574,7 +3572,7 @@ Raised on dbm-specific errors, such as I/O errors. `KeyError` is raised for gene
 
 Name of the `ndbm` implementation library used.
 
-### `open`(*filename*)
+### `open`(filename)
 
 Open a dbm database and return a dbm object. The *filename* argument is the name of the database file (without the `.dir` or `.pag` extensions; note that the BSD DB implementation of the interface will append the extension `.db` and only create one file).
 
@@ -3582,11 +3580,10 @@ The optional *flag* argument must be one of these values:
 
 |  |  |
 |:---|:---|
-| ValueMeaning ’r’ | Open existing database for reading only (default) |
+| ’r’ | Open existing database for reading only (default) |
 | ’w’ | Open existing database for reading and writing |
 | ’c’ | Open database for reading and writing, creating it if it doesn’t exist |
 | ’n’ | Always create a new, empty database, open for reading and writing |
-|  |  |
 
 The optional *mode* argument is the Unix mode of the file, used only when the database has to be created. It defaults to octal `0666`.
 
@@ -3601,17 +3598,17 @@ The `dircache` module defines a function for reading directory listing using a c
 
 The `dircache` module defines the following functions:
 
-### `listdir`(*path*)
+### `listdir`(path)
 
 Return a directory listing of *path*, as gotten from `os.listdir()`. Note that unless *path* changes, further call to `listdir()` will not re-read the directory structure.
 
 Note that the list returned should be regarded as read-only. (Perhaps a future version should change it to return a tuple?)
 
-### `opendir`(*path*)
+### `opendir`(path)
 
 Same as `listdir()`. Defined for backwards compatibility.
 
-### `annotate`(*head, list*)
+### `annotate`(head, list)
 
 Assume *list* is a list of paths relative to *head*, and append, in place, a `/` to each path which points to a directory.
 
@@ -3660,7 +3657,7 @@ Disassemble the *bytesource* object. *bytesource* can denote either a class, a m
 
 Disassembles the top-of-stack function of a traceback, using the last traceback if none was passed. The instruction causing the exception is indicated.
 
-### `disassemble`(*code*)
+### `disassemble`(code)
 
 Disassembles a code object, indicating the last instruction if *lasti* was provided. The output is divided in the following columns:
 
@@ -3678,7 +3675,7 @@ Disassembles a code object, indicating the last instruction if *lasti* was provi
 
 The parameter interpretation recognizes local and global variable names, constant values, branch targets, and compare operators.
 
-### `disco`(*code*)
+### `disco`(code)
 
 A synonym for disassemble. It is more convenient to type, and kept for compatibility with earlier Python releases.
 
@@ -3974,155 +3971,155 @@ Creates a new class object. TOS is the methods dictionary, TOS1 the tuple of the
 
 All of the following opcodes expect arguments. An argument is two bytes, with the more significant byte last.
 
-### `STORE_NAME` *namei*
+### `STORE_NAME` namei
 
 Implements `name = TOS`. *namei* is the index of *name* in the attribute `co_names` of the code object. The compiler tries to use `STORE_LOCAL` or `STORE_GLOBAL` if possible.
 
-### `DELETE_NAME` *namei*
+### `DELETE_NAME` namei
 
 Implements `del name`, where *namei* is the index into `co_names` attribute of the code object.
 
-### `UNPACK_SEQUENCE` *count*
+### `UNPACK_SEQUENCE` count
 
 Unpacks TOS into *count* individual values, which are put onto the stack right-to-left.
 
-### `DUP_TOPX` *count*
+### `DUP_TOPX` count
 
 Duplicate *count* items, keeping them in the same order. Due to implementation limits, *count* should be between 1 and 5 inclusive.
 
-### `STORE_ATTR` *namei*
+### `STORE_ATTR` namei
 
 Implements `TOS.name = TOS1`, where *namei* is the index of name in `co_names`.
 
-### `DELETE_ATTR` *namei*
+### `DELETE_ATTR` namei
 
 Implements `del TOS.name`, using *namei* as index into `co_names`.
 
-### `STORE_GLOBAL` *namei*
+### `STORE_GLOBAL` namei
 
 Works as `STORE_NAME`, but stores the name as a global.
 
-### `DELETE_GLOBAL` *namei*
+### `DELETE_GLOBAL` namei
 
 Works as `DELETE_NAME`, but deletes a global name.
 
-### `LOAD_CONST` *consti*
+### `LOAD_CONST` consti
 
 Pushes `co_consts[`*`consti`*`]` onto the stack.
 
-### `LOAD_NAME` *namei*
+### `LOAD_NAME` namei
 
 Pushes the value associated with `co_names[`*`namei`*`]` onto the stack.
 
-### `BUILD_TUPLE` *count*
+### `BUILD_TUPLE` count
 
 Creates a tuple consuming *count* items from the stack, and pushes the resulting tuple onto the stack.
 
-### `BUILD_LIST` *count*
+### `BUILD_LIST` count
 
 Works as `BUILD_TUPLE`, but creates a list.
 
-### `BUILD_MAP` *zero*
+### `BUILD_MAP` zero
 
 Pushes a new empty dictionary object onto the stack. The argument is ignored and set to zero by the compiler.
 
-### `LOAD_ATTR` *namei*
+### `LOAD_ATTR` namei
 
 Replaces TOS with `getattr(TOS, co_names[`*`namei`*`]`.
 
-### `COMPARE_OP` *opname*
+### `COMPARE_OP` opname
 
 Performs a boolean operation. The operation name can be found in `cmp_op[`*`opname`*`]`.
 
-### `IMPORT_NAME` *namei*
+### `IMPORT_NAME` namei
 
 Imports the module `co_names[`*`namei`*`]`. The module object is pushed onto the stack. The current namespace is not affected: for a proper import statement, a subsequent `STORE_FAST` instruction modifies the namespace.
 
-### `IMPORT_FROM` *namei*
+### `IMPORT_FROM` namei
 
 Loads the attribute `co_names[`*`namei`*`]` from the module found in TOS. The resulting object is pushed onto the stack, to be subsequently stored by a `STORE_FAST` instruction.
 
-### `JUMP_FORWARD` *delta*
+### `JUMP_FORWARD` delta
 
 Increments byte code counter by *delta*.
 
-### `JUMP_IF_TRUE` *delta*
+### `JUMP_IF_TRUE` delta
 
 If TOS is true, increment the byte code counter by *delta*. TOS is left on the stack.
 
-### `JUMP_IF_FALSE` *delta*
+### `JUMP_IF_FALSE` delta
 
 If TOS is false, increment the byte code counter by *delta*. TOS is not changed.
 
-### `JUMP_ABSOLUTE` *target*
+### `JUMP_ABSOLUTE` target
 
 Set byte code counter to *target*.
 
-### `FOR_LOOP` *delta*
+### `FOR_LOOP` delta
 
 Iterate over a sequence. TOS is the current index, TOS1 the sequence. First, the next element is computed. If the sequence is exhausted, increment byte code counter by *delta*. Otherwise, push the sequence, the incremented counter, and the current item onto the stack.
 
-### `LOAD_GLOBAL` *namei*
+### `LOAD_GLOBAL` namei
 
 Loads the global named `co_names[`*`namei`*`]` onto the stack.
 
-### `SETUP_LOOP` *delta*
+### `SETUP_LOOP` delta
 
 Pushes a block for a loop onto the block stack. The block spans from the current instruction with a size of *delta* bytes.
 
-### `SETUP_EXCEPT` *delta*
+### `SETUP_EXCEPT` delta
 
 Pushes a try block from a try-except clause onto the block stack. *delta* points to the first except block.
 
-### `SETUP_FINALLY` *delta*
+### `SETUP_FINALLY` delta
 
 Pushes a try block from a try-except clause onto the block stack. *delta* points to the finally block.
 
-### `LOAD_FAST` *var_num*
+### `LOAD_FAST` var_num
 
 Pushes a reference to the local `co_varnames[`*`var_num`*`]` onto the stack.
 
-### `STORE_FAST` *var_num*
+### `STORE_FAST` var_num
 
 Stores TOS into the local `co_varnames[`*`var_num`*`]`.
 
-### `DELETE_FAST` *var_num*
+### `DELETE_FAST` var_num
 
 Deletes local `co_varnames[`*`var_num`*`]`.
 
-### `SET_LINENO` *lineno*
+### `SET_LINENO` lineno
 
 Sets the current line number to *lineno*.
 
-### `RAISE_VARARGS` *argc*
+### `RAISE_VARARGS` argc
 
 Raises an exception. *argc* indicates the number of parameters to the raise statement, ranging from 0 to 3. The handler will find the traceback as TOS2, the parameter as TOS1, and the exception as TOS.
 
-### `CALL_FUNCTION` *argc*
+### `CALL_FUNCTION` argc
 
 Calls a function. The low byte of *argc* indicates the number of positional parameters, the high byte the number of keyword parameters. On the stack, the opcode finds the keyword parameters first. For each keyword argument, the value is on top of the key. Below the keyword parameters, the positional parameters are on the stack, with the right-most parameter on top. Below the parameters, the function object to call is on the stack.
 
-### `MAKE_FUNCTION` *argc*
+### `MAKE_FUNCTION` argc
 
 Pushes a new function object on the stack. TOS is the code associated with the function. The function object is defined to have *argc* default parameters, which are found below TOS.
 
-### `BUILD_SLICE` *argc*
+### `BUILD_SLICE` argc
 
 Pushes a slice object on the stack. *argc* must be 2 or 3. If it is 2, `slice(TOS1, TOS)` is pushed; if it is 3, `slice(TOS2, TOS1, TOS)` is pushed. See the `slice()`built-in function for more information.
 
-### `EXTENDED_ARG` *ext*
+### `EXTENDED_ARG` ext
 
 Prefixes any opcode which has an argument too big to fit into the default two bytes. *ext* holds two additional bytes which, taken together with the subsequent opcode’s argument, comprise a four-byte argument, *ext* being the two most-significant bytes.
 
-### `CALL_FUNCTION_VAR` *argc*
+### `CALL_FUNCTION_VAR` argc
 
 Calls a function. *argc* is interpreted as in `CALL_FUNCTION`. The top element on the stack contains the variable argument list, followed by keyword and positional arguments.
 
-### `CALL_FUNCTION_KW` *argc*
+### `CALL_FUNCTION_KW` argc
 
 Calls a function. *argc* is interpreted as in `CALL_FUNCTION`. The top element on the stack contains the keyword arguments dictionary, followed by explicit keyword and positional arguments.
 
-### `CALL_FUNCTION_VAR_KW` *argc*
+### `CALL_FUNCTION_VAR_KW` argc
 
 Calls a function. *argc* is interpreted as in `CALL_FUNCTION`. The top element on the stack contains the keyword arguments dictionary, followed by the variable-arguments tuple, followed by explicit keyword and positional arguments.
 # `dl` — Call C functions in shared objects
@@ -4139,7 +4136,7 @@ If this is not the case, `SystemError` will be raised on import.
 
 The `dl` module defines the following function:
 
-### `open`(*name*)
+### `open`(name)
 
 Open a shared object file, and return a handle. Mode signifies late binding () or immediate binding (). Default is . Note that some systems do not support .
 
@@ -4170,7 +4167,7 @@ Example:
 
 This example was tried on a Debian GNU/Linux system, and is a good example of the fact that using this module is usually a bad alternative.
 
-## Dl Objects <span id="dl-objects" label="dl-objects"></span>
+## Dl Objects 
 
 Dl objects, as returned by `open()` above, have the following methods:
 
@@ -4178,7 +4175,7 @@ Dl objects, as returned by `open()` above, have the following methods:
 
 Free all resources, except the memory.
 
-### `sym`(*name*)
+### `sym`(name)
 
 Return the pointer for the function named *name*, as a number, if it exists in the referenced shared object, otherwise `None`. This is useful in code like:
 
@@ -4189,7 +4186,7 @@ Return the pointer for the function named *name*, as a number, if it exists in t
 
 (Note that this function will return a non-zero number, as zero is the NULL pointer)
 
-### `call`(*name*)
+### `call`(name)
 
 Call the function named *name* in the referenced shared object. The arguments must be either Python integers, which will be passed as is, Python strings, to which a pointer will be passed, or `None`, which will be passed as NULL. Note that strings should only be passed to functions as `const char*`, as Python will not like its string mutated.
 
@@ -4852,21 +4849,21 @@ Raised when the second argument of a division or modulo operation is zero. The a
 
 The module defines the following functions:
 
-### `fcntl`(*fd, op*)
+### `fcntl`(fd, op)
 
 Perform the requested operation on file descriptor *fd*. The operation is defined by *op* and is operating system dependent. Typically these codes can be retrieved from the library module `FCNTL`. The argument *arg* is optional, and defaults to the integer value `0`. When present, it can either be an integer value, or a string. With the argument missing or an integer value, the return value of this function is the integer return value of the C call. When the argument is a string it represents a binary structure, e.g. created by `struct.pack()`. The binary data is copied to a buffer whose address is passed to the C call. The return value after a successful call is the contents of the buffer, converted to a string object. The length of the returned string will be the same as the length of the *arg* argument. This is limited to 1024 bytes. If the information returned in the buffer by the operating system is larger than 1024 bytes, this is most likely to result in a segmentation violation or a more subtle data corruption.
 
 If the fails, an `IOError` is raised.
 
-### `ioctl`(*fd, op, arg*)
+### `ioctl`(fd, op, arg)
 
 This function is identical to the `fcntl()` function, except that the operations are typically defined in the library module `IOCTL`.
 
-### `flock`(*fd, op*)
+### `flock`(fd, op)
 
 Perform the lock operation *op* on file descriptor *fd*. See the Unix manual for details. (On some systems, this function is emulated using .)
 
-### `lockf`(*fd, code,* )
+### `lockf`(fd, code, )
 
 This is a wrapper around the and `fcntl()` calls. See the Unix manual for details.
 
@@ -4891,7 +4888,7 @@ The `filecmp` module defines functions to compare files and directories, with va
 
 The `filecmp` module defines the following function:
 
-### `cmp`(*f1, f2*)
+### `cmp`(f1, f2)
 
 Compare the files named *f1* and *f2*, returning `1` if they seem equal, `0` otherwise.
 
@@ -4901,7 +4898,7 @@ Files that were compared using this function will not be compared again unless t
 
 Note that no external programs are called from this function, giving it portability and efficiency.
 
-### `cmpfiles`(*dir1, dir2, common*)
+### `cmpfiles`(dir1, dir2, common)
 
 Returns three lists of file names: *match*, *mismatch*, *errors*. *match* contains the list of files match in both directories, *mismatch* includes the names of those that don’t, and *errros* lists the names of files which could not be compared. Files may be listed in *errors* because the user may lack permission to read them or many other reasons, but always that the comparison could not be done for some reason.
 
@@ -4915,9 +4912,9 @@ Example:
     >>> filecmp.cmp('libundoc.tex', 'lib.tex')
     0
 
-## The `dircmp` class <span id="dircmp-objects" label="dircmp-objects"></span>
+## The `dircmp` class 
 
-### class `dircmp`(*a, b*)
+### class `dircmp`(a, b)
 
 Construct a new directory comparison object, to compare the directories *a* and *b*. *ignore* is a list of names to ignore, and defaults to `[’RCS’, ’CVS’, ’tags’]`. *hide* is a list of names to hid, and defaults to `[os.curdir, os.pardir]`.
 
@@ -5069,7 +5066,7 @@ There are no ‘free objects’ in the Python interface to FORMS, nor is there a
 
 Module `fl` defines the following functions. For more information about what they do, see the description of the equivalent C function in the FORMS documentation:
 
-### `make_form`(*type, width, height*)
+### `make_form`(type, width, height)
 
 Create a form with given type, width and height. This returns a *form* object, whose methods are described below.
 
@@ -5081,11 +5078,11 @@ The standard FORMS main loop. Returns a Python object representing the FORMS obj
 
 Check for FORMS events. Returns what `do_forms()` above returns, or `None` if there is no event that immediately needs interaction.
 
-### `set_event_call_back`(*function*)
+### `set_event_call_back`(function)
 
 Set the event callback function.
 
-### `set_graphics_mode`(*rgbmode, doublebuffering*)
+### `set_graphics_mode`(rgbmode, doublebuffering)
 
 Set the graphics modes.
 
@@ -5093,23 +5090,23 @@ Set the graphics modes.
 
 Return the current rgb mode. This is the value of the C global variable .
 
-### `show_message`(*str1, str2, str3*)
+### `show_message`(str1, str2, str3)
 
 Show a dialog box with a three-line message and an OK button.
 
-### `show_question`(*str1, str2, str3*)
+### `show_question`(str1, str2, str3)
 
 Show a dialog box with a three-line message and YES and NO buttons. It returns `1` if the user pressed YES, `0` if NO.
 
-### `show_choice`(*str1, str2, str3, but1*)
+### `show_choice`(str1, str2, str3, but1)
 
 Show a dialog box with a three-line message and up to three buttons. It returns the number of the button clicked by the user (`1`, `2` or `3`).
 
-### `show_input`(*prompt, default*)
+### `show_input`(prompt, default)
 
 Show a dialog box with a one-line prompt message and text field in which the user can enter a string. The second argument is the default input string. It returns the string value as edited by the user.
 
-### `show_file_selector`(*message, directory, pattern, default*)
+### `show_file_selector`(message, directory, pattern, default)
 
 Show a dialog box in which the user can select a file. It returns the absolute filename selected by the user, or `None` if the user presses Cancel.
 
@@ -5117,7 +5114,7 @@ Show a dialog box in which the user can select a file. It returns the absolute f
 
 These functions return the directory, pattern and filename (the tail part only) selected by the user in the last `show_file_selector()` call.
 
-### `qdevice`(*dev*)
+### `qdevice`(dev)
 
 These functions are the FORMS interfaces to the corresponding GL functions. Use these if you want to handle some GL events yourself when using `fl.do_events()`. When a GL event is detected that FORMS cannot handle, `fl.do_forms()` returns the special value and you should call `fl.qread()` to read the event from the queue. Don’t use the equivalent GL functions!
 
@@ -5133,7 +5130,7 @@ All the `add_*()` methods return a Python object representing the FORMS object. 
 
 <div class="flushleft">
 
-### `show_form`(*placement, bordertype, name*)
+### `show_form`(placement, bordertype, name)
 
 Show the form.
 
@@ -5145,7 +5142,7 @@ Hide the form.
 
 Redraw the form.
 
-### `set_form_position`(*x, y*)
+### `set_form_position`(x, y)
 
 Set the form’s position.
 
@@ -5181,80 +5178,80 @@ Find the first object in the form.
 
 Find the last object in the form.
 
-### `add_box`(*type, x, y, w, h, name*)
+### `add_box`(type, x, y, w, h, name)
 
 Add a box object to the form. No extra methods.
 
-### `add_text`(*type, x, y, w, h, name*)
+### `add_text`(type, x, y, w, h, name)
 
 Add a text object to the form. No extra methods.
 
-### `add_clock`(*type, x, y, w, h, name*)
+### `add_clock`(type, x, y, w, h, name)
 
 Add a clock object to the form.\
 Method: `get_clock()`.
 
-### `add_button`(*type, x, y, w, h, name*)
+### `add_button`(type, x, y, w, h, name)
 
 Add a button object to the form.\
 Methods: `get_button()`, `set_button()`.
 
-### `add_lightbutton`(*type, x, y, w, h, name*)
+### `add_lightbutton`(type, x, y, w, h, name)
 
 Add a lightbutton object to the form.\
 Methods: `get_button()`, `set_button()`.
 
-### `add_roundbutton`(*type, x, y, w, h, name*)
+### `add_roundbutton`(type, x, y, w, h, name)
 
 Add a roundbutton object to the form.\
 Methods: `get_button()`, `set_button()`.
 
-### `add_slider`(*type, x, y, w, h, name*)
+### `add_slider`(type, x, y, w, h, name)
 
 Add a slider object to the form.\
 Methods: `set_slider_value()`, `get_slider_value()`, `set_slider_bounds()`, `get_slider_bounds()`, `set_slider_return()`, `set_slider_size()`, `set_slider_precision()`, `set_slider_step()`.
 
-### `add_valslider`(*type, x, y, w, h, name*)
+### `add_valslider`(type, x, y, w, h, name)
 
 Add a valslider object to the form.\
 Methods: `set_slider_value()`, `get_slider_value()`, `set_slider_bounds()`, `get_slider_bounds()`, `set_slider_return()`, `set_slider_size()`, `set_slider_precision()`, `set_slider_step()`.
 
-### `add_dial`(*type, x, y, w, h, name*)
+### `add_dial`(type, x, y, w, h, name)
 
 Add a dial object to the form.\
 Methods: `set_dial_value()`, `get_dial_value()`, `set_dial_bounds()`, `get_dial_bounds()`.
 
-### `add_positioner`(*type, x, y, w, h, name*)
+### `add_positioner`(type, x, y, w, h, name)
 
 Add a positioner object to the form.\
 Methods: `set_positioner_xvalue()`, `set_positioner_yvalue()`, `set_positioner_xbounds()`, `set_positioner_ybounds()`, `get_positioner_xvalue()`, `get_positioner_yvalue()`, `get_positioner_xbounds()`, `get_positioner_ybounds()`.
 
-### `add_counter`(*type, x, y, w, h, name*)
+### `add_counter`(type, x, y, w, h, name)
 
 Add a counter object to the form.\
 Methods: `set_counter_value()`, `get_counter_value()`, `set_counter_bounds()`, `set_counter_step()`, `set_counter_precision()`, `set_counter_return()`.
 
-### `add_input`(*type, x, y, w, h, name*)
+### `add_input`(type, x, y, w, h, name)
 
 Add a input object to the form.\
 Methods: `set_input()`, `get_input()`, `set_input_color()`, `set_input_return()`.
 
-### `add_menu`(*type, x, y, w, h, name*)
+### `add_menu`(type, x, y, w, h, name)
 
 Add a menu object to the form.\
 Methods: `set_menu()`, `get_menu()`, `addto_menu()`.
 
-### `add_choice`(*type, x, y, w, h, name*)
+### `add_choice`(type, x, y, w, h, name)
 
 Add a choice object to the form.\
 Methods: `set_choice()`, `get_choice()`, `clear_choice()`, `addto_choice()`, `replace_choice()`, `delete_choice()`, `get_choice_text()`, `set_choice_fontsize()`, `set_choice_fontstyle()`.
 
-### `add_browser`(*type, x, y, w, h, name*)
+### `add_browser`(type, x, y, w, h, name)
 
 Add a browser object to the form.\
 Methods: `set_browser_topline()`, `clear_browser()`, `add_browser_line()`, `addto_browser()`, `insert_browser_line()`, `delete_browser_line()`, `replace_browser_line()`, `get_browser_line()`, `load_browser()`, `get_browser_maxline()`, `select_browser_line()`, `deselect_browser_line()`, `deselect_browser()`, `isselected_browser_line()`, `get_browser()`, `set_browser_fontsize()`, `set_browser_fontstyle()`, `set_browser_specialkey()`.
 
-### `add_timer`(*type, x, y, w, h, name*)
+### `add_timer`(type, x, y, w, h, name)
 
 Add a timer object to the form.\
 Methods: `set_timer()`, `get_timer()`.
@@ -5263,24 +5260,23 @@ Methods: `set_timer()`, `get_timer()`.
 
 Form objects have the following data attributes; see the FORMS documentation:
 
-|                          |                 |                                |
-|:-------------------------|:----------------|:-------------------------------|
-| NameC TypeMeaning window | int (read-only) | GL window id                   |
-| w                        | float           | form width                     |
-| h                        | float           | form height                    |
-| x                        | float           | form x origin                  |
-| y                        | float           | form y origin                  |
-| deactivated              | int             | nonzero if form is deactivated |
-| visible                  | int             | nonzero if form is visible     |
-| frozen                   | int             | nonzero if form is frozen      |
-| doublebuf                | int             | nonzero if double buffering on |
-|                          |                 |                                |
+|             |                 |                                |
+|:------------|:----------------|:-------------------------------|
+| window      | int (read-only) | GL window id                   |
+| w           | float           | form width                     |
+| h           | float           | form height                    |
+| x           | float           | form x origin                  |
+| y           | float           | form y origin                  |
+| deactivated | int             | nonzero if form is deactivated |
+| visible     | int             | nonzero if form is visible     |
+| frozen      | int             | nonzero if form is frozen      |
+| doublebuf   | int             | nonzero if double buffering on |
 
 ## FORMS Objects
 
 Besides methods specific to particular kinds of FORMS objects, all FORMS objects also have the following methods:
 
-### `set_call_back`(*function, argument*)
+### `set_call_back`(function, argument)
 
 Set the object’s callback function and argument. When the object needs interaction, the callback function will be called with two arguments: the object, and the callback argument. (FORMS objects without a callback function are returned by `fl.do_forms()` or `fl.check_forms()` when they need interaction.) Call this method without arguments to remove the callback function.
 
@@ -5310,32 +5306,31 @@ Unfreeze the object.
 
 FORMS objects have these data attributes; see the FORMS documentation:
 
-|                            |                 |                  |
-|:---------------------------|:----------------|:-----------------|
-| NameC TypeMeaning objclass | int (read-only) | object class     |
-| type                       | int (read-only) | object type      |
-| boxtype                    | int             | box type         |
-| x                          | float           | x origin         |
-| y                          | float           | y origin         |
-| w                          | float           | width            |
-| h                          | float           | height           |
-| col1                       | int             | primary color    |
-| col2                       | int             | secondary color  |
-| align                      | int             | alignment        |
-| lcol                       | int             | label color      |
-| lsize                      | float           | label font size  |
-| label                      | string          | label string     |
-| lstyle                     | int             | label style      |
-| pushed                     | int (read-only) | (see FORMS docs) |
-| focus                      | int (read-only) | (see FORMS docs) |
-| belowmouse                 | int (read-only) | (see FORMS docs) |
-| frozen                     | int (read-only) | (see FORMS docs) |
-| active                     | int (read-only) | (see FORMS docs) |
-| input                      | int (read-only) | (see FORMS docs) |
-| visible                    | int (read-only) | (see FORMS docs) |
-| radio                      | int (read-only) | (see FORMS docs) |
-| automatic                  | int (read-only) | (see FORMS docs) |
-|                            |                 |                  |
+|            |                 |                  |
+|:-----------|:----------------|:-----------------|
+| objclass   | int (read-only) | object class     |
+| type       | int (read-only) | object type      |
+| boxtype    | int             | box type         |
+| x          | float           | x origin         |
+| y          | float           | y origin         |
+| w          | float           | width            |
+| h          | float           | height           |
+| col1       | int             | primary color    |
+| col2       | int             | secondary color  |
+| align      | int             | alignment        |
+| lcol       | int             | label color      |
+| lsize      | float           | label font size  |
+| label      | string          | label string     |
+| lstyle     | int             | label style      |
+| pushed     | int (read-only) | (see FORMS docs) |
+| focus      | int (read-only) | (see FORMS docs) |
+| belowmouse | int (read-only) | (see FORMS docs) |
+| frozen     | int (read-only) | (see FORMS docs) |
+| active     | int (read-only) | (see FORMS docs) |
+| input      | int (read-only) | (see FORMS docs) |
+| visible    | int (read-only) | (see FORMS docs) |
+| radio      | int (read-only) | (see FORMS docs) |
+| automatic  | int (read-only) | (see FORMS docs) |
 
 # `FL` — Constants used with the `fl` module
 
@@ -5369,7 +5364,7 @@ It supports the following operations:
 
 Initialization function. Calls . It is normally not necessary to call this function, since it is called automatically the first time the `fm` module is imported.
 
-### `findfont`(*fontname*)
+### `findfont`(fontname)
 
 Return a font handle object. Calls `fmfindfont(`*`fontname`*`)`.
 
@@ -5377,11 +5372,11 @@ Return a font handle object. Calls `fmfindfont(`*`fontname`*`)`.
 
 Returns a list of available font names. This is an interface to .
 
-### `prstr`(*string*)
+### `prstr`(string)
 
 Render a string using the current font (see the `setfont()` font handle method below). Calls `fmprstr(`*`string`*`)`.
 
-### `setpath`(*string*)
+### `setpath`(string)
 
 Sets the font search path. Calls `fmsetpath(`*`string`*`)`. (XXX Does not work!?!)
 
@@ -5391,7 +5386,7 @@ Returns the current font search path.
 
 Font handle objects support the following operations:
 
-### `scalefont`(*factor*)
+### `scalefont`(factor)
 
 Returns a handle for a scaled version of this font. Calls `fmscalefont(`*`fh`*`, `*`factor`*`)`.
 
@@ -5411,7 +5406,7 @@ Returns the comment string associated with this font. Raises an exception if the
 
 Returns a tuple giving some pertinent data about this font. This is an interface to `fmgetfontinfo()`. The returned tuple contains the following numbers: `(`*printermatched*, *fixed_width*, *xorig*, *yorig*, *xsize*, *ysize*, *height*, *nglyphs*`)`.
 
-### `getstrwidth`(*string*)
+### `getstrwidth`(string)
 
 Returns the width, in pixels, of *string* when drawn in this font. Calls `fmgetstrwidth(`*`fh`*`, `*`string`*`)`.
 # `fnmatch` — Unix filename pattern matching
@@ -5420,21 +5415,21 @@ Returns the width, in pixels, of *string* when drawn in this font. Calls `fmgets
 
 This module provides support for Unix shell-style wildcards, which are *not* the same as regular expressions (which are documented in the `re`module). The special characters used in shell-style wildcards are:
 
-|                   |                              |
-|:------------------|:-----------------------------|
-| PatternMeaning \* | matches everything           |
-| ?                 | matches any single character |
-| \[                |                              |
-| \]                |                              |
-| \]                |                              |
+|     |                              |
+|:----|:-----------------------------|
+| *  | matches everything           |
+| ?   | matches any single character |
+| [  |                              |
+| ]  |                              |
+| ]  |                              |
 
 Note that the filename separator (`’/’` on Unix) is *not* special to this module. See module `glob`for pathname expansion (`glob` uses `fnmatch()` to match pathname segments). Similarly, filenames starting with a period are not special for this module, and are matched by the `*` and `?` patterns.
 
-### `fnmatch`(*filename, pattern*)
+### `fnmatch`(filename, pattern)
 
 Test whether the *filename* string matches the *pattern* string, returning true or false. If the operating system is case-insensitive, then both parameters will be normalized to all lower- or upper-case before the comparison is performed. If you require a case-sensitive comparison regardless of whether that’s standard for your operating system, use `fnmatchcase()` instead.
 
-### `fnmatchcase`(*filename, pattern*)
+### `fnmatchcase`(filename, pattern)
 
 Test whether *filename* matches *pattern*, returning true or false; the comparison is case-sensitive.
 
@@ -5449,7 +5444,7 @@ This module supports two interface definitions, each with multiple implementatio
 
 Writer objects encapsulate device interfaces. Abstract devices, such as file formats, are supported as well as physical devices. The provided implementations all work with abstract devices. The interface makes available mechanisms for setting the properties which formatter objects manage and inserting data into the output.
 
-## The Formatter Interface <span id="formatter-interface" label="formatter-interface"></span>
+## The Formatter Interface 
 
 Interfaces to create formatters are dependent on the specific formatter class being instantiated. The interfaces described below are the required interfaces which all formatters must support once initialized.
 
@@ -5465,7 +5460,7 @@ The following attributes are defined for formatter instance objects:
 
 The writer instance with which the formatter interacts.
 
-### `end_paragraph`(*blanklines*)
+### `end_paragraph`(blanklines)
 
 Close any open paragraphs and insert at least *blanklines* before the next paragraph.
 
@@ -5473,19 +5468,19 @@ Close any open paragraphs and insert at least *blanklines* before the next parag
 
 Add a hard line break if one does not already exist. This does not break the logical paragraph.
 
-### `add_hor_rule`(*\*args, \*\*kw*)
+### `add_hor_rule`(*args, **kw)
 
 Insert a horizontal rule in the output. A hard break is inserted if there is data in the current paragraph, but the logical paragraph is not broken. The arguments and keywords are passed on to the writer’s `send_line_break()` method.
 
-### `add_flowing_data`(*data*)
+### `add_flowing_data`(data)
 
 Provide data which should be formatted with collapsed whitespace. Whitespace from preceding and successive calls to `add_flowing_data()` is considered as well when the whitespace collapse is performed. The data which is passed to this method is expected to be word-wrapped by the output device. Note that any word-wrapping still must be performed by the writer object due to the need to rely on device and font information.
 
-### `add_literal_data`(*data*)
+### `add_literal_data`(data)
 
 Provide data which should be passed to the writer unchanged. Whitespace, including newline and tab characters, are considered legal in the value of *data*.
 
-### `add_label_data`(*format, counter*)
+### `add_label_data`(format, counter)
 
 Insert a label which should be placed to the left of the current left margin. This should be used for constructing bulleted or numbered lists. If the *format* value is a string, it is interpreted as a format specification for *counter*, which should be an integer. The result of this formatting becomes the value of the label; if *format* is not a string it is used as the label value directly. The label value is passed as the only argument to the writer’s `send_label_data()` method. Interpretation of non-string label values is dependent on the associated writer.
 
@@ -5495,7 +5490,7 @@ Format specifications are strings which, in combination with a counter value, ar
 
 Send any pending whitespace buffered from a previous call to `add_flowing_data()` to the associated writer object. This should be called before any direct manipulation of the writer object.
 
-### `push_alignment`(*align*)
+### `push_alignment`(align)
 
 Push a new alignment setting onto the alignment stack. This may be if no change is desired. If the alignment value is changed from the previous setting, the writer’s `new_alignment()` method is called with the *align* value.
 
@@ -5503,7 +5498,7 @@ Push a new alignment setting onto the alignment stack. This may be if no change 
 
 Restore the previous alignment.
 
-### `push_font`(*`(`size, italic, bold, teletype`)`*)
+### `push_font`(`(`size, italic, bold, teletype`)`)
 
 Change some or all font properties of the writer object. Properties which are not set to are set to the values passed in while others are maintained at their current settings. The writer’s `new_font()` method is called with the fully resolved font specification.
 
@@ -5511,7 +5506,7 @@ Change some or all font properties of the writer object. Properties which are no
 
 Restore the previous font.
 
-### `push_margin`(*margin*)
+### `push_margin`(margin)
 
 Increase the number of left margin indentations by one, associating the logical tag *margin* with the new indentation. The initial margin level is `0`. Changed values of the logical tag must be true values; false values other than are not sufficient to change the margin.
 
@@ -5519,7 +5514,7 @@ Increase the number of left margin indentations by one, associating the logical 
 
 Restore the previous margin.
 
-### `push_style`(*\*styles*)
+### `push_style`(*styles)
 
 Push any number of arbitrary style specifications. All styles are pushed onto the styles stack in order. A tuple representing the entire stack, including values, is passed to the writer’s `new_styles()` method.
 
@@ -5527,7 +5522,7 @@ Push any number of arbitrary style specifications. All styles are pushed onto th
 
 Pop the last *n* style specifications passed to `push_style()`. A tuple representing the revised stack, including values, is passed to the writer’s `new_styles()` method.
 
-### `set_spacing`(*spacing*)
+### `set_spacing`(spacing)
 
 Set the spacing style for the writer.
 
@@ -5535,7 +5530,7 @@ Set the spacing style for the writer.
 
 Inform the formatter that data has been added to the current paragraph out-of-band. This should be used when the writer has been manipulated directly. The optional *flag* argument can be set to false if the writer manipulations produced a hard line break at the end of the output.
 
-## Formatter Implementations <span id="formatter-impls" label="formatter-impls"></span>
+## Formatter Implementations 
 
 Two implementations of formatter objects are provided by this module. Most applications may use one of these classes without modification or subclassing.
 
@@ -5543,11 +5538,11 @@ Two implementations of formatter objects are provided by this module. Most appli
 
 A formatter which does nothing. If *writer* is omitted, a `NullWriter` instance is created. No methods of the writer are called by `NullFormatter` instances. Implementations should inherit from this class if implementing a writer interface but don’t need to inherit any implementation.
 
-### class `AbstractFormatter`(*writer*)
+### class `AbstractFormatter`(writer)
 
 The standard formatter. This implementation has demonstrated wide applicability to many writers, and may be used directly in most circumstances. It has been used to implement a full-featured world-wide web browser.
 
-## The Writer Interface <span id="writer-interface" label="writer-interface"></span>
+## The Writer Interface 
 
 Interfaces to create writers are dependent on the specific writer class being instantiated. The interfaces described below are the required interfaces which all writers must support once initialized. Note that while most applications can use the `AbstractFormatter` class as a formatter, the writer must typically be provided by the application.
 
@@ -5555,23 +5550,23 @@ Interfaces to create writers are dependent on the specific writer class being in
 
 Flush any buffered output or device control events.
 
-### `new_alignment`(*align*)
+### `new_alignment`(align)
 
 Set the alignment style. The *align* value can be any object, but by convention is a string or `None`, where `None` indicates that the writer’s “preferred” alignment should be used. Conventional *align* values are `’left’`, `’center’`, `’right’`, and `’justify’`.
 
-### `new_font`(*font*)
+### `new_font`(font)
 
 Set the font style. The value of *font* will be `None`, indicating that the device’s default font should be used, or a tuple of the form `(`*size*, *italic*, *bold*, *teletype*`)`. Size will be a string indicating the size of font that should be used; specific strings and their interpretation must be defined by the application. The *italic*, *bold*, and *teletype* values are boolean indicators specifying which of those font attributes should be used.
 
-### `new_margin`(*margin, level*)
+### `new_margin`(margin, level)
 
 Set the margin level to the integer *level* and the logical tag to *margin*. Interpretation of the logical tag is at the writer’s discretion; the only restriction on the value of the logical tag is that it not be a false value for non-zero values of *level*.
 
-### `new_spacing`(*spacing*)
+### `new_spacing`(spacing)
 
 Set the spacing style to *spacing*.
 
-### `new_styles`(*styles*)
+### `new_styles`(styles)
 
 Set additional styles. The *styles* value is a tuple of arbitrary values; the value should be ignored. The *styles* tuple may be interpreted either as a set or as a stack depending on the requirements of the application and writer implementation.
 
@@ -5579,27 +5574,27 @@ Set additional styles. The *styles* value is a tuple of arbitrary values; the va
 
 Break the current line.
 
-### `send_paragraph`(*blankline*)
+### `send_paragraph`(blankline)
 
 Produce a paragraph separation of at least *blankline* blank lines, or the equivalent. The *blankline* value will be an integer. Note that the implementation will receive a call to `send_line_break()` before this call if a line break is needed; this method should not include ending the last line of the paragraph. It is only responsible for vertical spacing between paragraphs.
 
-### `send_hor_rule`(*\*args, \*\*kw*)
+### `send_hor_rule`(*args, **kw)
 
 Display a horizontal rule on the output device. The arguments to this method are entirely application- and writer-specific, and should be interpreted with care. The method implementation may assume that a line break has already been issued via `send_line_break()`.
 
-### `send_flowing_data`(*data*)
+### `send_flowing_data`(data)
 
 Output character data which may be word-wrapped and re-flowed as needed. Within any sequence of calls to this method, the writer may assume that spans of multiple whitespace characters have been collapsed to single space characters.
 
-### `send_literal_data`(*data*)
+### `send_literal_data`(data)
 
 Output character data which has already been formatted for display. Generally, this should be interpreted to mean that line breaks indicated by newline characters should be preserved and no new line breaks should be introduced. The data may contain embedded newline and tab characters, unlike data provided to the `send_formatted_data()` interface.
 
-### `send_label_data`(*data*)
+### `send_label_data`(data)
 
 Set *data* to the left of the current left margin, if possible. The value of *data* is not restricted; treatment of non-string values is entirely application- and writer-dependent. This method will only be called at the beginning of a line.
 
-## Writer Implementations <span id="writer-impls" label="writer-impls"></span>
+## Writer Implementations 
 
 Three implementations of the writer object interface are provided as examples by this module. Most applications will need to derive new writer classes from the `NullWriter` class.
 
@@ -5622,7 +5617,7 @@ The `fpformat` module defines functions for dealing with floating point numbers 
 
 The `fpformat` module defines the following functions and an exception:
 
-### `fix`(*x, digs*)
+### `fix`(x, digs)
 
 Format *x* as `[-]ddd.ddd` with *digs* digits after the point and at least one digit before. If *`digs`*` <= 0`, the decimal point is suppressed.
 
@@ -5630,7 +5625,7 @@ Format *x* as `[-]ddd.ddd` with *digs* digits after the point and at least one d
 
 Return value is a string.
 
-### `sci`(*x, digs*)
+### `sci`(x, digs)
 
 Format *x* as `[-]d.dddE[+-]ddd` with *digs* digits after the point and exactly one digit before. If *`digs`*` <= 0`, one digit is kept and the point is suppressed.
 
@@ -5700,17 +5695,17 @@ Exception raised when a reply is received from the server that does not begin wi
 
 — netrcParser for the `.netrc` file format. The file `.netrc` is typically used by FTP clients to load user authentication information before prompting the user. The file `Tools/scripts/ftpmirror.py`in the Python source distribution is a script that can mirror FTP sites, or portions thereof, using the `ftplib` module. It can be used as an extended example that applies this module.
 
-## FTP Objects <span id="ftp-objects" label="ftp-objects"></span>
+## FTP Objects 
 
 Several methods are available in two flavors: one for handling text files and another for binary files. These are named for the command which is used followed by `lines` for the text version or `binary` for the binary version.
 
 `FTP` instances have the following methods:
 
-### `set_debuglevel`(*level*)
+### `set_debuglevel`(level)
 
 Set the instance’s debugging level. This controls the amount of debugging output printed. The default, `0`, produces no debugging output. A value of `1` produces a moderate amount of debugging output, generally a single line per request. A value of `2` or higher produces the maximum amount of debugging output, logging each line sent and received on the control connection.
 
-### `connect`(*host*)
+### `connect`(host)
 
 Connect to the given host and port. The default port number is `21`, as specified by the FTP protocol specification. It is rarely needed to specify a different port number. This function should be called only once for each instance; it should not be called at all if a host was given when the instance was created. All other methods can only be used after a connection has been made.
 
@@ -5726,65 +5721,65 @@ Log in as the given *user*. The *passwd* and *acct* parameters are optional and 
 
 Abort a file transfer that is in progress. Using this does not always work, but it’s worth a try.
 
-### `sendcmd`(*command*)
+### `sendcmd`(command)
 
 Send a simple command string to the server and return the response string.
 
-### `voidcmd`(*command*)
+### `voidcmd`(command)
 
 Send a simple command string to the server and handle the response. Return nothing if a response code in the range 200–299 is received. Raise an exception otherwise.
 
-### `retrbinary`(*command, callback*)
+### `retrbinary`(command, callback)
 
 Retrieve a file in binary transfer mode. *command* should be an appropriate `RETR` command, i.e. `’RETR `*`filename`*`’`. The *callback* function is called for each block of data received, with a single string argument giving the data block. The optional *maxblocksize* argument specifies the maximum chunk size to read on the low-level socket object created to do the actual transfer (which will also be the largest size of the data blocks passed to *callback*). A reasonable default is chosen. *rest* means the same thing as in the `transfercmd()` method.
 
-### `retrlines`(*command*)
+### `retrlines`(command)
 
 Retrieve a file or directory listing in ASCII transfer mode. *command* should be an appropriate `RETR` command (see `retrbinary()` or a `LIST` command (usually just the string `’LIST’`). The *callback* function is called for each line, with the trailing CRLF stripped. The default *callback* prints the line to `sys.stdout`.
 
-### `set_pasv`(*boolean*)
+### `set_pasv`(boolean)
 
 Enable “passive” mode if *boolean* is true, other disable passive mode.
 
-### `storbinary`(*command, file, blocksize*)
+### `storbinary`(command, file, blocksize)
 
 Store a file in binary transfer mode. *command* should be an appropriate `STOR` command, i.e. `"STOR `*`filename`*`"`. *file* is an open file object which is read until EOF using its `read()` method in blocks of size *blocksize* to provide the data to be stored.
 
-### `storlines`(*command, file*)
+### `storlines`(command, file)
 
 Store a file in ASCII transfer mode. *command* should be an appropriate `STOR` command (see `storbinary()`). Lines are read until EOF from the open file object *file* using its `readline()` method to provide the data to be stored.
 
-### `transfercmd`(*cmd*)
+### `transfercmd`(cmd)
 
 Initiate a transfer over the data connection. If the transfer is active, send a `PORT` command and the transfer command specified by *cmd*, and accept the connection. If the server is passive, send a `PASV` command, connect to it, and start the transfer command. Either way, return the socket for the connection.
 
 If optional *rest* is given, a `REST` command is sent to the server, passing *rest* as an argument. *rest* is usually a byte offset into the requested file, telling the server to restart sending the file’s bytes at the requested offset, skipping over the initial bytes. Note however that RFC 959 requires only that *rest* be a string containing characters in the printable range from ASCII code 33 to ASCII code 126. The `transfercmd()` method, therefore, converts *rest* to a string, but no check is performed on the string’s contents. If the server does not recognize the `REST` command, an `error_reply` exception will be raised. If this happens, simply call `transfercmd()` without a *rest* argument.
 
-### `ntransfercmd`(*cmd*)
+### `ntransfercmd`(cmd)
 
 Like `transfercmd()`, but returns a tuple of the data connection and the expected size of the data. If the expected size could not be computed, `None` will be returned as the expected size. *cmd* and *rest* means the same thing as in `transfercmd()`.
 
-### `nlst`(*argument*)
+### `nlst`(argument)
 
 Return a list of files as returned by the `NLST` command. The optional *argument* is a directory to list (default is the current server directory). Multiple arguments can be used to pass non-standard options to the `NLST` command.
 
-### `dir`(*argument*)
+### `dir`(argument)
 
 Produce a directory listing as returned by the `LIST` command, printing it to standard output. The optional *argument* is a directory to list (default is the current server directory). Multiple arguments can be used to pass non-standard options to the `LIST` command. If the last argument is a function, it is used as a *callback* function as for `retrlines()`; the default prints to `sys.stdout`. This method returns `None`.
 
-### `rename`(*fromname, toname*)
+### `rename`(fromname, toname)
 
 Rename file *fromname* on the server to *toname*.
 
-### `delete`(*filename*)
+### `delete`(filename)
 
 Remove the file named *filename* from the server. If successful, returns the text of the response, otherwise raises `error_perm` on permission errors or `error_reply` on other errors.
 
-### `cwd`(*pathname*)
+### `cwd`(pathname)
 
 Set the current directory on the server.
 
-### `mkd`(*pathname*)
+### `mkd`(pathname)
 
 Create a new directory on the server.
 
@@ -5792,11 +5787,11 @@ Create a new directory on the server.
 
 Return the pathname of the current directory on the server.
 
-### `rmd`(*dirname*)
+### `rmd`(dirname)
 
 Remove the directory named *dirname* on the server.
 
-### `size`(*filename*)
+### `size`(filename)
 
 Request the size of the file named *filename* on the server. On success, the size of the file is returned as an integer, otherwise `None` is returned. Note that the `SIZE` command is not standardized, but is supported by many common server implementations.
 
@@ -5807,11 +5802,11 @@ Send a `QUIT` command to the server and close the connection. This is the “pol
 ### `close`()
 
 Close the connection unilaterally. This should not be applied to an already closed connection (e.g. after a successful call to `quit()`. After this call the `FTP` instance should not be used any more (i.e., after a call to `close()` or `quit()` you cannot reopen the connection by issuing another `login()` method).
-# Built-in Functions <span id="built-in-funcs" label="built-in-funcs"></span>
+# Built-in Functions 
 
 The Python interpreter has a number of functions built into it that are always available. They are listed here in alphabetical order.
 
-### `__import__`(*name*)
+### `__import__`(name)
 
 This function is invoked by the statement. It mainly exists so that you can replace it with another function that has a compatible interface, in order to change the semantics of the statement. For examples of why and how you would do this, see the standard library modules `ihooks`and `rexec`. See also the built-in module `imp`, which defines some useful operations out of which you can build your own `__import__()` function.
 
@@ -5828,43 +5823,43 @@ When the *name* variable is of the form `package.module`, normally, the top-leve
             mod = getattr(mod, comp)
         return mod
 
-### `abs`(*x*)
+### `abs`(x)
 
 Return the absolute value of a number. The argument may be a plain or long integer or a floating point number. If the argument is a complex number, its magnitude is returned.
 
-### `apply`(*function, args*)
+### `apply`(function, args)
 
 The *function* argument must be a callable object (a user-defined or built-in function or method, or a class object) and the *args* argument must be a sequence (if it is not a tuple, the sequence is first converted to a tuple). The *function* is called with *args* as the argument list; the number of arguments is the the length of the tuple. (This is different from just calling *`func`*`(`*`args`*`)`, since in that case there is always exactly one argument.) If the optional *keywords* argument is present, it must be a dictionary whose keys are strings. It specifies keyword arguments to be added to the end of the the argument list.
 
-### `buffer`(*object*)
+### `buffer`(object)
 
 The *object* argument must be an object that supports the buffer call interface (such as strings, arrays, and buffers). A new buffer object will be created which references the *object* argument. The buffer object will be a slice from the beginning of *object* (or from the specified *offset*). The slice will extend to the end of *object* (or will have a length given by the *size* argument).
 
-### `callable`(*object*)
+### `callable`(object)
 
 Return true if the *object* argument appears callable, false if not. If this returns true, it is still possible that a call fails, but if it is false, calling *object* will never succeed. Note that classes are callable (calling a class returns a new instance); class instances are callable if they have a `__call__()` method.
 
-### `chr`(*i*)
+### `chr`(i)
 
-Return a string of one character whose ASCII code is the integer *i*, e.g., `chr(97)` returns the string `’a’`. This is the inverse of `ord()`. The argument must be in the range \[0..255\], inclusive; `ValueError` will be raised if *i* is outside that range.
+Return a string of one character whose ASCII code is the integer *i*, e.g., `chr(97)` returns the string `’a’`. This is the inverse of `ord()`. The argument must be in the range [0..255], inclusive; `ValueError` will be raised if *i* is outside that range.
 
-### `cmp`(*x, y*)
+### `cmp`(x, y)
 
 Compare the two objects *x* and *y* and return an integer according to the outcome. The return value is negative if *`x`*` < `*`y`*, zero if *`x`*` == `*`y`* and strictly positive if *`x`*` > `*`y`*.
 
-### `coerce`(*x, y*)
+### `coerce`(x, y)
 
 Return a tuple consisting of the two numeric arguments converted to a common type, using the same rules as used by arithmetic operations.
 
-### `compile`(*string, filename, kind*)
+### `compile`(string, filename, kind)
 
 Compile the *string* into a code object. Code objects can be executed by an statement or evaluated by a call to `eval()`. The *filename* argument should give the file from which the code was read; pass e.g. `’<string>’` if it wasn’t read from a file. The *kind* argument specifies what kind of code must be compiled; it can be `’exec’` if *string* consists of a sequence of statements, `’eval’` if it consists of a single expression, or `’single’` if it consists of a single interactive statement (in the latter case, expression statements that evaluate to something else than `None` will printed).
 
-### `complex`(*real*)
+### `complex`(real)
 
-Create a complex number with the value *real* + *imag*\*j or convert a string or number to a complex number. Each argument may be any numeric type (including complex). If *imag* is omitted, it defaults to zero and the function serves as a numeric conversion function like `int()`, `long()` and `float()`; in this case it also accepts a string argument which should be a valid complex number.
+Create a complex number with the value *real* + *imag**j or convert a string or number to a complex number. Each argument may be any numeric type (including complex). If *imag* is omitted, it defaults to zero and the function serves as a numeric conversion function like `int()`, `long()` and `float()`; in this case it also accepts a string argument which should be a valid complex number.
 
-### `delattr`(*object, name*)
+### `delattr`(object, name)
 
 This is a relative of `setattr()`. The arguments are an object and a string. The string must be the name of one of the object’s attributes. The function deletes the named attribute, provided the object allows it. For example, `delattr(`*`x`*`, ’`*`foobar`*`’)` is equivalent to `del `*`x`*`.`*`foobar`*.
 
@@ -5878,11 +5873,11 @@ Without arguments, return the list of names in the current local symbol table. W
     >>> dir(sys)
     ['argv', 'exit', 'modules', 'path', 'stderr', 'stdin', 'stdout']
 
-### `divmod`(*a, b*)
+### `divmod`(a, b)
 
 Take two numbers as arguments and return a pair of numbers consisting of their quotient and remainder when using long division. With mixed operand types, the rules for binary arithmetic operators apply. For plain and long integers, the result is the same as `(`*`a`*` / `*`b`*`, `*`a`*` % `*`b`*`)`. For floating point numbers the result is `(`*`q`*`, `*`a`*` % `*`b`*`)`, where *q* is usually `math.floor(`*`a`*` / `*`b`*`)` but may be 1 less than that. In any case *`q`*` * `*`b`*` + `*`a`*` % `*`b`* is very close to *a*, if *`a`*` % `*`b`* is non-zero it has the same sign as *b*, and `0 <= abs(`*`a`*` % `*`b`*`) < abs(`*`b`*`)`.
 
-### `eval`(*expression*)
+### `eval`(expression)
 
 The arguments are a string and two optional dictionaries. The *expression* argument is parsed and evaluated as a Python expression (technically speaking, a condition list) using the *globals* and *locals* dictionaries as global and local name space. If the *locals* dictionary is omitted it defaults to the *globals* dictionary. If both dictionaries are omitted, the expression is executed in the environment where is called. The return value is the result of the evaluated expression. Syntax errors are reported as exceptions. Example:
 
@@ -5894,23 +5889,23 @@ This function can also be used to execute arbitrary code objects (e.g. created 
 
 Hints: dynamic execution of statements is supported by the statement. Execution of statements from a file is supported by the `execfile()` function. The `globals()` and `locals()` functions returns the current global and local dictionary, respectively, which may be useful to pass around for use by `eval()` or `execfile()`.
 
-### `execfile`(*file*)
+### `execfile`(file)
 
 This function is similar to the statement, but parses a file instead of a string. It is different from the statement in that it does not use the module administration — it reads the file unconditionally and does not create a new module.[^1]
 
 The arguments are a file name and two optional dictionaries. The file is parsed and evaluated as a sequence of Python statements (similarly to a module) using the *globals* and *locals* dictionaries as global and local namespace. If the *locals* dictionary is omitted it defaults to the *globals* dictionary. If both dictionaries are omitted, the expression is executed in the environment where `execfile()` is called. The return value is `None`.
 
-### `filter`(*function, list*)
+### `filter`(function, list)
 
 Construct a list from those elements of *list* for which *function* returns true. If *list* is a string or a tuple, the result also has that type; otherwise it is always a list. If *function* is `None`, the identity function is assumed, i.e. all elements of *list* that are false (zero or empty) are removed.
 
-### `float`(*x*)
+### `float`(x)
 
 Convert a string or a number to floating point. If the argument is a string, it must contain a possibly signed decimal or floating point number, possibly embedded in whitespace; this behaves identical to `string.atof(`*`x`*`)`. Otherwise, the argument may be a plain or long integer or a floating point number, and a floating point number with the same value (within Python’s floating point precision) is returned.
 
 **Note:** When passing in a string, values for NaNand Infinitymay be returned, depending on the underlying C library. The specific set of strings accepted which cause these values to be returned depends entirely on the C library and is known to vary.
 
-### `getattr`(*object, name*)
+### `getattr`(object, name)
 
 Return the value of the named attributed of *object*. *name* must be a string. If the string is the name of one of the object’s attributes, the result is the value of that attribute. For example, `getattr(x, ’foobar’)` is equivalent to `x.foobar`. If the named attribute does not exist, *default* is returned if provided, otherwise `AttributeError` is raised.
 
@@ -5918,19 +5913,19 @@ Return the value of the named attributed of *object*. *name* must be a string. I
 
 Return a dictionary representing the current global symbol table. This is always the dictionary of the current module (inside a function or method, this is the module where it is defined, not the module from which it is called).
 
-### `hasattr`(*object, name*)
+### `hasattr`(object, name)
 
 The arguments are an object and a string. The result is 1 if the string is the name of one of the object’s attributes, 0 if not. (This is implemented by calling `getattr(`*`object`*`, `*`name`*`)` and seeing whether it raises an exception or not.)
 
-### `hash`(*object*)
+### `hash`(object)
 
 Return the hash value of the object (if it has one). Hash values are integers. They are used to quickly compare dictionary keys during a dictionary lookup. Numeric values that compare equal have the same hash value (even if they are of different types, e.g. 1 and 1.0).
 
-### `hex`(*x*)
+### `hex`(x)
 
 Convert an integer number (of any size) to a hexadecimal string. The result is a valid Python expression. Note: this always yields an unsigned literal, e.g. on a 32-bit machine, `hex(-1)` yields `’0xffffffff’`. When evaluated on a machine with the same word size, this literal is evaluated as -1; at a different word size, it may turn up as a large positive number or raise an `OverflowError` exception.
 
-### `id`(*object*)
+### `id`(object)
 
 Return the ‘identity’ of an object. This is an integer (or long integer) which is guaranteed to be unique and constant for this object during its lifetime. Two objects whose lifetimes are disjunct may have the same `id()` value. (Implementation note: this is the address of the object.)
 
@@ -5942,27 +5937,27 @@ If the `readline` module was loaded, then `input()` will use it to provide elabo
 
 Consider using the `raw_input()` function for general input from users.
 
-### `int`(*x*)
+### `int`(x)
 
-Convert a string or number to a plain integer. If the argument is a string, it must contain a possibly signed decimal number representable as a Python integer, possibly embedded in whitespace; this behaves identical to `string.atoi(`*`x`*`)`. The *radix* parameter gives the base for the conversion and may be any integer in the range \[2, 36\]. If *radix* is specified and *x* is not a string, `TypeError` is raised. Otherwise, the argument may be a plain or long integer or a floating point number. Conversion of floating point numbers to integers is defined by the C semantics; normally the conversion truncates towards zero.[^2]
+Convert a string or number to a plain integer. If the argument is a string, it must contain a possibly signed decimal number representable as a Python integer, possibly embedded in whitespace; this behaves identical to `string.atoi(`*`x`*`)`. The *radix* parameter gives the base for the conversion and may be any integer in the range [2, 36]. If *radix* is specified and *x* is not a string, `TypeError` is raised. Otherwise, the argument may be a plain or long integer or a floating point number. Conversion of floating point numbers to integers is defined by the C semantics; normally the conversion truncates towards zero.[^2]
 
-### `intern`(*string*)
+### `intern`(string)
 
 Enter *string* in the table of “interned” strings and return the interned string – which is *string* itself or a copy. Interning strings is useful to gain a little performance on dictionary lookup – if the keys in a dictionary are interned, and the lookup key is interned, the key comparisons (after hashing) can be done by a pointer compare instead of a string compare. Normally, the names used in Python programs are automatically interned, and the dictionaries used to hold module, class or instance attributes have interned keys. Interned strings are immortal (i.e. never get garbage collected).
 
-### `isinstance`(*object, class*)
+### `isinstance`(object, class)
 
 Return true if the *object* argument is an instance of the *class* argument, or of a (direct or indirect) subclass thereof. Also return true if *class* is a type object and *object* is an object of that type. If *object* is not a class instance or a object of the given type, the function always returns false. If *class* is neither a class object nor a type object, a `TypeError` exception is raised.
 
-### `issubclass`(*class1, class2*)
+### `issubclass`(class1, class2)
 
 Return true if *class1* is a subclass (direct or indirect) of *class2*. A class is considered a subclass of itself. If either argument is not a class object, a `TypeError` exception is raised.
 
-### `len`(*s*)
+### `len`(s)
 
 Return the length (the number of items) of an object. The argument may be a sequence (string, tuple or list) or a mapping (dictionary).
 
-### `list`(*sequence*)
+### `list`(sequence)
 
 Return a list whose items are the same and in the same order as *sequence*’s items. If *sequence* is already a list, a copy is made and returned, similar to *`sequence`*`[:]`. For instance, `list(’abc’)` returns returns `[’a’, ’b’, ’c’]` and `list( (1, 2, 3) )` returns `[1, 2, 3]`.
 
@@ -5970,27 +5965,27 @@ Return a list whose items are the same and in the same order as *sequence*’s i
 
 Return a dictionary representing the current local symbol table. **Warning:** The contents of this dictionary should not be modified; changes may not affect the values of local variables used by the interpreter.
 
-### `long`(*x*)
+### `long`(x)
 
 Convert a string or number to a long integer. If the argument is a string, it must contain a possibly signed decimal number of arbitrary size, possibly embedded in whitespace; this behaves identical to `string.atol(`*`x`*`)`. Otherwise, the argument may be a plain or long integer or a floating point number, and a long integer with the same value is returned. Conversion of floating point numbers to integers is defined by the C semantics; see the description of `int()`.
 
-### `map`(*function, list, ...*)
+### `map`(function, list, ...)
 
 Apply *function* to every item of *list* and return a list of the results. If additional *list* arguments are passed, *function* must take that many arguments and is applied to the items of all lists in parallel; if a list is shorter than another it is assumed to be extended with `None` items. If *function* is `None`, the identity function is assumed; if there are multiple list arguments, `map()` returns a list consisting of tuples containing the corresponding items from all lists (i.e. a kind of transpose operation). The *list* arguments may be any kind of sequence; the result is always a list.
 
-### `max`(*s*)
+### `max`(s)
 
 With a single argument *s*, return the largest item of a non-empty sequence (e.g., a string, tuple or list). With more than one argument, return the largest of the arguments.
 
-### `min`(*s*)
+### `min`(s)
 
 With a single argument *s*, return the smallest item of a non-empty sequence (e.g., a string, tuple or list). With more than one argument, return the smallest of the arguments.
 
-### `oct`(*x*)
+### `oct`(x)
 
 Convert an integer number (of any size) to an octal string. The result is a valid Python expression. Note: this always yields an unsigned literal, e.g. on a 32-bit machine, `oct(-1)` yields `’037777777777’`. When evaluated on a machine with the same word size, this literal is evaluated as -1; at a different word size, it may turn up as a large positive number or raise an `OverflowError` exception.
 
-### `open`(*filename*)
+### `open`(filename)
 
 Return a new file object (described earlier under Built-in Types). The first two arguments are the same as for `stdio`’s : *filename* is the file name to be opened, *mode* indicates how the file is to be opened: `’r’` for reading, `’w’` for writing (truncating an existing file), and `’a’` opens it for appending (which on *some* Unix systems means that *all* writes append to the end of the file, regardless of the current seek position).
 
@@ -5998,16 +5993,16 @@ Modes `’r+’`, `’w+’` and `’a+’` open the file for updating (note tha
 
 If *mode* is omitted, it defaults to `’r’`. When opening a binary file, you should append `’b’` to the *mode* value for improved portability. (It’s useful even on systems which don’t treat binary and text files differently, where it serves as documentation.) The optional *bufsize* argument specifies the file’s desired buffer size: 0 means unbuffered, 1 means line buffered, any other positive value means use a buffer of (approximately) that size. A negative *bufsize* means to use the system default, which is usually line buffered for for tty devices and fully buffered for other files. If omitted, the system default is used.[^3]
 
-### `ord`(*c*)
+### `ord`(c)
 
 Return the ASCII value of a string of one character or a Unicode character. E.g., `ord(’a’)` returns the integer `97`, `ord(u’`\
 `u2020’)` returns `8224`. This is the inverse of `chr()` for strings and of `unichr()` for Unicode characters.
 
-### `pow`(*x, y*)
+### `pow`(x, y)
 
 Return *x* to the power *y*; if *z* is present, return *x* to the power *y*, modulo *z* (computed more efficiently than `pow(`*`x`*`, `*`y`*`) % `*`z`*). The arguments must have numeric types. With mixed operand types, the rules for binary arithmetic operators apply. The effective operand type is also the type of the result; if the result is not expressible in this type, the function raises an exception; e.g., `pow(2, -1)` or `pow(2, 35000)` is not allowed.
 
-### `range`( *stop*)
+### `range`( stop)
 
 This is a versatile function to create lists containing arithmetic progressions. It is most often used in loops. The arguments must be plain integers. If the *step* argument is omitted, it defaults to `1`. If the *start* argument is omitted, it defaults to `0`. The full form returns a list of plain integers `[`*`start`*`, `*`start`*` + `*`step`*`, `*`start`*` + 2 * `*`step`*`, …]`. If *step* is positive, the last element is the largest *`start`*` + `*`i`*` * `*`step`* less than *stop*; if *step* is negative, the last element is the largest *`start`*` + `*`i`*` * `*`step`* greater than *stop*. *step* must not be zero (or else `ValueError` is raised). Example:
 
@@ -6037,11 +6032,11 @@ If the *prompt* argument is present, it is written to standard output without a 
 
 If the `readline` module was loaded, then `raw_input()` will use it to provide elaborate line editing and history features.
 
-### `reduce`(*function, sequence*)
+### `reduce`(function, sequence)
 
 Apply *function* of two arguments cumulatively to the items of *sequence*, from left to right, so as to reduce the sequence to a single value. For example, `reduce(lambda x, y: x+y, [1, 2, 3, 4, 5])` calculates `((((1+2)+3)+4)+5)`. If the optional *initializer* is present, it is placed before the items of the sequence in the calculation, and serves as a default when the sequence is empty.
 
-### `reload`(*module*)
+### `reload`(module)
 
 Re-parse and re-initialize an already imported *module*. The argument must be a module object, so it must have been successfully imported before. This is useful if you have edited the module source file using an external editor and want to try out the new version without leaving the Python interpreter. The return value is the module object (i.e. the same as the *module* argument).
 
@@ -6057,42 +6052,42 @@ If a module imports objects from another module using … …, calling `reload()
 
 If a module instantiates instances of a class, reloading the module that defines the class does not affect the method definitions of the instances — they continue to use the old class definition. The same is true for derived classes.
 
-### `repr`(*object*)
+### `repr`(object)
 
 Return a string containing a printable representation of an object. This is the same value yielded by conversions (reverse quotes). It is sometimes useful to be able to access this operation as an ordinary function. For many types, this function makes an attempt to return a string that would yield an object with the same value when passed to `eval()`.
 
-### `round`(*x*)
+### `round`(x)
 
 Return the floating point value *x* rounded to *n* digits after the decimal point. If *n* is omitted, it defaults to zero. The result is a floating point number. Values are rounded to the closest multiple of 10 to the power minus *n*; if two multiples are equally close, rounding is done away from 0 (so e.g. `round(0.5)` is `1.0` and `round(-0.5)` is `-1.0`).
 
-### `setattr`(*object, name, value*)
+### `setattr`(object, name, value)
 
 This is the counterpart of `getattr()`. The arguments are an object, a string and an arbitrary value. The string may name an existing attribute or a new attribute. The function assigns the value to the attribute, provided the object allows it. For example, `setattr(`*`x`*`, ’`*`foobar`*`’, 123)` is equivalent to *`x`*`.`*`foobar`*` = 123`.
 
-### `slice`( *stop*)
+### `slice`( stop)
 
 Return a slice object representing the set of indices specified by `range(`*`start`*`, `*`stop`*`, `*`step`*`)`. The *start* and *step* arguments default to None. Slice objects have read-only data attributes `start`, `stop` and `step` which merely return the argument values (or their default). They have no other explicit functionality; however they are used by Numerical Pythonand other third party extensions. Slice objects are also generated when extended indexing syntax is used, e.g. for `a[start:stop:step]` or `a[start:stop, i]`.
 
-### `str`(*object*)
+### `str`(object)
 
 Return a string containing a nicely printable representation of an object. For strings, this returns the string itself. The difference with `repr(`*`object`*`)` is that `str(`*`object`*`)` does not always attempt to return a string that is acceptable to `eval()`; its goal is to return a printable string.
 
-### `tuple`(*sequence*)
+### `tuple`(sequence)
 
 Return a tuple whose items are the same and in the same order as *sequence*’s items. If *sequence* is already a tuple, it is returned unchanged. For instance, `tuple(’abc’)` returns returns `(’a’, ’b’, ’c’)` and `tuple([1, 2, 3])` returns `(1, 2, 3)`.
 
-### `type`(*object*)
+### `type`(object)
 
 Return the type of an *object*. The return value is a type object. The standard module `types` defines names for all built-in types. For instance:
 
     >>> import types
     >>> if type(x) == types.StringType: print "It's a string"
 
-### `unichr`(*i*)
+### `unichr`(i)
 
-Return the Unicode string of one character whose Unicode code is the integer *i*, e.g., `unichr(97)` returns the string `u’a’`. This is the inverse of `ord()` for Unicode strings. The argument must be in the range \[0..65535\], inclusive. `ValueError` is raised otherwise. *New in version 2.0.*
+Return the Unicode string of one character whose Unicode code is the integer *i*, e.g., `unichr(97)` returns the string `u’a’`. This is the inverse of `ord()` for Unicode strings. The argument must be in the range [0..65535], inclusive. `ValueError` is raised otherwise. *New in version 2.0.*
 
-### `unicode`(*string*)
+### `unicode`(string)
 
 Decodes *string* using the codec for *encoding*. Error handling is done according to *errors*. The default behavior is to decode UTF-8 in strict mode, meaning that encoding errors raise `ValueError`. See also the `codecs` module. *New in version 2.0.*
 
@@ -6100,11 +6095,11 @@ Decodes *string* using the codec for *encoding*. Error handling is done accordin
 
 Without arguments, return a dictionary corresponding to the current local symbol table. With a module, class or class instance object as argument (or anything else that has a `__dict__` attribute), returns a dictionary corresponding to the object’s symbol table. The returned dictionary should not be modified: the effects on the corresponding symbol table are undefined.[^4]
 
-### `xrange`( *stop*)
+### `xrange`( stop)
 
 This function is very similar to `range()`, but returns an “xrange object” instead of a list. This is an opaque sequence type which yields the same values as the corresponding list, without actually storing them all simultaneously. The advantage of `xrange()` over `range()` is minimal (since `xrange()` still has to create the values when asked for them) except when a very large range is used on a memory-starved machine (e.g. MS-DOS) or when all of the range’s elements are never used (e.g. when the loop is usually terminated with ).
 
-### `zip`(*seq1,* )
+### `zip`(seq1, )
 
 This function returns a list of tuples, where each tuple contains the *i*-th element from each of the argument sequences. At least one sequence is required, otherwise a `TypeError` is raised. The returned list is truncated in length to the length of the shortest argument sequence. When there are multiple argument sequences which are all of the same length, `zip()` is similar to `map()` with an initial argument of `None`. With a single sequence argument, it returns a list of 1-tuples. *New in version 2.0.*
 
@@ -6139,7 +6134,7 @@ Returns true if automatic collection is enabled.
 
 Run a full collection. All generations are examined and the number of unreachable objects found is returned.
 
-### `set_debug`(*flags*)
+### `set_debug`(flags)
 
 Set the garbage collection debugging flags. Debugging information will be written to `sys.stderr`. See below for a list of debugging flags which can be combined using bit operations to control debugging.
 
@@ -6147,7 +6142,7 @@ Set the garbage collection debugging flags. Debugging information will be writte
 
 Return the debugging flags currently set.
 
-### `set_threshold`(*threshold0*)
+### `set_threshold`(threshold0)
 
 Set the garbage collection thresholds (the collection frequency). Setting *threshold0* to zero disables collection.
 
@@ -6206,7 +6201,7 @@ The module defines the following constant and functions:
 
 Raised on `gdbm`-specific errors, such as I/O errors. `KeyError` is raised for general mapping errors like specifying an incorrect key.
 
-### `open`(*filename,* )
+### `open`(filename, )
 
 Open a `gdbm` database and return a `gdbm` object. The *filename* argument is the name of the database file.
 
@@ -6222,7 +6217,7 @@ In addition to the dictionary-like methods, `gdbm` objects have the following me
 
 It’s possible to loop over every key in the database using this method and the `nextkey()` method. The traversal is ordered by `gdbm`’s internal hash values, and won’t be sorted by the key values. This method returns the starting key.
 
-### `nextkey`(*key*)
+### `nextkey`(key)
 
 Returns the key that follows *key* in the traversal. The following code prints every key in the database `db`, without having to create a list in memory that contains them all:
 
@@ -6250,7 +6245,7 @@ This module helps scripts to parse the command line arguments in `sys.argv`. It 
 
 Long options similar to those supported by GNU software may be used as well via an optional third argument. This module provides a single function and an exception:
 
-### `getopt`(*args, options*)
+### `getopt`(args, options)
 
 Parses command line options and parameter list. *args* is the argument list to be parsed, without the leading reference to the running program. Typically, this means `sys.argv[1:]`. *options* is the string of option letters that the script wants to recognize, with options that require an argument followed by a colon (`:`; i.e., the same format that Unix uses).
 
@@ -6337,7 +6332,7 @@ Some hints on localizing your Python modules and applications are also given.
 
 The `gettext` module defines the following API, which is very similar to the GNU API. If you use this API you will affect the translation of your entire application globally. Often this is what you want if your application is monolingual, with the choice of language dependent on the locale of your user. If you are localizing a Python module, or if your application needs to switch languages on the fly, you probably want to use the class-based API instead.
 
-### `bindtextdomain`(*domain*)
+### `bindtextdomain`(domain)
 
 Bind the *domain* to the locale directory *localedir*. More concretely, `gettext` will look for binary `.mo` files for the given domain using the path (on Unix): *`localedir`*`/`*`language`*`/LC_MESSAGES/`*`domain`*`.mo`, where *languages* is searched for in the environment variables , , , and respectively.
 
@@ -6347,11 +6342,11 @@ If *localedir* is omitted or `None`, then the current binding for *domain* is re
 
 Change or query the current global domain. If *domain* is `None`, then the current global domain is returned, otherwise the global domain is set to *domain*, which is returned.
 
-### `gettext`(*message*)
+### `gettext`(message)
 
 Return the localized translation of *message*, based on the current global domain, language, and locale directory. This function is usually aliased as `_` in the local namespace (see examples below).
 
-### `dgettext`(*domain, message*)
+### `dgettext`(domain, message)
 
 Like `gettext()`, but look the message up in the specified *domain*.
 
@@ -6370,7 +6365,7 @@ Here’s an example of typical usage for this API:
 
 The class-based API of the `gettext` module gives you more flexibility and greater convenience than the GNU API. It is the recommended way of localizing your Python applications and modules. `gettext` defines a “translations” class which implements the parsing of GNU `.mo` format files, and has methods for returning either standard 8-bit strings or Unicode strings. Translations instances can also install themselves in the built-in namespace as the function `_()`.
 
-### `find`(*domain*)
+### `find`(domain)
 
 This function implements the standard `.mo` file search algorithm. It takes a *domain*, identical to what `textdomain()` takes, and optionally a *localedir* (as in `bindtextdomain()`), and a list of languages. All arguments are strings.
 
@@ -6382,11 +6377,11 @@ If *localedir* is not given, then the default system locale directory is used.[^
 
 The first such file name that exists is returned by `find()`. If no such file is found, then `None` is returned.
 
-### `translation`(*domain*)
+### `translation`(domain)
 
-Return a `Translations` instance based on the *domain*, *localedir*, and *languages*, which are first passed to `find()` to get the associated `.mo` file path. Instances with identical `.mo` file names are cached. The actual class instantiated is either *class\_* if provided, otherwise `GNUTranslations`. The class’s constructor must take a single file object argument. If no `.mo` file is found, this function raises `IOError`.
+Return a `Translations` instance based on the *domain*, *localedir*, and *languages*, which are first passed to `find()` to get the associated `.mo` file path. Instances with identical `.mo` file names are cached. The actual class instantiated is either *class_* if provided, otherwise `GNUTranslations`. The class’s constructor must take a single file object argument. If no `.mo` file is found, this function raises `IOError`.
 
-### `install`(*domain*)
+### `install`(domain)
 
 This installs the function `_` in Python’s builtin namespace, based on *domain*, and *localedir* which are passed to the function `translation()`. The *unicode* flag is passed to the resulting translation object’s `install` method.
 
@@ -6402,17 +6397,17 @@ Translation classes are what actually implement the translation of original sour
 
 ### `__init__`()
 
-Takes an optional file object *fp*, which is ignored by the base class. Initializes “protected” instance variables *\_info* and *\_charset* which are set by derived classes. It then calls `self._parse(fp)` if *fp* is not `None`.
+Takes an optional file object *fp*, which is ignored by the base class. Initializes “protected” instance variables *_info* and *_charset* which are set by derived classes. It then calls `self._parse(fp)` if *fp* is not `None`.
 
-### `_parse`(*fp*)
+### `_parse`(fp)
 
 No-op’d in the base class, this method takes file object *fp*, and reads the data from the file, initializing its message catalog. If you have an unsupported message catalog file format, you should override this method to parse your format.
 
-### `gettext`(*message*)
+### `gettext`(message)
 
 Return the translated message. Overridden in derived classes.
 
-### `ugettext`(*message*)
+### `ugettext`(message)
 
 Return the translated message as a Unicode string. Overridden in derived classes.
 
@@ -6653,7 +6648,7 @@ The module is too large to document here in its entirety, but the following shou
 
 The following functions are non-standard or have special argument conventions:
 
-### `varray`(*argument*)
+### `varray`(argument)
 
 Equivalent to but faster than a number of `v3d()` calls. The *argument* is a list (or tuple) of points. Each point must be a tuple of coordinates `(`*`x`*`, `*`y`*`, `*`z`*`)` or `(`*`x`*`, `*`y`*`)`. The points may be 2- or 3-dimensional but must all have the same dimension. Float and int values may be mixed however. The points are always converted to 3D double precision points by assuming *`z`*` = 0.0` if necessary (as indicated in the man page), and for each point `v3d()` is called.
 
@@ -6665,19 +6660,19 @@ Equivalent to but faster than a number of `n3f` and `v3f` calls. The argument is
 
 Similar to `nvarray()` but the pairs have the point first and the normal second.
 
-### `nurbssurface`(*s_k, t_k, ctl, s_ord, t_ord, type*)
+### `nurbssurface`(s_k, t_k, ctl, s_ord, t_ord, type)
 
 Defines a nurbs surface. The dimensions of *`ctl`*`[][]` are computed as follows: `[len(`*`s_k`*`) - `*`s_ord`*`]`, `[len(`*`t_k`*`) - `*`t_ord`*`]`.
 
-### `nurbscurve`(*knots, ctlpoints, order, type*)
+### `nurbscurve`(knots, ctlpoints, order, type)
 
 Defines a nurbs curve. The length of ctlpoints is `len(`*`knots`*`) - `*`order`*.
 
-### `pwlcurve`(*points, type*)
+### `pwlcurve`(points, type)
 
 Defines a piecewise-linear curve. *points* is a list of points. *type* must be `N_ST`.
 
-### `pick`(*n*)
+### `pick`(n)
 
 The only argument to these functions specifies the desired size of the pick or select buffer.
 
@@ -6730,7 +6725,7 @@ This module contains constants used by the Silicon Graphics *Graphics Library* f
 
 The `glob` module finds all the pathnames matching a specified pattern according to the rules used by the Unix shell. No tilde expansion is done, but `*`, `?`, and character ranges expressed with `[]` will be correctly matched. This is done by using the `os.listdir()` and `fnmatch.fnmatch()` functions in concert, and not by actually invoking a subshell. (For tilde and shell variable expansion, use `os.path.expanduser()` and `os.path.expandvars()`.)
 
-### `glob`(*pathname*)
+### `glob`(pathname)
 
 Returns a possibly-empty list of path names that match *pathname*, which must be a string containing a path specification. *pathname* can be either absolute (like `/usr/src/Python-1.5/Makefile`) or relative (like `../../Tools/*/*.gif`), and can contain shell-style wildcards.
 
@@ -6755,11 +6750,11 @@ This module provides a minimal implementation of client side of the the Gopher p
 
 The module defines the following functions:
 
-### `send_selector`(*selector, host*)
+### `send_selector`(selector, host)
 
 Send a *selector* string to the gopher server at *host* and *port* (default `70`). Returns an open file object from which the returned document can be read.
 
-### `send_query`(*selector, query, host*)
+### `send_query`(selector, query, host)
 
 Send a *selector* string and a *query* string to a gopher server at *host* and *port* (default `70`). Returns an open file object from which the returned document can be read.
 
@@ -6772,23 +6767,22 @@ This module provides access to the Unix group database. It is available on all U
 
 Group database entries are reported as 4-tuples containing the following items from the group database (see `<grp.h>`), in order:
 
-|                     |           |                                             |
-|:--------------------|:----------|:--------------------------------------------|
-| IndexFieldMeaning 0 | gr_name   | the name of the group                       |
-| 1                   | gr_passwd | the (encrypted) group password; often empty |
-| 2                   | gr_gid    | the numerical group ID                      |
-| 3                   | gr_mem    | all the group member’s user names           |
-|                     |           |                                             |
+|     |           |                                             |
+|:----|:----------|:--------------------------------------------|
+| 0   | gr_name   | the name of the group                       |
+| 1   | gr_passwd | the (encrypted) group password; often empty |
+| 2   | gr_gid    | the numerical group ID                      |
+| 3   | gr_mem    | all the group member’s user names           |
 
 The gid is an integer, name and password are strings, and the member list is a list of strings. (Note that most users are not explicitly listed as members of the group they are in according to the password database. Check both databases to get complete membership information.)
 
 It defines the following items:
 
-### `getgrgid`(*gid*)
+### `getgrgid`(gid)
 
 Return the group database entry for the given numeric group ID. `KeyError` is raised if the entry asked for cannot be found.
 
-### `getgrnam`(*name*)
+### `getgrnam`(name)
 
 Return the group database entry for the given group name. `KeyError` is raised if the entry asked for cannot be found.
 
@@ -6821,7 +6815,7 @@ The *compresslevel* argument is an integer from `1` to `9` controlling the level
 
 Calling a `GzipFile` object’s `close()` method does not close *fileobj*, since you might wish to append more material after the compressed data. This also allows you to pass a `StringIO` object opened for writing as *fileobj*, and retrieve the resulting memory buffer using the `StringIO` object’s `getvalue()` method.
 
-### `open`(*filename*)
+### `open`(filename)
 
 This is a shorthand for `GzipFile(`*`filename`*`,` *`mode`*`,` *`compresslevel`*`)`. The *filename* argument is required; *mode* defaults to `’rb’` and *compresslevel* defaults to `9`.
 
@@ -6845,7 +6839,7 @@ This module defines a class which can serve as a base for parsing text files for
 
 The module defines a single class:
 
-### class `HTMLParser`(*formatter*)
+### class `HTMLParser`(formatter)
 
 This is the basic HTML parser class. It supports all entity names required by the HTML 2.0 specification (RFC 1866). It also defines handlers for all HTML 2.0 and many HTML 3.0 and 3.2 elements.
 
@@ -6853,7 +6847,7 @@ This is the basic HTML parser class. It supports all entity names required by th
 
 — htmlentitydefsDefinition of replacement text for HTML 2.0 entities. — sgmllibBase class for `HTMLParser`.
 
-## HTMLParser Objects <span id="html-parser-objects" label="html-parser-objects"></span>
+## HTMLParser Objects 
 
 In addition to tag methods, the `HTMLParser` class provides some additional methods and instance variables for use within tag methods.
 
@@ -6865,7 +6859,7 @@ This is the formatter instance associated with the parser.
 
 Boolean flag which should be true when whitespace should not be collapsed, or false when it should be. In general, this should only be true when character data is to be treated as “preformatted” text, as within a `<PRE>` element. The default value is false. This affects the operation of `handle_data()` and `save_end()`.
 
-### `anchor_bgn`(*href, name, type*)
+### `anchor_bgn`(href, name, type)
 
 This method is called at the start of an anchor region. The arguments correspond to the attributes of the `<A>` tag with the same names. The default implementation maintains a list of hyperlinks (defined by the `HREF` attribute for `<A>` tags) within the document. The list of hyperlinks is available as the data attribute `anchorlist`.
 
@@ -6873,7 +6867,7 @@ This method is called at the start of an anchor region. The arguments correspond
 
 This method is called at the end of an anchor region. The default implementation adds a textual footnote marker using an index into the list of hyperlinks created by `anchor_bgn()`.
 
-### `handle_image`(*source, alt*)
+### `handle_image`(source, alt)
 
 This method is called to handle images. The default implementation simply passes the *alt* value to the `handle_data()` method.
 
@@ -6926,23 +6920,23 @@ Once an `HTTP` instance has been connected to an HTTP server, it should be used 
 
 `HTTP` instances have the following methods:
 
-### `set_debuglevel`(*level*)
+### `set_debuglevel`(level)
 
 Set the debugging level (the amount of debugging output printed). The default debug level is `0`, meaning no debugging output is printed.
 
-### `connect`(*host*)
+### `connect`(host)
 
 Connect to the server given by *host* and *port*. See the intro for the default port. This should be called directly only if the instance was instantiated without passing a host.
 
-### `send`(*data*)
+### `send`(data)
 
 Send data to the server. This should be used directly only after the `endheaders()` method has been called and before `getreply()` has been called.
 
-### `putrequest`(*request, selector*)
+### `putrequest`(request, selector)
 
 This should be the first call after the connection to the server has been made. It sends a line to the server consisting of the *request* string, the *selector* string, and the HTTP version (`HTTP/1.0`).
 
-### `putheader`(*header, argument*)
+### `putheader`(header, argument)
 
 Send an RFC 822 style header to the server. It sends a line to the server consisting of the header, a colon and a space, and the first argument. If more arguments are given, continuation lines are sent, each consisting of a tab and an argument.
 
@@ -7000,47 +6994,47 @@ The module defines the following variables and functions:
 
 This exception is raised on all errors, such as unknown number of bits per pixel, etc.
 
-### `crop`(*image, psize, width, height, x0, y0, x1, y1*)
+### `crop`(image, psize, width, height, x0, y0, x1, y1)
 
 Return the selected part of *image*, which should by *width* by *height* in size and consist of pixels of *psize* bytes. *x0*, *y0*, *x1* and *y1* are like the `gl.lrectread()` parameters, i.e. the boundary is included in the new image. The new boundaries need not be inside the picture. Pixels that fall outside the old image will have their value set to zero. If *x0* is bigger than *x1* the new image is mirrored. The same holds for the y coordinates.
 
-### `scale`(*image, psize, width, height, newwidth, newheight*)
+### `scale`(image, psize, width, height, newwidth, newheight)
 
 Return *image* scaled to size *newwidth* by *newheight*. No interpolation is done, scaling is done by simple-minded pixel duplication or removal. Therefore, computer-generated images or dithered images will not look nice after scaling.
 
-### `tovideo`(*image, psize, width, height*)
+### `tovideo`(image, psize, width, height)
 
 Run a vertical low-pass filter over an image. It does so by computing each destination pixel as the average of two vertically-aligned source pixels. The main use of this routine is to forestall excessive flicker if the image is displayed on a video device that uses interlacing, hence the name.
 
-### `grey2mono`(*image, width, height, threshold*)
+### `grey2mono`(image, width, height, threshold)
 
 Convert a 8-bit deep greyscale image to a 1-bit deep image by thresholding all the pixels. The resulting image is tightly packed and is probably only useful as an argument to `mono2grey()`.
 
-### `dither2mono`(*image, width, height*)
+### `dither2mono`(image, width, height)
 
 Convert an 8-bit greyscale image to a 1-bit monochrome image using a (simple-minded) dithering algorithm.
 
-### `mono2grey`(*image, width, height, p0, p1*)
+### `mono2grey`(image, width, height, p0, p1)
 
 Convert a 1-bit monochrome image to an 8 bit greyscale or color image. All pixels that are zero-valued on input get value *p0* on output and all one-value input pixels get value *p1* on output. To convert a monochrome black-and-white image to greyscale pass the values `0` and `255` respectively.
 
-### `grey2grey4`(*image, width, height*)
+### `grey2grey4`(image, width, height)
 
 Convert an 8-bit greyscale image to a 4-bit greyscale image without dithering.
 
-### `grey2grey2`(*image, width, height*)
+### `grey2grey2`(image, width, height)
 
 Convert an 8-bit greyscale image to a 2-bit greyscale image without dithering.
 
-### `dither2grey2`(*image, width, height*)
+### `dither2grey2`(image, width, height)
 
 Convert an 8-bit greyscale image to a 2-bit greyscale image with dithering. As for `dither2mono()`, the dithering algorithm is currently very simple.
 
-### `grey42grey`(*image, width, height*)
+### `grey42grey`(image, width, height)
 
 Convert a 4-bit greyscale image to an 8-bit greyscale image.
 
-### `grey22grey`(*image, width, height*)
+### `grey22grey`(image, width, height)
 
 Convert a 2-bit greyscale image to an 8-bit greyscale image.
 # `imaplib` — IMAP4 protocol client
@@ -7069,19 +7063,19 @@ This exception is raised when a writable mailbox has its status changed by the s
 
 The following utility functions are defined:
 
-### `Internaldate2tuple`(*datestr*)
+### `Internaldate2tuple`(datestr)
 
 Converts an IMAP4 INTERNALDATE string to Coordinated Universal Time. Returns a `time` module tuple.
 
-### `Int2AP`(*num*)
+### `Int2AP`(num)
 
-Converts an integer into a string representation using characters from the set \[`A` .. `P`\].
+Converts an integer into a string representation using characters from the set [`A` .. `P`].
 
-### `ParseFlags`(*flagstr*)
+### `ParseFlags`(flagstr)
 
 Converts an IMAP4 `FLAGS` response to a tuple of individual flags.
 
-### `Time2Internaldate`(*date_time*)
+### `Time2Internaldate`(date_time)
 
 Converts a `time` module tuple to an IMAP4 `INTERNALDATE` representation. Returns a string in the form: `"DD-Mmm-YYYY HH:MM:SS +HHMM"` (including double-quotes).
 
@@ -7093,7 +7087,7 @@ At the end of the module, there is a test section that contains a more extensive
 
 Documents describing the protocol, and sources and binaries for servers implementing it, can all be found at the University of Washington’s *IMAP Information Center* (`http://www.cac.washington.edu/imap/`).
 
-## IMAP4 Objects <span id="imap4-objects" label="imap4-objects"></span>
+## IMAP4 Objects 
 
 All IMAP4rev1 commands are represented by methods of the same name, either upper-case or lower-case.
 
@@ -7103,11 +7097,11 @@ Each command returns a tuple: `(`*`type`*`, [`*`data`*`, ...])` where *type* is 
 
 An `IMAP4` instance has the following methods:
 
-### `append`(*mailbox, flags, date_time, message*)
+### `append`(mailbox, flags, date_time, message)
 
 Append message to named mailbox.
 
-### `authenticate`(*func*)
+### `authenticate`(func)
 
 Authenticate command — requires response processing. This is currently unimplemented, and raises an exception.
 
@@ -7119,15 +7113,15 @@ Checkpoint mailbox on server.
 
 Close currently selected mailbox. Deleted messages are removed from writable mailbox. This is the recommended command before `LOGOUT`.
 
-### `copy`(*message_set, new_mailbox*)
+### `copy`(message_set, new_mailbox)
 
 Copy *message_set* messages onto end of *new_mailbox*.
 
-### `create`(*mailbox*)
+### `create`(mailbox)
 
 Create new mailbox named *mailbox*.
 
-### `delete`(*mailbox*)
+### `delete`(mailbox)
 
 Delete old mailbox named *mailbox*.
 
@@ -7135,7 +7129,7 @@ Delete old mailbox named *mailbox*.
 
 Permanently remove deleted items from selected mailbox. Generates an `EXPUNGE` response for each deleted message. Returned data contains a list of `EXPUNGE` message numbers in order received.
 
-### `fetch`(*message_set, message_parts*)
+### `fetch`(message_set, message_parts)
 
 Fetch (parts of) messages. *message_parts* should be a string of message part names enclosed within parentheses, eg: `"(UID BODY[TEXT])"`. Returned data are tuples of message part envelope and data.
 
@@ -7143,7 +7137,7 @@ Fetch (parts of) messages. *message_parts* should be a string of message part na
 
 List mailbox names in *directory* matching *pattern*. *directory* defaults to the top-level mail folder, and *pattern* defaults to match anything. Returned data contains a list of `LIST` responses.
 
-### `login`(*user, password*)
+### `login`(user, password)
 
 Identify the client using a plaintext password. The *password* will be quoted.
 
@@ -7159,11 +7153,11 @@ List subscribed mailbox names in directory matching pattern. *directory* default
 
 Send `NOOP` to server.
 
-### `open`(*host, port*)
+### `open`(host, port)
 
 Opens socket to *port* at *host*. You may override this method.
 
-### `partial`(*message_num, message_part, start, length*)
+### `partial`(message_num, message_part, start, length)
 
 Fetch truncated part of a message. Returned data is a tuple of message part envelope and data.
 
@@ -7171,15 +7165,15 @@ Fetch truncated part of a message. Returned data is a tuple of message part enve
 
 Prompt server for an update. Returned data is `None` if no new messages, else value of `RECENT` response.
 
-### `rename`(*oldmailbox, newmailbox*)
+### `rename`(oldmailbox, newmailbox)
 
 Rename mailbox named *oldmailbox* to *newmailbox*.
 
-### `response`(*code*)
+### `response`(code)
 
 Return data for response *code* if received, or `None`. Returns the given code, instead of the usual type.
 
-### `search`(*charset, criterium*)
+### `search`(charset, criterium)
 
 Search mailbox for matching messages. Returned data contains a space separated list of matching message numbers. *charset* may be `None`, in which case no `CHARSET` will be specified in the request to the server. The IMAP protocol requires that at least one criterium be specified; an exception will be raised when the server returns an error.
 
@@ -7199,27 +7193,27 @@ Select a mailbox. Returned data is the count of messages in *mailbox* (`EXISTS` 
 
 Returns socket instance used to connect to server.
 
-### `status`(*mailbox, names*)
+### `status`(mailbox, names)
 
 Request named status conditions for *mailbox*.
 
-### `store`(*message_set, command, flag_list*)
+### `store`(message_set, command, flag_list)
 
 Alters flag dispositions for messages in mailbox.
 
-### `subscribe`(*mailbox*)
+### `subscribe`(mailbox)
 
 Subscribe to new mailbox.
 
-### `uid`(*command, arg*)
+### `uid`(command, arg)
 
 Execute command args with messages identified by UID, rather than message number. Returns response appropriate to command. At least one argument must be supplied; if none are provided, the server will return an error and an exception will be raised.
 
-### `unsubscribe`(*mailbox*)
+### `unsubscribe`(mailbox)
 
 Unsubscribe from old mailbox.
 
-### `xatom`(*name*)
+### `xatom`(name)
 
 Allow simple extension commands notified by server in `CAPABILITY` response.
 
@@ -7233,7 +7227,7 @@ The most recent supported protocol in the `CAPABILITY` response from the server.
 
 Integer value to control debugging output. The initialize value is taken from the module variable `Debug`. Values greater than three trace each command.
 
-## IMAP4 Example <span id="imap4-example" label="imap4-example"></span>
+## IMAP4 Example 
 
 Here is a minimal example (without error checking) that opens a mailbox and retrieves and prints all messages:
 
@@ -7259,15 +7253,15 @@ The module defines the following variables and functions:
 
 This exception is raised on all errors, such as unsupported file type, etc.
 
-### `getsizes`(*file*)
+### `getsizes`(file)
 
 This function returns a tuple `(`*`x`*`, `*`y`*`, `*`z`*`)` where *x* and *y* are the size of the image in pixels and *z* is the number of bytes per pixel. Only 3 byte RGB pixels and 1 byte greyscale pixels are currently supported.
 
-### `read`(*file*)
+### `read`(file)
 
 This function reads and decodes the image on the specified file, and returns it as a Python string. The string has either 1 byte greyscale pixels or 4 byte RGBA pixels. The bottom left pixel is the first in the string. This format is suitable to pass to `gl.lrectwrite()`, for instance.
 
-### `readscaled`(*file, x, y, filter*)
+### `readscaled`(file, x, y, filter)
 
 This function is identical to read but it returns an image that is scaled to the given *x* and *y* sizes. If the *filter* and *blur* parameters are omitted scaling is done by simply dropping or duplicating pixels, so the result will be less than perfect, especially for computer-generated images.
 
@@ -7275,11 +7269,11 @@ Alternatively, you can specify a filter to use to smoothen the image after scali
 
 `readscaled()` makes no attempt to keep the aspect ratio correct, so that is the users’ responsibility.
 
-### `ttob`(*flag*)
+### `ttob`(flag)
 
 This function sets a global flag which defines whether the scan lines of the image are read or written from bottom to top (flag is zero, compatible with SGI GL) or from top to bottom(flag is one, compatible with X). The default is zero.
 
-### `write`(*file, data, x, y, z*)
+### `write`(file, data, x, y, z)
 
 This function writes the RGB or greyscale data in *data* to image file *file*. *x* and *y* give the size of the image, *z* is 1 for 1 byte greyscale images or 3 for RGB images (which are stored as 4 byte values of which only the lower three bytes are used). These are the formats returned by `gl.lrectread()`.
 # `imghdr` — Determine the type of an image.
@@ -7290,26 +7284,25 @@ The `imghdr` module determines the type of image contained in a file or byte str
 
 The `imghdr` module defines the following function:
 
-### `what`(*filename*)
+### `what`(filename)
 
 Tests the image data contained in the file named by *filename*, and returns a string describing the image type. If optional *h* is provided, the *filename* is ignored and *h* is assumed to contain the byte stream to test.
 
 The following image types are recognized, as listed below with the return value from `what()`:
 
-|                         |                           |
-|:------------------------|:--------------------------|
-| ValueImage format ’rgb’ | SGI ImgLib Files          |
-| ’gif’                   | GIF 87a and 89a Files     |
-| ’pbm’                   | Portable Bitmap Files     |
-| ’pgm’                   | Portable Graymap Files    |
-| ’ppm’                   | Portable Pixmap Files     |
-| ’tiff’                  | TIFF Files                |
-| ’rast’                  | Sun Raster Files          |
-| ’xbm’                   | X Bitmap Files            |
-| ’jpeg’                  | JPEG data in JFIF format  |
-| ’bmp’                   | BMP files                 |
-| ’png’                   | Portable Network Graphics |
-|                         |                           |
+|        |                           |
+|:-------|:--------------------------|
+| ’rgb’  | SGI ImgLib Files          |
+| ’gif’  | GIF 87a and 89a Files     |
+| ’pbm’  | Portable Bitmap Files     |
+| ’pgm’  | Portable Graymap Files    |
+| ’ppm’  | Portable Pixmap Files     |
+| ’tiff’ | TIFF Files                |
+| ’rast’ | Sun Raster Files          |
+| ’xbm’  | X Bitmap Files            |
+| ’jpeg’ | JPEG data in JFIF format  |
+| ’bmp’  | BMP files                 |
+| ’png’  | Portable Network Graphics |
 
 You can extend the list of file types `imghdr` can recognize by appending to this variable:
 
@@ -7338,7 +7331,7 @@ Return the magic string value used to recognize byte-compiled code files (`.pyc`
 
 Return a list of triples, each describing a particular type of module. Each triple has the form `(`*`suffix`*`, `*`mode`*`, `*`type`*`)`, where *suffix* is a string to be appended to the module name to form the filename to search for, *mode* is the mode string to pass to the built-in `open()` function to open the file (this can be `’r’` for text files or `’rb’` for binary files), and *type* is the file type, which has one of the values , , or , described below.
 
-### `find_module`(*name*)
+### `find_module`(name)
 
 Try to find the module *name* on the search path *path*. If *path* is a list of directory names, each directory is searched for files with any of the suffixes returned by `get_suffixes()` above. Invalid names in the list are silently ignored (but all list items must be strings). If *path* is omitted or `None`, the list of directory names given by `sys.path` is searched, but first it searches a few special places: it tries to find a built-in module with the given name (), then a frozen module (), and on some systems some other places are looked in as well (on the Mac, it looks for a resource (); on Windows, it looks in the registry which may point to a specific file).
 
@@ -7346,7 +7339,7 @@ If search is successful, the return value is a triple `(`*`file`*`, `*`pathname`
 
 This function does not handle hierarchical module names (names containing dots). In order to find *P*.*M*, i.e., submodule *M* of package *P*, use `find_module()` and `load_module()` to find and load package *P*, and then use `find_module()` with the *path* argument set to *`P`*`.__path__`. When *P* itself has a dotted name, apply this recipe recursively.
 
-### `load_module`(*name, file, filename, description*)
+### `load_module`(name, file, filename, description)
 
 Load a module that was previously found by `find_module()` (or by an otherwise conducted search yielding compatible results). This function does more than importing the module: if the module was already imported, it is equivalent to a `reload()`! The *name* argument indicates the full module name (including the package name, if this is a submodule of a package). The *file* argument is an open file, and *filename* is the corresponding file name; these can be `None` and `’’`, respectively, when the module is not being loaded from a file. The *description* argument is a tuple as returned by `find_module()` describing what kind of module must be loaded.
 
@@ -7354,7 +7347,7 @@ If the load is successful, the return value is the module object; otherwise, an 
 
 **Important:** the caller is responsible for closing the *file* argument, if it was not `None`, even when an exception is raised. This is best done using a ... statement.
 
-### `new_module`(*name*)
+### `new_module`(name)
 
 Return a new empty module object called *name*. This object is *not* inserted in `sys.modules`.
 
@@ -7394,31 +7387,31 @@ The following constant and functions are obsolete; their functionality is availa
 
 Unused.
 
-### `init_builtin`(*name*)
+### `init_builtin`(name)
 
 Initialize the built-in module called *name* and return its module object. If the module was already initialized, it will be initialized *again*. A few modules cannot be initialized twice — attempting to initialize these again will raise an `ImportError` exception. If there is no built-in module called *name*, `None` is returned.
 
-### `init_frozen`(*name*)
+### `init_frozen`(name)
 
 Initialize the frozen module called *name* and return its module object. If the module was already initialized, it will be initialized *again*. If there is no frozen module called *name*, `None` is returned. (Frozen modules are modules written in Python whose compiled byte-code object is incorporated into a custom-built Python interpreter by Python’s utility. See `Tools/freeze/` for now.)
 
-### `is_builtin`(*name*)
+### `is_builtin`(name)
 
 Return `1` if there is a built-in module called *name* which can be initialized again. Return `-1` if there is a built-in module called *name* which cannot be initialized again (see `init_builtin()`). Return `0` if there is no built-in module called *name*.
 
-### `is_frozen`(*name*)
+### `is_frozen`(name)
 
 Return `1` if there is a frozen module (see `init_frozen()`) called *name*, or `0` if there is no such module.
 
-### `load_compiled`(*name, pathname, file*)
+### `load_compiled`(name, pathname, file)
 
 Load and initialize a module implemented as a byte-compiled code file and return its module object. If the module was already initialized, it will be initialized *again*. The *name* argument is used to create or access a module object. The *pathname* argument points to the byte-compiled code file. The *file* argument is the byte-compiled code file, open for reading in binary mode, from the beginning. It must currently be a real file object, not a user-defined class emulating a file.
 
-### `load_dynamic`(*name, pathname*)
+### `load_dynamic`(name, pathname)
 
 Load and initialize a module implemented as a dynamically loadable shared library and return its module object. If the module was already initialized, it will be initialized *again*. Some modules don’t like that and may raise an exception. The *pathname* argument must point to the shared library. The *name* argument is used to construct the name of the initialization function: an external C function called `init`*`name`*`()` in the shared library is called. The optional *file* argument is ignored. (Note: using shared libraries is highly system dependent, and not all systems support it.)
 
-### `load_source`(*name, pathname, file*)
+### `load_source`(name, pathname, file)
 
 Load and initialize a module implemented as a Python source file and return its module object. If the module was already initialized, it will be initialized *again*. The *name* argument is used to create or access a module object. The *pathname* argument points to the source file. The *file* argument is the source file, open for reading as text, from the beginning. It must currently be a real file object, not a user-defined class emulating a file. Note that if a properly matching byte-compiled file (with suffix `.pyc` or `.pyo`) exists, it will be used instead of parsing the given source file.
 
@@ -7475,23 +7468,24 @@ A portable interface to JPEG image files is available with the Python Imaging Li
 
 Exception raised by `compress()` and `decompress()` in case of errors.
 
-### `compress`(*data, w, h, b*)
+### `compress`(data, w, h, b)
 
 Treat data as a pixmap of width *w* and height *h*, with *b* bytes per pixel. The data is in SGI GL order, so the first pixel is in the lower-left corner. This means that `gl.lrectread()` return data can immediately be passed to `compress()`. Currently only 1 byte and 4 byte pixels are allowed, the former being treated as greyscale and the latter as RGB color. `compress()` returns a string that contains the compressed picture, in JFIFformat.
 
-### `decompress`(*data*)
+### `decompress`(data)
 
 Data is a string containing a picture in JFIFformat. It returns a tuple `(`*`data`*`, `*`width`*`, `*`height`*`, `*`bytesperpixel`*`)`. Again, the data is suitable to pass to `gl.lrectwrite()`.
 
-### `setoption`(*name, value*)
+### `setoption`(name, value)
 
 Set various options. Subsequent `compress()` and `decompress()` calls will use these options. The following options are available:
 
-<div class="tableii">
-
-l\|p3incodeOptionEffect
-
-</div>
+|  |  |
+|:---|:---|
+| ’forcegray’ | Force output to be grayscale, even if input is RGB. |
+| ’quality’ | Set the quality of the compressed image to a value between |
+| and `100` (default is `75`). This only affects compression. | Perform Huffman table optimization. Takes longer, but results in smaller compressed image. This only affects compression. |
+| ’smooth’ | Perform inter-block smoothing on uncompressed image. Only useful for low-quality images. This only affects decompression. |
 
 #### See also:
 
@@ -7504,7 +7498,7 @@ The ISO standard for JPEG is also published as ITU T.81. This is available in PD
 
 This module allows a Python program to determine if a string is a keyword. A single function is provided:
 
-### `iskeyword`(*s*)
+### `iskeyword`(s)
 
 Return true if *s* is a Python keyword.
 # `linecache` — Random access to text lines
@@ -7515,7 +7509,7 @@ The `linecache` module allows one to get any line from any file, while attemptin
 
 The `linecache` module defines the following functions:
 
-### `getline`(*filename, lineno*)
+### `getline`(filename, lineno)
 
 Get line *lineno* from file named *filename*. This function will never throw an exception — it will return `’’` on errors (the terminating newline character will be included for lines that are found).
 
@@ -7542,7 +7536,7 @@ The `locale` module is implemented on top of the `_locale`module, which in turn 
 
 The `locale` module defines the following exception and functions:
 
-### `setlocale`(*category*)
+### `setlocale`(category)
 
 If *value* is specified, modifies the locale setting for the *category*. The available categories are listed in the data description below. The value is the name of a locale. An empty string specifies the user’s default settings. If the modification of the locale fails, the exception `Error` is raised. If successful, the new locale setting is returned.
 
@@ -7591,37 +7585,36 @@ Returns the database of of the local conventions as a dictionary. This dictionar
 
 The possible values for `p_sign_posn` and `n_sign_posn` are given below.
 
-|                    |                                                        |
-|:-------------------|:-------------------------------------------------------|
-| ValueExplanation 0 | Currency and value are surrounded by parentheses.      |
-| 1                  | The sign should precede the value and currency symbol. |
-| 2                  | The sign should follow the value and currency symbol.  |
-| 3                  | The sign should immediately precede the value.         |
-| 4                  | The sign should immediately follow the value.          |
-| LC_MAX             | Nothing is specified in this locale.                   |
-|                    |                                                        |
+|        |                                                        |
+|:-------|:-------------------------------------------------------|
+| 0      | Currency and value are surrounded by parentheses.      |
+| 1      | The sign should precede the value and currency symbol. |
+| 2      | The sign should follow the value and currency symbol.  |
+| 3      | The sign should immediately precede the value.         |
+| 4      | The sign should immediately follow the value.          |
+| LC_MAX | Nothing is specified in this locale.                   |
 
-### `strcoll`(*string1,string2*)
+### `strcoll`(string1,string2)
 
 Compares two strings according to the current setting. As any other compare function, returns a negative, or a positive value, or `0`, depending on whether *string1* collates before or after *string2* or is equal to it.
 
-### `strxfrm`(*string*)
+### `strxfrm`(string)
 
 Transforms a string to one that can be used for the built-in function `cmp()`, and still returns locale-aware results. This function can be used when the same string is compared repeatedly, e.g. when collating a sequence of strings.
 
-### `format`(*format, val,* )
+### `format`(format, val, )
 
 Formats a number *val* according to the current setting. The format follows the conventions of the `%` operator. For floating point values, the decimal point is modified if appropriate. If *grouping* is true, also takes the grouping into account.
 
-### `str`(*float*)
+### `str`(float)
 
 Formats a floating point number using the same format as the built-in function `str(`*`float`*`)`, but takes the decimal point into account.
 
-### `atof`(*string*)
+### `atof`(string)
 
 Converts a string to a floating point number, following the settings.
 
-### `atoi`(*string*)
+### `atoi`(string)
 
 Converts a string to an integer, following the conventions.
 
@@ -7696,27 +7689,27 @@ When Python code uses the `locale` module to change the locale, this also affect
 
 This module defines a number of classes that allow easy and uniform access to mail messages in a (Unix) mailbox.
 
-### class `UnixMailbox`(*fp*)
+### class `UnixMailbox`(fp)
 
 Access a classic Unix-style mailbox, where all messages are contained in a single file and separated by “From name time” lines. The file object *fp* points to the mailbox file.
 
-### class `MmdfMailbox`(*fp*)
+### class `MmdfMailbox`(fp)
 
 Access an MMDF-style mailbox, where all messages are contained in a single file and separated by lines consisting of 4 control-A characters. The file object *fp* points to the mailbox file.
 
-### class `MHMailbox`(*dirname*)
+### class `MHMailbox`(dirname)
 
 Access an MH mailbox, a directory with each message in a separate file with a numeric name. The name of the mailbox directory is passed in *dirname*.
 
-### class `Maildir`(*dirname*)
+### class `Maildir`(dirname)
 
 Access a Qmail mail directory. All new and current mail for the mailbox specified by *dirname* is made available.
 
-### class `BabylMailbox`(*fp*)
+### class `BabylMailbox`(fp)
 
 Access a Babyl mailbox, which is similar to an MMDF mailbox. Mail messages start with a line containing only `’*** EOOH ***’` and end with a line containing only `’037014’`.
 
-## Mailbox Objects <span id="mailbox-objects" label="mailbox-objects"></span>
+## Mailbox Objects 
 
 All implementations of Mailbox objects have one externally visible method:
 
@@ -7731,7 +7724,7 @@ Mailcap files are used to configure how MIME-aware applications such as mail rea
 
 The mailcap format is documented in RFC 1524, “A User Agent Configuration Mechanism For Multimedia Mail Format Information,” but is not an Internet standard. However, mailcap files are supported on most Unix systems.
 
-### `findmatch`(*caps, MIMEtype* )
+### `findmatch`(caps, MIMEtype )
 
 Return a 2-tuple; the first element is a string containing the command line to be executed (which can be passed to `os.system()`), and the second element is the mailcap entry for a given MIME type. If no matching MIME type can be found, `(None, None)` is returned.
 
@@ -7777,23 +7770,23 @@ There are functions that read/write files as well as functions operating on stri
 
 The module defines these functions:
 
-### `dump`(*value, file*)
+### `dump`(value, file)
 
 Write the value on the open file. The value must be a supported type. The file must be an open file object such as `sys.stdout` or returned by `open()` or `posix.popen()`. It must be opened in binary mode (`’wb’` or `’w+b’`).
 
 If the value has (or contains an object that has) an unsupported type, a `ValueError` exception is raised — but garbage data will also be written to the file. The object will not be properly read back by `load()`.
 
-### `load`(*file*)
+### `load`(file)
 
 Read one value from the open file and return it. If no valid value is read, raise `EOFError`, `ValueError` or `TypeError`. The file must be an open file object opened in binary mode (`’rb’` or `’r+b’`).
 
 **Warning:** If an object containing an unsupported type was marshalled with `dump()`, `load()` will substitute `None` for the unmarshallable type.
 
-### `dumps`(*value*)
+### `dumps`(value)
 
 Return the string that would be written to a file by `dump(`*`value`*`, `*`file`*`)`. The value must be a supported type. Raise a `ValueError` exception if value has (or contains an object that has) an unsupported type.
 
-### `loads`(*string*)
+### `loads`(string)
 
 Convert the string to a value. If no valid value is found, raise `EOFError`, `ValueError` or `TypeError`. Extra characters in the string are ignored.
 
@@ -7810,95 +7803,95 @@ These functions cannot be used with complex numbers; use the functions of the sa
 
 The following functions provided by this module:
 
-### `acos`(*x*)
+### `acos`(x)
 
 Return the arc cosine of *x*.
 
-### `asin`(*x*)
+### `asin`(x)
 
 Return the arc sine of *x*.
 
-### `atan`(*x*)
+### `atan`(x)
 
 Return the arc tangent of *x*.
 
-### `atan2`(*y, x*)
+### `atan2`(y, x)
 
 Return `atan(`*`y`*` / `*`x`*`)`.
 
-### `ceil`(*x*)
+### `ceil`(x)
 
 Return the ceiling of *x* as a real.
 
-### `cos`(*x*)
+### `cos`(x)
 
 Return the cosine of *x*.
 
-### `cosh`(*x*)
+### `cosh`(x)
 
 Return the hyperbolic cosine of *x*.
 
-### `exp`(*x*)
+### `exp`(x)
 
 Return `e**`*`x`*.
 
-### `fabs`(*x*)
+### `fabs`(x)
 
 Return the absolute value of the real *x*.
 
-### `floor`(*x*)
+### `floor`(x)
 
 Return the floor of *x* as a real.
 
-### `fmod`(*x, y*)
+### `fmod`(x, y)
 
 Return `fmod(`*`x`*`, `*`y`*`)`, as defined by the platform C library. Note that the Python expression *`x`*` % `*`y`* may not return the same result.
 
-### `frexp`(*x*)
+### `frexp`(x)
 
 Return the mantissa and exponent of *x* as the pair `(`*`m`*`, `*`e`*`)`. *m* is a float and *e* is an integer such that *`x`*` == `*`m`*` * 2**`*`e`*. If *x* is zero, returns `(0.0, 0)`, otherwise `0.5 <= abs(`*`m`*`) < 1`.
 
-### `hypot`(*x, y*)
+### `hypot`(x, y)
 
 Return the Euclidean distance, `sqrt(`*`x`*`*`*`x`*` + `*`y`*`*`*`y`*`)`.
 
-### `ldexp`(*x, i*)
+### `ldexp`(x, i)
 
 Return *`x`*` * (2**`*`i`*`)`.
 
-### `log`(*x*)
+### `log`(x)
 
 Return the natural logarithm of *x*.
 
-### `log10`(*x*)
+### `log10`(x)
 
 Return the base-10 logarithm of *x*.
 
-### `modf`(*x*)
+### `modf`(x)
 
 Return the fractional and integer parts of *x*. Both results carry the sign of *x*. The integer part is returned as a real.
 
-### `pow`(*x, y*)
+### `pow`(x, y)
 
 Return *`x`*`**`*`y`*.
 
-### `sin`(*x*)
+### `sin`(x)
 
 Return the sine of *x*.
 
-### `sinh`(*x*)
+### `sinh`(x)
 
 Return the hyperbolic sine of *x*.
 
-### `sqrt`(*x*)
+### `sqrt`(x)
 
 Return the square root of *x*.
 
-### `tan`(*x*)
+### `tan`(x)
 
 Return the tangent of *x*.
 
-### `tanh`(*x*)
+### `tanh`(x)
 
 Return the hyperbolic tangent of *x*.
 
@@ -7945,7 +7938,7 @@ For backward compatibility reasons, this is an alternative name for the `new()` 
 
 An md5 object has the following methods:
 
-### `update`(*arg*)
+### `update`(arg)
 
 Update the md5 object with the string *arg*. Repeated calls are equivalent to a single call with the concatenation of all the arguments, i.e. `m.update(a); m.update(b)` is equivalent to `m.update(a+b)`.
 
@@ -7976,23 +7969,23 @@ The module contains three basic classes, `MH`, which represents a particular col
 
 `MH` represents a collection of MH folders.
 
-### class `Folder`(*mh, name*)
+### class `Folder`(mh, name)
 
 The `Folder` class represents a single folder and its messages.
 
-### class `Message`(*folder, number*)
+### class `Message`(folder, number)
 
 `Message` objects represent individual messages in a folder. The Message class is derived from `mimetools.Message`.
 
-## MH Objects <span id="mh-objects" label="mh-objects"></span>
+## MH Objects 
 
 `MH` instances have the following methods:
 
-### `error`(*format*)
+### `error`(format)
 
 Print an error message – can be overridden.
 
-### `getprofile`(*key*)
+### `getprofile`(key)
 
 Return a profile entry (`None` if not set).
 
@@ -8004,7 +7997,7 @@ Return the mailbox pathname.
 
 Return the current folder name.
 
-### `setcontext`(*name*)
+### `setcontext`(name)
 
 Set the current folder name.
 
@@ -8016,31 +8009,31 @@ Return a list of top-level folders.
 
 Return a list of all folders.
 
-### `listsubfolders`(*name*)
+### `listsubfolders`(name)
 
 Return a list of direct subfolders of the given folder.
 
-### `listallsubfolders`(*name*)
+### `listallsubfolders`(name)
 
 Return a list of all subfolders of the given folder.
 
-### `makefolder`(*name*)
+### `makefolder`(name)
 
 Create a new folder.
 
-### `deletefolder`(*name*)
+### `deletefolder`(name)
 
 Delete a folder – must have no subfolders.
 
-### `openfolder`(*name*)
+### `openfolder`(name)
 
 Return a new open folder object.
 
-## Folder Objects <span id="mh-folder-objects" label="mh-folder-objects"></span>
+## Folder Objects 
 
 `Folder` instances represent open folders and have the following methods:
 
-### `error`(*format*)
+### `error`(format)
 
 Print an error message – can be overridden.
 
@@ -8052,7 +8045,7 @@ Return the folder’s full pathname.
 
 Return the full pathname of the folder’s sequences file.
 
-### `getmessagefilename`(*n*)
+### `getmessagefilename`(n)
 
 Return the full pathname of message *n* of the folder.
 
@@ -8064,11 +8057,11 @@ Return a list of messages in the folder (as numbers).
 
 Return the current message number.
 
-### `setcurrent`(*n*)
+### `setcurrent`(n)
 
 Set the current message number to *n*.
 
-### `parsesequence`(*seq*)
+### `parsesequence`(seq)
 
 Parse msgs syntax into list of messages.
 
@@ -8076,7 +8069,7 @@ Parse msgs syntax into list of messages.
 
 Get last message, or `0` if no messages are in the folder.
 
-### `setlast`(*n*)
+### `setlast`(n)
 
 Set last message (internal use only).
 
@@ -8084,31 +8077,31 @@ Set last message (internal use only).
 
 Return dictionary of sequences in folder. The sequence names are used as keys, and the values are the lists of message numbers in the sequences.
 
-### `putsequences`(*dict*)
+### `putsequences`(dict)
 
 Return dictionary of sequences in folder name: list.
 
-### `removemessages`(*list*)
+### `removemessages`(list)
 
 Remove messages in list from folder.
 
-### `refilemessages`(*list, tofolder*)
+### `refilemessages`(list, tofolder)
 
 Move messages in list to other folder.
 
-### `movemessage`(*n, tofolder, ton*)
+### `movemessage`(n, tofolder, ton)
 
 Move one message to a given destination in another folder.
 
-### `copymessage`(*n, tofolder, ton*)
+### `copymessage`(n, tofolder, ton)
 
 Copy one message to a given destination in another folder.
 
-## Message Objects <span id="mh-message-objects" label="mh-message-objects"></span>
+## Message Objects 
 
 The `Message` class adds one method to those of `mimetools.Message`:
 
-### `openmessage`(*n*)
+### `openmessage`(n)
 
 Return a new open message object (costs a file descriptor).
 # `mimetools` — Tools for parsing MIME messages
@@ -8119,7 +8112,7 @@ This module defines a subclass of the `rfc822`module’s `Message` class and a n
 
 It defines the following items:
 
-### class `Message`(*fp*)
+### class `Message`(fp)
 
 Return a new instance of the `Message` class. This is a subclass of the `rfc822.Message` class, with some additional methods (see below). The *seekable* argument has the same meaning as for `rfc822.Message`.
 
@@ -8127,19 +8120,19 @@ Return a new instance of the `Message` class. This is a subclass of the `rfc822.
 
 Return a unique string that has a high likelihood of being usable as a part boundary. The string has the form `’`*`hostipaddr`*`.`*`uid`*`.`*`pid`*`.`*`timestamp`*`.`*`random`*`’`.
 
-### `decode`(*input, output, encoding*)
+### `decode`(input, output, encoding)
 
 Read data encoded using the allowed MIME *encoding* from open file object *input* and write the decoded data to open file object *output*. Valid values for *encoding* include `’base64’`, `’quoted-printable’` and `’uuencode’`.
 
-### `encode`(*input, output, encoding*)
+### `encode`(input, output, encoding)
 
 Read data from open file object *input* and write it encoded using the allowed MIME *encoding* to open file object *output*. Valid values for *encoding* are the same as for `decode()`.
 
-### `copyliteral`(*input, output*)
+### `copyliteral`(input, output)
 
 Read lines from open file *input* until EOF and write them to open file *output*.
 
-### `copybinary`(*input, output*)
+### `copybinary`(input, output)
 
 Read blocks until EOF from open file *input* and write them to open file *output*. The block size is currently fixed at 8192.
 
@@ -8155,7 +8148,7 @@ The `Message` class defines the following methods in addition to the `rfc822.Mes
 
 Return the parameter list of the `content-type` header. This is a list if strings. For parameters of the form *`key`*`=`*`value`*, *key* is converted to lower case but *value* is not. For example, if the message contains the header `Content-type: text/html; spam=1; Spam=2; Spam` then `getplist()` will return the Python list `[’spam=1’, ’spam=2’, ’Spam’]`.
 
-### `getparam`(*name*)
+### `getparam`(name)
 
 Return the *value* of the first parameter (as returned by `getplist()` of the form *`name`*`=`*`value`* for the given *name*. If *value* is surrounded by quotes of the form ‘`<`...`>`’ or ‘`"`...`"`’, these are removed.
 
@@ -8180,11 +8173,11 @@ Return the subtype as specified in the `content-type` header. If no such header 
 
 The functions described below provide the primary interface for this module. If the module has not been initialized, they will call `init()`.
 
-### `guess_type`(*filename*)
+### `guess_type`(filename)
 
 Guess the type of a file based on its filename or URL, given by *filename*. The return value is a tuple `(`*`type`*`, `*`encoding`*`)` where *type* is `None` if the type can’t be guessed (no or unknown suffix) or a string of the form `’`*`type`*`/`*`subtype`*`’`, usable for a MIME `content-type` header; and encoding is `None` for no encoding or the name of the program used to encode (e.g. or ). The encoding is suitable for use as a `content-encoding` header, *not* as a `content-transfer-encoding` header. The mappings are table driven. Encoding suffixes are case sensitive; type suffixes are first tried case sensitive, then case insensitive.
 
-### `guess_extension`(*type*)
+### `guess_extension`(type)
 
 Guess the extension for a file based on its MIME type, given by *type*. The return value is a string giving a filename extension, including the leading dot (`.`). The extension is not guaranteed to have been associated with any particular data stream, but would be mapped to the MIME type *type* by `guess_type()`. If no extension can be guessed for *type*, `None` is returned.
 
@@ -8194,7 +8187,7 @@ Some additional functions and data items are available for controlling the behav
 
 Initialize the internal data structures. If given, *files* must be a sequence of file names which should be used to augment the default type map. If omitted, the file names to use are taken from `knownfiles`. Each file named in *files* or `knownfiles` takes precedence over those named before it. Calling `init()` repeatedly is allowed.
 
-### `read_mime_types`(*filename*)
+### `read_mime_types`(filename)
 
 Load the type map given in the file *filename*, if it exists. The type map is returned as a dictionary mapping filename extensions, including the leading dot (`.`), to strings of the form `’`*`type`*`/`*`subtype`*`’`. If the file *filename* does not exist or cannot be read, `None` is returned.
 
@@ -8221,15 +8214,15 @@ Dictionary mapping filename extensions to MIME types.
 
 *Generic MIME file writer.* This module defines the class `MimeWriter`. The `MimeWriter` class implements a basic formatter for creating MIME multi-part files. It doesn’t seek around the output file nor does it use large amounts of buffer space. You must write the parts out in the order that they should occur in the final file. `MimeWriter` does buffer the headers you add, allowing you to rearrange their order.
 
-### class `MimeWriter`(*fp*)
+### class `MimeWriter`(fp)
 
 Return a new instance of the `MimeWriter` class. The only argument passed, *fp*, is a file object to be used for writing. Note that a `StringIO` object could also be used.
 
-## MimeWriter Objects <span id="MimeWriter-objects" label="MimeWriter-objects"></span>
+## MimeWriter Objects 
 
 `MimeWriter` instances have the following methods:
 
-### `addheader`(*key, value*)
+### `addheader`(key, value)
 
 Add a header line to the MIME message. The *key* is the name of the header, where the *value* obviously provides the value of the header. The optional argument *prefix* determines where the header is inserted; `0` means append at the end, `1` is insert at the start. The default is to append.
 
@@ -8237,11 +8230,11 @@ Add a header line to the MIME message. The *key* is the name of the header, wher
 
 Causes all headers accumulated so far to be written out (and forgotten). This is useful if you don’t need a body part at all, e.g. for a subpart of type that’s (mis)used to store some header-like information.
 
-### `startbody`(*ctype*)
+### `startbody`(ctype)
 
 Returns a file-like object which can be used to write to the body of the message. The content-type is set to the provided *ctype*, and the optional parameter *plist* provides additional parameters for the content-type declaration. *prefix* functions as in `addheader()` except that the default is to insert at the start.
 
-### `startmultipartbody`(*subtype*)
+### `startmultipartbody`(subtype)
 
 Returns a file-like object which can be used to write to the body of the message. Additionally, this method initializes the multi-part code, where *subtype* provides the multipart subtype, *boundary* may provide a user-defined boundary specification, and *plist* provides optional parameters for the subtype. *prefix* functions as in `startbody()`. Subparts should be created using `nextpart()`.
 
@@ -8265,19 +8258,19 @@ The mimify module defines two functions to convert mail messages to and from MIM
 
 The modules defines the following user-callable functions and user-settable variables:
 
-### `mimify`(*infile, outfile*)
+### `mimify`(infile, outfile)
 
 Copy the message in *infile* to *outfile*, converting parts to quoted-printable and adding MIME mail headers when necessary. *infile* and *outfile* can be file objects (actually, any object that has a `readline()` method (for *infile*) or a `write()` method (for *outfile*)) or strings naming the files. If *infile* and *outfile* are both strings, they may have the same value.
 
-### `unmimify`(*infile, outfile*)
+### `unmimify`(infile, outfile)
 
 Copy the message in *infile* to *outfile*, decoding all quoted-printable parts. *infile* and *outfile* can be file objects (actually, any object that has a `readline()` method (for *infile*) or a `write()` method (for *outfile*)) or strings naming the files. If *infile* and *outfile* are both strings, they may have the same value. If the *decode_base64* argument is provided and tests true, any parts that are coded in the base64 encoding are decoded as well.
 
-### `mime_decode_header`(*line*)
+### `mime_decode_header`(line)
 
 Return a decoded version of the encoded header line in *line*.
 
-### `mime_encode_header`(*line*)
+### `mime_encode_header`(line)
 
 Return a MIME-encoded version of the header line in *line*.
 
@@ -8317,13 +8310,13 @@ Memory-mapped file objects behave like both mutable strings and like file object
 
 A memory-mapped file is created by the following function, which is different on Unix and on Windows.
 
-### `mmap`(*fileno, length*)
+### `mmap`(fileno, length)
 
 **(Windows version)** Maps *length* bytes from the file specified by the file handle *fileno*, and returns a mmap object. If you wish to map an existing Python file object, use its `fileno()` method to obtain the correct value for the *fileno* parameter.
 
 *tagname*, if specified, is a string giving a tag name for the mapping. Windows allows you to have many different mappings against the same file. If you specify the name of an existing tag, that tag is opened, otherwise a new tag of this name is created. If this parameter is None, the mapping is created without a name. Avoiding the use of the tag parameter will assist in keeping your code portable between Unix and Windows.
 
-### `mmap`(*fileno, size*)
+### `mmap`(fileno, size)
 
 **(Unix version)** Maps *length* bytes from the file specified by the file handle *fileno*, and returns a mmap object. If you wish to map an existing Python file object, use its `fileno()` method to obtain the correct value for the *fileno* parameter.
 
@@ -8337,7 +8330,7 @@ Memory-mapped file objects support the following methods:
 
 Close the file. Subsequent calls to other methods of the object will result in an exception being raised.
 
-### `find`(*string*)
+### `find`(string)
 
 Returns the lowest index in the object where the substring *string* is found. Returns `-1` on failure. *start* is the index at which the search begins, and defaults to zero.
 
@@ -8345,11 +8338,11 @@ Returns the lowest index in the object where the substring *string* is found. Re
 
 Flushes changes made to the in-memory copy of a file back to disk. Without use of this call there is no guarantee that changes are written back before the object is destroyed. If *offset* and *size* are specified, only changes to the given range of bytes will be flushed to disk; otherwise, the whole extent of the mapping is flushed.
 
-### `move`(**dest*, *src*, *count**)
+### `move`(*dest*, *src*, *count*)
 
 Copy the *count* bytes starting at offset *src* to the destination index *dest*.
 
-### `read`(num)
+### `read`(*num*)
 
 Return a string containing up to *num* bytes starting from the current file position; the file position is updated to point after the bytes that were returned.
 
@@ -8361,9 +8354,9 @@ Returns a string of length 1 containing the character at the current file positi
 
 Returns a single line, starting at the current file position and up to the next newline.
 
-### `resize`(newsize)
+### `resize`(*newsize*)
 
-### `seek`(*pos*)
+### `seek`(pos)
 
 Set the file’s current position. *whence* argument is optional and defaults to `0` (absolute file positioning); other values are `1` (seek relative to the current position) and `2` (seek relative to the file’s end).
 
@@ -8375,11 +8368,11 @@ Return the length of the file, which can be larger than the size of the memory-m
 
 Returns the current position of the file pointer.
 
-### `write`(string)
+### `write`(*string*)
 
 Write the bytes in *string* into memory at the current position of the file pointer; the file position is updated to point after the bytes that were written.
 
-### `write_byte`(byte)
+### `write_byte`(*byte*)
 
 Write the single-character string *byte* into memory at the current position of the file pointer; the file position is advanced by `1`.
 # `mpz` — GNU arbitrary magnitude integers
@@ -8394,7 +8387,7 @@ In general, *mpz*-numbers can be used just like other standard Python numbers, e
 
 You create an mpz-number by calling the function `mpz()` (see below for an exact description). An mpz-number is printed like this: `mpz(`*`value`*`)`.
 
-### `mpz`(*value*)
+### `mpz`(value)
 
 Create a new mpz-number. *value* can be an integer, a long, another mpz-number, or even a string. If it is a string, it is interpreted as an array of radix-256 digits, least significant digit first, resulting in a positive number. See also the `binary()` method, described below.
 
@@ -8404,27 +8397,27 @@ The type of the objects returned by `mpz()` and most other functions in this mod
 
 A number of *extra* functions are defined in this module. Non mpz-arguments are converted to mpz-values first, and the functions return mpz-numbers.
 
-### `powm`(*base, exponent, modulus*)
+### `powm`(base, exponent, modulus)
 
 Return `pow(`*`base`*`, `*`exponent`*`) % `*`modulus`*. If *`exponent`*` == 0`, return `mpz(1)`. In contrast to the C library function, this version can handle negative exponents.
 
-### `gcd`(*op1, op2*)
+### `gcd`(op1, op2)
 
 Return the greatest common divisor of *op1* and *op2*.
 
-### `gcdext`(*a, b*)
+### `gcdext`(a, b)
 
 Return a tuple `(`*`g`*`, `*`s`*`, `*`t`*`)`, such that *`a`*`*`*`s`*` + `*`b`*`*`*`t`*` == `*`g`*` == gcd(`*`a`*`, `*`b`*`)`.
 
-### `sqrt`(*op*)
+### `sqrt`(op)
 
 Return the square root of *op*. The result is rounded towards zero.
 
-### `sqrtrem`(*op*)
+### `sqrtrem`(op)
 
 Return a tuple `(`*`root`*`, `*`remainder`*`)`, such that *`root`*`*`*`root`*` + `*`remainder`*` == `*`op`*.
 
-### `divm`(*numerator, denominator, modulus*)
+### `divm`(numerator, denominator, modulus)
 
 Returns a number *q* such that *`q`*` * `*`denominator`*` % `*`modulus`*` == `*`numerator`*. One could also implement this function in Python, using `gcdext()`.
 
@@ -8441,25 +8434,25 @@ The mpz-number must have a value greater than or equal to zero, otherwise `Value
 
 Further documentation on these functions can be found in the Platform API documentation.
 
-## File Operations <span id="msvcrt-files" label="msvcrt-files"></span>
+## File Operations 
 
-### `locking`(*fd, mode, nbytes*)
+### `locking`(fd, mode, nbytes)
 
 Lock part of a file based on a file descriptor from the C runtime. Raises `IOError` on failure.
 
-### `setmode`(*fd, flags*)
+### `setmode`(fd, flags)
 
 Set the line-end translation mode for the file descriptor *fd*. To set it to text mode, *flags* should be ; for binary, it should be .
 
-### `open_osfhandle`(*handle, flags*)
+### `open_osfhandle`(handle, flags)
 
 Create a C runtime file descriptor from the file handle *handle*. The *flags* parameter should be a bit-wise OR of , , and . The returned file descriptor may be used as a parameter to `os.fdopen()` to create a file object.
 
-### `get_osfhandle`(*fd*)
+### `get_osfhandle`(fd)
 
 Return the file handle for the file descriptor *fd*. Raises `IOError` if *fd* is not recognized.
 
-## Console I/O <span id="msvcrt-console" label="msvcrt-console"></span>
+## Console I/O 
 
 ### `kbhit`()
 
@@ -8473,15 +8466,15 @@ Read a keypress and return the resulting character. Nothing is echoed to the con
 
 Similar to `getch()`, but the keypress will be echoed if it represents a printable character.
 
-### `putch`(*char*)
+### `putch`(char)
 
 Print the character *char* to the console without buffering.
 
-### `ungetch`(*char*)
+### `ungetch`(char)
 
 Cause the character *char* to be “pushed back” into the console buffer; it will be the next character read by `getch()` or `getche()`.
 
-## Other Functions <span id="msvcrt-other" label="msvcrt-other"></span>
+## Other Functions 
 
 ### `heapmin`()
 
@@ -8490,7 +8483,7 @@ Force the heap to clean itself up and return unused blocks to the operating syst
 
 *Support for reading files which contain distinct parts, such as some MIME data.* The `MultiFile` object enables you to treat sections of a text file as file-like input objects, with `’’` being returned by `readline()` when a given delimiter pattern is encountered. The defaults of this class are designed to make it useful for parsing MIME multipart messages, but by subclassing it and overriding methods it can be easily adapted for more general use.
 
-### class `MultiFile`(*fp*)
+### class `MultiFile`(fp)
 
 Create a multi-file. You must instantiate this class with an input object argument for the `MultiFile` instance to get lines from, such as as a file object returned by `open()`.
 
@@ -8498,21 +8491,21 @@ Create a multi-file. You must instantiate this class with an input object argume
 
 It will be useful to know that in `MultiFile`’s view of the world, text is composed of three kinds of lines: data, section-dividers, and end-markers. MultiFile is designed to support parsing of messages that may have multiple nested message parts, each with its own pattern for section-divider and end-marker lines.
 
-## MultiFile Objects <span id="MultiFile-objects" label="MultiFile-objects"></span>
+## MultiFile Objects 
 
 A `MultiFile` instance has the following methods:
 
-### `push`(*str*)
+### `push`(str)
 
 Push a boundary string. When an appropriately decorated version of this boundary is found as an input line, it will be interpreted as a section-divider or end-marker. All subsequent reads will return the empty string to indicate end-of-file, until a call to `pop()` removes the boundary a or `next()` call reenables it.
 
 It is possible to push more than one boundary. Encountering the most-recently-pushed boundary will return EOF; encountering any other boundary will raise an error.
 
-### `readline`(*str*)
+### `readline`(str)
 
 Read a line. If the line is data (not a section-divider or end-marker or real EOF) return it. If the line matches the most-recently-stacked boundary, return `’’` and set `self.last` to 1 or 0 according as the match is or is not an end-marker. If the line matches any other stacked boundary, raise an error. On encountering end-of-file on the underlying stream object, the method raises `Error` unless all boundaries have been popped.
 
-### `readlines`(*str*)
+### `readlines`(str)
 
 Return all lines remaining in this part as a list of strings.
 
@@ -8528,7 +8521,7 @@ Skip lines to the next section (that is, read lines until a section-divider or e
 
 Pop a section boundary. This boundary will no longer be interpreted as EOF.
 
-### `seek`(*pos*)
+### `seek`(pos)
 
 Seek. Seek indices are relative to the start of the current section. The *pos* and *whence* arguments are interpreted as for a file seek.
 
@@ -8536,17 +8529,17 @@ Seek. Seek indices are relative to the start of the current section. The *pos* a
 
 Return the file position relative to the start of the current section.
 
-### `is_data`(*str*)
+### `is_data`(str)
 
 Return true if *str* is data and false if it might be a section boundary. As written, it tests for a prefix other than `’-``-’` at start of line (which all MIME boundaries have) but it is declared so it can be overridden in derived classes.
 
 Note that this test is used intended as a fast guard for the real boundary tests; if it always returns false it will merely slow processing, not cause it to fail.
 
-### `section_divider`(*str*)
+### `section_divider`(str)
 
 Turn a boundary into a section-divider line. By default, this method prepends `’-``-’` (which MIME section boundaries have) but it is declared so it can be overridden in derived classes. This method need not append LF or CR-LF, as comparison with the result ignores trailing whitespace.
 
-### `end_marker`(*str*)
+### `end_marker`(str)
 
 Turn a boundary string into an end-marker line. By default, this method prepends `’-``-’` and appends `’-``-’` (like a MIME-multipart end-of-message marker) but it is declared so it can be be overridden in derived classes. This method need not append LF or CR-LF, as comparison with the result ignores trailing whitespace.
 
@@ -8560,7 +8553,7 @@ Nesting depth of the current part.
 
 True if the last end-of-file was for an end-of-message marker.
 
-## `MultiFile` Example <span id="multifile-example" label="multifile-example"></span>
+## `MultiFile` Example 
 
     import mimetools
     import MultiFile
@@ -8606,7 +8599,7 @@ A mutex has two pieces of state — a “locked” bit and a queue. When the mut
 
 Of course, no multi-threading is implied – hence the funny interface for lock, where a function is called once the lock is acquired.
 
-## Mutex Objects <span id="mutex-objects" label="mutex-objects"></span>
+## Mutex Objects 
 
 `mutex` objects have following methods:
 
@@ -8618,7 +8611,7 @@ Check whether the mutex is locked.
 
 “Atomic” test-and-set, grab the lock if it is not set, and return true, otherwise, return false.
 
-### `lock`(*function, argument*)
+### `lock`(function, argument)
 
 Execute *`function`*`(`*`argument`*`)`, unless the mutex is locked. In the case it is locked, place the function and argument on the queue. See `unlock` for explanation of when *`function`*`(`*`argument`*`)` is executed in that case.
 
@@ -8635,11 +8628,11 @@ The `netrc` class parses and encapsulates the netrc file format used by the Unix
 
 A `netrc` instance or subclass instance encapsulates data from a netrc file. The initialization argument, if present, specifies the file to parse. If no argument is given, the file `.netrc` in the user’s home directory will be read. Parse errors will raise `SyntaxError` with diagnostic information including the file name, line number, and terminating token.
 
-## netrc Objects <span id="netrc-objects" label="netrc-objects"></span>
+## netrc Objects 
 
 A `netrc` instance has the following methods:
 
-### `authenticators`(*host*)
+### `authenticators`(host)
 
 Return a 3-tuple `(`*`login`*`, `*`account`*`, `*`password`*`)` of authenticators for *host*. If the netrc file did not contain an entry for the given host, return the tuple associated with the ‘default’ entry. If neither matching host nor default entry is available, return `None`.
 
@@ -8664,27 +8657,27 @@ The `new` module allows an interface to the interpreter object creation function
 
 The `new` module defines the following functions:
 
-### `instance`(*class, dict*)
+### `instance`(class, dict)
 
 This function creates an instance of *class* with dictionary *dict* without calling the `__init__()` constructor. Note that there are no guarantees that the object will be in a consistent state.
 
-### `instancemethod`(*function, instance, class*)
+### `instancemethod`(function, instance, class)
 
 This function will return a method object, bound to *instance*, or unbound if *instance* is `None`. *function* must be callable, and *instance* must be an instance object or `None`.
 
-### `function`(*code, globals*)
+### `function`(code, globals)
 
 Returns a (Python) function with the given code and globals. If *name* is given, it must be a string or `None`. If it is a string, the function will have the given name, otherwise the function name will be taken from *`code`*`.co_name`. If *argdefs* is given, it must be a tuple and will be used to the determine the default values of parameters.
 
-### `code`(*argcount, nlocals, stacksize, flags, codestring, constants, names, varnames, filename, name, firstlineno, lnotab*)
+### `code`(argcount, nlocals, stacksize, flags, codestring, constants, names, varnames, filename, name, firstlineno, lnotab)
 
 This function is an interface to the C function.
 
-### `module`(*name*)
+### `module`(name)
 
 This function returns a new module object with name *name*. *name* must be a string.
 
-### `classobj`(*name, baseclasses, dict*)
+### `classobj`(name, baseclasses, dict)
 
 This function returns a new class object, with name *name*, derived from *baseclasses* (which should be a tuple of classes) and with namespace *dict*.
 # `ni` — None
@@ -8723,13 +8716,13 @@ Because NIS exists only on Unix systems, this module is only available for Unix.
 
 The `nis` module defines the following functions:
 
-### `match`(*key, mapname*)
+### `match`(key, mapname)
 
 Return the match for *key* in map *mapname*, or raise an error (`nis.error`) if there is none. Both should be strings, *key* is 8-bit clean. Return value is an arbitrary array of bytes (i.e., may contain `NULL` and other joys).
 
 Note that *mapname* is first checked if it is an alias to another name.
 
-### `cat`(*mapname*)
+### `cat`(mapname)
 
 Return a dictionary mapping *key* to *value* such that `match(`*`key`*`, `*`mapname`*`)==`*`value`*. Note that both keys and values of the dictionary are arbitrary arrays of bytes.
 
@@ -8783,7 +8776,7 @@ To post an article from a file (this assumes that the article has valid headers)
 
 The module itself defines the following items:
 
-### class `NNTP`(*host*)
+### class `NNTP`(host)
 
 Return a new instance of the `NNTP` class, representing a connection to the NNTP server running on host *host*, listening at port *port*. The default *port* is 119. If the optional *user* and *password* are provided, the `AUTHINFO USER` and `AUTHINFO PASS` commands are used to identify and authenticate the user to the server. If the optional flag *readermode* is true, then a `mode reader` command is sent before authentication is performed. Reader mode is sometimes necessary if you are connecting to an NNTP server on the local machine and intend to call reader-specific commands, such as `group`. If you get unexpected `NNTPPermanentError`s, you might need to set *readermode*. *readermode* defaults to `None`.
 
@@ -8811,7 +8804,7 @@ Exception raised when a reply is received from the server that does not begin wi
 
 Exception raised when there is some error in the response data. For backwards compatibility, the exception `error_data` is equivalent to this class.
 
-## NNTP Objects <span id="nntp-objects" label="nntp-objects"></span>
+## NNTP Objects 
 
 NNTP instances have the following methods. The *response* that is returned as the first item in the return tuple of almost all methods is the server’s response: a string beginning with a three-digit code. If the server’s response indicates an error, the method raises one of the above exceptions.
 
@@ -8819,15 +8812,15 @@ NNTP instances have the following methods. The *response* that is returned as th
 
 Return the welcome message sent by the server in reply to the initial connection. (This message sometimes contains disclaimers or help information that may be relevant to the user.)
 
-### `set_debuglevel`(*level*)
+### `set_debuglevel`(level)
 
 Set the instance’s debugging level. This controls the amount of debugging output printed. The default, `0`, produces no debugging output. A value of `1` produces a moderate amount of debugging output, generally a single line per request or response. A value of `2` or higher produces the maximum amount of debugging output, logging each line sent and received on the connection (including message text).
 
-### `newgroups`(*date, time*)
+### `newgroups`(date, time)
 
 Send a `NEWGROUPS` command. The *date* argument should be a string of the form `’`*`yymmdd`*`’` indicating the date, and *time* should be a string of the form `’`*`hhmmss`*`’` indicating the time. Return a pair `(`*`response`*`, `*`groups`*`)` where *groups* is a list of group names that are new since the given date and time.
 
-### `newnews`(*group, date, time*)
+### `newnews`(group, date, time)
 
 Send a `NEWNEWS` command. Here, *group* is a group name or `’*’`, and *date* and *time* have the same meaning as for `newgroups()`. Return a pair `(`*`response`*`, `*`articles`*`)` where *articles* is a list of article ids.
 
@@ -8835,7 +8828,7 @@ Send a `NEWNEWS` command. Here, *group* is a group name or `’*’`, and *date*
 
 Send a `LIST` command. Return a pair `(`*`response`*`, `*`list`*`)` where *list* is a list of tuples. Each tuple has the form `(`*`group`*`, `*`last`*`, `*`first`*`, `*`flag`*`)`, where *group* is a group name, *last* and *first* are the last and first article numbers (as strings), and *flag* is `’y’` if posting is allowed, `’n’` if not, and `’m’` if the newsgroup is moderated. (Note the ordering: *last*, *first*.)
 
-### `group`(*name*)
+### `group`(name)
 
 Send a `GROUP` command, where *name* is the group name. Return a tuple `(`*`response`*`, `*`count`*`, `*`first`*`, `*`last`*`, `*`name`*`)` where *count* is the (estimated) number of articles in the group, *first* is the first article number in the group, *last* is the last article number in the group, and *name* is the group name. The numbers are returned as strings.
 
@@ -8843,7 +8836,7 @@ Send a `GROUP` command, where *name* is the group name. Return a tuple `(`*`resp
 
 Send a `HELP` command. Return a pair `(`*`response`*`, `*`list`*`)` where *list* is a list of help strings.
 
-### `stat`(*id*)
+### `stat`(id)
 
 Send a `STAT` command, where *id* is the message id (enclosed in `<` and `>`) or an article number (as a string). Return a triple `(`*`response`*`, `*`number`*`, `*`id`*`)` where *number* is the article number (as a string) and *id* is the article id (enclosed in `<` and `>`).
 
@@ -8855,15 +8848,15 @@ Send a `NEXT` command. Return as for `stat()`.
 
 Send a `LAST` command. Return as for `stat()`.
 
-### `head`(*id*)
+### `head`(id)
 
 Send a `HEAD` command, where *id* has the same meaning as for `stat()`. Return a tuple `(`*`response`*`, `*`number`*`, `*`id`*`, `*`list`*`)` where the first three are the same as for `stat()`, and *list* is a list of the article’s headers (an uninterpreted list of lines, without trailing newlines).
 
-### `body`(*id*)
+### `body`(id)
 
 Send a `BODY` command, where *id* has the same meaning as for `stat()`. Return as for `head()`.
 
-### `article`(*id*)
+### `article`(id)
 
 Send an `ARTICLE` command, where *id* has the same meaning as for `stat()`. Return as for `head()`.
 
@@ -8871,15 +8864,15 @@ Send an `ARTICLE` command, where *id* has the same meaning as for `stat()`. Retu
 
 Send a `SLAVE` command. Return the server’s *response*.
 
-### `xhdr`(*header, string*)
+### `xhdr`(header, string)
 
 Send an `XHDR` command. This command is not defined in the RFC but is a common extension. The *header* argument is a header keyword, e.g. `’subject’`. The *string* argument should have the form `’`*`first`*`-`*`last`*`’` where *first* and *last* are the first and last article numbers to search. Return a pair `(`*`response`*`, `*`list`*`)`, where *list* is a list of pairs `(`*`id`*`, `*`text`*`)`, where *id* is an article id (as a string) and *text* is the text of the requested header for that article.
 
-### `post`(*file*)
+### `post`(file)
 
 Post an article using the `POST` command. The *file* argument is an open file object which is read until EOF using its `readline()` method. It should be a well-formed news article, including the required headers. The `post()` method automatically escapes lines beginning with `.`.
 
-### `ihave`(*id, file*)
+### `ihave`(id, file)
 
 Send an `IHAVE` command. If the response is not an error, treat *file* exactly as for the `post()` method.
 
@@ -8887,17 +8880,17 @@ Send an `IHAVE` command. If the response is not an error, treat *file* exactly a
 
 Return a triple `(`*`response`*`, `*`date`*`, `*`time`*`)`, containing the current date and time in a form suitable for the `newnews()` and `newgroups()` methods. This is an optional NNTP extension, and may not be supported by all servers.
 
-### `xgtitle`(*name*)
+### `xgtitle`(name)
 
 Process an `XGTITLE` command, returning a pair `(`*`response`*`, `*`list`*`)`, where *list* is a list of tuples containing `(`*`name`*`, `*`title`*`)`.
 
 This is an optional NNTP extension, and may not be supported by all servers.
 
-### `xover`(*start, end*)
+### `xover`(start, end)
 
 Return a pair `(`*`resp`*`, `*`list`*`)`. *list* is a list of tuples, one for each article in the range delimited by the *start* and *end* article numbers. Each tuple is of the form `(`*`article number`*`, `*`subject`*`, `*`poster`*`, `*`date`*`, `*`id`*`, `*`references`*`, `*`size`*`, `*`lines`*`)`. This is an optional NNTP extension, and may not be supported by all servers.
 
-### `xpath`(*id*)
+### `xpath`(id)
 
 Return a pair `(`*`resp`*`, `*`path`*`)`, where *path* is the directory path to the article with message ID *id*. This is an optional NNTP extension, and may not be supported by all servers.
 
@@ -8917,79 +8910,79 @@ The `operator` module exports a set of functions implemented in C corresponding 
 
 The `operator` module defines the following functions:
 
-### `add`(*a, b*)
+### `add`(a, b)
 
 Return *a* `+` *b*, for *a* and *b* numbers.
 
-### `sub`(*a, b*)
+### `sub`(a, b)
 
 Return *a* `-` *b*.
 
-### `mul`(*a, b*)
+### `mul`(a, b)
 
 Return *a* `*` *b*, for *a* and *b* numbers.
 
-### `div`(*a, b*)
+### `div`(a, b)
 
 Return *a* `/` *b*.
 
-### `mod`(*a, b*)
+### `mod`(a, b)
 
 Return *a* `%` *b*.
 
-### `neg`(*o*)
+### `neg`(o)
 
 Return *o* negated.
 
-### `pos`(*o*)
+### `pos`(o)
 
 Return *o* positive.
 
-### `abs`(*o*)
+### `abs`(o)
 
 Return the absolute value of *o*.
 
-### `inv`(*o*)
+### `inv`(o)
 
 Return the inverse of *o*. The names `invert()` and `__invert__()` were added in Python 2.0.
 
-### `lshift`(*a, b*)
+### `lshift`(a, b)
 
 Return *a* shifted left by *b*.
 
-### `rshift`(*a, b*)
+### `rshift`(a, b)
 
 Return *a* shifted right by *b*.
 
-### `and_`(*a, b*)
+### `and_`(a, b)
 
 Return the bitwise and of *a* and *b*.
 
-### `or_`(*a, b*)
+### `or_`(a, b)
 
 Return the bitwise or of *a* and *b*.
 
-### `xor`(*a, b*)
+### `xor`(a, b)
 
 Return the bitwise exclusive or of *a* and *b*.
 
-### `not_`(*o*)
+### `not_`(o)
 
 Return the outcome of *o*. (Note that there is no `__not__()` discipline for object instances; only the interpreter core defines this operation.)
 
-### `truth`(*o*)
+### `truth`(o)
 
 Return `1` if *o* is true, and 0 otherwise.
 
-### `concat`(*a, b*)
+### `concat`(a, b)
 
 Return *a* `+` *b* for *a* and *b* sequences.
 
-### `repeat`(*a, b*)
+### `repeat`(a, b)
 
 Return *a* `*` *b* where *a* is a sequence and *b* is an integer.
 
-### `contains`(*a, b*)
+### `contains`(a, b)
 
 Return the outcome of the test *b* `in` *a*. Note the reversed operands. The name `__contains__()` was added in Python 2.0.
 
@@ -8997,35 +8990,35 @@ Return the outcome of the test *b* `in` *a*. Note the reversed operands. The nam
 
 *Deprecated since version 2.0: Use `contains()` instead.* Alias for `contains()`.
 
-### `countOf`(*a, b*)
+### `countOf`(a, b)
 
 Return the number of occurrences of *b* in *a*.
 
-### `indexOf`(*a, b*)
+### `indexOf`(a, b)
 
 Return the index of the first of occurrence of *b* in *a*.
 
-### `getitem`(*a, b*)
+### `getitem`(a, b)
 
 Return the value of *a* at index *b*.
 
-### `setitem`(*a, b, c*)
+### `setitem`(a, b, c)
 
 Set the value of *a* at index *b* to *c*.
 
-### `delitem`(*a, b*)
+### `delitem`(a, b)
 
 Remove the value of *a* at index *b*.
 
-### `getslice`(*a, b, c*)
+### `getslice`(a, b, c)
 
 Return the slice of *a* from index *b* to index *c*`-1`.
 
-### `setslice`(*a, b, c, v*)
+### `setslice`(a, b, c, v)
 
 Set the slice of *a* from index *b* to index *c*`-1` to the sequence *v*.
 
-### `delslice`(*a, b, c*)
+### `delslice`(a, b, c)
 
 Delete the slice of *a* from index *b* to index *c*`-1`.
 
@@ -9064,7 +9057,7 @@ The name of the OS dependent module imported. The following names have currently
 
 The corresponding OS dependent standard module for pathname operations, e.g., `posixpath` or `macpath`. Thus, given the proper imports, `os.path.split(`*`file`*`)` is equivalent to but more portable than `posixpath.split(`*`file`*`)`. Note that this is also a valid module: it may be imported directly as `os.path`.
 
-## Process Parameters <span id="os-procinfo" label="os-procinfo"></span>
+## Process Parameters 
 
 These functions and data items provide information and operate on the current process and user.
 
@@ -9076,7 +9069,7 @@ If the platform supports the `putenv()` function, this mapping may be used to mo
 
 If `putenv()` is not provided, this mapping may be passed to the appropriate process-creation functions to cause child processes to use a modified environment.
 
-### `chdir`(*path*)
+### `chdir`(path)
 
 These functions are described in “Files and Directories” (section <a href="#os-file-dir" data-reference-type="ref" data-reference="os-file-dir">[os-file-dir]</a>).
 
@@ -9120,21 +9113,21 @@ Return the parent’s process id. Availability: Unix.
 
 Return the current process’ user id. Availability: Unix.
 
-### `putenv`(*varname, value*)
+### `putenv`(varname, value)
 
 Set the environment variable named *varname* to the string *value*. Such changes to the environment affect subprocesses started with `os.system()`, `popen()` or `fork()` and `execv()`. Availability: most flavors of Unix, Windows.
 
 When `putenv()` is supported, assignments to items in `os.environ` are automatically translated into corresponding calls to `putenv()`; however, calls to `putenv()` don’t update `os.environ`, so it is actually preferable to assign to items of `os.environ`.
 
-### `setegid`(*egid*)
+### `setegid`(egid)
 
 Set the current process’s effective group id. Availability: Unix.
 
-### `seteuid`(*euid*)
+### `seteuid`(euid)
 
 Set the current process’s effective user id. Availability: Unix.
 
-### `setgid`(*gid*)
+### `setgid`(gid)
 
 Set the current process’ group id. Availability: Unix.
 
@@ -9142,15 +9135,15 @@ Set the current process’ group id. Availability: Unix.
 
 Calls the system call or depending on which version is implemented (if any). See the Unix manual for the semantics. Availability: Unix.
 
-### `setpgid`(*pid, pgrp*)
+### `setpgid`(pid, pgrp)
 
 Calls the system call . See the Unix manual for the semantics. Availability: Unix.
 
-### `setreuid`(*ruid, euid*)
+### `setreuid`(ruid, euid)
 
 Set the current process’s real and effective user ids. Availability: Unix.
 
-### `setregid`(*rgid, egid*)
+### `setregid`(rgid, egid)
 
 Set the current process’s real and effective group ids. Availability: Unix.
 
@@ -9158,15 +9151,15 @@ Set the current process’s real and effective group ids. Availability: Unix.
 
 Calls the system call . See the Unix manual for the semantics. Availability: Unix.
 
-### `setuid`(*uid*)
+### `setuid`(uid)
 
 Set the current process’ user id. Availability: Unix.
 
-### `strerror`(*code*)
+### `strerror`(code)
 
 Return the error message corresponding to the error code in *code*. Availability: Unix, Windows.
 
-### `umask`(*mask*)
+### `umask`(mask)
 
 Set the current numeric umask and returns the previous umask. Availability: Unix, Windows.
 
@@ -9174,15 +9167,15 @@ Set the current numeric umask and returns the previous umask. Availability: Unix
 
 Return a 5-tuple containing information identifying the current operating system. The tuple contains 5 strings: `(`*`sysname`*`, `*`nodename`*`, `*`release`*`, `*`version`*`, `*`machine`*`)`. Some systems truncate the nodename to 8 characters or to the leading component; a better way to get the hostname is `socket.gethostname()` or even `socket.gethostbyaddr(socket.gethostname())`. Availability: recent flavors of Unix.
 
-## File Object Creation <span id="os-newstreams" label="os-newstreams"></span>
+## File Object Creation 
 
 These functions create new file objects.
 
-### `fdopen`(*fd*)
+### `fdopen`(fd)
 
 Return an open file object connected to the file descriptor *fd*. The *mode* and *bufsize* arguments have the same meaning as the corresponding arguments to the built-in `open()` function. Availability: Macintosh, Unix, Windows.
 
-### `popen`(*command*)
+### `popen`(command)
 
 Open a pipe to or from *command*. The return value is an open file object connected to the pipe, which can be read or written depending on whether *mode* is `’r’` (default) or `’w’`. The *bufsize* argument has the same meaning as the corresponding argument to the built-in `open()` function. The exit status of the command (encoded in the format specified for `wait()`) is available as the return value of the `close()` method of the file object, except that when the exit status is zero (termination without errors), `None` is returned. **Note:** This function behaves unreliably under Windows due to the native implementation of . Availability: Unix, Windows.
 
@@ -9190,51 +9183,51 @@ Open a pipe to or from *command*. The return value is an open file object connec
 
 Return a new file object opened in update mode (`w+`). The file has no directory entries associated with it and will be automatically deleted once there are no file descriptors for the file. Availability: Unix.
 
-## File Descriptor Operations <span id="os-fd-ops" label="os-fd-ops"></span>
+## File Descriptor Operations 
 
 These functions operate on I/O streams referred to using file descriptors.
 
-### `close`(*fd*)
+### `close`(fd)
 
 Close file descriptor *fd*. Availability: Macintosh, Unix, Windows.
 
 Note: this function is intended for low-level I/O and must be applied to a file descriptor as returned by `open()` or `pipe()`. To close a “file object” returned by the built-in function `open()` or by `popen()` or `fdopen()`, use its `close()` method.
 
-### `dup`(*fd*)
+### `dup`(fd)
 
 Return a duplicate of file descriptor *fd*. Availability: Macintosh, Unix, Windows.
 
-### `dup2`(*fd, fd2*)
+### `dup2`(fd, fd2)
 
 Duplicate file descriptor *fd* to *fd2*, closing the latter first if necessary. Availability: Unix, Windows.
 
-### `fpathconf`(*fd, name*)
+### `fpathconf`(fd, name)
 
 Return system configuration information relevant to an open file. *name* specifies the configuration value to retrieve; it may be a string which is the name of a defined system value; these names are specified in a number of standards (POSIX.1, Unix95, Unix98, and others). Some platforms define additional names as well. The names known to the host operating system are given in the `pathconf_names` dictionary. For configuration variables not included in that mapping, passing an integer for *name* is also accepted. Availability: Unix.
 
 If *name* is a string and is not known, `ValueError` is raised. If a specific value for *name* is not supported by the host system, even if it is included in `pathconf_names`, an `OSError` is raised with for the error number.
 
-### `fstat`(*fd*)
+### `fstat`(fd)
 
 Return status for file descriptor *fd*, like `stat()`. Availability: Unix, Windows.
 
-### `fstatvfs`(*fd*)
+### `fstatvfs`(fd)
 
 Return information about the filesystem containing the file associated with file descriptor *fd*, like `statvfs()`. Availability: Unix.
 
-### `ftruncate`(*fd, length*)
+### `ftruncate`(fd, length)
 
 Truncate the file corresponding to file descriptor *fd*, so that it is at most *length* bytes in size. Availability: Unix.
 
-### `isatty`(*fd*)
+### `isatty`(fd)
 
 Return `1` if the file descriptor *fd* is open and connected to a tty(-like) device, else `0`. Availability: Unix
 
-### `lseek`(*fd, pos, how*)
+### `lseek`(fd, pos, how)
 
 Set the current position of file descriptor *fd* to position *pos*, modified by *how*: `0` to set the position relative to the beginning of the file; `1` to set it relative to the current position; `2` to set it relative to the end of the file. Availability: Macintosh, Unix, Windows.
 
-### `open`(*file, flags*)
+### `open`(file, flags)
 
 Open the file *file* and set various flags according to *flags* and possibly its mode according to *mode*. The default *mode* is `0777` (octal), and the current umask value is first masked out. Return the file descriptor for the newly opened file. Availability: Macintosh, Unix, Windows.
 
@@ -9250,25 +9243,25 @@ Open a new pseudo-terminal pair. Return a pair of file descriptors `(`*`master`*
 
 Create a pipe. Return a pair of file descriptors `(`*`r`*`, `*`w`*`)` usable for reading and writing, respectively. Availability: Unix, Windows.
 
-### `read`(*fd, n*)
+### `read`(fd, n)
 
 Read at most *n* bytes from file descriptor *fd*. Return a string containing the bytes read. Availability: Macintosh, Unix, Windows.
 
 Note: this function is intended for low-level I/O and must be applied to a file descriptor as returned by `open()` or `pipe()`. To read a “file object” returned by the built-in function `open()` or by `popen()` or `fdopen()`, or `sys.stdin`, use its `read()` or `readline()` methods.
 
-### `tcgetpgrp`(*fd*)
+### `tcgetpgrp`(fd)
 
 Return the process group associated with the terminal given by *fd* (an open file descriptor as returned by `open()`). Availability: Unix.
 
-### `tcsetpgrp`(*fd, pg*)
+### `tcsetpgrp`(fd, pg)
 
 Set the process group associated with the terminal given by *fd* (an open file descriptor as returned by `open()`) to *pg*. Availability: Unix.
 
-### `ttyname`(*fd*)
+### `ttyname`(fd)
 
 Return a string which specifies the terminal device associated with file-descriptor *fd*. If *fd* is not associated with a terminal device, an exception is raised. Availability: Unix.
 
-### `write`(*fd, str*)
+### `write`(fd, str)
 
 Write the string *str* to file descriptor *fd*. Return the number of bytes actually written. Availability: Macintosh, Unix, Windows.
 
@@ -9284,9 +9277,9 @@ Options for the *flag* argument to the `open()` function. These can be bit-wise 
 
 Option for the *flag* argument to the `open()` function. This can be bit-wise OR’d together with those listed above. Availability: Macintosh, Windows.
 
-## Files and Directories <span id="os-file-dir" label="os-file-dir"></span>
+## Files and Directories 
 
-### `access`(*path, mode*)
+### `access`(path, mode)
 
 Check read/write/execute permissions for this process or existence of file *path*. *mode* should be to test the existence of *path*, or it can be the inclusive OR of one or more of , , and to test permissions. Return `1` if access is allowed, `0` if not. See the Unix man page for more information. Availability: Unix, Windows.
 
@@ -9306,7 +9299,7 @@ Value to include in the *mode* parameter of `access()` to test the writability o
 
 Value to include in the *mode* parameter of `access()` to determine if *path* can be executed.
 
-### `chdir`(*path*)
+### `chdir`(path)
 
 Change the current working directory to *path*. Availability: Macintosh, Unix, Windows.
 
@@ -9314,41 +9307,41 @@ Change the current working directory to *path*. Availability: Macintosh, Unix, W
 
 Return a string representing the current working directory. Availability: Macintosh, Unix, Windows.
 
-### `chmod`(*path, mode*)
+### `chmod`(path, mode)
 
 Change the mode of *path* to the numeric *mode*. Availability: Unix, Windows.
 
-### `chown`(*path, uid, gid*)
+### `chown`(path, uid, gid)
 
 Change the owner and group id of *path* to the numeric *uid* and *gid*. Availability: Unix.
 
-### `link`(*src, dst*)
+### `link`(src, dst)
 
 Create a hard link pointing to *src* named *dst*. Availability: Unix.
 
-### `listdir`(*path*)
+### `listdir`(path)
 
 Return a list containing the names of the entries in the directory. The list is in arbitrary order. It does not include the special entries `’.’` and `’..’` even if they are present in the directory. Availability: Macintosh, Unix, Windows.
 
-### `lstat`(*path*)
+### `lstat`(path)
 
 Like `stat()`, but do not follow symbolic links. Availability: Unix.
 
-### `mkfifo`(*path*)
+### `mkfifo`(path)
 
 Create a FIFO (a named pipe) named *path* with numeric mode *mode*. The default *mode* is `0666` (octal). The current umask value is first masked out from the mode. Availability: Unix.
 
 FIFOs are pipes that can be accessed like regular files. FIFOs exist until they are deleted (for example with `os.unlink()`). Generally, FIFOs are used as rendezvous between “client” and “server” type processes: the server opens the FIFO for reading, and the client opens it for writing. Note that `mkfifo()` doesn’t open the FIFO — it just creates the rendezvous point.
 
-### `mkdir`(*path*)
+### `mkdir`(path)
 
 Create a directory named *path* with numeric mode *mode*. The default *mode* is `0777` (octal). On some systems, *mode* is ignored. Where it is used, the current umask value is first masked out. Availability: Macintosh, Unix, Windows.
 
-### `makedirs`(*path*)
+### `makedirs`(path)
 
 Recursive directory creation function. Like `mkdir()`, but makes all intermediate-level directories needed to contain the leaf directory. Throws an `error` exception if the leaf directory already exists or cannot be created. The default *mode* is `0777` (octal). *New in version 1.5.2.*
 
-### `pathconf`(*path, name*)
+### `pathconf`(path, name)
 
 Return system configuration information relevant to a named file. *name* specifies the configuration value to retrieve; it may be a string which is the name of a defined system value; these names are specified in a number of standards (POSIX.1, Unix95, Unix98, and others). Some platforms define additional names as well. The names known to the host operating system are given in the `pathconf_names` dictionary. For configuration variables not included in that mapping, passing an integer for *name* is also accepted. Availability: Unix.
 
@@ -9358,45 +9351,45 @@ If *name* is a string and is not known, `ValueError` is raised. If a specific va
 
 Dictionary mapping names accepted by `pathconf()` and `fpathconf()` to the integer values defined for those names by the host operating system. This can be used to determine the set of names known to the system. Availability: Unix.
 
-### `readlink`(*path*)
+### `readlink`(path)
 
 Return a string representing the path to which the symbolic link points. Availability: Unix.
 
-### `remove`(*path*)
+### `remove`(path)
 
 Remove the file *path*. See `rmdir()` below to remove a directory. This is identical to the `unlink()` function documented below. Availability: Macintosh, Unix, Windows.
 
-### `removedirs`(*path*)
+### `removedirs`(path)
 
 Recursive directory removal function. Works like `rmdir()` except that, if the leaf directory is successfully removed, directories corresponding to rightmost path segments will be pruned way until either the whole path is consumed or an error is raised (which is ignored, because it generally means that a parent directory is not empty). Throws an `error` exception if the leaf directory could not be successfully removed. *New in version 1.5.2.*
 
-### `rename`(*src, dst*)
+### `rename`(src, dst)
 
 Rename the file or directory *src* to *dst*. Availability: Macintosh, Unix, Windows.
 
-### `renames`(*old, new*)
+### `renames`(old, new)
 
 Recursive directory or file renaming function. Works like `rename()`, except creation of any intermediate directories needed to make the new pathname good is attempted first. After the rename, directories corresponding to rightmost path segments of the old name will be pruned away using `removedirs()`.
 
 Note: this function can fail with the new directory structure made if you lack permissions needed to remove the leaf directory or file. *New in version 1.5.2.*
 
-### `rmdir`(*path*)
+### `rmdir`(path)
 
 Remove the directory *path*. Availability: Macintosh, Unix, Windows.
 
-### `stat`(*path*)
+### `stat`(path)
 
 Perform a system call on the given path. The return value is a tuple of at least 10 integers giving the most important (and portable) members of the *stat* structure, in the order `st_mode`, `st_ino`, `st_dev`, `st_nlink`, `st_uid`, `st_gid`, `st_size`, `st_atime`, `st_mtime`, `st_ctime`. More items may be added at the end by some implementations. (On MS Windows, some items are filled with dummy values.) Availability: Macintosh, Unix, Windows.
 
 Note: The standard module `stat`defines functions and constants that are useful for extracting information from a `stat` structure.
 
-### `statvfs`(*path*)
+### `statvfs`(path)
 
 Perform a system call on the given path. The return value is a tuple of 10 integers giving the most common members of the `statvfs` structure, in the order `f_bsize`, `f_frsize`, `f_blocks`, `f_bfree`, `f_bavail`, `f_files`, `f_ffree`, `f_favail`, `f_flag`, `f_namemax`. Availability: Unix.
 
 Note: The standard module `statvfs`defines constants that are useful for extracting information from a `statvfs` structure.
 
-### `symlink`(*src, dst*)
+### `symlink`(src, dst)
 
 Create a symbolic link pointing to *src* named *dst*. Availability: Unix.
 
@@ -9412,15 +9405,15 @@ Return a unique path name that is reasonable for creating a temporary file. This
 
 The maximum number of unique names that `tmpnam()` will generate before reusing names.
 
-### `unlink`(*path*)
+### `unlink`(path)
 
 Remove the file *path*. This is the same function as `remove()`; the `unlink()` name is its traditional Unix name. Availability: Macintosh, Unix, Windows.
 
-### `utime`(*path, times*)
+### `utime`(path, times)
 
 Set the access and modified times of the file specified by *path*. If *times* is `None`, then the file’s access and modified times are set to the current time. Otherwise, *times* must be a 2-tuple of numbers, of the form `(`*`atime`*`, `*`mtime`*`)` which is used to set the access and modified times, respectively. *Changed in version 2.0.* Availability: Macintosh, Unix, Windows.
 
-## Process Management <span id="os-process" label="os-process"></span>
+## Process Management 
 
 These functions may be used to create and manage processes.
 
@@ -9430,35 +9423,35 @@ The various `exec*()` functions take a list of arguments for the new program loa
 
 Generate a signal to the current process. On Unix, the default behavior is to produce a core dump; on Windows, the process immediately returns an exit code of `3`. Be aware that programs which use `signal.signal()` to register a handler for will behave differently. Availability: Unix, Windows.
 
-### `execl`(*path, arg0, arg1, ...*)
+### `execl`(path, arg0, arg1, ...)
 
 This is equivalent to `execv(`*`path`*`, (`*`arg0`*`, `*`arg1`*`, ...))`. Availability: Unix, Windows.
 
-### `execle`(*path, arg0, arg1, ..., env*)
+### `execle`(path, arg0, arg1, ..., env)
 
 This is equivalent to `execve(`*`path`*`, (`*`arg0`*`, `*`arg1`*`, ...), `*`env`*`)`. Availability: Unix, Windows.
 
-### `execlp`(*path, arg0, arg1, ...*)
+### `execlp`(path, arg0, arg1, ...)
 
 This is equivalent to `execvp(`*`path`*`, (`*`arg0`*`, `*`arg1`*`, ...))`. Availability: Unix, Windows.
 
-### `execv`(*path, args*)
+### `execv`(path, args)
 
 Execute the executable *path* with argument list *args*, replacing the current process (i.e., the Python interpreter). The argument list may be a tuple or list of strings. Availability: Unix, Windows.
 
-### `execve`(*path, args, env*)
+### `execve`(path, args, env)
 
 Execute the executable *path* with argument list *args*, and environment *env*, replacing the current process (i.e., the Python interpreter). The argument list may be a tuple or list of strings. The environment must be a dictionary mapping strings to strings. Availability: Unix, Windows.
 
-### `execvp`(*path, args*)
+### `execvp`(path, args)
 
 This is like `execv(`*`path`*`, `*`args`*`)` but duplicates the shell’s actions in searching for an executable file in a list of directories. The directory list is obtained from `environ[’PATH’]`. Availability: Unix, Windows.
 
-### `execvpe`(*path, args, env*)
+### `execvpe`(path, args, env)
 
 This is a cross between `execve()` and `execvp()`. The directory list is obtained from *`env`*`[’PATH’]`. Availability: Unix, Windows.
 
-### `_exit`(*n*)
+### `_exit`(n)
 
 Exit to the system with status *n*, without calling cleanup handlers, flushing stdio buffers, etc. Availability: Unix, Windows.
 
@@ -9472,23 +9465,23 @@ Fork a child process. Return `0` in the child, the child’s process id in the p
 
 Fork a child process, using a new pseudo-terminal as the child’s controlling terminal. Return a pair of `(`*`pid`*`, `*`fd`*`)`, where *pid* is `0` in the child, the new child’s process id in the parent, and `fd` is the file descriptor of the master end of the pseudo-terminal. For a more portable approach, use the `pty` module. Availability: Some flavors of Unix
 
-### `kill`(*pid, sig*)
+### `kill`(pid, sig)
 
 Kill the process *pid* with signal *sig*. Availability: Unix.
 
-### `nice`(*increment*)
+### `nice`(increment)
 
 Add *increment* to the process’s “niceness”. Return the new niceness. Availability: Unix.
 
-### `plock`(*op*)
+### `plock`(op)
 
 Lock program segments into memory. The value of *op* (defined in `<sys/lock.h>`) determines which segments are locked. Availability: Unix.
 
-### `spawnv`(*mode, path, args*)
+### `spawnv`(mode, path, args)
 
 Execute the program *path* in a new process, passing the arguments specified in *args* as command-line parameters. *args* may be a list or a tuple. *mode* is a magic operational constant. See the Visual C++ Runtime Library documentation for further information; the constants are exposed to the Python programmer as listed below. Availability: Unix, Windows. *New in version 1.5.2.*
 
-### `spawnve`(*mode, path, args, env*)
+### `spawnve`(mode, path, args, env)
 
 Execute the program *path* in a new process, passing the arguments specified in *args* as command-line parameters and the contents of the mapping *env* as the environment. *args* may be a list or a tuple. *mode* is a magic operational constant. See the Visual C++ Runtime Library documentation for further information; the constants are exposed to the Python programmer as listed below. Availability: Unix, Windows. *New in version 1.5.2.*
 
@@ -9500,7 +9493,7 @@ Possible values for the *mode* parameter to `spawnv()` and `spawnve()`. Availabi
 
 Possible values for the *mode* parameter to `spawnv()` and `spawnve()`. These are less portable than those listed above. Availability: Windows. *New in version 1.5.2.*
 
-### `system`(*command*)
+### `system`(command)
 
 Execute the command (a string) in a subshell. This is implemented by calling the Standard C function , and has the same limitations. Changes to `posix.environ`, `sys.stdin`, etc. are not reflected in the environment of the executed command. The return value is the exit status of the process encoded in the format specified for `wait()`, except on Windows 95 and 98, where it is always `0`. Note that POSIX does not specify the meaning of the return value of the C function, so the return value of the Python function is system-dependent. Availability: Unix, Windows.
 
@@ -9512,7 +9505,7 @@ Return a 5-tuple of floating point numbers indicating accumulated (CPU or other)
 
 Wait for completion of a child process, and return a tuple containing its pid and exit status indication: a 16-bit number, whose low byte is the signal number that killed the process, and whose high byte is the exit status (if the signal number is zero); the high bit of the low byte is set if a core file was produced. Availability: Unix.
 
-### `waitpid`(*pid, options*)
+### `waitpid`(pid, options)
 
 Wait for completion of a child process given by process id *pid*, and return a tuple containing its process id and exit status indication (encoded as for `wait()`). The semantics of the call are affected by the value of the integer *options*, which should be `0` for normal operation. Availability: Unix.
 
@@ -9524,33 +9517,33 @@ The option for `waitpid()` to avoid hanging if no child process status is availa
 
 The following functions take a process status code as returned by `system()`, `wait()`, or `waitpid()` as a parameter. They may be used to determine the disposition of a process.
 
-### `WIFSTOPPED`(*status*)
+### `WIFSTOPPED`(status)
 
 Return true if the process has been stopped. Availability: Unix.
 
-### `WIFSIGNALED`(*status*)
+### `WIFSIGNALED`(status)
 
 Return true if the process exited due to a signal. Availability: Unix.
 
-### `WIFEXITED`(*status*)
+### `WIFEXITED`(status)
 
 Return true if the process exited using the system call. Availability: Unix.
 
-### `WEXITSTATUS`(*status*)
+### `WEXITSTATUS`(status)
 
 If `WIFEXITED(`*`status`*`)` is true, return the integer parameter to the system call. Otherwise, the return value is meaningless. Availability: Unix.
 
-### `WSTOPSIG`(*status*)
+### `WSTOPSIG`(status)
 
 Return the signal which caused the process to stop. Availability: Unix.
 
-### `WTERMSIG`(*status*)
+### `WTERMSIG`(status)
 
 Return the signal which caused the process to exit. Availability: Unix.
 
-## Miscellaneous System Information <span id="os-path" label="os-path"></span>
+## Miscellaneous System Information 
 
-### `confstr`(*name*)
+### `confstr`(name)
 
 Return string-valued system configuration values. *name* specifies the configuration value to retrieve; it may be a string which is the name of a defined system value; these names are specified in a number of standards (POSIX, Unix95, Unix98, and others). Some platforms define additional names as well. The names known to the host operating system are given in the `confstr_names` dictionary. For configuration variables not included in that mapping, passing an integer for *name* is also accepted. Availability: Unix.
 
@@ -9562,7 +9555,7 @@ If *name* is a string and is not known, `ValueError` is raised. If a specific va
 
 Dictionary mapping names accepted by `confstr()` to the integer values defined for those names by the host operating system. This can be used to determine the set of names known to the system. Availability: Unix.
 
-### `sysconf`(*name*)
+### `sysconf`(name)
 
 Return integer-valued system configuration values. If the configuration value specified by *name* isn’t defined, `-1` is returned. The comments regarding the *name* parameter for `confstr()` apply here as well; the dictionary that provides information on the known names is given by `sysconf_names`. Availability: Unix.
 
@@ -9611,7 +9604,7 @@ This module should be used instead of the built-in module `pnl`to interface with
 
 The module is too large to document here in its entirety. One interesting function:
 
-### `defpanellist`(*filename*)
+### `defpanellist`(filename)
 
 Parses a panel description file containing S-expressions written by the *Panel Editor* that accompanies the Panel Library and creates the described panels. It returns a list of panel objects.
 
@@ -9652,63 +9645,63 @@ The `parser` module defines functions for a few distinct purposes. The most impo
 
 — symbolUseful constants representing internal nodes of the parse tree. — tokenUseful constants representing leaf nodes of the parse tree and functions for testing node values.
 
-## Creating AST Objects <span id="Creating ASTs" label="Creating ASTs"></span>
+## Creating AST Objects 
 
 AST objects may be created from source code or from a parse tree. When creating an AST object from source, different functions are used to create the `’eval’` and `’exec’` forms.
 
-### `expr`(*source*)
+### `expr`(source)
 
 The `expr()` function parses the parameter *source* as if it were an input to `compile(`*`source`*`, ’file.py’, ’eval’)`. If the parse succeeds, an AST object is created to hold the internal parse tree representation, otherwise an appropriate exception is thrown.
 
-### `suite`(*source*)
+### `suite`(source)
 
 The `suite()` function parses the parameter *source* as if it were an input to `compile(`*`source`*`, ’file.py’, ’exec’)`. If the parse succeeds, an AST object is created to hold the internal parse tree representation, otherwise an appropriate exception is thrown.
 
-### `sequence2ast`(*sequence*)
+### `sequence2ast`(sequence)
 
 This function accepts a parse tree represented as a sequence and builds an internal representation if possible. If it can validate that the tree conforms to the Python grammar and all nodes are valid node types in the host version of Python, an AST object is created from the internal representation and returned to the called. If there is a problem creating the internal representation, or if the tree cannot be validated, a `ParserError` exception is thrown. An AST object created this way should not be assumed to compile correctly; normal exceptions thrown by compilation may still be initiated when the AST object is passed to `compileast()`. This may indicate problems not related to syntax (such as a `MemoryError` exception), but may also be due to constructs such as the result of parsing `del f(0)`, which escapes the Python parser but is checked by the bytecode compiler.
 
 Sequences representing terminal tokens may be represented as either two-element lists of the form `(1, ’name’)` or as three-element lists of the form `(1, ’name’, 56)`. If the third element is present, it is assumed to be a valid line number. The line number may be specified for any subset of the terminal symbols in the input tree.
 
-### `tuple2ast`(*sequence*)
+### `tuple2ast`(sequence)
 
 This is the same function as `sequence2ast()`. This entry point is maintained for backward compatibility.
 
-## Converting AST Objects <span id="Converting ASTs" label="Converting ASTs"></span>
+## Converting AST Objects 
 
 AST objects, regardless of the input used to create them, may be converted to parse trees represented as list- or tuple- trees, or may be compiled into executable code objects. Parse trees may be extracted with or without line numbering information.
 
-### `ast2list`(*ast*)
+### `ast2list`(ast)
 
 This function accepts an AST object from the caller in *ast* and returns a Python list representing the equivalent parse tree. The resulting list representation can be used for inspection or the creation of a new parse tree in list form. This function does not fail so long as memory is available to build the list representation. If the parse tree will only be used for inspection, `ast2tuple()` should be used instead to reduce memory consumption and fragmentation. When the list representation is required, this function is significantly faster than retrieving a tuple representation and converting that to nested lists.
 
 If *line_info* is true, line number information will be included for all terminal tokens as a third element of the list representing the token. Note that the line number provided specifies the line on which the token *ends*. This information is omitted if the flag is false or omitted.
 
-### `ast2tuple`(*ast*)
+### `ast2tuple`(ast)
 
 This function accepts an AST object from the caller in *ast* and returns a Python tuple representing the equivalent parse tree. Other than returning a tuple instead of a list, this function is identical to `ast2list()`.
 
 If *line_info* is true, line number information will be included for all terminal tokens as a third element of the list representing the token. This information is omitted if the flag is false or omitted.
 
-### `compileast`(*ast*)
+### `compileast`(ast)
 
 The Python byte compiler can be invoked on an AST object to produce code objects which can be used as part of an statement or a call to the built-in `eval()`function. This function provides the interface to the compiler, passing the internal parse tree from *ast* to the parser, using the source file name specified by the *filename* parameter. The default value supplied for *filename* indicates that the source was an AST object.
 
 Compiling an AST object may result in exceptions related to compilation; an example would be a `SyntaxError` caused by the parse tree for `del f(0)`: this statement is considered legal within the formal grammar for Python but is not a legal language construct. The `SyntaxError` raised for this condition is actually generated by the Python byte-compiler normally, which is why it can be raised at this point by the `parser` module. Most causes of compilation failure can be diagnosed programmatically by inspection of the parse tree.
 
-## Queries on AST Objects <span id="Querying ASTs" label="Querying ASTs"></span>
+## Queries on AST Objects 
 
 Two functions are provided which allow an application to determine if an AST was created as an expression or a suite. Neither of these functions can be used to determine if an AST was created from source code via `expr()` or `suite()` or from a parse tree via `sequence2ast()`.
 
-### `isexpr`(*ast*)
+### `isexpr`(ast)
 
 When *ast* represents an `’eval’` form, this function returns true, otherwise it returns false. This is useful, since code objects normally cannot be queried for this information using existing built-in functions. Note that the code objects created by `compileast()` cannot be queried like this either, and are identical to those created by the built-in `compile()`function.
 
-### `issuite`(*ast*)
+### `issuite`(ast)
 
 This function mirrors `isexpr()` in that it reports whether an AST object represents an `’exec’` form, commonly known as a “suite.” It is not safe to assume that this function is equivalent to `not isexpr(`*`ast`*`)`, as additional syntactic fragments may be supported in the future.
 
-## Exceptions and Error Handling <span id="AST Errors" label="AST Errors"></span>
+## Exceptions and Error Handling 
 
 The parser module defines a single exception, but may also pass other built-in exceptions from other portions of the Python runtime environment. See each function for information about the exceptions it can raise.
 
@@ -9718,7 +9711,7 @@ Exception raised when a failure occurs within the parser module. This is general
 
 Note that the functions `compileast()`, `expr()`, and `suite()` may throw exceptions which are normally thrown by the parsing and compilation process. These include the built in exceptions `MemoryError`, `OverflowError`, `SyntaxError`, and `SystemError`. In these cases, these exceptions carry all the meaning normally associated with them. Refer to the descriptions of each function for detailed information.
 
-## AST Objects <span id="AST Objects" label="AST Objects"></span>
+## AST Objects 
 
 Ordered and equality comparisons are supported between AST objects. Pickling of AST objects (using the `pickle` module) is also supported.
 
@@ -9748,7 +9741,7 @@ Same as `ast2list(`*`ast`*`, `*`line_info`*`)`.
 
 Same as `ast2tuple(`*`ast`*`, `*`line_info`*`)`.
 
-## Examples <span id="AST Examples" label="AST Examples"></span>
+## Examples 
 
 The parser modules allows operations to be performed on the parse tree of Python source code before the bytecode is generated, and provides for inspection of the parse tree for information gathering purposes. Two examples are presented. The simple example demonstrates emulation of the `compile()`built-in function and the complex example shows the use of a parse tree for information discovery.
 
@@ -10004,15 +9997,15 @@ Typical usage to inspect a crashed program is:
 
 The module defines the following functions; each enters the debugger in a slightly different way:
 
-#### `run`(*statement*)
+#### `run`(statement)
 
 Execute the *statement* (given as a string) under debugger control. The debugger prompt appears before any code is executed; you can set breakpoints and type `continue`, or you can step through the statement using `step` or `next` (all these commands are explained below). The optional *globals* and *locals* arguments specify the environment in which the code is executed; by default the dictionary of the module `__main__` is used. (See the explanation of the statement or the `eval()` built-in function.)
 
-#### `runeval`(*expression*)
+#### `runeval`(expression)
 
 Evaluate the *expression* (given as a a string) under debugger control. When `runeval()` returns, it returns the value of the expression. Otherwise this function is similar to `run()`.
 
-#### `runcall`(*function*)
+#### `runcall`(function)
 
 Call the *function* (a function or method object, not a string) with the given arguments. When `runcall()` returns, it returns whatever the function call returned. The debugger prompt appears as soon as the function is entered.
 
@@ -10020,7 +10013,7 @@ Call the *function* (a function or method object, not a string) with the given a
 
 Enter the debugger at the calling stack frame. This is useful to hard-code a breakpoint at a given point in a program, even if the code is not otherwise being debugged (e.g. when an assertion fails).
 
-#### `post_mortem`(*traceback*)
+#### `post_mortem`(traceback)
 
 Enter post-mortem debugging of the given *traceback* object.
 
@@ -10028,7 +10021,7 @@ Enter post-mortem debugging of the given *traceback* object.
 
 Enter post-mortem debugging of the traceback found in `sys.last_traceback`.
 
-## Debugger Commands <span id="debugger-commands" label="debugger-commands"></span>
+## Debugger Commands 
 
 The debugger recognizes the following commands. Most commands can be abbreviated to one or two letters; e.g. `h(elp)` means that either `h` or `help` can be used to enter the help command (but not `he` or `hel`, nor `H` or `Help` or `HELP`). Arguments to commands must be separated by whitespace (spaces or tabs). Optional arguments are enclosed in square brackets (`[]`) in the command syntax; the square brackets must not be typed. Alternatives in the command syntax are separated by a vertical bar (`|`).
 
@@ -10243,19 +10236,19 @@ It is possible to make multiple calls to the `dump()` method of the same `Pickle
 
 Apart from the `Pickler` and `Unpickler` classes, the module defines the following functions, and an exception:
 
-### `dump`(*object, file*)
+### `dump`(object, file)
 
 Write a pickled representation of *object* to the open file object *file*. This is equivalent to `Pickler(`*`file`*`, `*`bin`*`).dump(`*`object`*`)`. If the optional *bin* argument is present and nonzero, the binary pickle format is used; if it is zero or absent, the (less efficient) text pickle format is used.
 
-### `load`(*file*)
+### `load`(file)
 
 Read a pickled object from the open file object *file*. This is equivalent to `Unpickler(`*`file`*`).load()`.
 
-### `dumps`(*object*)
+### `dumps`(object)
 
 Return the pickled representation of the object as a string, instead of writing it to a file. If the optional *bin* argument is present and nonzero, the binary pickle format is used; if it is zero or absent, the (less efficient) text pickle format is used.
 
-### `loads`(*string*)
+### `loads`(string)
 
 Read a pickled object from a string instead of a file. Characters in the string past the pickled object’s representation are ignored.
 
@@ -10273,7 +10266,7 @@ This exception is raised when an unpicklable object is passed to `Pickler.dump()
 
 — marshalhigh-performance serialization of built-in types
 
-## Example <span id="pickle-example" label="pickle-example"></span>
+## Example 
 
 Here’s a simple example of how to modify pickling behavior for a class. The `TextReader` class opens a text file, and returns the line number and line contents each time its `readline()` method is called. If a `TextReader` instance is pickled, all attributes *except* the file object member are saved. When the instance is unpickled, the file is reopened, and reading resumes from the last location. The `__setstate__()` and `__getstate__()` methods are used to implement this behavior.
 
@@ -10362,7 +10355,7 @@ Example:
     >>> open('/tmp/1').read()
     'HELLO WORLD'
 
-## Template Objects <span id="template-objects" label="template-objects"></span>
+## Template Objects 
 
 Template objects following methods:
 
@@ -10374,11 +10367,11 @@ Restore a pipeline template to its initial state.
 
 Return a new, equivalent, pipeline template.
 
-### `debug`(*flag*)
+### `debug`(flag)
 
 If *flag* is true, turn debugging on. Otherwise, turn debugging off. When debugging is on, commands to be executed are printed, and the shell is given `set -x` command to be more verbose.
 
-### `append`(*cmd, kind*)
+### `append`(cmd, kind)
 
 Append a new action at the end. The *cmd* variable must be a valid bourne shell command. The *kind* variable consists of two letters.
 
@@ -10386,15 +10379,15 @@ The first letter can be either of `’-’` (which means the command reads its s
 
 Similarly, the second letter can be either of `’-’` (which means the command writes to standard output), `’f’` (which means the command writes a file on the command line) or `’.’` (which means the command does not write anything, and hence must be last.)
 
-### `prepend`(*cmd, kind*)
+### `prepend`(cmd, kind)
 
 Add a new action at the beginning. See `append()` for explanations of the arguments.
 
-### `open`(*file, mode*)
+### `open`(file, mode)
 
 Return a file-like object, open to *file*, but read from or written to by the pipeline. Note that only one of `’r’`, `’w’` may be given.
 
-### `copy`(*infile, outfile*)
+### `copy`(infile, outfile)
 
 Copy *infile* to *outfile* through the pipe.
 # `popen2` — Subprocesses with accessible I/O streams
@@ -10403,23 +10396,23 @@ Copy *infile* to *outfile* through the pipe.
 
 The primary interface offered by this module is a pair of factory functions:
 
-### `popen2`(*cmd*)
+### `popen2`(cmd)
 
 Executes *cmd* as a sub-process. If *bufsize* is specified, it specifies the buffer size for the I/O pipes. Returns the file objects `(`*`child_stdout`*`, `*`child_stdin`*`)`.
 
-### `popen3`(*cmd*)
+### `popen3`(cmd)
 
 Executes *cmd* as a sub-process. If *bufsize* is specified, it specifies the buffer size for the I/O pipes. Returns the file objects `(`*`child_stdout`*`, `*`child_stdin`*`, `*`child_stderr`*`)`.
 
 The class defining the objects returned by the factory functions is also available:
 
-### class `Popen3`(*cmd*)
+### class `Popen3`(cmd)
 
 This class represents a child process. Normally, `Popen3` instances are created using the factory functions described above.
 
 If not using one off the helper functions to create `Popen3` objects, the parameter *cmd* is the shell command to execute in a sub-process. The *capturestderr* flag, if true, specifies that the object should capture standard error output of the child process. The default is false. If the *bufsize* parameter is specified, it specifies the size of the I/O buffers to/from the child process.
 
-## Popen3 Objects <span id="popen3-objects" label="popen3-objects"></span>
+## Popen3 Objects 
 
 Instances of the `Popen3` class have the following methods:
 
@@ -10456,7 +10449,7 @@ This module defines a class, `POP3`, which encapsulates a connection to an POP3 
 
 A single class is provided by the `poplib` module:
 
-### class `POP3`(*host*)
+### class `POP3`(host)
 
 This class implements the actual POP3 protocol. The connection is created when the instance is initialized. If *port* is omitted, the standard POP3 port (110) is used.
 
@@ -10466,7 +10459,7 @@ One exception is defined as an attribute of the `poplib` module:
 
 Exception raised on any errors. The reason for the exception is passed to the constructor as a string.
 
-## POP3 Objects <span id="pop3-objects" label="pop3-objects"></span>
+## POP3 Objects 
 
 All POP3 commands are represented by methods of the same name, in lower-case; most return the response text sent by the server.
 
@@ -10476,19 +10469,19 @@ An `POP3` instance has the following methods:
 
 Returns the greeting string sent by the POP3 server.
 
-### `user`(*username*)
+### `user`(username)
 
 Send user command, response should indicate that a password is required.
 
-### `pass_`(*password*)
+### `pass_`(password)
 
 Send password, response includes message count and mailbox size. Note: the mailbox on the server is locked until `quit()` is called.
 
-### `apop`(*user, secret*)
+### `apop`(user, secret)
 
 Use the more secure APOP authentication to log into the POP3 server.
 
-### `rpop`(*user*)
+### `rpop`(user)
 
 Use RPOP authentication (similar to UNIX r-commands) to log into POP3 server.
 
@@ -10500,11 +10493,11 @@ Get mailbox status. The result is a tuple of 2 integers: `(`*`message count`*`, 
 
 Request message list, result is in the form `(`*`response`*`, [’mesg_num octets’, ...])`. If *which* is set, it is the message to list.
 
-### `retr`(*which*)
+### `retr`(which)
 
 Retrieve whole message number *which*. Result is in form `(`*`response`*`, [’line’, ...], `*`octets`*`)`.
 
-### `dele`(*which*)
+### `dele`(which)
 
 Delete message number *which*.
 
@@ -10520,7 +10513,7 @@ Do nothing. Might be used as a keep-alive.
 
 Signoff: commit changes, unlock mailbox, drop connection.
 
-### `top`(*which, howmuch*)
+### `top`(which, howmuch)
 
 Retrieves the message header plus *howmuch* lines of the message after the header of message number *which*. Result is in form `(`*`response`*`, [’line’, ...], `*`octets`*`)`.
 
@@ -10528,7 +10521,7 @@ Retrieves the message header plus *howmuch* lines of the message after the heade
 
 Return message digest (unique id) list. If *which* is specified, result contains the unique id for that message in the form `’`*`response`*` `*`mesgnum`*` `*`uid`*, otherwise result is list `(`*`response`*`, [’mesgnum uid’, ...], `*`octets`*`)`.
 
-## POP3 Example <span id="pop3-example" label="pop3-example"></span>
+## POP3 Example 
 
 Here is a minimal example (without error checking) that opens a mailbox and retrieves and prints all messages:
 
@@ -10555,7 +10548,7 @@ The descriptions below are very terse; refer to the corresponding Unix manual (o
 
 Errors are reported as exceptions; the usual exceptions are given for type errors, while errors reported by the system calls raise `error` (a synonym for the standard exception `OSError`), described below.
 
-## Large File Support <span id="posix-large-files" label="posix-large-files"></span>
+## Large File Support 
 
 Several operating systems (including AIX, HPUX, Irix and Solaris) provide support for files that are larger than 2 Gb from a C programming model where `int` and `long` are 32-bit values. This is typically accomplished by defining the relevant size and offset types as 64-bit values. Such files are sometimes referred to as *large files*.
 
@@ -10564,7 +10557,7 @@ Large file support is enabled in Python when the size of an `off_t` is larger th
     CFLAGS="`getconf LFS_CFLAGS`" OPT="-g -O2 $CFLAGS" \
             configure
 
-## Module Contents <span id="posix-contents" label="posix-contents"></span>
+## Module Contents 
 
 Module `posix` defines the following data item:
 
@@ -10597,17 +10590,17 @@ Offset is calculated from the end of the file.
 
 The `posixfile` module defines the following functions:
 
-### `open`(*filename*)
+### `open`(filename)
 
 Create a new posixfile object with the given filename and mode. The *filename*, *mode* and *bufsize* arguments are interpreted the same way as by the built-in `open()` function.
 
-### `fileopen`(*fileobject*)
+### `fileopen`(fileobject)
 
 Create a new posixfile object with the given standard file object. The resulting object has the same filename and mode as the original file object.
 
 The posixfile object defines the following additional methods:
 
-### `lock`(*fmt,* )
+### `lock`(fmt, )
 
 Lock the specified section of the file that the file object is referring to. The format is explained below in a table. The *len* argument specifies the length of the section that should be locked. The default is `0`. *start* specifies the starting offset of the section, where the default is `0`. The *whence* argument specifies where the offset is relative to. It accepts one of the constants , or . The default is . For more information about the arguments refer to the manual page on your system.
 
@@ -10619,7 +10612,7 @@ Set the specified flags for the file that the file object is referring to. The n
 
 Duplicate the file object and the underlying file pointer and file descriptor. The resulting object behaves as if it were newly opened.
 
-### `dup2`(*fd*)
+### `dup2`(fd)
 
 Duplicate the file object and the underlying file pointer and file descriptor. The new object will have the given file descriptor. Otherwise the resulting object behaves as if it were newly opened.
 
@@ -10631,18 +10624,17 @@ All methods raise `IOError` when the request fails.
 
 Format characters for the `lock()` method have the following meaning:
 
-|                 |                                                |
-|:----------------|:-----------------------------------------------|
-| FormatMeaning u | unlock the specified region                    |
-| r               | request a read lock for the specified section  |
-| w               | request a write lock for the specified section |
-|                 |                                                |
+|     |                                                |
+|:----|:-----------------------------------------------|
+| u   | unlock the specified region                    |
+| r   | request a read lock for the specified section  |
+| w   | request a write lock for the specified section |
 
 In addition the following modifiers can be added to the format:
 
 |  |  |  |
 |:---|:---|:---|
-| ModifierMeaningNotes \| | wait until the lock has been granted |  |
+| \| | wait until the lock has been granted |  |
 | ? | return the first lock conflicting with the requested lock, or |  |
 | if there is no conflict. |  |  |
 
@@ -10653,22 +10645,20 @@ The lock returned is in the format `(`*`mode`*`, `*`len`*`, `*`start`*`, `*`when
 
 Format characters for the `flags()` method have the following meanings:
 
-|                 |                                               |
-|:----------------|:----------------------------------------------|
-| FormatMeaning a | append only flag                              |
-| c               | close on exec flag                            |
-| n               | no delay flag (also called non-blocking flag) |
-| s               | synchronization flag                          |
-|                 |                                               |
+|     |                                               |
+|:----|:----------------------------------------------|
+| a   | append only flag                              |
+| c   | close on exec flag                            |
+| n   | no delay flag (also called non-blocking flag) |
+| s   | synchronization flag                          |
 
 In addition the following modifiers can be added to the format:
 
 |  |  |  |
 |:---|:---|:---|
-| ModifierMeaningNotes ! | turn the specified flags ’off’, instead of the default ’on’ | \(1\) |
+| ! | turn the specified flags ’off’, instead of the default ’on’ | \(1\) |
 | = | replace the flags, instead of the default ’OR’ operation | \(1\) |
 | ? | return a string in which the characters represent the flags that are set. | \(2\) |
-|  |  |  |
 
 Notes:
 
@@ -10693,103 +10683,103 @@ Examples:
 
 This module implements some useful functions on pathnames.
 
-### `abspath`(*path*)
+### `abspath`(path)
 
 Return a normalized absolutized version of the pathname *path*. On most platforms, this is equivalent to `normpath(join(os.getcwd(), `*`path`*`))`. *New in version 1.5.2.*
 
-### `basename`(*path*)
+### `basename`(path)
 
 Return the base name of pathname *path*. This is the second half of the pair returned by `split(`*`path`*`)`.
 
-### `commonprefix`(*list*)
+### `commonprefix`(list)
 
 Return the longest path prefix (taken character-by-character) that is a prefix of all paths in *list*. If *list* is empty, return the empty string (`’’`). Note that this may return invalid paths because it works a character at a time.
 
-### `dirname`(*path*)
+### `dirname`(path)
 
 Return the directory name of pathname *path*. This is the first half of the pair returned by `split(`*`path`*`)`.
 
-### `exists`(*path*)
+### `exists`(path)
 
 Return true if *path* refers to an existing path.
 
-### `expanduser`(*path*)
+### `expanduser`(path)
 
 Return the argument with an initial component of `~` or *`user`* replaced by that *user*’s home directory. An initial `~` is replaced by the environment variable ; an initial *`user`* is looked up in the password directory through the built-in module `pwd`. If the expansion fails, or if the path does not begin with a tilde, the path is returned unchanged. On the Macintosh, this always returns *path* unchanged.
 
-### `expandvars`(*path*)
+### `expandvars`(path)
 
 Return the argument with environment variables expanded. Substrings of the form `$`*`name`* or `${`*`name`*`}` are replaced by the value of environment variable *name*. Malformed variable names and references to non-existing variables are left unchanged. On the Macintosh, this always returns *path* unchanged.
 
-### `getatime`(*path*)
+### `getatime`(path)
 
 Return the time of last access of *filename*. The return value is integer giving the number of seconds since the epoch (see the `time` module). Raise `os.error` if the file does not exist or is inaccessible. *New in version 1.5.2.*
 
-### `getmtime`(*path*)
+### `getmtime`(path)
 
 Return the time of last modification of *filename*. The return value is integer giving the number of seconds since the epoch (see the `time` module). Raise `os.error` if the file does not exist or is inaccessible. *New in version 1.5.2.*
 
-### `getsize`(*path*)
+### `getsize`(path)
 
 Return the size, in bytes, of *filename*. Raise `os.error` if the file does not exist or is inaccessible. *New in version 1.5.2.*
 
-### `isabs`(*path*)
+### `isabs`(path)
 
 Return true if *path* is an absolute pathname (begins with a slash).
 
-### `isfile`(*path*)
+### `isfile`(path)
 
 Return true if *path* is an existing regular file. This follows symbolic links, so both `islink()` and `isfile()` can be true for the same path.
 
-### `isdir`(*path*)
+### `isdir`(path)
 
 Return true if *path* is an existing directory. This follows symbolic links, so both `islink()` and `isdir()` can be true for the same path.
 
-### `islink`(*path*)
+### `islink`(path)
 
 Return true if *path* refers to a directory entry that is a symbolic link. Always false if symbolic links are not supported.
 
-### `ismount`(*path*)
+### `ismount`(path)
 
 Return true if pathname *path* is a *mount point*: a point in a file system where a different file system has been mounted. The function checks whether *path*’s parent, *`path`*`/..`, is on a different device than *path*, or whether *`path`*`/..` and *path* point to the same i-node on the same device — this should detect mount points for all Unix and POSIX variants.
 
-### `join`(*path1*)
+### `join`(path1)
 
 Joins one or more path components intelligently. If any component is an absolute path, all previous components are thrown away, and joining continues. The return value is the concatenation of *path1*, and optionally *path2*, etc., with exactly one slash (`’/’`) inserted between components, unless *path* is empty.
 
-### `normcase`(*path*)
+### `normcase`(path)
 
 Normalize the case of a pathname. On Unix, this returns the path unchanged; on case-insensitive filesystems, it converts the path to lowercase. On Windows, it also converts forward slashes to backward slashes.
 
-### `normpath`(*path*)
+### `normpath`(path)
 
 Normalize a pathname. This collapses redundant separators and up-level references, e.g. `A//B`, `A/./B` and `A/foo/../B` all become `A/B`. It does not normalize the case (use `normcase()` for that). On Windows, it converts forward slashes to backward slashes.
 
-### `samefile`(*path1, path2*)
+### `samefile`(path1, path2)
 
 Return true if both pathname arguments refer to the same file or directory (as indicated by device number and i-node number). Raise an exception if a `os.stat()` call on either pathname fails. Availability: Macintosh, Unix.
 
-### `sameopenfile`(*fp1, fp2*)
+### `sameopenfile`(fp1, fp2)
 
 Return true if the file objects *fp1* and *fp2* refer to the same file. The two file objects may represent different file descriptors. Availability: Macintosh, Unix.
 
-### `samestat`(*stat1, stat2*)
+### `samestat`(stat1, stat2)
 
 Return true if the stat tuples *stat1* and *stat2* refer to the same file. These structures may have been returned by `fstat()`, `lstat()`, or `stat()`. This function implements the underlying comparison used by `samefile()` and `sameopenfile()`. Availability: Macintosh, Unix.
 
-### `split`(*path*)
+### `split`(path)
 
 Split the pathname *path* into a pair, `(`*`head`*`, `*`tail`*`)` where *tail* is the last pathname component and *head* is everything leading up to that. The *tail* part will never contain a slash; if *path* ends in a slash, *tail* will be empty. If there is no slash in *path*, *head* will be empty. If *path* is empty, both *head* and *tail* are empty. Trailing slashes are stripped from *head* unless it is the root (one or more slashes only). In nearly all cases, `join(`*`head`*`, `*`tail`*`)` equals *path* (the only exception being when there were multiple slashes separating *head* from *tail*).
 
-### `splitdrive`(*path*)
+### `splitdrive`(path)
 
 Split the pathname *path* into a pair `(`*`drive`*`, `*`tail`*`)` where *drive* is either a drive specification or the empty string. On systems which do not use drive specifications, *drive* will always be the empty string. In all cases, *`drive`*` + `*`tail`* will be the same as *path*.
 
-### `splitext`(*path*)
+### `splitext`(path)
 
 Split the pathname *path* into a pair `(`*`root`*`, `*`ext`*`)` such that *`root`*` + `*`ext`*` == `*`path`*, and *ext* is empty or begins with a period and contains at most one period.
 
-### `walk`(*path, visit, arg*)
+### `walk`(path, visit, arg)
 
 Calls the function *visit* with arguments `(`*`arg`*`, `*`dirname`*`, `*`names`*`)` for each directory in the directory tree rooted at *path* (including *path* itself, if it is a directory). The argument *dirname* specifies the visited directory, the argument *names* lists the files in the directory (gotten from `os.listdir(`*`dirname`*`)`). The *visit* function may modify *names* to influence the set of directories visited below *dirname*, e.g., to avoid visiting certain parts of the tree. (The object referred to by *names* must be modified in place, using or slice assignment.)
 # `pprint` — Data pretty printer.
@@ -10800,7 +10790,7 @@ The formatted representation keeps objects on a single line if it can, and break
 
 The `pprint` module defines one class:
 
-### class `PrettyPrinter`(*...*)
+### class `PrettyPrinter`(...)
 
 Construct a `PrettyPrinter` instance. This constructor understands several keyword parameters. An output stream may be set using the *stream* keyword; the only method used on the stream object is the file protocol’s `write()` method. If not specified, the `PrettyPrinter` adopts `sys.stdout`. Three additional parameters may be used to control the formatted representation. The keywords are *indent*, *depth*, and *width*. The amount of indentation added for each recursive level is specified by *indent*; the default is one. Other values can cause output to look a little odd, but can make nesting easier to spot. The number of levels which may be printed is controlled by *depth*; if the data structure being printed is too deep, the next contained level is replaced by `...`. By default, there is no constraint on the depth of the objects being formatted. The desired output width is constrained using the *width* parameter; the default is eighty characters. If a structure cannot be formatted within the constrained width, a best effort will be made.
 
@@ -10831,11 +10821,11 @@ Construct a `PrettyPrinter` instance. This constructor understands several keywo
 
 The `PrettyPrinter` class supports several derivative functions:
 
-### `pformat`(*object*)
+### `pformat`(object)
 
 Return the formatted representation of *object* as a string. The default parameters for formatting are used.
 
-### `pprint`(*object*)
+### `pprint`(object)
 
 Prints the formatted representation of *object* on *stream*, followed by a newline. If *stream* is omitted, `sys.stdout` is used. This may be used in the interactive interpreter instead of a statement for inspecting values. The default parameters for formatting are used.
 
@@ -10850,20 +10840,20 @@ Prints the formatted representation of *object* on *stream*, followed by a newli
      '/usr/local/lib/python1.5/sharedmodules',
      '/usr/local/lib/python1.5/tkinter']
 
-### `isreadable`(*object*)
+### `isreadable`(object)
 
 Determine if the formatted representation of *object* is “readable,” or can be used to reconstruct the value using `eval()`. This always returns false for recursive objects.
 
     >>> pprint.isreadable(stuff)
     0
 
-### `isrecursive`(*object*)
+### `isrecursive`(object)
 
 Determine if *object* requires a recursive representation.
 
 One more support function is also defined:
 
-### `saferepr`(*object*)
+### `saferepr`(object)
 
 Return a string representation of *object*, protected against recursive data structures. If the representation of *object* exposes a recursive entry, the recursive reference will be represented as `<Recursion on `*`typename`*` with id=`*`number`*`>`. The representation is not otherwise formatted.
 
@@ -10876,24 +10866,24 @@ Return a string representation of *object*, protected against recursive data str
 
 `PrettyPrinter` instances have the following methods:
 
-### `pformat`(*object*)
+### `pformat`(object)
 
 Return the formatted representation of *object*. This takes into Account the options passed to the `PrettyPrinter` constructor.
 
-### `pprint`(*object*)
+### `pprint`(object)
 
 Print the formatted representation of *object* on the configured stream, followed by a newline.
 
 The following methods provide the implementations for the corresponding functions of the same names. Using these methods on an instance is slightly more efficient since new `PrettyPrinter` objects don’t need to be created.
 
-### `isreadable`(*object*)
+### `isreadable`(object)
 
 Determine if the formatted representation of the object is “readable,” or can be used to reconstruct the value using `eval()`. Note that this returns false for recursive objects. If the *depth* parameter of the `PrettyPrinter` is set and the object is deeper than allowed, this returns false.
 
-### `isrecursive`(*object*)
+### `isrecursive`(object)
 
 Determine if the object requires a recursive representation.
-# The Python Profiler <span id="profile" label="profile"></span>
+# The Python Profiler 
 
 Copyright © 1994, by InfoSeek Corporation, all rights reserved. Written by James Roskind.[^1]
 
@@ -10930,7 +10920,7 @@ Cumulative times in recursive functions are correctly calculated; recursive entr
 Large growth in report generating UI:  
 Distinct profiles runs can be added together forming a comprehensive report; functions that import statistics take arbitrary lists of files; sorting criteria is now based on keywords (instead of 4 integer options); reports shows what functions were profiled as well as what profile file was referenced; output format has been improved.
 
-## Instant Users Manual <span id="profile-instant" label="profile-instant"></span>
+## Instant Users Manual 
 
 This section is provided for users that “don’t want to read the manual.” It provides a very brief overview, and allows a user to rapidly perform profiling on an existing application.
 
@@ -11009,7 +10999,7 @@ Call count statistics can be used to identify bugs in code (surprising counts), 
 
 The primary entry point for the profiler is the global function `profile.run()`. It is typically used to create any profile information. The reports are formatted and printed using methods of the class `pstats.Stats`. The following is a description of all of these standard entry points and functions. For a more in-depth view of some of the code, consider reading the later section on Profiler Extensions, which includes discussion of how to derive “better” profilers from the classes presented, or reading the source code for these modules.
 
-#### `run`(*string*)
+#### `run`(string)
 
 This function takes a single argument that has can be passed to the statement, and an optional file name. In all cases this routine attempts to its first argument, and gather profiling statistics from the execution. If no file name is present, then this function automatically prints a simple profiling report, sorted by the standard name string (file/line/function-name) that is presented in each line. The following is a typical output from such a call:
 
@@ -11048,7 +11038,7 @@ When there are two numbers in the first column (e.g.: `43/3`), then the latter i
 
 Analysis of the profiler data is done using this class from the `pstats` module:
 
-#### class `Stats`(*filename*)
+#### class `Stats`(filename)
 
 This class constructor creates an instance of a “statistics object” from a *filename* (or set of filenames). `Stats` objects are manipulated by methods, in order to print useful reports.
 
@@ -11056,7 +11046,7 @@ The file selected by the above constructor must have been created by the corresp
 
 If several files are provided, all the statistics for identical functions will be coalesced, so that an overall view of several processes can be considered in a single report. If additional files need to be combined with data in an existing `Stats` object, the `add()` method can be used.
 
-### The `Stats` Class <span id="profile-stats" label="profile-stats"></span>
+### The `Stats` Class 
 
 `Stats` objects have the following methods:
 
@@ -11064,11 +11054,11 @@ If several files are provided, all the statistics for identical functions will b
 
 This method for the `Stats` class removes all leading path information from file names. It is very useful in reducing the size of the printout to fit within (close to) 80 columns. This method modifies the object, and the stripped information is lost. After performing a strip operation, the object is considered to have its entries in a “random” order, as it was just after object initialization and loading. If `strip_dirs()` causes two function names to be indistinguishable (i.e., they are on the same line of the same filename, and have the same function name), then the statistics for these two entries are accumulated into a single entry.
 
-#### `add`(*filename*)
+#### `add`(filename)
 
 This method of the `Stats` class accumulates additional profiling information into the current profiling object. Its arguments should refer to filenames created by the corresponding version of `profile.run()`. Statistics for identically named (re: file, line, name) functions are automatically accumulated into single function statistics.
 
-#### `sort_stats`(*key*)
+#### `sort_stats`(key)
 
 This method modifies the `Stats` object by sorting it according to the supplied criteria. The argument is typically a string identifying the basis of a sort (example: `’time’` or `’name’`).
 
@@ -11076,19 +11066,18 @@ When more than one key is provided, then additional keys are used as secondary c
 
 Abbreviations can be used for any key names, as long as the abbreviation is unambiguous. The following are the keys currently defined:
 
-|                          |                      |
-|:-------------------------|:---------------------|
-| Valid ArgMeaning ’calls’ | call count           |
-| ’cumulative’             | cumulative time      |
-| ’file’                   | file name            |
-| ’module’                 | file name            |
-| ’pcalls’                 | primitive call count |
-| ’line’                   | line number          |
-| ’name’                   | function name        |
-| ’nfl’                    | name/file/line       |
-| ’stdname’                | standard name        |
-| ’time’                   | internal time        |
-|                          |                      |
+|              |                      |
+|:-------------|:---------------------|
+| ’calls’      | call count           |
+| ’cumulative’ | cumulative time      |
+| ’file’       | file name            |
+| ’module’     | file name            |
+| ’pcalls’     | primitive call count |
+| ’line’       | line number          |
+| ’name’       | function name        |
+| ’nfl’        | name/file/line       |
+| ’stdname’    | standard name        |
+| ’time’       | internal time        |
 
 Note that all sorts on statistics are in descending order (placing most time consuming items first), where as name, file, and line number searches are in ascending order (i.e., alphabetical). The subtle distinction between `’nfl’` and `’stdname’` is that the standard name is a sort of the name as printed, which means that the embedded line numbers get compared in an odd way. For example, lines 3, 20, and 40 would (if the file names were the same) appear in the string order 20, 3 and 40. In contrast, `’nfl’` does a numeric compare of the line numbers. In fact, `sort_stats(’nfl’)` is the same as `sort_stats(’name’, ’file’, ’line’)`.
 
@@ -11098,7 +11087,7 @@ For compatibility with the old profiler, the numeric arguments `-1`, `0`, `1`, a
 
 This method for the `Stats` class reverses the ordering of the basic list within the object. This method is provided primarily for compatibility with the old profiler. Its utility is questionable now that ascending vs descending order is properly selected based on the sort key of choice.
 
-#### `print_stats`(*restriction*)
+#### `print_stats`(restriction)
 
 This method for the `Stats` class prints out a report as described in the `profile.run()` definition.
 
@@ -11114,11 +11103,11 @@ would first limit the printing to first 10% of list, and then only print functio
 
 would limit the list to all functions having file names `.*foo:`, and then proceed to only print the first 10% of them.
 
-#### `print_callers`(*restrictions*)
+#### `print_callers`(restrictions)
 
 This method for the `Stats` class prints a list of all functions that called each function in the profiled database. The ordering is identical to that provided by `print_stats()`, and the definition of the restricting argument is also identical. For convenience, a number is shown in parentheses after each caller to show how many times this specific call was made. A second non-parenthesized number is the cumulative time spent in the function at the right.
 
-#### `print_callees`(*restrictions*)
+#### `print_callees`(restrictions)
 
 This method for the `Stats` class prints a list of all function that were called by the indicated function. Aside from this reversal of direction of calls (re: called vs was called by), the arguments and ordering are identical to the `print_callers()` method.
 
@@ -11126,7 +11115,7 @@ This method for the `Stats` class prints a list of all function that were called
 
 *Deprecated since version 1.5.1: This is not needed in modern versions of Python.[^2]*
 
-## Limitations <span id="profile-limits" label="profile-limits"></span>
+## Limitations 
 
 There are two fundamental limitations on this profiler. The first is that it relies on the Python interpreter to dispatch *call*, *return*, and *exception* events. Compiled C code does not get interpreted, and hence is “invisible” to the profiler. All time spent in C code (including built-in functions) will be charged to the Python function that invoked the C code. If the C code calls out to some native Python code, then those calls will be profiled properly.
 
@@ -11134,7 +11123,7 @@ The second limitation has to do with accuracy of timing information. There is a 
 
 The second problem is that it “takes a while” from when an event is dispatched until the profiler’s call to get the time actually *gets* the state of the clock. Similarly, there is a certain lag when exiting the profiler event handler from the time that the clock’s value was obtained (and then squirreled away), until the user’s code is once again executing. As a result, functions that are called many times, or call many functions, will typically accumulate this error. The error that accumulates in this fashion is typically less than the accuracy of the clock (i.e., less than one clock tick), but it *can* accumulate and become very significant. This profiler provides a means of calibrating itself for a given platform so that this error can be probabilistically (i.e., on the average) removed. After the profiler is calibrated, it will be more accurate (in a least square sense), but it will sometimes produce negative numbers (when call counts are exceptionally low, and the gods of probability work against you :-). ) Do *not* be alarmed by negative numbers in the profile. They should *only* appear if you have calibrated your profiler, and the results are actually better than without calibration.
 
-## Calibration <span id="profile-calibration" label="profile-calibration"></span>
+## Calibration 
 
 The profiler class has a hard coded constant that is added to each event handling time to compensate for the overhead of calling the time function, and socking away the results. The following procedure can be used to obtain this constant for a given platform (see discussion in section Limitations above).
 
@@ -11186,7 +11175,7 @@ The resulting profiler will call `your_time_func()` instead of `os.times()`. The
 
 Be warned that you *should* calibrate the profiler class for the timer function that you choose. For most machines, a timer that returns a lone integer value will provide the best results in terms of low overhead during profiling. (`os.times()` is *pretty* bad, ’cause it returns a tuple of floating point values, so all arithmetic is floating point in the profiler!). If you want to substitute a better timer in the cleanest fashion, you should derive a class, and simply put in the replacement dispatch method that better handles your timer call, along with the appropriate calibration constant :-).
 
-### OldProfile Class <span id="profile-old" label="profile-old"></span>
+### OldProfile Class 
 
 The following derived profiler simulates the old style profiler, providing errant results on recursive functions. The reason for the usefulness of this profiler is that it runs faster (i.e., less overhead) than the old profiler. It still creates all the caller stats, and is quite useful when there is *no* recursion in the user’s code. It is also a lot more accurate than the old profiler, as it does not charge all its overhead time to the user’s code.
 
@@ -11240,7 +11229,7 @@ The following derived profiler simulates the old style profiler, providing erran
                     nc = nc + callers[func_caller]
                 self.stats[nor_func] = nc, nc, tt, ct, nor_callers
 
-### HotProfile Class <span id="profile-HotProfile" label="profile-HotProfile"></span>
+### HotProfile Class 
 
 This profiler is the fastest derived profile example. It does not calculate caller-callee relationships, and does not calculate cumulative time under a function. It only calculates time spent in a function, so it runs very quickly (re: very low overhead). In truth, the basic profiler is so fast, that is probably not worth the savings to give up the data, but this class still provides a nice example.
 
@@ -11299,7 +11288,7 @@ Fork. Connect the child’s controlling terminal to a pseudo-terminal. Return va
 
 Open a new pseudo-terminal pair, using `os.openpty()` if possible, or emulation code for SGI and generic Unix systems. Return a pair of file descriptors `(`*`master`*`, `*`slave`*`)`, for the master and the slave end, respectively.
 
-### `spawn`(*argv*)
+### `spawn`(argv)
 
 Spawn a process, and connect its controlling terminal with the current process’s standard io. This is often used to baffle programs which insist on reading from the controlling terminal.
 
@@ -11312,16 +11301,16 @@ This module provides access to the Unix user account and password database. It i
 
 Password database entries are reported as 7-tuples containing the following items from the password database (see `<pwd.h>`), in order:
 
-|                     |     |     |
-|:--------------------|:----|:----|
-| IndexFieldMeaning 0 |     |     |
-|                     |     |     |
-|                     |     |     |
-|                     |     |     |
-|                     |     |     |
-|                     |     |     |
-|                     |     |     |
-|                     |     |     |
+|     |     |     |
+|:----|:----|:----|
+| 0   |     |     |
+|     |     |     |
+|     |     |     |
+|     |     |     |
+|     |     |     |
+|     |     |     |
+|     |     |     |
+|     |     |     |
 
 The uid and gid items are integers, all others are strings. `KeyError` is raised if the entry asked for cannot be found.
 
@@ -11329,11 +11318,11 @@ The uid and gid items are integers, all others are strings. `KeyError` is raised
 
 It defines the following items:
 
-### `getpwuid`(*uid*)
+### `getpwuid`(uid)
 
 Return the password database entry for the given numeric user ID.
 
-### `getpwnam`(*name*)
+### `getpwnam`(name)
 
 Return the password database entry for the given user name.
 
@@ -11348,11 +11337,11 @@ Return a list of all available password database entries, in arbitrary order.
 
 *Supports information extraction for a Python class browser.* The `pyclbr` can be used to determine some limited information about the classes and methods defined in a module. The information provided is sufficient to implement a traditional three-pane class browser. The information is extracted from the source code rather than from an imported module, so this module is safe to use with untrusted source code. This restriction makes it impossible to use this module with modules not implemented in Python, including many standard and optional extension modules.
 
-### `readmodule`(*module*)
+### `readmodule`(module)
 
 Read a module and return a dictionary mapping class names to class descriptor objects. The parameter *module* should be the name of a module as a string; it may be the name of a module within a package. The *path* parameter should be a sequence, and is used to augment the value of `sys.path`, which is used to locate module source code.
 
-## Class Descriptor Objects <span id="pyclbr-class-objects" label="pyclbr-class-objects"></span>
+## Class Descriptor Objects 
 
 The class descriptor objects used as values in the dictionary returned by `readmodule()` provide the following data members:
 
@@ -11387,7 +11376,7 @@ The `py_compile` module provides a single function to generate a byte-code file 
 
 Though not often needed, this function can be useful when installing modules for shared use, especially if some of the users may not have permission to write the byte-code cache files in the directory containing the source code.
 
-### `compile`(*file*)
+### `compile`(file)
 
 Compile a source file to byte-code and write out the byte-code cache file. The source code is loaded from the file name *file*. The byte-code is written to *cfile*, which defaults to *file* `+` `’c’` (`’o’` if optimization is enabled in the current interpreter). If *dfile* is specified, it is used as the name of the source file in error messages instead of *file*.
 
@@ -11404,7 +11393,7 @@ This module uses the `pyexpat`module to provide access to the Expat parser. Dire
 
 The `xml.parsers.expat` module contains two functions:
 
-### `ErrorString`(*errno*)
+### `ErrorString`(errno)
 
 Returns an explanatory string for a given error number *errno*.
 
@@ -11431,15 +11420,15 @@ For example, if *namespace_separator* is set to ` `, and the following document 
 
 `xmlparser` objects have the following methods:
 
-### `Parse`(*data* )
+### `Parse`(data )
 
 Parses the contents of the string *data*, calling the appropriate handler functions to process the parsed data. *isfinal* must be true on the final call to this method. *data* can be the empty string at any time.
 
-### `ParseFile`(*file*)
+### `ParseFile`(file)
 
 Parse XML data reading from the object *file*. *file* only needs to provide the `read(`*`nbytes`*`)` method, returning the empty string when there’s no more data.
 
-### `SetBase`(*base*)
+### `SetBase`(base)
 
 Sets the base to be used for resolving relative URIs in system identifiers in declarations. Resolving relative identifiers is left to the application: this value will be passed through as the base argument to the `ExternalEntityRefHandler`, `NotationDeclHandler`, and `UnparsedEntityDeclHandler` functions.
 
@@ -11473,39 +11462,39 @@ Line number at which an error occurred.
 
 Here is the list of handlers that can be set. To set a handler on an `xmlparser` object *o*, use *`o`*`.`*`handlername`*` = `*`func`*. *handlername* must be taken from the following list, and *func* must be a callable object accepting the correct number of arguments. The arguments are all strings, unless otherwise stated.
 
-### `StartElementHandler`(*name, attributes*)
+### `StartElementHandler`(name, attributes)
 
 Called for the start of every element. *name* is a string containing the element name, and *attributes* is a dictionary mapping attribute names to their values.
 
-### `EndElementHandler`(*name*)
+### `EndElementHandler`(name)
 
 Called for the end of every element.
 
-### `ProcessingInstructionHandler`(*target, data*)
+### `ProcessingInstructionHandler`(target, data)
 
 Called for every processing instruction.
 
-### `CharacterDataHandler`(data)
+### `CharacterDataHandler`(*data*)
 
 Called for character data.
 
-### `UnparsedEntityDeclHandler`(*entityName, base, systemId, publicId, notationName*)
+### `UnparsedEntityDeclHandler`(entityName, base, systemId, publicId, notationName)
 
 Called for unparsed (NDATA) entity declarations.
 
-### `NotationDeclHandler`(*notationName, base, systemId, publicId*)
+### `NotationDeclHandler`(notationName, base, systemId, publicId)
 
 Called for notation declarations.
 
-### `StartNamespaceDeclHandler`(*prefix, uri*)
+### `StartNamespaceDeclHandler`(prefix, uri)
 
 Called when an element contains a namespace declaration.
 
-### `EndNamespaceDeclHandler`(*prefix*)
+### `EndNamespaceDeclHandler`(prefix)
 
 Called when the closing tag is reached for an element that contained a namespace declaration.
 
-### `CommentHandler`(*data*)
+### `CommentHandler`(data)
 
 Called for comments.
 
@@ -11517,11 +11506,11 @@ Called at the start of a CDATA section.
 
 Called at the end of a CDATA section.
 
-### `DefaultHandler`(*data*)
+### `DefaultHandler`(data)
 
 Called for any characters in the XML document for which no applicable handler has been specified. This means characters that are part of a construct which could be reported, but for which no handler has been supplied.
 
-### `DefaultHandlerExpand`(*data*)
+### `DefaultHandlerExpand`(data)
 
 This is the same as the `DefaultHandler`, but doesn’t inhibit expansion of internal entities. The entity reference will not be passed to the default handler.
 
@@ -11529,11 +11518,11 @@ This is the same as the `DefaultHandler`, but doesn’t inhibit expansion of int
 
 Called if the XML document hasn’t been declared as being a standalone document.
 
-### `ExternalEntityRefHandler`(*context, base, systemId, publicId*)
+### `ExternalEntityRefHandler`(context, base, systemId, publicId)
 
 Called for references to external entities.
 
-## Example <span id="expat-example" label="expat-example"></span>
+## Example 
 
 The following program defines three handlers that just print out their arguments.
 
@@ -11571,7 +11560,7 @@ The output from this program is:
     Character data: '\012'
     End element: parent
 
-## Expat error constants <span id="expat-errors" label="expat-errors"></span>
+## Expat error constants 
 
 The following table lists the error constants in the `errors` object of the `xml.parsers.expat` module. These constants are useful in interpreting some of the attributes of the parser object after an error has occurred.
 
@@ -11628,7 +11617,7 @@ A reference was made to a entity which was not defined.
 ### `XML_ERROR_UNKNOWN_ENCODING`
 
 The document encoding is not supported by Expat.
-# Python Runtime Services <span id="python" label="python"></span>
+# Python Runtime Services 
 
 The modules described in this chapter provide a wide range of services related to the Python interpreter and its interaction with its environment. Here’s an overview:
 # `Queue` — A synchronized queue class.
@@ -11639,7 +11628,7 @@ The `Queue` module implements a multi-producer, multi-consumer FIFO queue. It is
 
 The `Queue` module defines the following class and exception:
 
-### class `Queue`(*maxsize*)
+### class `Queue`(maxsize)
 
 Constructor for the class. *maxsize* is an integer that sets the upperbound limit on the number of items that can be placed in the queue. Insertion will block once this size has been reached, until queue items are consumed. If *maxsize* is less than or equal to zero, the queue size is infinite.
 
@@ -11667,11 +11656,11 @@ Return `1` if the queue is empty, `0` otherwise. Because of multithreading seman
 
 Return `1` if the queue is full, `0` otherwise. Because of multithreading semantics, this is not reliable.
 
-### `put`(*item*)
+### `put`(item)
 
 Put *item* into the queue. If optional argument *block* is 1 (the default), block if necessary until a free slot is available. Otherwise (*block* is 0), put *item* on the queue if a free slot is immediately available, else raise the `Full` exception.
 
-### `put_nowait`(*item*)
+### `put_nowait`(item)
 
 Equivalent to `put(`*`item`*`, 0)`.
 
@@ -11688,11 +11677,11 @@ Equivalent to `get(0)`.
 
 This module performs quoted-printable transport encoding and decoding, as defined in RFC 1521: “MIME (Multipurpose Internet Mail Extensions) Part One”. The quoted-printable encoding is designed for data where there are relatively few nonprintable characters; the base64 encoding scheme available via the `base64` module is more compact if there are many such characters, as when sending a graphics file.
 
-### `decode`(*input, output*)
+### `decode`(input, output)
 
 Decode the contents of the *input* file and write the resulting decoded binary data to the *output* file. *input* and *output* must either be file objects or objects that mimic the file object interface. *input* will be read until *`input`*`.read()` returns an empty string.
 
-### `encode`(*input, output, quotetabs*)
+### `encode`(input, output, quotetabs)
 
 Encode the contents of the *input* file and write the resulting quoted-printable data to the *output* file. *input* and *output* must either be file objects or objects that mimic the file object interface. *input* will be read until *`input`*`.read()` returns an empty string.
 
@@ -11705,7 +11694,7 @@ Encode the contents of the *input* file and write the resulting quoted-printable
 
 The `rand` module simulates the C library’s `rand()` interface, though the results aren’t necessarily compatible with any given library’s implementation. While still supported for compatibility, the `rand` module is now considered obsolete; if possible, use the `whrandom` module instead.
 
-### `choice`(*seq*)
+### `choice`(seq)
 
 Returns a random element from the sequence *seq*.
 
@@ -11713,7 +11702,7 @@ Returns a random element from the sequence *seq*.
 
 Return a random integer between 0 and 32767, inclusive.
 
-### `srand`(*seed*)
+### `srand`(seed)
 
 Set a starting seed value for the random number generator; *seed* can be an arbitrary integer.
 
@@ -11730,43 +11719,43 @@ The `random` module supports the *Random Number Generator* interface, described 
 
 The following functions are defined to support specific distributions, and all return real values. Function parameters are named after the corresponding variables in the distribution’s equation, as used in common mathematical practice; most of these equations can be found in any statistics text. These are expected to become part of the Random Number Generator interface in a future release.
 
-### `betavariate`(*alpha, beta*)
+### `betavariate`(alpha, beta)
 
 Beta distribution. Conditions on the parameters are *`alpha`*` > -1` and *`beta`*` > -1`. Returned values range between 0 and 1.
 
-### `cunifvariate`(*mean, arc*)
+### `cunifvariate`(mean, arc)
 
 Circular uniform distribution. *mean* is the mean angle, and *arc* is the range of the distribution, centered around the mean angle. Both values must be expressed in radians, and can range between 0 and *pi*. Returned values will range between *`mean`*` - `*`arc`*`/2` and *`mean`*` + `*`arc`*`/2`.
 
-### `expovariate`(*lambd*)
+### `expovariate`(lambd)
 
 Exponential distribution. *lambd* is 1.0 divided by the desired mean. (The parameter would be called “lambda”, but that is a reserved word in Python.) Returned values will range from 0 to positive infinity.
 
-### `gamma`(*alpha, beta*)
+### `gamma`(alpha, beta)
 
 Gamma distribution. (*Not* the gamma function!) Conditions on the parameters are *`alpha`*` > -1` and *`beta`*` > 0`.
 
-### `gauss`(*mu, sigma*)
+### `gauss`(mu, sigma)
 
 Gaussian distribution. *mu* is the mean, and *sigma* is the standard deviation. This is slightly faster than the `normalvariate()` function defined below.
 
-### `lognormvariate`(*mu, sigma*)
+### `lognormvariate`(mu, sigma)
 
 Log normal distribution. If you take the natural logarithm of this distribution, you’ll get a normal distribution with mean *mu* and standard deviation *sigma*. *mu* can have any value, and *sigma* must be greater than zero.
 
-### `normalvariate`(*mu, sigma*)
+### `normalvariate`(mu, sigma)
 
 Normal distribution. *mu* is the mean, and *sigma* is the standard deviation.
 
-### `vonmisesvariate`(*mu, kappa*)
+### `vonmisesvariate`(mu, kappa)
 
-*mu* is the mean angle, expressed in radians between 0 and 2\**pi*, and *kappa* is the concentration parameter, which must be greater than or equal to zero. If *kappa* is equal to zero, this distribution reduces to a uniform random angle over the range 0 to 2\**pi*.
+*mu* is the mean angle, expressed in radians between 0 and 2**pi*, and *kappa* is the concentration parameter, which must be greater than or equal to zero. If *kappa* is equal to zero, this distribution reduces to a uniform random angle over the range 0 to 2**pi*.
 
-### `paretovariate`(*alpha*)
+### `paretovariate`(alpha)
 
 Pareto distribution. *alpha* is the shape parameter.
 
-### `weibullvariate`(*alpha, beta*)
+### `weibullvariate`(alpha, beta)
 
 Weibull distribution. *alpha* is the scale parameter and *beta* is the shape parameter.
 
@@ -11774,29 +11763,29 @@ Weibull distribution. *alpha* is the scale parameter and *beta* is the shape par
 
 — whrandomThe standard Python random number generator.
 
-## The Random Number Generator Interface <span id="rng-objects" label="rng-objects"></span>
+## The Random Number Generator Interface 
 
 The *Random Number Generator* interface describes the methods which are available for all random number generators. This will be enhanced in future releases of Python.
 
 In this release of Python, the modules `random`, `whrandom`, and instances of the `whrandom.whrandom` class all conform to this interface.
 
-### `choice`(*seq*)
+### `choice`(seq)
 
 Chooses a random element from the non-empty sequence *seq* and returns it.
 
-### `randint`(*a, b*)
+### `randint`(a, b)
 
 *Deprecated since version 2.0: Use `randrange()` instead.* Returns a random integer *N* such that *`a`*` <= `*`N`*` <= `*`b`*.
 
 ### `random`()
 
-Returns the next random floating point number in the range \[0.0 ... 1.0).
+Returns the next random floating point number in the range [0.0 ... 1.0).
 
-### `randrange`( *stop*)
+### `randrange`( stop)
 
 Return a randomly selected element from `range(`*`start`*`, `*`stop`*`, `*`step`*`)`. This is equivalent to `choice(range(`*`start`*`, `*`stop`*`, `*`step`*`))`. *New in version 1.5.2.*
 
-### `uniform`(*a, b*)
+### `uniform`(a, b)
 
 Returns a random real number *N* such that *`a`*` <= `*`N`*` < `*`b`*.
 # `re` — Perl-style regular expression operations.
@@ -11809,7 +11798,7 @@ Regular expressions use the backslash character () to indicate special forms or 
 
 The solution is to use Python’s raw string notation for regular expression patterns; backslashes are not handled in any special way in a string literal prefixed with `r`. So `r"n"` is a two-character string containing and `n`, while `"n"` is a one-character string containing a newline. Usually patterns will be expressed in Python code using this raw string notation.
 
-## Regular Expression Syntax <span id="re-syntax" label="re-syntax"></span>
+## Regular Expression Syntax 
 
 A regular expression (or RE) specifies a set of strings that matches it; the functions in this module let you check if a particular string matches a given regular expression (or if a given regular expression matches a particular string, which comes down to the same thing).
 
@@ -11905,7 +11894,7 @@ Matches a literal backslash.
 
 </div>
 
-## Matching vs. Searching <span id="matching-searching" label="matching-searching"></span>
+## Matching vs. Searching 
 
 Python offers two different primitive operations based on regular expressions: match and search. If you are accustomed to Perl’s semantics, the search operation is what you’re looking for. See the `search()` function and corresponding method of compiled regular expression objects.
 
@@ -11921,7 +11910,7 @@ Note that match may differ from search using a regular expression beginning with
 
 The module defines the following functions and constants, and an exception:
 
-### `compile`(*pattern*)
+### `compile`(pattern)
 
 Compile a regular expression pattern into a regular expression object, which can be used for matching using its `match()` and `search()` methods, described below.
 
@@ -11962,17 +11951,17 @@ Make `w`, `W`, `b`, and `B` dependent on the Unicode character properties databa
 
 This flag allows you to write regular expressions that look nicer. Whitespace within the pattern is ignored, except when in a character class or preceded by an unescaped backslash, and, when a line contains a `#` neither in a character class or preceded by an unescaped backslash, all characters from the leftmost such `#` through the end of the line are ignored.
 
-### `search`(*pattern, string*)
+### `search`(pattern, string)
 
 Scan through *string* looking for a location where the regular expression *pattern* produces a match, and return a corresponding `MatchObject` instance. Return `None` if no position in the string matches the pattern; note that this is different from finding a zero-length match at some point in the string.
 
-### `match`(*pattern, string*)
+### `match`(pattern, string)
 
 If zero or more characters at the beginning of *string* match the regular expression *pattern*, return a corresponding `MatchObject` instance. Return `None` if the string does not match the pattern; note that this is different from a zero-length match.
 
 **Note:** If you want to locate a match anywhere in *string*, use `search()` instead.
 
-### `split`(*pattern, string*)
+### `split`(pattern, string)
 
 Split *string* by the occurrences of *pattern*. If capturing parentheses are used in *pattern*, then the text of all groups in the pattern are also returned as part of the resulting list. If *maxsplit* is nonzero, at most *maxsplit* splits occur, and the remainder of the string is returned as the final element of the list. (Incompatibility note: in the original Python 1.5 release, *maxsplit* was ignored. This has been fixed in later releases.)
 
@@ -11985,11 +11974,11 @@ Split *string* by the occurrences of *pattern*. If capturing parentheses are use
 
 This function combines and extends the functionality of the old `regsub.split()` and `regsub.splitx()`.
 
-### `findall`(*pattern, string*)
+### `findall`(pattern, string)
 
 Return a list of all non-overlapping matches of *pattern* in *string*. If one or more groups are present in the pattern, return a list of groups; this will be a list of tuples if the pattern has more than one group. Empty matches are included in the result. *New in version 1.5.2.*
 
-### `sub`(*pattern, repl, string*)
+### `sub`(pattern, repl, string)
 
 Return the string obtained by replacing the leftmost non-overlapping occurrences of *pattern* in *string* by the replacement *repl*. If the pattern isn’t found, *string* is returned unchanged. *repl* can be a string or a function; if a function, it is called for every non-overlapping occurrence of *pattern*. The function takes a single match object argument, and returns the replacement string. For example:
 
@@ -12009,11 +11998,11 @@ If *repl* is a string, any backslash escapes in it are processed. That is, `n` i
 
 In addition to character escapes and backreferences as described above, `g<name>` will use the substring matched by the group named `name`, as defined by the `(?P<name>...)` syntax. `g<number>` uses the corresponding group number; ` g<2>` is therefore equivalent to , but isn’t ambiguous in a replacement such as `g<2>0`. would be interpreted as a reference to group 20, not a reference to group 2 followed by the literal character `0`.
 
-### `subn`(*pattern, repl, string*)
+### `subn`(pattern, repl, string)
 
 Perform the same operation as `sub()`, but return a tuple `(`*`new_string`*`, `*`number_of_subs_made`*`)`.
 
-### `escape`(*string*)
+### `escape`(string)
 
 Return *string* with all non-alphanumerics backslashed; this is useful if you want to match an arbitrary literal string that may have regular expression metacharacters in it.
 
@@ -12021,17 +12010,17 @@ Return *string* with all non-alphanumerics backslashed; this is useful if you wa
 
 Exception raised when a string passed to one of the functions here is not a valid regular expression (e.g., unmatched parentheses) or when some other error occurs during compilation or matching. It is never an error if a string contains no match for a pattern.
 
-## Regular Expression Objects <span id="re-objects" label="re-objects"></span>
+## Regular Expression Objects 
 
 Compiled regular expression objects support the following methods and attributes:
 
-### `search`(*string*)
+### `search`(string)
 
 Scan through *string* looking for a location where this regular expression produces a match, and return a corresponding `MatchObject` instance. Return `None` if no position in the string matches the pattern; note that this is different from finding a zero-length match at some point in the string.
 
 The optional *pos* and *endpos* parameters have the same meaning as for the `match()` method.
 
-### `match`(*string*)
+### `match`(string)
 
 If zero or more characters at the beginning of *string* match this regular expression, return a corresponding `MatchObject` instance. Return `None` if the string does not match the pattern; note that this is different from a zero-length match.
 
@@ -12041,19 +12030,19 @@ The optional second parameter *pos* gives an index in the string where the searc
 
 The optional parameter *endpos* limits how far the string will be searched; it will be as if the string is *endpos* characters long, so only the characters from *pos* to *endpos* will be searched for a match.
 
-### `split`(*string*)
+### `split`(string)
 
 Identical to the `split()` function, using the compiled pattern.
 
-### `findall`(*string*)
+### `findall`(string)
 
 Identical to the `findall()` function, using the compiled pattern.
 
-### `sub`(*repl, string*)
+### `sub`(repl, string)
 
 Identical to the `sub()` function, using the compiled pattern.
 
-### `subn`(*repl, string*)
+### `subn`(repl, string)
 
 Identical to the `subn()` function, using the compiled pattern.
 
@@ -12069,13 +12058,13 @@ A dictionary mapping any symbolic group names defined by `(?P<`*`id`*`>)` to gro
 
 The pattern string from which the regex object was compiled.
 
-## Match Objects <span id="match-objects" label="match-objects"></span>
+## Match Objects 
 
 `MatchObject` instances support the following methods and attributes:
 
 ### `group`()
 
-Returns one or more subgroups of the match. If there is a single argument, the result is a single string; if there are multiple arguments, the result is a tuple with one item per argument. Without arguments, *group1* defaults to zero (i.e. the whole match is returned). If a *groupN* argument is zero, the corresponding return value is the entire matching string; if it is in the inclusive range \[1..99\], it is the string matching the the corresponding parenthesized group. If a group number is negative or larger than the number of groups defined in the pattern, an `IndexError` exception is raised. If a group is contained in a part of the pattern that did not match, the corresponding result is `-1`. If a group is contained in a part of the pattern that matched multiple times, the last match is returned.
+Returns one or more subgroups of the match. If there is a single argument, the result is a single string; if there are multiple arguments, the result is a tuple with one item per argument. Without arguments, *group1* defaults to zero (i.e. the whole match is returned). If a *groupN* argument is zero, the corresponding return value is the entire matching string; if it is in the inclusive range [1..99], it is the string matching the the corresponding parenthesized group. If a group number is negative or larger than the number of groups defined in the pattern, an `IndexError` exception is raised. If a group is contained in a part of the pattern that did not match, the corresponding result is `-1`. If a group is contained in a part of the pattern that matched multiple times, the last match is returned.
 
 If the regular expression uses the `(?P<`*`name`*`>...)` syntax, the *groupN* arguments may also be strings identifying groups by their group name. If a string argument is not used as a group name in the pattern, an `IndexError` exception is raised.
 
@@ -12132,7 +12121,7 @@ The `readline` module defines a number of functions used either directly or from
 
 The `readline` module defines the following functions:
 
-### `parse_and_bind`(*string*)
+### `parse_and_bind`(string)
 
 Parse and execute single line of a readline init file.
 
@@ -12140,7 +12129,7 @@ Parse and execute single line of a readline init file.
 
 Return the current contents of the line buffer.
 
-### `insert_text`(*string*)
+### `insert_text`(string)
 
 Insert text into the command line.
 
@@ -12160,7 +12149,7 @@ Save a readline history file. The default filename is `~/.history`.
 
 Return the desired length of the history file. Negative values imply unlimited history file size.
 
-### `set_history_length`(*length*)
+### `set_history_length`(length)
 
 Set the number of lines to save in the history file. `write_history_file()` uses this value to truncate the history file when saving. Negative values imply unlimited history file size.
 
@@ -12176,7 +12165,7 @@ Get the beginning index of the readline tab-completion scope.
 
 Get the ending index of the readline tab-completion scope.
 
-### `set_completer_delims`(*string*)
+### `set_completer_delims`(string)
 
 Set the readline word delimiters for tab-completion.
 
@@ -12188,7 +12177,7 @@ Get the readline word delimiters for tab-completion.
 
 — rlcompleterCompletion of Python identifiers at the interactive prompt.
 
-## Example <span id="readline-example" label="readline-example"></span>
+## Example 
 
 The following example demonstrates how to use the `readline` module’s history reading and writing functions to automatically load and save a history file named `.pyhist` from the user’s home directory. The code below would normally be executed automatically during interactive sessions from the user’s file.
 
@@ -12241,7 +12230,7 @@ The special characters are:
 
 - Causes the resulting RE to match 0 or 1 repetitions of the preceding RE. `ab?` will match either ’a’ or ’ab’.
 
-- Either escapes special characters (permitting you to match characters like ’\*?+&\$’), or signals a special sequence; special sequences are discussed below. Remember that Python also uses the backslash as an escape sequence in string literals; if the escape sequence isn’t recognized by Python’s parser, the backslash and subsequent character are included in the resulting string. However, if Python would recognize the resulting sequence, the backslash should be repeated twice.
+- Either escapes special characters (permitting you to match characters like ’*?+&\$’), or signals a special sequence; special sequences are discussed below. Remember that Python also uses the backslash as an escape sequence in string literals; if the escape sequence isn’t recognized by Python’s parser, the backslash and subsequent character are included in the resulting string. However, if Python would recognize the resulting sequence, the backslash should be repeated twice.
 
 - Used to indicate a set of characters. Characters can be listed individually, or a range is indicated by giving two characters and separating them by a ’-’. Special characters are not active inside sets. For example, `[akm$]` will match any of the characters ’a’, ’k’, ’m’, or ’\$’; `[a-z]` will match any lowercase letter.
 
@@ -12282,15 +12271,15 @@ Matches the contents of the group of the same number. For example, `(.+) ` match
 
 The module defines these functions, and an exception:
 
-### `match`(*pattern, string*)
+### `match`(pattern, string)
 
 Return how many characters at the beginning of *string* match the regular expression *pattern*. Return `-1` if the string does not match the pattern (this is different from a zero-length match!).
 
-### `search`(*pattern, string*)
+### `search`(pattern, string)
 
 Return the first position in *string* that matches the regular expression *pattern*. Return `-1` if no position in the string matches the pattern (this is different from a zero-length match anywhere!).
 
-### `compile`(*pattern*)
+### `compile`(pattern)
 
 Compile a regular expression pattern into a regular expression object, which can be used for matching using its `match()` and `search()` methods, described below. The optional argument *translate*, if present, must be a 256-character string indicating how characters (both of the pattern and of the strings to be matched) are translated before comparing them; the *i*-th element of the string gives the translation for the character with ASCII code *i*. This can be used to implement case-insensitive matching; see the `casefold` data item below.
 
@@ -12305,7 +12294,7 @@ is equivalent to
 
 but the version using `compile()` is more efficient when multiple regular expressions are used concurrently in a single program. (The compiled version of the last pattern passed to `regex.match()` or `regex.search()` is cached, so programs that use only a single regular expression at a time needn’t worry about compiling regular expressions.)
 
-### `set_syntax`(*flags*)
+### `set_syntax`(flags)
 
 Set the syntax to be used by future calls to `compile()`, `match()` and `search()`. (Already compiled expression objects are not affected.) The argument is an integer which is the OR of several flag bits. The return value is the previous value of the syntax flags. Names for the flags are defined in the standard module `regex_syntax`; read the file `regex_syntax.py` for more information.
 
@@ -12313,7 +12302,7 @@ Set the syntax to be used by future calls to `compile()`, `match()` and `search(
 
 Returns the current value of the syntax flags as an integer.
 
-### `symcomp`(*pattern*)
+### `symcomp`(pattern)
 
 This is like `compile()`, but supports symbolic group names: if a parenthesis-enclosed group begins with a group name in angular brackets, e.g. `’(<id>[a-z][a-z0-9]*)’`, the group can be referenced by its name in arguments to the `group()` method of the resulting compiled regular expression object, like this: `p.group(’id’)`. Group names may contain alphanumeric characters and `’_’` only.
 
@@ -12327,21 +12316,21 @@ A string suitable to pass as the *translate* argument to `compile()` to map all 
 
 Compiled regular expression objects support these methods:
 
-### `match`(*string*)
+### `match`(string)
 
 Return how many characters at the beginning of *string* match the compiled regular expression. Return `-1` if the string does not match the pattern (this is different from a zero-length match!).
 
 The optional second parameter, *pos*, gives an index in the string where the search is to start; it defaults to `0`. This is not completely equivalent to slicing the string; the `’'̂` pattern character matches at the real beginning of the string and at positions just after a newline, not necessarily at the index where the search is to start.
 
-### `search`(*string*)
+### `search`(string)
 
 Return the first position in *string* that matches the regular expression `pattern`. Return `-1` if no position in the string matches the pattern (this is different from a zero-length match anywhere!).
 
 The optional second parameter has the same meaning as for the `match()` method.
 
-### `group`(*index, index, ...*)
+### `group`(index, index, ...)
 
-This method is only valid when the last call to the `match()` or `search()` method found a match. It returns one or more groups of the match. If there is a single *index* argument, the result is a single string; if there are multiple arguments, the result is a tuple with one item per argument. If the *index* is zero, the corresponding return value is the entire matching string; if it is in the inclusive range \[1..99\], it is the string matching the the corresponding parenthesized group (using the default syntax, groups are parenthesized using `(` and `)`). If no such group exists, the corresponding result is `None`.
+This method is only valid when the last call to the `match()` or `search()` method found a match. It returns one or more groups of the match. If there is a single *index* argument, the result is a single string; if there are multiple arguments, the result is a tuple with one item per argument. If the *index* is zero, the corresponding return value is the entire matching string; if it is in the inclusive range [1..99], it is the string matching the the corresponding parenthesized group (using the default syntax, groups are parenthesized using `(` and `)`). If no such group exists, the corresponding result is `None`.
 
 If the regular expression was compiled by `symcomp()` instead of `compile()`, the *index* arguments may also be strings identifying groups by their group name.
 
@@ -12380,23 +12369,23 @@ Warning: these functions are not thread-safe.
 
 **Obsolescence note:** This module is obsolete as of Python version 1.5; it is still being maintained because much existing code still uses it. All new code in need of regular expressions should use the new `re` module, which supports the more powerful and regular Perl-style regular expressions. Existing code should be converted. The standard library module `reconvert` helps in converting `regex` style regular expressions to `re` style regular expressions. (For more conversion help, see Andrew Kuchling’s“regex-to-re HOWTO” at `http://www.python.org/doc/howto/regex-to-re/`.)
 
-### `sub`(*pat, repl, str*)
+### `sub`(pat, repl, str)
 
 Replace the first occurrence of pattern *pat* in string *str* by replacement *repl*. If the pattern isn’t found, the string is returned unchanged. The pattern may be a string or an already compiled pattern. The replacement may contain references *`digit`* to subpatterns and escaped backslashes.
 
-### `gsub`(*pat, repl, str*)
+### `gsub`(pat, repl, str)
 
 Replace all (non-overlapping) occurrences of pattern *pat* in string *str* by replacement *repl*. The same rules as for `sub()` apply. Empty matches for the pattern are replaced only when not adjacent to a previous match, so e.g. `gsub(’’, ’-’, ’abc’)` returns `’-a-b-c-’`.
 
-### `split`(*str, pat*)
+### `split`(str, pat)
 
 Split the string *str* in fields separated by delimiters matching the pattern *pat*, and return a list containing the fields. Only non-empty matches for the pattern are considered, so e.g. `split(’a:b’, ’:*’)` returns `[’a’, ’b’]` and `split(’abc’, ’’)` returns `[’abc’]`. The *maxsplit* defaults to 0. If it is nonzero, only *maxsplit* number of splits occur, and the remainder of the string is returned as the final element of the list.
 
-### `splitx`(*str, pat*)
+### `splitx`(str, pat)
 
 Split the string *str* in fields separated by delimiters matching the pattern *pat*, and return a list containing the fields as well as the separators. For example, `splitx(’a:::b’, ’:*’)` returns `[’a’, ’:::’, ’b’]`. Otherwise, this function behaves the same as `split`.
 
-### `capwords`(*s*)
+### `capwords`(s)
 
 Capitalize words separated by optional pattern *pat*. The default pattern uses any characters except letters, digits and underscores as word delimiters. Capitalization is done by changing the first character of each word to upper case.
 
@@ -12419,11 +12408,11 @@ Class which provides formatting services useful in implementing functions simila
 
 This is an instance of `Repr` which is used to provide the `repr()` function described below. Changing the attributes of this object will affect the size limits used by `repr()` and the Python debugger.
 
-### `repr`(*obj*)
+### `repr`(obj)
 
 This is the `repr()` method of `aRepr`. It returns a string similar to that returned by the built-in function of the same name, but with limits on most sizes.
 
-## Repr Objects <span id="Repr-objects" label="Repr-objects"></span>
+## Repr Objects 
 
 `Repr` instances provide several members which can be used to provide size limits for the representations of different object types, and methods which format specific object types.
 
@@ -12447,19 +12436,19 @@ Limit on the number of characters in the representation of the string. Note that
 
 This limit is used to control the size of object types for which no specific formatting method is available on the `Repr` object. It is applied in a similar manner as `maxstring`. The default is `20`.
 
-### `repr`(*obj*)
+### `repr`(obj)
 
 The equivalent to the built-in `repr()` that uses the formatting imposed by the instance.
 
-### `repr1`(*obj, level*)
+### `repr1`(obj, level)
 
 Recursive implementation used by `repr()`. This uses the type of *obj* to determine which formatting method to call, passing it *obj* and *level*. The type-specific methods should call `repr1()` to perform recursive formatting, with *`level`*` - 1` for the value of *level* in the recursive call.
 
-### `repr_`*`type`*(*obj, level*)
+### `repr_`*`type`*(obj, level)
 
 Formatting methods for specific types are implemented as methods with a name based on the type name. In the method name, *type* is replaced by `string.join(string.split(type(`*`obj`*`).__name__, ’_’)`. Dispatch to these methods is handled by `repr1()`. Type-specific methods which need to recursively format a value should call `self.repr1(`*`subobj`*`, `*`level`*` - 1)`.
 
-## Subclassing Repr Objects <span id="subclassing-reprs" label="subclassing-reprs"></span>
+## Subclassing Repr Objects 
 
 The use of dynamic dispatching by `Repr.repr1()` allows subclasses of `Repr` to add support for additional built-in object types or to modify the handling of types already supported. This example shows how special support for file objects could be added:
 
@@ -12493,11 +12482,11 @@ Resources usage can be limited using the `setrlimit()` function described below.
 
 The specific resources that can be limited are system dependent. They are described in the man page. The resources listed below are supported when the underlying operating system supports them; resources which cannot be checked or controlled by the operating system are not defined in this module for those platforms.
 
-### `getrlimit`(*resource*)
+### `getrlimit`(resource)
 
 Returns a tuple `(`*`soft`*`, `*`hard`*`)` with the current soft and hard limits of *resource*. Raises `ValueError` if an invalid resource is specified, or `error` if the underyling system call fails unexpectedly.
 
-### `setrlimit`(*resource, limits*)
+### `setrlimit`(resource, limits)
 
 Sets new limits of consumption of *resource*. The *limits* argument must be a tuple `(`*`soft`*`, `*`hard`*`)` of two integers describing the new limits. A value of `-1` can be used to specify the maximum possible upper limit.
 
@@ -12559,7 +12548,7 @@ The maximum area (in bytes) of address space which may be taken by the process.
 
 These functiona are used to retrieve resource usage information:
 
-### `getrusage`(*who*)
+### `getrusage`(who)
 
 This function returns a large tuple that describes the resources consumed by either the current process or its children, as specified by the *who* parameter. The *who* parameter should be specified using one of the constants described below.
 
@@ -12567,25 +12556,24 @@ The elements of the return value each describe how a particular system resource 
 
 The first two elements of the return value are floating point values representing the amount of time spent executing in user mode and the amount of time spent executing in system mode, respectively. The remaining values are integers. Consult the man page for detailed information about these values. A brief summary is presented here:
 
-|                  |                               |
-|:-----------------|:------------------------------|
-| OffsetResource 0 | time in user mode (float)     |
-| 1                | time in system mode (float)   |
-| 2                | maximum resident set size     |
-| 3                | shared memory size            |
-| 4                | unshared memory size          |
-| 5                | unshared stack size           |
-| 6                | page faults not requiring I/O |
-| 7                | page faults requiring I/O     |
-| 8                | number of swap outs           |
-| 9                | block input operations        |
-| 10               | block output operations       |
-| 11               | messages sent                 |
-| 12               | messages received             |
-| 13               | signals received              |
-| 14               | voluntary context switches    |
-| 15               | involuntary context switches  |
-|                  |                               |
+|     |                               |
+|:----|:------------------------------|
+| 0   | time in user mode (float)     |
+| 1   | time in system mode (float)   |
+| 2   | maximum resident set size     |
+| 3   | shared memory size            |
+| 4   | unshared memory size          |
+| 5   | unshared stack size           |
+| 6   | page faults not requiring I/O |
+| 7   | page faults requiring I/O     |
+| 8   | number of swap outs           |
+| 9   | block input operations        |
+| 10  | block output operations       |
+| 11  | messages sent                 |
+| 12  | messages received             |
+| 13  | signals received              |
+| 14  | voluntary context switches    |
+| 15  | involuntary context switches  |
 
 This function will raise a `ValueError` if an invalid *who* parameter is specified. It may also raise `error` exception in unusual circumstances.
 
@@ -12606,7 +12594,7 @@ Pass to `getrusage()` to request resource information for child processes of the
 ### `RUSAGE_BOTH`
 
 Pass to `getrusage()` to request resources consumed by both the current process and child processes. May not be available on all systems.
-# Restricted Execution <span id="restricted" label="restricted"></span>
+# Restricted Execution 
 
 In general, Python programs have complete access to the underlying operating system throug the various functions and classes, For example, a Python program can open any file for reading and writing by using the `open()` built-in function (provided the underlying OS gives you permission!). This is exactly what you want for most applications.
 
@@ -12669,61 +12657,61 @@ Contains the names of the functions and variables in the `sys` module which will
 
 `RExec` instances support the following methods:
 
-### `r_eval`(*code*)
+### `r_eval`(code)
 
 *code* must either be a string containing a Python expression, or a compiled code object, which will be evaluated in the restricted environment’s `__main__` module. The value of the expression or code object will be returned.
 
-### `r_exec`(*code*)
+### `r_exec`(code)
 
 *code* must either be a string containing one or more lines of Python code, or a compiled code object, which will be executed in the restricted environment’s `__main__` module.
 
-### `r_execfile`(*filename*)
+### `r_execfile`(filename)
 
 Execute the Python code contained in the file *filename* in the restricted environment’s `__main__` module.
 
 Methods whose names begin with `s_` are similar to the functions beginning with `r_`, but the code will be granted access to restricted versions of the standard I/O streams `sys.stdin`, `sys.stderr`, and `sys.stdout`.
 
-### `s_eval`(*code*)
+### `s_eval`(code)
 
 *code* must be a string containing a Python expression, which will be evaluated in the restricted environment.
 
-### `s_exec`(*code*)
+### `s_exec`(code)
 
 *code* must be a string containing one or more lines of Python code, which will be executed in the restricted environment.
 
-### `s_execfile`(*code*)
+### `s_execfile`(code)
 
 Execute the Python code contained in the file *filename* in the restricted environment.
 
 `RExec` objects must also support various methods which will be implicitly called by code executing in the restricted environment. Overriding these methods in a subclass is used to change the policies enforced by a restricted environment.
 
-### `r_import`(*modulename*)
+### `r_import`(modulename)
 
 Import the module *modulename*, raising an `ImportError` exception if the module is considered unsafe.
 
-### `r_open`(*filename*)
+### `r_open`(filename)
 
 Method called when `open()` is called in the restricted environment. The arguments are identical to those of `open()`, and a file object (or a class instance compatible with file objects) should be returned. `RExec`’s default behaviour is allow opening any file for reading, but forbidding any attempt to write a file. See the example below for an implementation of a less restrictive `r_open()`.
 
-### `r_reload`(*module*)
+### `r_reload`(module)
 
 Reload the module object *module*, re-parsing and re-initializing it.
 
-### `r_unload`(*module*)
+### `r_unload`(module)
 
 Unload the module object *module* (i.e., remove it from the restricted environment’s `sys.modules` dictionary).
 
 And their equivalents with access to restricted standard I/O streams:
 
-### `s_import`(*modulename*)
+### `s_import`(modulename)
 
 Import the module *modulename*, raising an `ImportError` exception if the module is considered unsafe.
 
-### `s_reload`(*module*)
+### `s_reload`(module)
 
 Reload the module object *module*, re-parsing and re-initializing it.
 
-### `s_unload`(*module*)
+### `s_unload`(module)
 
 Unload the module object *module*.
 
@@ -12754,7 +12742,7 @@ This module defines a class, `Message`, which represents a collection of “emai
 
 The `mailbox`module provides classes to read mailboxes produced by various end-user mail programs.
 
-### class `Message`(*file*)
+### class `Message`(file)
 
 A `Message` instance is instantiated with an input object as parameter. Message relies only on the input object having a `readline()` method; in particular, ordinary file objects qualify. Instantiation reads headers from the input object up to a delimiter line (normally a blank line) and stores them in the instance.
 
@@ -12766,19 +12754,19 @@ Input lines as read from the file may either be terminated by CR-LF or by a sing
 
 All header matching is done independent of upper or lower case; e.g. *`m`*`[’From’]`, *`m`*`[’from’]` and *`m`*`[’FROM’]` all yield the same result.
 
-### class `AddressList`(*field*)
+### class `AddressList`(field)
 
 You may instantiate the `AddressList` helper class using a single string parameter, a comma-separated list of RFC 822 addresses to be parsed. (The parameter `None` yields an empty list.)
 
-### `parsedate`(*date*)
+### `parsedate`(date)
 
 Attempts to parse a date according to the rules in RFC 822. however, some mailers don’t follow that format as specified, so `parsedate()` tries to guess correctly in such cases. *date* is a string containing an RFC 822 date, such as `’Mon, 20 Nov 1995 19:12:08 -0500’`. If it succeeds in parsing the date, `parsedate()` returns a 9-tuple that can be passed directly to `time.mktime()`; otherwise `None` will be returned. Note that fields 6, 7, and 8 of the result tuple are not usable.
 
-### `parsedate_tz`(*date*)
+### `parsedate_tz`(date)
 
 Performs the same function as `parsedate()`, but returns either `None` or a 10-tuple; the first 9 elements make up a tuple that can be passed directly to `time.mktime()`, and the tenth is the offset of the date’s timezone from UTC (which is the official term for Greenwich Mean Time). (Note that the sign of the timezone offset is the opposite of the sign of the `time.timezone` variable for the same timezone; the latter variable follows the POSIX standard while this module follows RFC 822.) If the input string has no timezone, the last element of the tuple returned is `None`. Note that fields 6, 7, and 8 of the result tuple are not usable.
 
-### `mktime_tz`(*tuple*)
+### `mktime_tz`(tuple)
 
 Turn a 10-tuple as returned by `parsedate_tz()` into a UTC timestamp. It the timezone item in the tuple is `None`, assume local time. Minor deficiency: this first interprets the first 8 elements as a local time and then compensates for the timezone difference; this may yield a slight error around daylight savings time switch dates. Not enough to worry about for common use.
 
@@ -12786,7 +12774,7 @@ Turn a 10-tuple as returned by `parsedate_tz()` into a UTC timestamp. It the tim
 
 — mailboxClasses to read various mailbox formats produced by end-user mail programs. — mimetoolsSubclass of rfc.Message that handles MIME encoded messages.
 
-## Message Objects <span id="message-objects" label="message-objects"></span>
+## Message Objects 
 
 A `Message` instance has the following methods:
 
@@ -12794,57 +12782,57 @@ A `Message` instance has the following methods:
 
 Seek to the start of the message body. This only works if the file object is seekable.
 
-### `isheader`(*line*)
+### `isheader`(line)
 
 Returns a line’s canonicalized fieldname (the dictionary key that will be used to index it) if the line is a legal RFC 822 header; otherwise returns None (implying that parsing should stop here and the line be pushed back on the input stream). It is sometimes useful to override this method in a subclass.
 
-### `islast`(*line*)
+### `islast`(line)
 
 Return true if the given line is a delimiter on which Message should stop. The delimiter line is consumed, and the file object’s read location positioned immediately after it. By default this method just checks that the line is blank, but you can override it in a subclass.
 
-### `iscomment`(*line*)
+### `iscomment`(line)
 
 Return true if the given line should be ignored entirely, just skipped. By default this is a stub that always returns false, but you can override it in a subclass.
 
-### `getallmatchingheaders`(*name*)
+### `getallmatchingheaders`(name)
 
 Return a list of lines consisting of all headers matching *name*, if any. Each physical line, whether it is a continuation line or not, is a separate list item. Return the empty list if no header matches *name*.
 
-### `getfirstmatchingheader`(*name*)
+### `getfirstmatchingheader`(name)
 
 Return a list of lines comprising the first header matching *name*, and its continuation line(s), if any. Return `None` if there is no header matching *name*.
 
-### `getrawheader`(*name*)
+### `getrawheader`(name)
 
 Return a single string consisting of the text after the colon in the first header matching *name*. This includes leading whitespace, the trailing linefeed, and internal linefeeds and whitespace if there any continuation line(s) were present. Return `None` if there is no header matching *name*.
 
-### `getheader`(*name*)
+### `getheader`(name)
 
 Like `getrawheader(`*`name`*`)`, but strip leading and trailing whitespace. Internal whitespace is not stripped. The optional *default* argument can be used to specify a different default to be returned when there is no header matching *name*.
 
-### `get`(*name*)
+### `get`(name)
 
 An alias for `getheader()`, to make the interface more compatible with regular dictionaries.
 
-### `getaddr`(*name*)
+### `getaddr`(name)
 
 Return a pair `(`*`full name`*`, `*`email address`*`)` parsed from the string returned by `getheader(`*`name`*`)`. If no header matching *name* exists, return `(None, None)`; otherwise both the full name and the address are (possibly empty) strings.
 
 Example: If *m*’s first `From` header contains the string `’jack@cwi.nl (Jack Jansen)’`, then `m.getaddr(’From’)` will yield the pair `(’Jack Jansen’, ’jack@cwi.nl’)`. If the header contained `’Jack Jansen <jack@cwi.nl>’` instead, it would yield the exact same result.
 
-### `getaddrlist`(*name*)
+### `getaddrlist`(name)
 
 This is similar to `getaddr(`*`list`*`)`, but parses a header containing a list of email addresses (e.g. a `To` header) and returns a list of `(`*`full name`*`, `*`email address`*`)` pairs (even if there was only one address in the header). If there is no header matching *name*, return an empty list.
 
 If multiple headers exist that match the named header (e.g. if there are several `Cc` headers), all are parsed for addresses. Any continuation lines the named headers contain are also parsed.
 
-### `getdate`(*name*)
+### `getdate`(name)
 
 Retrieve a header using `getheader()` and parse it into a 9-tuple compatible with `time.mktime()`; note that fields 6, 7, and 8 are not usable. If there is no header matching *name*, or it is unparsable, return `None`.
 
 Date parsing appears to be a black art, and not all mailers adhere to the standard. While it has been tested and found correct on a large collection of email from many sources, it is still possible that this function may occasionally yield an incorrect result.
 
-### `getdate_tz`(*name*)
+### `getdate_tz`(name)
 
 Retrieve a header using `getheader()` and parse it into a 10-tuple; the first 9 elements will make a tuple compatible with `time.mktime()`, and the 10th is a number giving the offset of the date’s timezone from UTC. Note that fields 6, 7, and 8 are not usable. Similarly to `getdate()`, if there is no header matching *name*, or it is unparsable, return `None`.
 
@@ -12860,23 +12848,23 @@ A list containing the entire set of header lines, in the order in which they wer
 
 The file or file-like object passed at instantiation time. This can be used to read the message content.
 
-## AddressList Objects <span id="addresslist-objects" label="addresslist-objects"></span>
+## AddressList Objects 
 
 An `AddressList` instance has the following methods:
 
-### `__len__`(*name*)
+### `__len__`(name)
 
 Return the number of addresses in the address list.
 
-### `__str__`(*name*)
+### `__str__`(name)
 
 Return a canonicalized string representation of the address list. Addresses are rendered in "name" \<host@domain\> form, comma-separated.
 
-### `__add__`(*name*)
+### `__add__`(name)
 
 Return an `AddressList` instance that contains all addresses in both `AddressList` operands, with duplicates removed (set union).
 
-### `__sub__`(*name*)
+### `__sub__`(name)
 
 Return an `AddressList` instance that contains every address in the left-hand `AddressList` operand that is not present in the right-hand address operand (set difference).
 
@@ -12897,19 +12885,19 @@ The module defines the following variables and functions:
 
 This exception is raised on all errors, such as unsupported file type, etc.
 
-### `sizeofimage`(*file*)
+### `sizeofimage`(file)
 
 This function returns a tuple `(`*`x`*`, `*`y`*`)` where *x* and *y* are the size of the image in pixels. Only 4 byte RGBA pixels, 3 byte RGB pixels, and 1 byte greyscale pixels are currently supported.
 
-### `longimagedata`(*file*)
+### `longimagedata`(file)
 
 This function reads and decodes the image on the specified file, and returns it as a Python string. The string has 4 byte RGBA pixels. The bottom left pixel is the first in the string. This format is suitable to pass to `gl.lrectwrite()`, for instance.
 
-### `longstoimage`(*data, x, y, z, file*)
+### `longstoimage`(data, x, y, z, file)
 
 This function writes the RGBA data in *data* to image file *file*. *x* and *y* give the size of the image. *z* is 1 if the saved image should be 1 byte greyscale, 3 if the saved image should be 3 byte RGB data, or 4 if the saved images should be 4 byte RGBA data. The input data always contains 4 bytes per pixel. These are the formats returned by `gl.lrectread()`.
 
-### `ttob`(*flag*)
+### `ttob`(flag)
 
 This function sets a global flag which defines whether the scan lines of the image are read or written from bottom to top (flag is zero, compatible with SGI GL) or from top to bottom(flag is one, compatible with X). The default is zero.
 # `rlcompleter` — Completion function for readline
@@ -12943,11 +12931,11 @@ The `rlcompleter` module is designed for use with Python’s interactive mode. A
         import rlcompleter
         readline.parse_and_bind("tab: complete")
 
-## Completer Objects <span id="completer-objects" label="completer-objects"></span>
+## Completer Objects 
 
 Completer objects have the following method:
 
-### `complete`(*text, state*)
+### `complete`(text, state)
 
 Return the *state*th completion for *text*.
 
@@ -12962,7 +12950,7 @@ If called for a dotted name, it will try to evaluate anything without obvious si
 
 This class provides a set of methods to read, parse and answer questions about a single `robots.txt` file.
 
-### `set_url`(*url*)
+### `set_url`(url)
 
 Sets the URL referring to a `robots.txt` file.
 
@@ -12970,11 +12958,11 @@ Sets the URL referring to a `robots.txt` file.
 
 Reads the `robots.txt` URL and feeds it to the parser.
 
-### `parse`(*lines*)
+### `parse`(lines)
 
 Parses the lines argument.
 
-### `can_fetch`(*useragent, url*)
+### `can_fetch`(useragent, url)
 
 Returns true if the *useragent* is allowed to fetch the *url* according to the rules contained in the parsed `robots.txt` file.
 
@@ -13002,29 +12990,29 @@ The following example demonstrates basic use of the RobotFileParser class.
 
 This module implements a rotor-based encryption algorithm, contributed by Lance Ellinghouse. The design is derived from the Enigma device, a machine used during World War II to encipher messages. A rotor is simply a permutation. For example, if the character ‘A’ is the origin of the rotor, then a given rotor might map ‘A’ to ‘L’, ‘B’ to ‘Z’, ‘C’ to ‘G’, and so on. To encrypt, we choose several different rotors, and set the origins of the rotors to known positions; their initial position is the ciphering key. To encipher a character, we permute the original character by the first rotor, and then apply the second rotor’s permutation to the result. We continue until we’ve applied all the rotors; the resulting character is our ciphertext. We then change the origin of the final rotor by one position, from ‘A’ to ‘B’; if the final rotor has made a complete revolution, then we rotate the next-to-last rotor by one position, and apply the same procedure recursively. In other words, after enciphering one character, we advance the rotors in the same fashion as a car’s odometer. Decoding works in the same way, except we reverse the permutations and apply them in the opposite order. The available functions in this module are:
 
-### `newrotor`(*key*)
+### `newrotor`(key)
 
 Return a rotor object. *key* is a string containing the encryption key for the object; it can contain arbitrary binary data. The key will be used to randomly generate the rotor permutations and their initial positions. *numrotors* is the number of rotor permutations in the returned object; if it is omitted, a default value of 6 will be used.
 
 Rotor objects have the following methods:
 
-### `setkey`(*key*)
+### `setkey`(key)
 
 Sets the rotor’s key to *key*.
 
-### `encrypt`(*plaintext*)
+### `encrypt`(plaintext)
 
 Reset the rotor object to its initial state and encrypt *plaintext*, returning a string containing the ciphertext. The ciphertext is always the same length as the original plaintext.
 
-### `encryptmore`(*plaintext*)
+### `encryptmore`(plaintext)
 
 Encrypt *plaintext* without resetting the rotor object, and return a string containing the ciphertext.
 
-### `decrypt`(*ciphertext*)
+### `decrypt`(ciphertext)
 
 Reset the rotor object to its initial state and decrypt *ciphertext*, returning a string containing the ciphertext. The plaintext string will always be the same length as the ciphertext.
 
-### `decryptmore`(*ciphertext*)
+### `decryptmore`(ciphertext)
 
 Decrypt *ciphertext* without resetting the rotor object, and return a string containing the ciphertext.
 
@@ -13055,7 +13043,7 @@ The original Enigma cipher was broken in 1944. The version implemented here is p
 
 The `sched` module defines a class which implements a general purpose event scheduler:
 
-### class `scheduler`(*timefunc, delayfunc*)
+### class `scheduler`(timefunc, delayfunc)
 
 The `scheduler` class defines a generic interface to scheduling events. It needs two functions to actually deal with the “outside world” — *timefunc* should be callable without arguments, and return a number (the “time”, in any units whatsoever). The *delayfunc* function should be callable with one argument, compatible with the output of *timefunc*, and should delay that many time units. *delayfunc* will also be called with the argument `0` after each event is run to allow other threads an opportunity to run in multi-threaded applications.
 
@@ -13078,11 +13066,11 @@ Example:
     From print_time 930343700.273
     930343700.276
 
-## Scheduler Objects <span id="scheduler-objects" label="scheduler-objects"></span>
+## Scheduler Objects 
 
 `scheduler` instances have the following methods:
 
-### `enterabs`(*time, priority, action, argument*)
+### `enterabs`(time, priority, action, argument)
 
 Schedule a new event. The *time* argument should be a numeric type compatible with the return value of the *timefunc* function passed to the constructor. Events scheduled for the same *time* will be executed in the order of their *priority*.
 
@@ -13090,11 +13078,11 @@ Executing the event means executing `apply(`*`action`*`, `*`argument`*`)`. *argu
 
 Return value is an event which may be used for later cancellation of the event (see `cancel()`).
 
-### `enter`(*delay, priority, action, argument*)
+### `enter`(delay, priority, action, argument)
 
 Schedule an event for *delay* more time units. Other then the relative time, the other arguments, the effect and the return value are the same as those for `enterabs()`.
 
-### `cancel`(*event*)
+### `cancel`(event)
 
 Remove the event from the queue. If *event* is not an event currently in the queue, this method will raise a `RuntimeError`.
 
@@ -13125,7 +13113,7 @@ The exception raised when an error occurs. The accompanying value is a pair cont
 
 (Not supported by all operating systems.) Returns a polling object, which supports registering and unregistering file descriptors, and then polling them for I/O events; see section <a href="#poll-objects" data-reference-type="ref" data-reference="poll-objects">[poll-objects]</a> below for the methods supported by polling objects.
 
-### `select`(*iwtd, owtd, ewtd*)
+### `select`(iwtd, owtd, ewtd)
 
 This is a straightforward interface to the Unix system call. The first three arguments are lists of ‘waitable objects’: either integers representing Unix file descriptors or objects with a parameterless method named `fileno()` returning such an integer. The three lists of waitable objects are for input, output and ‘exceptional conditions’, respectively. Empty lists are allowed. The optional *timeout* argument specifies a time-out as a floating point number in seconds. When the *timeout* argument is omitted the function blocks until at least one file descriptor is ready. A time-out value of zero specifies a poll and never blocks.
 
@@ -13133,29 +13121,28 @@ The return value is a triple of lists of objects that are ready: subsets of the 
 
 Amongst the acceptable object types in the lists are Python file objects (e.g. `sys.stdin`, or objects returned by `open()` or `os.popen()`), socket objects returned by `socket.socket()`, and the module `stdwin`which happens to define a function `fileno()`for just this purpose. You may also define a *wrapper* class yourself, as long as it has an appropriate `fileno()` method (that really returns a Unix file descriptor, not just a random integer).
 
-## Polling Objects <span id="poll-objects" label="poll-objects"></span>
+## Polling Objects 
 
 The system call, supported on most Unix systems, provides better scalability for network servers that service many, many clients at the same time. scales better because the system call only requires listing the file descriptors of interest, while builds a bitmap, turns on bits for the fds of interest, and then afterward the whole bitmap has to be linearly scanned again. is O(highest file descriptor), while is O(number of file descriptors).
 
-### `register`(*fd*)
+### `register`(fd)
 
 Register a file descriptor with the polling object. Future calls to the `poll()` method will then check whether the file descriptor has any pending I/O events. *fd* can be either an integer, or an object with a `fileno()` method that returns an integer. File objects implement `fileno()`, so they can also be used as the argument.
 
 *eventmask* is an optional bitmask describing the type of events you want to check for, and can be a combination of the constants , , and , described in the table below. If not specified, the default value used will check for all 3 types of events.
 
-|                        |                                          |
-|:-----------------------|:-----------------------------------------|
-| ConstantMeaning POLLIN | There is data to read                    |
-| POLLPRI                | There is urgent data to read             |
-| POLLOUT                | Ready for output: writing will not block |
-| POLLERR                | Error condition of some sort             |
-| POLLHUP                | Hung up                                  |
-| POLLNVAL               | Invalid request: descriptor not open     |
-|                        |                                          |
+|          |                                          |
+|:---------|:-----------------------------------------|
+| POLLIN   | There is data to read                    |
+| POLLPRI  | There is urgent data to read             |
+| POLLOUT  | Ready for output: writing will not block |
+| POLLERR  | Error condition of some sort             |
+| POLLHUP  | Hung up                                  |
+| POLLNVAL | Invalid request: descriptor not open     |
 
 Registering a file descriptor that’s already registered is not an error, and has the same effect as registering the descriptor exactly once.
 
-### `unregister`(*fd*)
+### `unregister`(fd)
 
 Remove a file descriptor being tracked by a polling object. Just like the `register()` method, *fd* can be an integer or an object with a `fileno()` method that returns an integer.
 
@@ -13199,7 +13186,7 @@ Stop processing tags. Treat all following input as literal input (CDATA). (This 
 
 Enter literal mode (CDATA mode).
 
-### `feed`(*data*)
+### `feed`(data)
 
 Feed some text to the parser. It is processed insofar as it consists of complete elements; incomplete data is buffered until more data is fed or `close()` is called.
 
@@ -13211,57 +13198,57 @@ Force processing of all buffered data as if it were followed by an end-of-file m
 
 Return the text of the most recently opened start tag. This should not normally be needed for structured processing, but may be useful in dealing with HTML “as deployed” or for re-generating input with minimal changes (whitespace between attributes can be preserved, etc.).
 
-### `handle_starttag`(*tag, method, attributes*)
+### `handle_starttag`(tag, method, attributes)
 
 This method is called to handle start tags for which either a `start_`*`tag`*`()` or `do_`*`tag`*`()` method has been defined. The *tag* argument is the name of the tag converted to lower case, and the *method* argument is the bound method which should be used to support semantic interpretation of the start tag. The *attributes* argument is a list of `(`*`name`*`, `*`value`*`)` pairs containing the attributes found inside the tag’s `<>` brackets. The *name* has been translated to lower case and double quotes and backslashes in the *value* have been interpreted. For instance, for the tag `<A HREF="http://www.cwi.nl/">`, this method would be called as `unknown_starttag(’a’, [(’href’, ’http://www.cwi.nl/’)])`. The base implementation simply calls *method* with *attributes* as the only argument.
 
-### `handle_endtag`(*tag, method*)
+### `handle_endtag`(tag, method)
 
 This method is called to handle endtags for which an `end_`*`tag`*`()` method has been defined. The *tag* argument is the name of the tag converted to lower case, and the *method* argument is the bound method which should be used to support semantic interpretation of the end tag. If no `end_`*`tag`*`()` method is defined for the closing element, this handler is not called. The base implementation simply calls *method*.
 
-### `handle_data`(*data*)
+### `handle_data`(data)
 
 This method is called to process arbitrary data. It is intended to be overridden by a derived class; the base class implementation does nothing.
 
-### `handle_charref`(*ref*)
+### `handle_charref`(ref)
 
 This method is called to process a character reference of the form `&#`*`ref`*`;`. In the base implementation, *ref* must be a decimal number in the range 0-255. It translates the character to ASCII and calls the method `handle_data()` with the character as argument. If *ref* is invalid or out of range, the method `unknown_charref(`*`ref`*`)` is called to handle the error. A subclass must override this method to provide support for named character entities.
 
-### `handle_entityref`(*ref*)
+### `handle_entityref`(ref)
 
 This method is called to process a general entity reference of the form `&`*`ref`*`;` where *ref* is an general entity reference. It looks for *ref* in the instance (or class) variable `entitydefs` which should be a mapping from entity names to corresponding translations. If a translation is found, it calls the method `handle_data()` with the translation; otherwise, it calls the method `unknown_entityref(`*`ref`*`)`. The default `entitydefs` defines translations for `&amp;`, `&apos`, `&gt;`, `&lt;`, and `&quot;`.
 
-### `handle_comment`(*comment*)
+### `handle_comment`(comment)
 
 This method is called when a comment is encountered. The *comment* argument is a string containing the text between the `<!--` and `-->` delimiters, but not the delimiters themselves. For example, the comment `<!--text-->` will cause this method to be called with the argument `’text’`. The default method does nothing.
 
-### `report_unbalanced`(*tag*)
+### `report_unbalanced`(tag)
 
 This method is called when an end tag is found which does not correspond to any open element.
 
-### `unknown_starttag`(*tag, attributes*)
+### `unknown_starttag`(tag, attributes)
 
 This method is called to process an unknown start tag. It is intended to be overridden by a derived class; the base class implementation does nothing.
 
-### `unknown_endtag`(*tag*)
+### `unknown_endtag`(tag)
 
 This method is called to process an unknown end tag. It is intended to be overridden by a derived class; the base class implementation does nothing.
 
-### `unknown_charref`(*ref*)
+### `unknown_charref`(ref)
 
 This method is called to process unresolvable numeric character references. Refer to `handle_charref()` to determine what is handled by default. It is intended to be overridden by a derived class; the base class implementation does nothing.
 
-### `unknown_entityref`(*ref*)
+### `unknown_entityref`(ref)
 
 This method is called to process an unknown entity reference. It is intended to be overridden by a derived class; the base class implementation does nothing.
 
 Apart from overriding or extending the methods listed above, derived classes may also define methods of the following form to define processing of specific tags. Tag names in the input stream are case independent; the *tag* occurring in method names must be in lower case:
 
-### `start_`*`tag`*(*attributes*)
+### `start_`*`tag`*(attributes)
 
 This method is called to process an opening tag *tag*. It has preference over `do_`*`tag`*`()`. The *attributes* argument has the same meaning as described for `handle_starttag()` above.
 
-### `do_`*`tag`*(*attributes*)
+### `do_`*`tag`*(attributes)
 
 This method is called to process an opening tag *tag* that does not come with a matching closing tag. The *attributes* argument has the same meaning as described for `handle_starttag()` above.
 
@@ -13290,7 +13277,7 @@ The size of the resulting digest in bytes. This is always `20`.
 
 An sha object has the same methods as md5 objects:
 
-### `update`(*arg*)
+### `update`(arg)
 
 Update the sha object with the string *arg*. Repeated calls are equivalent to a single call with the concatenation of all the arguments, i.e. `m.update(a); m.update(b)` is equivalent to `m.update(a+b)`.
 
@@ -13355,7 +13342,7 @@ A `shlex` instance or subclass instance is a lexical analyzer object. The initia
 
 — ConfigParserParser for configuration files similar to the Windows `.ini` files.
 
-## shlex Objects <span id="shlex-objects" label="shlex-objects"></span>
+## shlex Objects 
 
 A `shlex` instance has the following methods:
 
@@ -13363,7 +13350,7 @@ A `shlex` instance has the following methods:
 
 Return a token. If tokens have been stacked using `push_token()`, pop a token off the stack. Otherwise, read one from the input stream. If reading encounters an immediate end-of-file, an empty string is returned.
 
-### `push_token`(*str*)
+### `push_token`(str)
 
 Push the argument onto the token stack.
 
@@ -13371,7 +13358,7 @@ Push the argument onto the token stack.
 
 Read a raw token. Ignore the pushback stack, and do not interpret source requests. (This is not ordinarily a useful entry point, and is documented here only for the sake of completeness.)
 
-### `sourcehook`(*filename*)
+### `sourcehook`(filename)
 
 When `shlex` detects a source request (see `source` below) this method is given the following token as argument, and expected to return a tuple consisting of a filename and an open file-like object.
 
@@ -13434,43 +13421,43 @@ The token buffer. It may be useful to examine this when catching exceptions.
 
 *High-level file operations, including copying.* The `shutil` module offers a number of high-level operations on files and collections of files. In particular, functions are provided which support file copying and removal. **Caveat:** On MacOS, the resource fork and other metadata are not used. For file copies, this means that resources will be lost and file type and creator codes will not be correct.
 
-### `copyfile`(*src, dst*)
+### `copyfile`(src, dst)
 
 Copy the contents of *src* to *dst*. If *dst* exists, it will be replaced, otherwise it will be created.
 
-### `copyfileobj`(*fsrc, fdst*)
+### `copyfileobj`(fsrc, fdst)
 
 Copy the contents of the file-like object *fsrc* to the file-like object *fdst*. The integer *length*, if given, is the buffer size. In particular, a negative *length* value means to copy the data without looping over the source data in chunks; by default the data is read in chunks to avoid uncontrolled memory consumption.
 
-### `copymode`(*src, dst*)
+### `copymode`(src, dst)
 
 Copy the permission bits from *src* to *dst*. The file contents, owner, and group are unaffected.
 
-### `copystat`(*src, dst*)
+### `copystat`(src, dst)
 
 Copy the permission bits, last access time, and last modification time from *src* to *dst*. The file contents, owner, and group are unaffected.
 
-### `copy`(*src, dst*)
+### `copy`(src, dst)
 
 Copy the file *src* to the file or directory *dst*. If *dst* is a directory, a file with the same basename as *src* is created (or overwritten) in the directory specified. Permission bits are copied.
 
-### `copy2`(*src, dst*)
+### `copy2`(src, dst)
 
 Similar to `copy()`, but last access time and last modification time are copied as well. This is similar to the Unix command `-p`.
 
-### `copytree`(*src, dst*)
+### `copytree`(src, dst)
 
 Recursively copy an entire directory tree rooted at *src*. The destination directory, named by *dst*, must not already exist; it will be created. Individual files are copied using `copy2()`. If *symlinks* is true, symbolic links in the source tree are represented as symbolic links in the new tree; if false or omitted, the contents of the linked files are copied to the new tree. Errors are reported to standard output.
 
 The source code for this should be considered an example rather than a tool.
 
-### `rmtree`(*path*)
+### `rmtree`(path)
 
 Delete an entire directory tree. If *ignore_errors* is true, errors will be ignored; if false or omitted, errors are handled by calling a handler specified by *onerror* or raise an exception.
 
 If *onerror* is provided, it must be a callable that accepts three parameters: *function*, *path*, and *excinfo*. The first parameter, *function*, is the function which raised the exception; it will be `os.remove()` or `os.rmdir()`. The second parameter, *path*, will be the path name passed to *function*. The third parameter, *excinfo*, will be the exception information return by `sys.exc_info()`. Exceptions raised by *onerror* will not be caught.
 
-## Example <span id="shutil-example" label="shutil-example"></span>
+## Example 
 
 This example is the implementation of the `copytree()` function, described above, with the docstring omitted. It demonstrates many of the other functions provided by this module.
 
@@ -13531,11 +13518,11 @@ One more than the number of the highest signal number.
 
 The `signal` module defines the following functions:
 
-### `alarm`(*time*)
+### `alarm`(time)
 
 If *time* is non-zero, this function requests that a signal be sent to the process in *time* seconds. Any previously scheduled alarm is canceled (i.e. only one alarm can be scheduled at any time). The returned value is then the number of seconds before any previously set alarm was to have been delivered. If *time* is zero, no alarm id scheduled, and any scheduled alarm is canceled. The return value is the number of seconds remaining before a previously scheduled alarm. If the return value is zero, no alarm is currently scheduled. (See the Unix man page .)
 
-### `getsignal`(*signalnum*)
+### `getsignal`(signalnum)
 
 Return the current signal handler for the signal *signalnum*. The returned value may be a callable Python object, or one of the special values , or . Here, means that the signal was previously ignored, means that the default way of handling the signal was previously in use, and `None` means that the previous signal handler was not installed from Python.
 
@@ -13543,7 +13530,7 @@ Return the current signal handler for the signal *signalnum*. The returned value
 
 Cause the process to sleep until a signal is received; the appropriate handler will then be called. Returns nothing. (See the Unix man page .)
 
-### `signal`(*signalnum, handler*)
+### `signal`(signalnum, handler)
 
 Set the handler for signal *signalnum* to the function *handler*. *handler* can be a callable Python object taking two arguments (see below), or one of the special values or . The previous signal handler will be returned (see the description of `getsignal()` above). (See the Unix man page .)
 
@@ -13577,7 +13564,7 @@ The `SimpleHTTPServer` module defines a request-handler class, interface compati
 
 The `SimpleHTTPServer` module defines the following class:
 
-### class `SimpleHTTPRequestHandler`(*request, client_address, server*)
+### class `SimpleHTTPRequestHandler`(request, client_address, server)
 
 This class is used, to serve files from current directory and below, directly mapping the directory structure to HTTP requests.
 
@@ -13694,11 +13681,11 @@ Internet RFC 821, *Simple Mail Transfer Protocol*. Available online at `http://i
 
 Internet RFC 1869, *SMTP Service Extensions*. Available online at `http://info.internet.isi.edu/in-notes/rfc/files/rfc1869.txt`.
 
-## SMTP Objects <span id="SMTP-objects" label="SMTP-objects"></span>
+## SMTP Objects 
 
 An `SMTP` instance has the following methods:
 
-### `set_debuglevel`(*level*)
+### `set_debuglevel`(level)
 
 Set the debug output level. A true value for *level* results in debug messages for connection and for all messages sent to and received from the server.
 
@@ -13710,7 +13697,7 @@ If the hostname ends with a colon (`:`) followed by a number, that suffix will b
 
 Note: This method is automatically invoked by the constructor if a host is specified during instantiation.
 
-### `docmd`(*cmd,* )
+### `docmd`(cmd, )
 
 Send a command *cmd* to the server. The optional argument *argstring* is simply concatenated to the command, separated by a space.
 
@@ -13732,17 +13719,17 @@ Identify yourself to an ESMTP server using `EHLO`. The hostname argument default
 
 Unless you wish to use `has_option()` before sending mail, it should not be necessary to call this method explicitly. It will be implicitly called by `sendmail()` when necessary.
 
-### `has_extn`(*name*)
+### `has_extn`(name)
 
 Return `1` if *name* is in the set of SMTP service extensions returned by the server, `0` otherwise. Case is ignored.
 
-### `verify`(*address*)
+### `verify`(address)
 
 Check the validity of an address on this server using SMTP `VRFY`. Returns a tuple consisting of code 250 and a full RFC 822 address (including human name) if the user address is valid. Otherwise returns an SMTP error code of 400 or greater and an error string.
 
 Note: many sites disable SMTP `VRFY` in order to foil spammers.
 
-### `sendmail`(*from_addr, to_addrs, msg*)
+### `sendmail`(from_addr, to_addrs, msg)
 
 Send mail. The required arguments are an RFC 822 from-address string, a list of RFC 822 to-address strings, and a message string. The caller may pass a list of ESMTP options (such as `8bitmime`) to be used in `MAIL FROM` commands as *mail_options*. ESMTP options (such as `DSN` commands) that should be used with all `RCPT` commands can be passed as *rcpt_options*. (If you need to use different ESMTP options to different recipients you have to use the low-level methods such as `mail`, `rcpt` and `data` to send the message.)
 
@@ -13774,7 +13761,7 @@ Terminate the SMTP session and close the connection.
 
 Low-level methods corresponding to the standard SMTP/ESMTP commands `HELP`, `RSET`, `NOOP`, `MAIL`, `RCPT`, and `DATA` are also supported. Normally these do not need to be called directly, so they are not documented here. For details, consult the module code.
 
-## SMTP Example <span id="SMTP-example" label="SMTP-example"></span>
+## SMTP Example 
 
 This example prompts the user for addresses needed in the message envelope (‘To’ and ‘From’ addresses), and the message to be delivered. Note that the headers to be included with the message must be included in the message as entered; this example doesn’t do any processing of the RFC 822 headers. In particular, the ‘To’ and ‘From’ addresses must be included in the message headers explicitly.
 
@@ -13807,11 +13794,11 @@ This example prompts the user for addresses needed in the message envelope (‘T
 
 *Determine type of a sound file.* The `sndhdr` provides utility functions which attempt to determine the type of sound data which is in a file. When these functions are able to determine what type of sound data is stored in a file, they return a tuple `(`*`type`*`, `*`sampling_rate`*`, `*`channels`*`, `*`frames`*`, `*`bits_per_sample`*`)`. The value for *type* indicates the data type and will be one of the strings `’aifc’`, `’aiff’`, `’au’`, `’hcom’`, `’sndr’`, `’sndt’`, `’voc’`, `’wav’`, `’8svx’`, `’sb’`, `’ub’`, or `’ul’`. The *sampling_rate* will be either the actual value or `0` if unknown or difficult to decode. Similarly, *channels* will be either the number of channels or `0` if it cannot be determined or if the value is difficult to decode. The value for *frames* will be either the number of frames or `-1`. The last item in the tuple, *bits_per_sample*, will either be the sample size in bits or `’A’` for A-LAWor `’U’` for u-LAW.
 
-### `what`(*filename*)
+### `what`(filename)
 
 Determines the type of sound data stored in the file *filename* using `whathdr()`. If it succeeds, returns a tuple as described above, otherwise `None` is returned.
 
-### `whathdr`(*filename*)
+### `whathdr`(filename)
 
 Determines the type of sound data stored in a file based on the file header. The name of the file is given by *filename*. This function returns a tuple as described above on success, or `None`.
 # `socket` — Low-level networking interface
@@ -13854,11 +13841,11 @@ Many constants of these forms, documented in the Unix documentation on sockets a
 
 Return a fully qualified domain name for *name*. If *name* is omitted or empty, it is interpreted as the local host. To find the fully qualified name, the hostname returned by `gethostbyaddr()` is checked, then aliases for the host, if available. The first name which includes a period is selected. In case no fully qualified domain name is available, the hostname is returned. *New in version 2.0.*
 
-### `gethostbyname`(*hostname*)
+### `gethostbyname`(hostname)
 
 Translate a host name to IP address format. The IP address is returned as a string, e.g., `’100.50.200.5’`. If the host name is an IP address itself it is returned unchanged. See `gethostbyname_ex()` for a more complete interface.
 
-### `gethostbyname_ex`(*hostname*)
+### `gethostbyname_ex`(hostname)
 
 Translate a host name to IP address format, extended interface. Return a triple `(hostname, aliaslist, ipaddrlist)` where `hostname` is the primary host name responding to the given *ip_address*, `aliaslist` is a (possibly empty) list of alternative host names for the same address, and `ipaddrlist` is a list of IP addresses for the same interface on the same host (often but not always a single address).
 
@@ -13866,43 +13853,43 @@ Translate a host name to IP address format, extended interface. Return a triple 
 
 Return a string containing the hostname of the machine where the Python interpreter is currently executing. If you want to know the current machine’s IP address, use `gethostbyname(gethostname())`. Note: `gethostname()` doesn’t always return the fully qualified domain name; use `gethostbyaddr(gethostname())` (see below).
 
-### `gethostbyaddr`(*ip_address*)
+### `gethostbyaddr`(ip_address)
 
 Return a triple `(`*`hostname`*`, `*`aliaslist`*`, `*`ipaddrlist`*`)` where *hostname* is the primary host name responding to the given *ip_address*, *aliaslist* is a (possibly empty) list of alternative host names for the same address, and *ipaddrlist* is a list of IP addresses for the same interface on the same host (most likely containing only a single address). To find the fully qualified domain name, use the function `getfqdn()`.
 
-### `getprotobyname`(*protocolname*)
+### `getprotobyname`(protocolname)
 
 Translate an Internet protocol name (e.g. `’icmp’`) to a constant suitable for passing as the (optional) third argument to the `socket()` function. This is usually only needed for sockets opened in “raw” mode (); for the normal socket modes, the correct protocol is chosen automatically if the protocol is omitted or zero.
 
-### `getservbyname`(*servicename, protocolname*)
+### `getservbyname`(servicename, protocolname)
 
 Translate an Internet service name and protocol name to a port number for that service. The protocol name should be `’tcp’` or `’udp’`.
 
-### `socket`(*family, type*)
+### `socket`(family, type)
 
 Create a new socket using the given address family, socket type and protocol number. The address family should be or . The socket type should be , or perhaps one of the other `SOCK_` constants. The protocol number is usually zero and may be omitted in that case.
 
-### `fromfd`(*fd, family, type*)
+### `fromfd`(fd, family, type)
 
 Build a socket object from an existing file descriptor (an integer as returned by a file object’s `fileno()` method). Address family, socket type and protocol number are as for the `socket()` function above. The file descriptor should refer to a socket, but this is not checked — subsequent operations on the object may fail if the file descriptor is invalid. This function is rarely needed, but can be used to get or set socket options on a socket passed to a program as standard input or output (e.g. a server started by the Unix inet daemon).
 
-### `ntohl`(*x*)
+### `ntohl`(x)
 
 Convert 32-bit integers from network to host byte order. On machines where the host byte order is the same as network byte order, this is a no-op; otherwise, it performs a 4-byte swap operation.
 
-### `ntohs`(*x*)
+### `ntohs`(x)
 
 Convert 16-bit integers from network to host byte order. On machines where the host byte order is the same as network byte order, this is a no-op; otherwise, it performs a 2-byte swap operation.
 
-### `htonl`(*x*)
+### `htonl`(x)
 
 Convert 32-bit integers from host to network byte order. On machines where the host byte order is the same as network byte order, this is a no-op; otherwise, it performs a 4-byte swap operation.
 
-### `htons`(*x*)
+### `htons`(x)
 
 Convert 16-bit integers from host to network byte order. On machines where the host byte order is the same as network byte order, this is a no-op; otherwise, it performs a 2-byte swap operation.
 
-### `inet_aton`(*ip_string*)
+### `inet_aton`(ip_string)
 
 Convert an IP address from dotted-quad string format (e.g. ’123.45.67.89’) to 32-bit packed binary format, as a string four characters in length.
 
@@ -13910,7 +13897,7 @@ Useful when conversing with a program that uses the standard C library and needs
 
 If the IP address string passed to this function is invalid, `socket.error` will be raised. Note that exactly what is valid depends on the underlying C implementation of .
 
-### `inet_ntoa`(*packed_ip*)
+### `inet_ntoa`(packed_ip)
 
 Convert a 32-bit packed IP address (a string four characters in length) to its standard dotted-quad string representation (e.g. ’123.45.67.89’).
 
@@ -13926,7 +13913,7 @@ This is a Python type object that represents the socket object type. It is the s
 
 — SocketServerClasses that simplify writing network servers.
 
-## Socket Objects <span id="socket-objects" label="socket-objects"></span>
+## Socket Objects 
 
 Socket objects have the following methods. Except for `makefile()` these correspond to Unix system calls applicable to sockets.
 
@@ -13934,7 +13921,7 @@ Socket objects have the following methods. Except for `makefile()` these corresp
 
 Accept a connection. The socket must be bound to an address and listening for connections. The return value is a pair `(`*`conn`*`, `*`address`*`)` where *conn* is a *new* socket object usable to send and receive data on the connection, and *address* is the address bound to the socket on the other end of the connection.
 
-### `bind`(*address*)
+### `bind`(address)
 
 Bind the socket to *address*. The socket must not already be bound. (The format of *address* depends on the address family — see above.) **Note:** This method has historically accepted a pair of parameters for addresses instead of only a tuple. This was never intentional and will no longer be available in Python 1.7.
 
@@ -13942,11 +13929,11 @@ Bind the socket to *address*. The socket must not already be bound. (The format 
 
 Close the socket. All future operations on the socket object will fail. The remote end will receive no more data (after queued data is flushed). Sockets are automatically closed when they are garbage-collected.
 
-### `connect`(*address*)
+### `connect`(address)
 
 Connect to a remote socket at *address*. (The format of *address* depends on the address family — see above.) **Note:** This method has historically accepted a pair of parameters for addresses instead of only a tuple. This was never intentional and will no longer be available in Python 1.7.
 
-### `connect_ex`(*address*)
+### `connect_ex`(address)
 
 Like `connect(`*`address`*`)`, but return an error indicator instead of raising an exception for errors returned by the C-level call (other problems, such as “host not found,” can still raise exceptions). The error indicator is `0` if the operation succeeded, otherwise the value of the variable. This is useful, e.g., for asynchronous connects. **Note:** This method has historically accepted a pair of parameters for addresses instead of only a tuple. This was never intentional and will no longer be available in Python 1.7.
 
@@ -13962,11 +13949,11 @@ Return the remote address to which the socket is connected. This is useful to fi
 
 Return the socket’s own address. This is useful to find out the port number of an IP socket, for instance. (The format of the address returned depends on the address family — see above.)
 
-### `getsockopt`(*level, optname*)
+### `getsockopt`(level, optname)
 
 Return the value of the given socket option (see the Unix man page ). The needed symbolic constants ( etc.) are defined in this module. If *buflen* is absent, an integer option is assumed and its integer value is returned by the function. If *buflen* is present, it specifies the maximum length of the buffer used to receive the option in, and this buffer is returned as a string. It is up to the caller to decode the contents of the buffer (see the optional built-in module `struct` for a way to decode C structures encoded as strings).
 
-### `listen`(*backlog*)
+### `listen`(backlog)
 
 Listen for connections made to the socket. The *backlog* argument specifies the maximum number of queued connections and should be at least 1; the maximum value is system-dependent (usually 5).
 
@@ -13974,37 +13961,37 @@ Listen for connections made to the socket. The *backlog* argument specifies the 
 
 Return a *file object* associated with the socket. (File objects are described in <a href="#bltin-file-objects" data-reference-type="ref" data-reference="bltin-file-objects">[bltin-file-objects]</a>, “File Objects.”) The file object references a ped version of the socket file descriptor, so the file object and socket object may be closed or garbage-collected independently. The optional *mode* and *bufsize* arguments are interpreted the same way as by the built-in `open()` function.
 
-### `recv`(*bufsize*)
+### `recv`(bufsize)
 
 Receive data from the socket. The return value is a string representing the data received. The maximum amount of data to be received at once is specified by *bufsize*. See the Unix manual page for the meaning of the optional argument *flags*; it defaults to zero.
 
-### `recvfrom`(*bufsize*)
+### `recvfrom`(bufsize)
 
 Receive data from the socket. The return value is a pair `(`*`string`*`, `*`address`*`)` where *string* is a string representing the data received and *address* is the address of the socket sending the data. The optional *flags* argument has the same meaning as for `recv()` above. (The format of *address* depends on the address family — see above.)
 
-### `send`(*string*)
+### `send`(string)
 
 Send data to the socket. The socket must be connected to a remote socket. The optional *flags* argument has the same meaning as for `recv()` above. Returns the number of bytes sent.
 
-### `sendto`(*string, address*)
+### `sendto`(string, address)
 
 Send data to the socket. The socket should not be connected to a remote socket, since the destination socket is specified by *address*. The optional *flags* argument has the same meaning as for `recv()` above. Return the number of bytes sent. (The format of *address* depends on the address family — see above.)
 
-### `setblocking`(*flag*)
+### `setblocking`(flag)
 
 Set blocking or non-blocking mode of the socket: if *flag* is 0, the socket is set to non-blocking, else to blocking mode. Initially all sockets are in blocking mode. In non-blocking mode, if a `recv()` call doesn’t find any data, or if a `send()` call can’t immediately dispose of the data, a `error` exception is raised; in blocking mode, the calls block until they can proceed.
 
-### `setsockopt`(*level, optname, value*)
+### `setsockopt`(level, optname, value)
 
 Set the value of the given socket option (see the Unix manual page ). The needed symbolic constants are defined in the `socket` module (`SO_*` etc.). The value can be an integer or a string representing a buffer. In the latter case it is up to the caller to ensure that the string contains the proper bits (see the optional built-in module `struct`for a way to encode C structures as strings).
 
-### `shutdown`(*how*)
+### `shutdown`(how)
 
 Shut down one or both halves of the connection. If *how* is `0`, further receives are disallowed. If *how* is `1`, further sends are disallowed. If *how* is `2`, further sends and receives are disallowed.
 
 Note that there are no methods `read()` or `write()`; use `recv()` and `send()` without *flags* argument instead.
 
-## Example <span id="socket-example" label="socket-example"></span>
+## Example 
 
 Here are two minimal example programs using the TCP/IP protocol: a server that echoes all data that it receives back (servicing only one client), and a client using it. Note that a server must perform the sequence `socket()`, `bind()`, `listen()`, `accept()` (possibly repeating the `accept()` to service more than one client), while a client only needs the sequence `socket()`, `connect()`. Also note that the server does not `send()`/`recv()` on the socket it is listening on but on the new socket returned by `accept()`.
 
@@ -14095,11 +14082,11 @@ Actually processes the request by instantiating `RequestHandlerClass` and callin
 
 Must accept a request from the socket, and return a 2-tuple containing the *new* socket object to be used to communicate with the client, and the client’s address.
 
-### `handle_error`(*request, client_address*)
+### `handle_error`(request, client_address)
 
 This function is called if the `RequestHandlerClass`’s `handle()` method raises an exception. The default action is to print the traceback to standard output and continue handling further requests.
 
-### `process_request`(*request, client_address*)
+### `process_request`(request, client_address)
 
 Calls `finish_request()` to create an instance of the `RequestHandlerClass`. If desired, this function can create a new process or thread to handle the request; the `ForkingMixIn` and `ThreadingMixIn` classes do this.
 
@@ -14111,7 +14098,7 @@ Called by the server’s constructor to activate the server. May be overridden.
 
 Called by the server’s constructor to bind the socket to the desired address. May be overridden.
 
-### `verify_request`(*request, client_address*)
+### `verify_request`(request, client_address)
 
 Must return a Boolean value; if the value is true, the request will be processed, and if it’s false, the request will be denied. This function can be overridden to implement access controls for a server. The default implementation always return true.
 
@@ -14141,11 +14128,11 @@ The soundex algorithm takes an English word, and returns an easily-computed hash
 
 Note that the soundex algorithm is quite simple-minded, and isn’t perfect by any measure. Its main purpose is to help looking up names in databases, when the name may be misspelled — soundex hashes common misspellings together.
 
-### `get_soundex`(*string*)
+### `get_soundex`(string)
 
 Return the soundex hash value for a word; it will always be a 6-character string. *string* must contain the word to be hashed, with no leading whitespace; the case of the word is ignored. (Note that the original algorithm produces a 4-character result.)
 
-### `sound_similar`(*string1, string2*)
+### `sound_similar`(string1, string2)
 
 Compare the word in *string1* with the word in *string2*; this is equivalent to `get_soundex(`*`string1`*`)` `==` `get_soundex(`*`string2`*`)`.
 
@@ -14158,41 +14145,41 @@ Donald E. Knuth, Sorting and Searching, vol. 3 in “The Art of Computer Program
 
 The `stat` module defines the following functions to test for specific file types:
 
-### `S_ISDIR`(*mode*)
+### `S_ISDIR`(mode)
 
 Return non-zero if the mode is from a directory.
 
-### `S_ISCHR`(*mode*)
+### `S_ISCHR`(mode)
 
 Return non-zero if the mode is from a character special device file.
 
-### `S_ISBLK`(*mode*)
+### `S_ISBLK`(mode)
 
 Return non-zero if the mode is from a block special device file.
 
-### `S_ISREG`(*mode*)
+### `S_ISREG`(mode)
 
 Return non-zero if the mode is from a regular file.
 
-### `S_ISFIFO`(*mode*)
+### `S_ISFIFO`(mode)
 
 Return non-zero if the mode is from a FIFO (named pipe).
 
-### `S_ISLNK`(*mode*)
+### `S_ISLNK`(mode)
 
 Return non-zero if the mode is from a symbolic link.
 
-### `S_ISSOCK`(*mode*)
+### `S_ISSOCK`(mode)
 
 Return non-zero if the mode is from a socket.
 
 Two additional functions are defined for more general manipulation of the file’s mode:
 
-### `S_IMODE`(*mode*)
+### `S_IMODE`(mode)
 
 Return the portion of the file’s mode that can be set by `os.chmod()`—that is, the file’s permission bits, plus the sticky bit, set-group-id, and set-user-id bits (on systems that support them).
 
-### `S_IFMT`(*mode*)
+### `S_IFMT`(mode)
 
 Return the portion of the file’s mode that describes the file type (used by the `S_IS*()` functions above).
 
@@ -14275,7 +14262,7 @@ The `statcache` module provides a simple optimization to `os.stat()`: rememberin
 
 The `statcache` module defines the following functions:
 
-### `stat`(*path*)
+### `stat`(path)
 
 This is the main module entry-point. Identical for `os.stat()`, except for remembering the result for future invocations of the function.
 
@@ -14285,19 +14272,19 @@ The rest of the functions are used to clear the cache, or parts of it.
 
 Clear the cache: forget all results of previous `stat()` calls.
 
-### `forget`(*path*)
+### `forget`(path)
 
 Forget the result of `stat(`*`path`*`)`, if any.
 
-### `forget_prefix`(*prefix*)
+### `forget_prefix`(prefix)
 
 Forget all results of `stat(`*`path`*`)` for *path* starting with *prefix*.
 
-### `forget_dir`(*prefix*)
+### `forget_dir`(prefix)
 
 Forget all results of `stat(`*`path`*`)` for *path* a file in the directory *prefix*, including `stat(`*`prefix`*`)`.
 
-### `forget_except_prefix`(*prefix*)
+### `forget_except_prefix`(prefix)
 
 Similar to `forget_prefix()`, but for all *path* values *not* starting with *prefix*.
 
@@ -14353,11 +14340,11 @@ Flags. System dependent: see man page.
 ### `F_NAMEMAX`
 
 Maximum file name length.
-# Built-in Types <span id="types" label="types"></span>
+# Built-in Types 
 
 The following sections describe the standard types that are built into the interpreter. These are the numeric types, sequence types, and several others, including types themselves. There is no explicit Boolean type; use integers instead. Some operations are supported by several object types; in particular, all objects can be compared, tested for truth value, and converted to a string (with the `‘`<span class="roman">`…`</span>`‘` notation). The latter conversion is implicitly used when an object is written by the statement.
 
-## Truth Value Testing <span id="truth" label="truth"></span>
+## Truth Value Testing 
 
 Any object can be tested for truth value, for use in an or condition or as operand of the Boolean operations below. The following values are considered false:
 
@@ -14373,16 +14360,16 @@ Any object can be tested for truth value, for use in an or condition or as opera
 
 All other values are considered true — so objects of many types are always true. Operations and built-in functions that have a Boolean result always return `0` for false and `1` for true, unless otherwise stated. (Important exception: the Boolean operations `or` and `and` always return one of their operands.)
 
-## Boolean Operations <span id="boolean" label="boolean"></span>
+## Boolean Operations 
 
 These are the Boolean operations, ordered by ascending priority:
 
-|                      |     |     |
-|:---------------------|:----|:----|
-| OperationResultNotes |     |     |
-| or *y*               |     |     |
-| and *y*              |     |     |
-|                      |     |     |
+|         |     |     |
+|:--------|:----|:----|
+|         |     |     |
+| or *y*  |     |     |
+| and *y* |     |     |
+|         |     |     |
 
 Notes:
 
@@ -14392,22 +14379,21 @@ These only evaluate their second argument if needed for their outcome.
 \(2\)  
 `not` has a lower priority than non-Boolean operators, so `not `*`a`*` == `*`b`* is interpreted as `not (`*`a`*` == `*`b`*`)`, and *`a`*` == not `*`b`* is a syntax error.
 
-## Comparisons <span id="comparisons" label="comparisons"></span>
+## Comparisons 
 
 Comparison operations are supported by all objects. They all have the same priority (which is higher than that of the Boolean operations). Comparisons can be chained arbitrarily; for example, *`x`*` < `*`y`*` <= `*`z`* is equivalent to *`x`*` < `*`y`*` and `*`y`*` <= `*`z`*, except that *y* is evaluated only once (but in both cases *z* is not evaluated at all when *`x`*` < `*`y`* is found to be false). This table summarizes the comparison operations:
 
-|                          |                         |       |
-|:-------------------------|:------------------------|:------|
-| OperationMeaningNotes \< | strictly less than      |       |
-| \<=                      | less than or equal      |       |
-| \>                       | strictly greater than   |       |
-| \>=                      | greater than or equal   |       |
-| ==                       | equal                   |       |
-| !=                       | not equal               | \(1\) |
-| \<\>                     | not equal               | \(1\) |
-| is                       | object identity         |       |
-| is not                   | negated object identity |       |
-|                          |                         |       |
+|        |                         |       |
+|:-------|:------------------------|:------|
+| \<     | strictly less than      |       |
+| \<=    | less than or equal      |       |
+| \>     | strictly greater than   |       |
+| \>=    | greater than or equal   |       |
+| ==     | equal                   |       |
+| !=     | not equal               | \(1\) |
+| \<\>   | not equal               | \(1\) |
+| is     | object identity         |       |
+| is not | negated object identity |       |
 
 Notes:
 
@@ -14420,31 +14406,31 @@ Objects of different types, except different numeric types, never compare equal;
 
 Two more operations with the same syntactic priority, `in` and `not in`, are supported only by sequence types (below).
 
-## Numeric Types <span id="typesnumeric" label="typesnumeric"></span>
+## Numeric Types 
 
 There are four numeric types: *plain integers*, *long integers*, *floating point numbers*, and *complex numbers*. Plain integers (also just called *integers*) are implemented using `long` in C, which gives them at least 32 bits of precision. Long integers have unlimited precision. Floating point numbers are implemented using `double` in C. All bets on their precision are off unless you happen to know the machine you are working with. Complex numbers have a real and imaginary part, which are both implemented using `double` in C. To extract these parts from a complex number *z*, use *`z`*`.real` and *`z`*`.imag`.
 
 Numbers are created by numeric literals or as the result of built-in functions and operators. Unadorned integer literals (including hex and octal numbers) yield plain integers. Integer literals with an `L` or `l` suffix yield long integers (`L` is preferred because `1l` looks too much like eleven!). Numeric literals containing a decimal point or an exponent sign yield floating point numbers. Appending `j` or `J` to a numeric literal yields a complex number. Python fully supports mixed arithmetic: when a binary arithmetic operator has operands of different numeric types, the operand with the “smaller” type is converted to that of the other, where plain integer is smaller than long integer is smaller than floating point is smaller than complex. Comparisons between numbers of mixed type use the same rule.[^2] The functions `int()`, `long()`, `float()`, and `complex()` can be used to coerce numbers to a specific type. All numeric types support the following operations, sorted by ascending priority (operations in the same box have the same priority; all numeric operations have a higher priority than comparison operations):
 
-|                      |     |     |
-|:---------------------|:----|:----|
-| OperationResultNotes |     |     |
-| \+ *y*               |     |     |
-| \- *y*               |     |     |
-| \* *y*               |     |     |
-| / *y*                |     |     |
-| % *y*                |     |     |
-|                      |     |     |
-|                      |     |     |
-| )                    |     |     |
-| )                    |     |     |
-| )                    |     |     |
-| )                    |     |     |
-| ,*im*)               |     |     |
-| .conjugate()         |     |     |
-| , *y*)               |     |     |
-| , *y*)               |     |     |
-| \*\* *y*             |     |     |
+|              |     |     |
+|:-------------|:----|:----|
+|              |     |     |
+| \+ *y*       |     |     |
+| \- *y*       |     |     |
+| * *y*       |     |     |
+| / *y*        |     |     |
+| % *y*        |     |     |
+|              |     |     |
+|              |     |     |
+| )            |     |     |
+| )            |     |     |
+| )            |     |     |
+| )            |     |     |
+| ,*im*)       |     |     |
+| .conjugate() |     |     |
+| , *y*)       |     |     |
+| , *y*)       |     |     |
+| ** *y*     |     |     |
 
 Notes:
 
@@ -14457,7 +14443,7 @@ Conversion from floating point to (long or plain) integer may round or truncate 
 \(3\)  
 See section <a href="#built-in-funcs" data-reference-type="ref" data-reference="built-in-funcs">[built-in-funcs]</a>, “Built-in Functions,” for a full description.
 
-### Bit-string Operations on Integer Types <span id="bitstring-ops" label="bitstring-ops"></span>
+### Bit-string Operations on Integer Types 
 
 Plain and long integer types support additional operations that make sense only for bit-strings. Negative numbers are treated as their 2’s complement value (for long integers, this assumes a sufficiently large number of bits that no overflow occurs during the operation).
 
@@ -14465,15 +14451,15 @@ The priorities of the binary bit-wise operations are all lower than the numeric 
 
 This table lists the bit-string operations sorted in ascending priority (operations in the same box have the same priority):
 
-|                      |     |     |
-|:---------------------|:----|:----|
-| OperationResultNotes |     |     |
-| \| *y*               |     |     |
-| ^ *y*                |     |     |
-| & *y*                |     |     |
-| \<\< *n*             |     |     |
-| \>\> *n*             |     |     |
-|                      |     |     |
+|          |     |     |
+|:---------|:----|:----|
+|          |     |     |
+| \| *y*   |     |     |
+| ^ *y*    |     |     |
+| & *y*    |     |     |
+| \<\< *n* |     |     |
+| \>\> *n* |     |     |
+|          |     |     |
 
 Notes:
 
@@ -14486,7 +14472,7 @@ A left shift by *n* bits is equivalent to multiplication by `pow(2, `*`n`*`)` wi
 \(3\)  
 A right shift by *n* bits is equivalent to division by `pow(2, `*`n`*`)` without overflow check.
 
-## Sequence Types <span id="typesseq" label="typesseq"></span>
+## Sequence Types 
 
 There are six sequence types: strings, Unicode strings, lists, tuples, buffers, and xrange objects.
 
@@ -14496,11 +14482,11 @@ This table lists the sequence operations sorted in ascending priority (operation
 
 |                                               |     |     |
 |:----------------------------------------------|:----|:----|
-| OperationResultNotes                          |     |     |
+|                                               |     |     |
 | in *s*                                        |     |     |
 | not in *s*                                    |     |     |
 | \+ *t*                                        |     |     |
-| \* *n*<span class="roman">,</span> *n* \* *s* |     |     |
+| * *n*<span class="roman">,</span> *n* * *s* |     |     |
 |                                               |     |     |
 |                                               |     |     |
 | )                                             |     |     |
@@ -14518,7 +14504,7 @@ If *i* or *j* is negative, the index is relative to the end of the string, i.e.,
 \(3\)  
 The slice of *s* from *i* to *j* is defined as the sequence of items with index *k* such that *`i`*` <= `*`k`*` < `*`j`*. If *i* or *j* is greater than `len(`*`s`*`)`, use `len(`*`s`*`)`. If *i* is omitted, use `0`. If *j* is omitted, use `len(`*`s`*`)`. If *i* is greater than or equal to *j*, the slice is empty.
 
-### String Methods <span id="string-methods" label="string-methods"></span>
+### String Methods 
 
 These are the string methods which both 8-bit strings and Unicode objects support:
 
@@ -14526,11 +14512,11 @@ These are the string methods which both 8-bit strings and Unicode objects suppor
 
 Return a copy of the string with only its first character capitalized.
 
-### `center`(*width*)
+### `center`(width)
 
 Return centered in a string of length *width*. Padding is done using spaces.
 
-### `count`(*sub*)
+### `count`(sub)
 
 Return the number of occurrences of substring *sub* in string S`[`*`start`*`:`*`end`*`]`. Optional arguments *start* and *end* are interpreted as in slice notation.
 
@@ -14538,7 +14524,7 @@ Return the number of occurrences of substring *sub* in string S`[`*`start`*`:`*`
 
 Return an encoded version of the string. Default encoding is the current default string encoding. *errors* may be given to set a different error handling scheme. The default for *errors* is `’strict’`, meaning that encoding errors raise a `ValueError`. Other possible values are `’ignore’` and `’replace’`.
 
-### `endswith`(*suffix*)
+### `endswith`(suffix)
 
 Return true if the string ends with the specified *suffix*, otherwise return false. With optional *start*, test beginning at that position. With optional *end*, stop comparing at that position.
 
@@ -14546,11 +14532,11 @@ Return true if the string ends with the specified *suffix*, otherwise return fal
 
 Return a copy of the string where all tab characters are expanded using spaces. If *tabsize* is not given, a tab size of `8` characters is assumed.
 
-### `find`(*sub*)
+### `find`(sub)
 
-Return the lowest index in the string where substring *sub* is found, such that *sub* is contained in the range \[*start*, *end*). Optional arguments *start* and *end* are interpreted as in slice notation. Return `-1` if *sub* is not found.
+Return the lowest index in the string where substring *sub* is found, such that *sub* is contained in the range [*start*, *end*). Optional arguments *start* and *end* are interpreted as in slice notation. Return `-1` if *sub* is not found.
 
-### `index`(*sub*)
+### `index`(sub)
 
 Like `find()`, but raise `ValueError` when the substring is not found.
 
@@ -14582,11 +14568,11 @@ Return true if the string is a titlecased string, i.e. uppercase characters may
 
 Return true if all cased characters in the string are uppercase and there is at least one cased character, false otherwise.
 
-### `join`(*seq*)
+### `join`(seq)
 
 Return a string which is the concatenation of the strings in the sequence *seq*. The separator between elements is the string providing this method.
 
-### `ljust`(*width*)
+### `ljust`(width)
 
 Return the string left justified in a string of length *width*. Padding is done using spaces. The original string is returned if *width* is less than `len(`*`s`*`)`.
 
@@ -14598,19 +14584,19 @@ Return a copy of the string converted to lowercase.
 
 Return a copy of the string with leading whitespace removed.
 
-### `replace`(*old, new*)
+### `replace`(old, new)
 
 Return a copy of the string with all occurrences of substring *old* replaced by *new*. If the optional argument *maxsplit* is given, only the first *maxsplit* occurrences are replaced.
 
-### `rfind`(*sub* )
+### `rfind`(sub )
 
-Return the highest index in the string where substring *sub* is found, such that *sub* is contained within s\[start,end\]. Optional arguments *start* and *end* are interpreted as in slice notation. Return `-1` on failure.
+Return the highest index in the string where substring *sub* is found, such that *sub* is contained within s[start,end]. Optional arguments *start* and *end* are interpreted as in slice notation. Return `-1` on failure.
 
-### `rindex`(*sub*)
+### `rindex`(sub)
 
 Like `rfind()` but raises `ValueError` when the substring *sub* is not found.
 
-### `rjust`(*width*)
+### `rjust`(width)
 
 Return the string right justified in a string of length *width*. Padding is done using spaces. The original string is returned if *width* is less than `len(`*`s`*`)`.
 
@@ -14626,7 +14612,7 @@ Return a list of the words in the string, using *sep* as the delimiter string. I
 
 Return a list of the lines in the string, breaking at line boundaries. Line breaks are not included in the resulting list unless *keepends* is given and true.
 
-### `startswith`(*prefix*)
+### `startswith`(prefix)
 
 Return true if string starts with the *prefix*, otherwise return false. With optional *start*, test string beginning at that position. With optional *end*, stop comparing string at that position.
 
@@ -14642,7 +14628,7 @@ Return a copy of the string with uppercase characters converted to lowercase and
 
 Return a titlecased version of, i.e. words start with uppercase characters, all remaining cased characters are lowercase.
 
-### `translate`(*table*)
+### `translate`(table)
 
 Return a copy of the string where all characters occurring in the optional argument *deletechars* are removed, and the remaining characters have been mapped through the given translation table, which must be a string of length 256.
 
@@ -14650,7 +14636,7 @@ Return a copy of the string where all characters occurring in the optional argum
 
 Return a copy of the string converted to uppercase.
 
-### String Formatting Operations <span id="typesseq-strings" label="typesseq-strings"></span>
+### String Formatting Operations 
 
 String objects have one unique built-in operation: the `%` operator (modulo) with a string left argument interprets this string as a C format string to be applied to the right argument, and returns the string resulting from this formatting operation.
 
@@ -14669,7 +14655,7 @@ In this case no `*` specifiers may occur in a format (since they require a seque
 
 Additional string operations are defined in standard module `string` and in built-in module `re`.
 
-### XRange Type <span id="typesseq-xrange" label="typesseq-xrange"></span>
+### XRange Type 
 
 The xrangetype is an immutable sequence which is commonly used for looping. The advantage of the xrange type is that an xrange object will always take the same amount of memory, no matter the size of the range it represents. There are no consistent performance advantages.
 
@@ -14679,25 +14665,25 @@ XRange objects behave like tuples, and offer a single method:
 
 Return a list object which represents the same values as the xrange object.
 
-### Mutable Sequence Types <span id="typesseq-mutable" label="typesseq-mutable"></span>
+### Mutable Sequence Types 
 
 List objects support additional operations that allow in-place modification of the object. These operations would be supported by other mutable sequence types (when added to the language) as well. Strings and tuples are immutable sequence types and such objects cannot be modified once created. The following operations are defined on mutable sequence types (where *x* is an arbitrary object):
 
-|                      |     |     |
-|:---------------------|:----|:----|
-| OperationResultNotes |     |     |
-| = *x*                |     |     |
-| = *t*                |     |     |
-|                      |     |     |
-| .append(*x*)         |     |     |
-| .extend(*x*)         |     |     |
-| .count(*x*)          |     |     |
-| .index(*x*)          |     |     |
-| .insert(*i*, *x*)    |     |     |
-| .pop()               |     |     |
-| .remove(*x*)         |     |     |
-| .reverse()           |     |     |
-| .sort()              |     |     |
+|                   |     |     |
+|:------------------|:----|:----|
+|                   |     |     |
+| = *x*             |     |     |
+| = *t*             |     |     |
+|                   |     |     |
+| .append(*x*)      |     |     |
+| .extend(*x*)      |     |     |
+| .count(*x*)       |     |     |
+| .index(*x*)       |     |     |
+| .insert(*i*, *x*) |     |     |
+| .pop()            |     |     |
+| .remove(*x*)      |     |     |
+| .reverse()        |     |     |
+| .sort()           |     |     |
 
 Notes:
 
@@ -14719,7 +14705,7 @@ The `sort()` and `reverse()` methods modify the list in place for economy of spa
 \(6\)  
 The `sort()` method takes an optional argument specifying a comparison function of two arguments (list items) which should return `-1`, `0` or `1` depending on whether the first argument is considered smaller than, equal to, or larger than the second argument. Note that this slows the sorting process down considerably; e.g. to sort a list in reverse order it is much faster to use calls to the methods `sort()` and `reverse()` than to use the built-in function `sort()` with a comparison function that reverses the ordering of the elements.
 
-## Mapping Types <span id="typesmapping" label="typesmapping"></span>
+## Mapping Types 
 
 A *mapping* object maps values of one type (the key type) to arbitrary objects. Mappings are mutable objects. There is currently only one standard mapping type, the *dictionary*. A dictionary’s keys are almost arbitrary values. The only types of values not acceptable as keys are values containing lists or dictionaries or other mutable types that are compared by value rather than by object identity. Numeric types used for keys obey the normal rules for numeric comparison: if two numbers compare equal (e.g. `1` and `1.0`) then they can be used interchangeably to index the same dictionary entry.
 
@@ -14727,22 +14713,22 @@ Dictionaries are created by placing a comma-separated list of *`key`*`: `*`value
 
 The following operations are defined on mappings (where *a* and *b* are mappings, *k* is a key, and *v* and *x* are arbitrary objects):
 
-|                           |     |     |
-|:--------------------------|:----|:----|
-| OperationResultNotes len( |     |     |
-| )                         |     |     |
-|                           |     |     |
-| = *v*                     |     |     |
-|                           |     |     |
-| .clear()                  |     |     |
-| .copy()                   |     |     |
-| .has_key(*k*)             |     |     |
-| .items()                  |     |     |
-| .keys()                   |     |     |
-| .update(*b*)              |     |     |
-| .values()                 |     |     |
-| .get(*k*)                 |     |     |
-| .setdefault(*k*)          |     |     |
+|                  |     |     |
+|:-----------------|:----|:----|
+| len(             |     |     |
+| )                |     |     |
+|                  |     |     |
+| = *v*            |     |     |
+|                  |     |     |
+| .clear()         |     |     |
+| .copy()          |     |     |
+| .has_key(*k*)    |     |     |
+| .items()         |     |     |
+| .keys()          |     |     |
+| .update(*b*)     |     |     |
+| .values()        |     |     |
+| .get(*k*)        |     |     |
+| .setdefault(*k*) |     |     |
 
 Notes:
 
@@ -14761,11 +14747,11 @@ Never raises an exception if *k* is not in the map, instead it returns *x*. *x* 
 \(5\)  
 `setdefault()` is like `get()`, except that if *k* is missing, *x* is both returned and inserted into the dictionary as the value of *k*.
 
-## Other Built-in Types <span id="typesother" label="typesother"></span>
+## Other Built-in Types 
 
 The interpreter supports several other kinds of objects. Most of these support only one or two operations.
 
-### Modules <span id="typesmodules" label="typesmodules"></span>
+### Modules 
 
 The only special operation on a module is attribute access: *`m`*`.`*`name`*, where *m* is a module and *name* accesses a name defined in *m*’s symbol table. Module attributes can be assigned to. (Note that the statement is not, strictly speaking, an operation on a module object; `import `*`foo`* does not require a module object named *foo* to exist, rather it requires an (external) *definition* for a module named *foo* somewhere.)
 
@@ -14773,11 +14759,11 @@ A special member of every module is `__dict__`. This is the dictionary containin
 
 Modules built into the interpreter are written like this: `<module ’sys’ (built-in)>`. If loaded from a file, they are written as `<module ’os’ from ’/usr/local/lib/python/os.pyc’>`.
 
-### Classes and Class Instances <span id="typesobjects" label="typesobjects"></span>
+### Classes and Class Instances 
 
 See chapters 3 and 7 of the Python Reference Manual for these.
 
-### Functions <span id="typesfunctions" label="typesfunctions"></span>
+### Functions 
 
 Function objects are created by function definitions. The only operation on a function object is to call it: *`func`*`(`*`argument-list`*`)`.
 
@@ -14785,7 +14771,7 @@ There are really two flavors of function objects: built-in functions and user-de
 
 The implementation adds two special read-only attributes: *`f`*`.func_code` is a function’s *code object*(see below) and *`f`*`.func_globals` is the dictionary used as the function’s global namespace (this is the same as *`m`*`.__dict__` where *m* is the module in which the function *f* was defined).
 
-### Methods <span id="typesmethods" label="typesmethods"></span>
+### Methods 
 
 Methods are functions that are called using the attribute notation. There are two flavors: built-in methods (such as `append()` on lists) and class instance methods. Built-in methods are described with the types that support them.
 
@@ -14793,27 +14779,27 @@ The implementation adds two special read-only attributes to class instance metho
 
 See the Python Reference Manual for more information.
 
-### Code Objects <span id="bltin-code-objects" label="bltin-code-objects"></span>
+### Code Objects 
 
 Code objects are used by the implementation to represent “pseudo-compiled” executable Python code such as a function body. They differ from function objects because they don’t contain a reference to their global execution environment. Code objects are returned by the built-in `compile()` function and can be extracted from function objects through their `func_code` attribute. A code object can be executed or evaluated by passing it (instead of a source string) to the statement or the built-in `eval()` function. See the Python Reference Manual for more information.
 
-### Type Objects <span id="bltin-type-objects" label="bltin-type-objects"></span>
+### Type Objects 
 
 Type objects represent the various object types. An object’s type is accessed by the built-in function `type()`. There are no special operations on types. The standard module `types` defines names for all standard built-in types. Types are written like this: `<type ’int’>`.
 
-### The Null Object <span id="bltin-null-object" label="bltin-null-object"></span>
+### The Null Object 
 
 This object is returned by functions that don’t explicitly return a value. It supports no special operations. There is exactly one null object, named `None` (a built-in name).
 
 It is written as `None`.
 
-### The Ellipsis Object <span id="bltin-ellipsis-object" label="bltin-ellipsis-object"></span>
+### The Ellipsis Object 
 
 This object is used by extended slice notation (see the Python Reference Manual). It supports no special operations. There is exactly one ellipsis object, named (a built-in name).
 
 It is written as `Ellipsis`.
 
-### File Objects<span id="bltin-file-objects" label="bltin-file-objects"></span>
+### File Objects
 
 File objects are implemented using C’s `stdio` package and can be created with the built-in function `open()`described in section <a href="#built-in-funcs" data-reference-type="ref" data-reference="built-in-funcs">[built-in-funcs]</a>, “Built-in Functions.” They are also returned by some other built-in functions and methods, e.g., `os.popen()` and `os.fdopen()` and the `makefile()` method of socket objects. When a file operation fails for an I/O-related reason, the exception `IOError` is raised. This includes situations where the operation is not defined for some reason, like `seek()` on a tty device or writing a file opened for reading.
 
@@ -14847,7 +14833,7 @@ Read one entire line from the file. A trailing newline character is kept in the 
 
 Read until EOF using `readline()` and return a list containing the lines thus read. If the optional *sizehint* argument is present, instead of reading up to EOF, whole lines totalling approximately *sizehint* bytes (possibly after rounding up to an internal buffer size) are read. Objects implementing a file-like interface may choose to ignore *sizehint* if it cannot be implemented, or cannot be implemented efficiently.
 
-### `seek`(*offset*)
+### `seek`(offset)
 
 Set the file’s current position, like `stdio`’s . The *whence* argument is optional and defaults to `0` (absolute file positioning); other values are `1` (seek relative to the current position) and `2` (seek relative to the file’s end). There is no return value.
 
@@ -14859,11 +14845,11 @@ Return the file’s current position, like `stdio`’s .
 
 Truncate the file’s size. If the optional *size* argument present, the file is truncated to (at most) that size. The size defaults to the current position. Availability of this function depends on the operating system version (for example, not all Unix versions support this operation).
 
-### `write`(*str*)
+### `write`(str)
 
 Write a string to the file. There is no return value. Note: Due to buffering, the string may not actually show up in the file until the `flush()` or `close()` method is called.
 
-### `writelines`(*list*)
+### `writelines`(list)
 
 Write a list of strings to the file. There is no return value. (The name is intended to match `readlines()`; `writelines()` does not add line separators.)
 
@@ -14885,11 +14871,11 @@ If the file object was created using `open()`, the name of the file. Otherwise, 
 
 Boolean that indicates whether a space character needs to be printed before another value when using the statement. Classes that are trying to simulate a file object should also have a writable `softspace` attribute, which should be initialized to zero. This will be automatic for most classes implemented in Python (care may be needed for objects that override attribute access); types implemented in C will have to provide a writable `softspace` attribute. **Note:** This attribute is not used to control the statement, but to allow the implementation of to keep track of its internal state.
 
-### Internal Objects <span id="typesinternal" label="typesinternal"></span>
+### Internal Objects 
 
 See the Python Reference Manual for this information. It describes stack frame objects, traceback objects, and slice objects.
 
-## Special Attributes <span id="specialattrs" label="specialattrs"></span>
+## Special Attributes 
 
 The implementation adds a few special read-only attributes to several object types, where they are relevant:
 
@@ -14944,7 +14930,7 @@ Functions have names that usually resemble their C STDWIN counterparts with the 
 
 The following functions are defined in the `stdwin` module:
 
-#### `open`(*title*)
+#### `open`(title)
 
 Open a new window whose initial title is given by the string argument. Return a window object; window object methods are described below.[^1]
 
@@ -14960,19 +14946,19 @@ Return the next event, if one is immediately available. If no event is available
 
 Return the window that is currently active, or `None` if no window is currently active. (This can be emulated by monitoring WE_ACTIVATE and WE_DEACTIVATE events.)
 
-#### `listfontnames`(*pattern*)
+#### `listfontnames`(pattern)
 
 Return the list of font names in the system that match the pattern (a string). The pattern should normally be `’*’`; returns all available fonts. If the underlying window system is X11, other patterns follow the standard X11 font selection syntax (as used e.g. in resource definitions), i.e. the wildcard character `’*’` matches any sequence of characters (including none) and `’?’` matches any single character. On the Macintosh this function currently returns an empty list.
 
-#### `setdefscrollbars`(*hflag, vflag*)
+#### `setdefscrollbars`(hflag, vflag)
 
 Set the flags controlling whether subsequently opened windows will have horizontal and/or vertical scroll bars.
 
-#### `setdefwinpos`(*h, v*)
+#### `setdefwinpos`(h, v)
 
 Set the default window position for windows opened subsequently.
 
-#### `setdefwinsize`(*width, height*)
+#### `setdefwinsize`(width, height)
 
 Set the default window size for windows opened subsequently.
 
@@ -14996,7 +14982,7 @@ Return the screen size in pixels.
 
 Return the screen size in millimeters.
 
-#### `fetchcolor`(*colorname*)
+#### `fetchcolor`(colorname)
 
 Return the pixel value corresponding to the given color name. Return the default foreground color for unknown color names. Hint: the following code tests whether you are on a machine that supports more than two colors:
 
@@ -15007,11 +14993,11 @@ Return the pixel value corresponding to the given color name. Return the default
     else:
         print 'monochrome machine'
 
-#### `setfgcolor`(*pixel*)
+#### `setfgcolor`(pixel)
 
 Set the default foreground color. This will become the default foreground color of windows opened subsequently, including dialogs.
 
-#### `setbgcolor`(*pixel*)
+#### `setbgcolor`(pixel)
 
 Set the default background color. This will become the default background color of windows opened subsequently, including dialogs.
 
@@ -15023,15 +15009,15 @@ Return the pixel value of the current default foreground color.
 
 Return the pixel value of the current default background color.
 
-#### `setfont`(*fontname*)
+#### `setfont`(fontname)
 
 Set the current default font. This will become the default font for windows opened subsequently, and is also used by the text measuring functions `textwidth()`, `textbreak()`, `lineheight()` and `baseline()` below. This accepts two more optional parameters, size and style: Size is the font size (in ‘points’). Style is a single character specifying the style, as follows: `’b’` = bold, `’i’` = italic, `’o’` = bold + italic, `’u’` = underline; default style is roman. Size and style are ignored under X11 but used on the Macintosh. (Sorry for all this complexity — a more uniform interface is being designed.)
 
-#### `menucreate`(*title*)
+#### `menucreate`(title)
 
 Create a menu object referring to a global menu (a menu that appears in all windows). Methods of menu objects are described below. Note: normally, menus are created locally; see the window method `menucreate()` below. **Warning:** the menu only appears in a window as long as the object returned by this call exists.
 
-#### `newbitmap`(*width, height*)
+#### `newbitmap`(width, height)
 
 Create a new bitmap object of the given dimensions. Methods of bitmap objects are described below. Not available on the Macintosh.
 
@@ -15039,39 +15025,39 @@ Create a new bitmap object of the given dimensions. Methods of bitmap objects ar
 
 Cause a beep or bell (or perhaps a ‘visual bell’ or flash, hence the name).
 
-#### `message`(*string*)
+#### `message`(string)
 
 Display a dialog box containing the string. The user must click OK before the function returns.
 
-#### `askync`(*prompt, default*)
+#### `askync`(prompt, default)
 
 Display a dialog that prompts the user to answer a question with yes or no. Return 0 for no, 1 for yes. If the user hits the Return key, the default (which must be 0 or 1) is returned. If the user cancels the dialog, `KeyboardInterrupt` is raised.
 
-#### `askstr`(*prompt, default*)
+#### `askstr`(prompt, default)
 
 Display a dialog that prompts the user for a string. If the user hits the Return key, the default string is returned. If the user cancels the dialog, `KeyboardInterrupt` is raised.
 
-#### `askfile`(*prompt, default, new*)
+#### `askfile`(prompt, default, new)
 
 Ask the user to specify a filename. If *new* is zero it must be an existing file; otherwise, it must be a new file. If the user cancels the dialog, `KeyboardInterrupt` is raised.
 
-#### `setcutbuffer`(*i, string*)
+#### `setcutbuffer`(i, string)
 
 Store the string in the system’s cut buffer number *i*, where it can be found (for pasting) by other applications. On X11, there are 8 cut buffers (numbered 0..7). Cut buffer number 0 is the ‘clipboard’ on the Macintosh.
 
-#### `getcutbuffer`(*i*)
+#### `getcutbuffer`(i)
 
 Return the contents of the system’s cut buffer number *i*.
 
-#### `rotatecutbuffers`(*n*)
+#### `rotatecutbuffers`(n)
 
 On X11, rotate the 8 cut buffers by *n*. Ignored on the Macintosh.
 
-#### `getselection`(*i*)
+#### `getselection`(i)
 
 Return X11 selection number *i.* Selections are not cut buffers. Selection numbers are defined in module `stdwinevents`. Selection is the *primary* selection (used by , for instance); selection is the *secondary* selection; selection is the *clipboard* selection (used by ). On the Macintosh, this always returns an empty string.
 
-#### `resetselection`(*i*)
+#### `resetselection`(i)
 
 Reset selection number *i*, if this process owns it. (See window method `setselection()`).
 
@@ -15083,11 +15069,11 @@ Return the baseline of the current font (defined by STDWIN as the vertical dista
 
 Return the total line height of the current font.
 
-#### `textbreak`(*str, width*)
+#### `textbreak`(str, width)
 
 Return the number of characters of the string that fit into a space of *width* bits wide when drawn in the current font.
 
-#### `textwidth`(*str*)
+#### `textwidth`(str)
 
 Return the width in bits of the string when drawn in the current font.
 
@@ -15103,7 +15089,7 @@ Window objects are created by `stdwin.open()`. They are closed by their `close()
 
 Return a drawing object, whose methods (described below) allow drawing in the window.
 
-#### `change`(*rect*)
+#### `change`(rect)
 
 Invalidate the given rectangle; this may cause a draw event.
 
@@ -15131,51 +15117,51 @@ Return a pair of integers giving the size of the window.
 
 Return a pair of integers giving the position of the window’s upper left corner (relative to the upper left corner of the screen).
 
-#### `menucreate`(*title*)
+#### `menucreate`(title)
 
 Create a menu object referring to a local menu (a menu that appears only in this window). Methods of menu objects are described below. **Warning:** the menu only appears as long as the object returned by this call exists.
 
-#### `scroll`(*rect, point*)
+#### `scroll`(rect, point)
 
 Scroll the given rectangle by the vector given by the point.
 
-#### `setdocsize`(*point*)
+#### `setdocsize`(point)
 
 Set the size of the drawing document.
 
-#### `setorigin`(*point*)
+#### `setorigin`(point)
 
 Move the origin of the window (its upper left corner) to the given point in the document.
 
-#### `setselection`(*i, str*)
+#### `setselection`(i, str)
 
 Attempt to set X11 selection number *i* to the string *str*. (See `stdwin` function `getselection()` for the meaning of *i*.) Return true if it succeeds. If succeeds, the window “owns” the selection until (a) another application takes ownership of the selection; or (b) the window is deleted; or (c) the application clears ownership by calling `stdwin.resetselection(`*`i`*`)`. When another application takes ownership of the selection, a event is received for no particular window and with the selection number as detail. Ignored on the Macintosh.
 
-#### `settimer`(*dsecs*)
+#### `settimer`(dsecs)
 
 Schedule a timer event for the window in *`dsecs`*`/10` seconds.
 
-#### `settitle`(*title*)
+#### `settitle`(title)
 
 Set the window’s title string.
 
-#### `setwincursor`(*name*)
+#### `setwincursor`(name)
 
 Set the window cursor to a cursor of the given name. It raises `RuntimeError` if no cursor of the given name exists. Suitable names include `’ibeam’`, `’arrow’`, `’cross’`, `’watch’` and `’plus’`. On X11, there are many more (see `<X11/cursorfont.h>`).
 
-#### `setwinpos`(*h, v*)
+#### `setwinpos`(h, v)
 
 Set the the position of the window’s upper left corner (relative to the upper left corner of the screen).
 
-#### `setwinsize`(*width, height*)
+#### `setwinsize`(width, height)
 
 Set the window’s size.
 
-#### `show`(*rect*)
+#### `show`(rect)
 
 Try to ensure that the given rectangle of the document is visible in the window.
 
-#### `textcreate`(*rect*)
+#### `textcreate`(rect)
 
 Create a text-edit object in the document at the given rectangle. Methods of text-edit objects are described below.
 
@@ -15191,59 +15177,59 @@ Discard the window object. It should not be used again.
 
 Drawing objects are created exclusively by the window method `begindrawing()`. Only one drawing object can exist at any given time; the drawing object must be deleted to finish drawing. No drawing object may exist when `stdwin.getevent()` is called. Drawing objects have the following methods:
 
-#### `box`(*rect*)
+#### `box`(rect)
 
 Draw a box just inside a rectangle.
 
-#### `circle`(*center, radius*)
+#### `circle`(center, radius)
 
 Draw a circle with given center point and radius.
 
-#### `elarc`(*center, (rh, rv), (a1, a2)*)
+#### `elarc`(center, (rh, rv), (a1, a2))
 
 Draw an elliptical arc with given center point. `(`*`rh`*`, `*`rv`*`)` gives the half sizes of the horizontal and vertical radii. `(`*`a1`*`, `*`a2`*`)` gives the angles (in degrees) of the begin and end points. 0 degrees is at 3 o’clock, 90 degrees is at 12 o’clock.
 
-#### `erase`(*rect*)
+#### `erase`(rect)
 
 Erase a rectangle.
 
-#### `fillcircle`(*center, radius*)
+#### `fillcircle`(center, radius)
 
 Draw a filled circle with given center point and radius.
 
-#### `fillelarc`(*center, (rh, rv), (a1, a2)*)
+#### `fillelarc`(center, (rh, rv), (a1, a2))
 
 Draw a filled elliptical arc; arguments as for `elarc()`.
 
-#### `fillpoly`(*points*)
+#### `fillpoly`(points)
 
 Draw a filled polygon given by a list (or tuple) of points.
 
-#### `invert`(*rect*)
+#### `invert`(rect)
 
 Invert a rectangle.
 
-#### `line`(*p1, p2*)
+#### `line`(p1, p2)
 
 Draw a line from point *p1* to *p2*.
 
-#### `paint`(*rect*)
+#### `paint`(rect)
 
 Fill a rectangle.
 
-#### `poly`(*points*)
+#### `poly`(points)
 
 Draw the lines connecting the given list (or tuple) of points.
 
-#### `shade`(*rect, percent*)
+#### `shade`(rect, percent)
 
 Fill a rectangle with a shading pattern that is about *percent* percent filled.
 
-#### `text`(*p, str*)
+#### `text`(p, str)
 
 Draw a string starting at point p (the point specifies the top left coordinate of the string).
 
-#### `xorcircle`(*center, radius*)
+#### `xorcircle`(center, radius)
 
 Draw a circle, an elliptical arc, a line or a polygon, respectively, in XOR mode.
 
@@ -15255,11 +15241,11 @@ These functions are similar to the corresponding functions described above for t
 
 These functions are similar to the corresponding functions described above for the `stdwin` module, but affect or use the current drawing font instead of the global default font. When a drawing object is created, its font is set to the window’s default font, which is in turn initialized from the global default font when the window is created.
 
-#### `bitmap`(*point, bitmap, mask*)
+#### `bitmap`(point, bitmap, mask)
 
 Draw the *bitmap* with its top left corner at *point*. If the optional *mask* argument is present, it should be either the same object as *bitmap*, to draw only those bits that are set in the bitmap, in the foreground color, or `None`, to draw all bits (ones are drawn in the foreground color, zeros in the background color). Not available on the Macintosh.
 
-#### `cliprect`(*rect*)
+#### `cliprect`(rect)
 
 Set the “clipping region” to a rectangle. The clipping region limits the effect of all drawing operations, until it is changed again or until the drawing object is closed. When a drawing object is created the clipping region is set to the entire window. When an object to be drawn falls partly outside the clipping region, the set of pixels drawn is the intersection of the clipping region and the set of pixels that would be drawn by the same operation in the absence of a clipping region.
 
@@ -15275,19 +15261,19 @@ Discard the drawing object. It should not be used again.
 
 A menu object represents a menu. The menu is destroyed when the menu object is deleted. The following methods are defined:
 
-#### `additem`(*text, shortcut*)
+#### `additem`(text, shortcut)
 
 Add a menu item with given text. The shortcut must be a string of length 1, or omitted (to specify no shortcut).
 
-#### `setitem`(*i, text*)
+#### `setitem`(i, text)
 
 Set the text of item number *i*.
 
-#### `enable`(*i, flag*)
+#### `enable`(i, flag)
 
 Enable or disables item *i*.
 
-#### `check`(*i, flag*)
+#### `check`(i, flag)
 
 Set or clear the *check mark* for item *i*.
 
@@ -15305,11 +15291,11 @@ The following methods are defined:
 
 Return a tuple representing the width and height of the bitmap. (This returns the values that have been passed to the `newbitmap()` function.)
 
-#### `setbit`(*point, bit*)
+#### `setbit`(point, bit)
 
 Set the value of the bit indicated by *point* to *bit*.
 
-#### `getbit`(*point*)
+#### `getbit`(point)
 
 Return the value of the bit indicated by *point*.
 
@@ -15321,15 +15307,15 @@ Discard the bitmap object. It should not be used again.
 
 A text-edit object represents a text-edit block. For semantics, see the STDWIN documentation for C programmers. The following methods exist:
 
-#### `arrow`(*code*)
+#### `arrow`(code)
 
 Pass an arrow event to the text-edit block. The *code* must be one of , , or (see module `stdwinevents`).
 
-#### `draw`(*rect*)
+#### `draw`(rect)
 
 Pass a draw event to the text-edit block. The rectangle specifies the redraw area.
 
-#### `event`(*type, window, detail*)
+#### `event`(type, window, detail)
 
 Pass an event gotten from `stdwin.getevent()` to the text-edit block. Return true if the event was handled.
 
@@ -15349,23 +15335,23 @@ Return a rectangle giving the actual position of the text-edit block. (The botto
 
 Return the entire text buffer.
 
-#### `move`(*rect*)
+#### `move`(rect)
 
 Specify a new position for the text-edit block in the document.
 
-#### `replace`(*str*)
+#### `replace`(str)
 
 Replace the text in the focus by the given string. The new focus is an insert point at the end of the string.
 
-#### `setfocus`(*i, j*)
+#### `setfocus`(i, j)
 
 Specify the new focus. Out-of-bounds values are silently clipped.
 
-#### `settext`(*str*)
+#### `settext`(str)
 
 Replace the entire text buffer by the given string and set the focus to `(0, 0)`.
 
-#### `setview`(*rect*)
+#### `setview`(rect)
 
 Set the view rectangle to *rect*. If *rect* is `None`, viewing mode is reset. In viewing mode, all output from the text-edit object is clipped to the viewing rectangle. This may be useful to implement your own scrolling text subwindow.
 
@@ -15431,31 +15417,31 @@ The rectangle returned when some operations return an empty result. This makes i
     Empty intersection
     >>> 
 
-#### `is_empty`(*r*)
+#### `is_empty`(r)
 
 Returns true if the given rectangle is empty. A rectangle `(`*`left`*`, `*`top`*`), (`*`right`*`, `*`bottom`*`)` is empty if $`\emph{left} \geq \emph{right}`$ or $`\emph{top} \geq \emph{bottom}`$.
 
-#### `intersect`(*list*)
+#### `intersect`(list)
 
 Returns the intersection of all rectangles in the list argument. It may also be called with a tuple argument. Raises `rect.error` if the list is empty. Returns if the intersection of the rectangles is empty.
 
-#### `union`(*list*)
+#### `union`(list)
 
 Returns the smallest rectangle that contains all non-empty rectangles in the list argument. It may also be called with a tuple argument or with two or more rectangles as arguments. Returns if the list is empty or all its rectangles are empty.
 
-#### `pointinrect`(*point, rect*)
+#### `pointinrect`(point, rect)
 
 Returns true if the point is inside the rectangle. By definition, a point `(`*`h`*`, `*`v`*`)` is inside a rectangle `(`*`left`*`, `*`top`*`), (`*`right`*`, `*`bottom`*`)` if $`\emph{left} \leq \emph{h} < \emph{right}`$ and $`\emph{top} \leq \emph{v} < \emph{bottom}`$.
 
-#### `inset`(*rect, (dh, dv)*)
+#### `inset`(rect, (dh, dv))
 
 Returns a rectangle that lies inside the *rect* argument by *dh* pixels horizontally and *dv* pixels vertically. If *dh* or *dv* is negative, the result lies outside *rect*.
 
-#### `rect2geom`(*rect*)
+#### `rect2geom`(rect)
 
 Converts a rectangle to geometry representation: `(`*`left`*`, `*`top`*`), (`*`width`*`, `*`height`*`)`.
 
-#### `geom2rect`(*geom*)
+#### `geom2rect`(geom)
 
 Converts a rectangle given in geometry representation back to the standard rectangle representation `(`*`left`*`, `*`top`*`), (`*`right`*`, `*`bottom`*`)`.
 
@@ -15506,111 +15492,111 @@ A string containing all characters that are considered whitespace. On most syste
 
 Many of the functions provided by this module are also defined as methods of string and Unicode objects; see “String Methods” (section <a href="#string-methods" data-reference-type="ref" data-reference="string-methods">[string-methods]</a>) for more information on those. The functions defined in this module are:
 
-### `atof`(*s*)
+### `atof`(s)
 
 Convert a string to a floating point number. The string must have the standard syntax for a floating point literal in Python, optionally preceded by a sign (`+` or `-`). Note that this behaves identical to the built-in function `float()`when passed a string.
 
 **Note:** When passing in a string, values for NaNand Infinitymay be returned, depending on the underlying C library. The specific set of strings accepted which cause these values to be returned depends entirely on the C library and is known to vary.
 
-### `atoi`(*s*)
+### `atoi`(s)
 
 Convert string *s* to an integer in the given *base*. The string must consist of one or more digits, optionally preceded by a sign (`+` or `-`). The *base* defaults to 10. If it is 0, a default base is chosen depending on the leading characters of the string (after stripping the sign): `0x` or `0X` means 16, `0` means 8, anything else means 10. If *base* is 16, a leading `0x` or `0X` is always accepted, though not required. This behaves identically to the built-in function `int()` when passed a string. (Also note: for a more flexible interpretation of numeric literals, use the built-in function `eval()`.)
 
-### `atol`(*s*)
+### `atol`(s)
 
 Convert string *s* to a long integer in the given *base*. The string must consist of one or more digits, optionally preceded by a sign (`+` or `-`). The *base* argument has the same meaning as for `atoi()`. A trailing `l` or `L` is not allowed, except if the base is 0. Note that when invoked without *base* or with *base* set to 10, this behaves identical to the built-in function `long()`when passed a string.
 
-### `capitalize`(*word*)
+### `capitalize`(word)
 
 Capitalize the first character of the argument.
 
-### `capwords`(*s*)
+### `capwords`(s)
 
 Split the argument into words using `split()`, capitalize each word using `capitalize()`, and join the capitalized words using `join()`. Note that this replaces runs of whitespace characters by a single space, and removes leading and trailing whitespace.
 
-### `expandtabs`(*s,* )
+### `expandtabs`(s, )
 
 Expand tabs in a string, i.e. replace them by one or more spaces, depending on the current column and the given tab size. The column number is reset to zero after each newline occurring in the string. This doesn’t understand other non-printing characters or escape sequences. The tab size defaults to 8.
 
-### `find`(*s, sub*)
+### `find`(s, sub)
 
 Return the lowest index in *s* where the substring *sub* is found such that *sub* is wholly contained in *`s`*`[`*`start`*`:`*`end`*`]`. Return `-1` on failure. Defaults for *start* and *end* and interpretation of negative values is the same as for slices.
 
-### `rfind`(*s, sub*)
+### `rfind`(s, sub)
 
 Like `find()` but find the highest index.
 
-### `index`(*s, sub*)
+### `index`(s, sub)
 
 Like `find()` but raise `ValueError` when the substring is not found.
 
-### `rindex`(*s, sub*)
+### `rindex`(s, sub)
 
 Like `rfind()` but raise `ValueError` when the substring is not found.
 
-### `count`(*s, sub*)
+### `count`(s, sub)
 
 Return the number of (non-overlapping) occurrences of substring *sub* in string *`s`*`[`*`start`*`:`*`end`*`]`. Defaults for *start* and *end* and interpretation of negative values are the same as for slices.
 
-### `lower`(*s*)
+### `lower`(s)
 
 Return a copy of *s*, but with upper case letters converted to lower case.
 
-### `maketrans`(*from, to*)
+### `maketrans`(from, to)
 
 Return a translation table suitable for passing to `translate()` or `regex.compile()`, that will map each character in *from* into the character at the same position in *to*; *from* and *to* must have the same length.
 
 **Warning:** don’t use strings derived from and as arguments; in some locales, these don’t have the same length. For case conversions, always use `lower()` and `upper()`.
 
-### `split`(*s*)
+### `split`(s)
 
 Return a list of the words of the string *s*. If the optional second argument *sep* is absent or `None`, the words are separated by arbitrary strings of whitespace characters (space, tab, newline, return, formfeed). If the second argument *sep* is present and not `None`, it specifies a string to be used as the word separator. The returned list will then have one more item than the number of non-overlapping occurrences of the separator in the string. The optional third argument *maxsplit* defaults to 0. If it is nonzero, at most *maxsplit* number of splits occur, and the remainder of the string is returned as the final element of the list (thus, the list will have at most *`maxsplit`*`+1` elements).
 
-### `splitfields`(*s*)
+### `splitfields`(s)
 
 This function behaves identically to `split()`. (In the past, `split()` was only used with one argument, while `splitfields()` was only used with two arguments.)
 
-### `join`(*words*)
+### `join`(words)
 
 Concatenate a list or tuple of words with intervening occurrences of *sep*. The default value for *sep* is a single space character. It is always true that `string.join(string.split(`*`s`*`, `*`sep`*`), `*`sep`*`)` equals *s*.
 
-### `joinfields`(*words*)
+### `joinfields`(words)
 
 This function behaves identical to `join()`. (In the past, `join()` was only used with one argument, while `joinfields()` was only used with two arguments.)
 
-### `lstrip`(*s*)
+### `lstrip`(s)
 
 Return a copy of *s* but without leading whitespace characters.
 
-### `rstrip`(*s*)
+### `rstrip`(s)
 
 Return a copy of *s* but without trailing whitespace characters.
 
-### `strip`(*s*)
+### `strip`(s)
 
 Return a copy of *s* without leading or trailing whitespace.
 
-### `swapcase`(*s*)
+### `swapcase`(s)
 
 Return a copy of *s*, but with lower case letters converted to upper case and vice versa.
 
-### `translate`(*s, table*)
+### `translate`(s, table)
 
 Delete all characters from *s* that are in *deletechars* (if present), and then translate the characters using *table*, which must be a 256-character string giving the translation for each character value, indexed by its ordinal.
 
-### `upper`(*s*)
+### `upper`(s)
 
 Return a copy of *s*, but with lower case letters converted to upper case.
 
-### `ljust`(*s, width*)
+### `ljust`(s, width)
 
 These functions respectively left-justify, right-justify and center a string in a field of given width. They return a string that is at least *width* characters wide, created by padding the string *s* with spaces until the given width on the right, left or both sides. The string is never truncated.
 
-### `zfill`(*s, width*)
+### `zfill`(s, width)
 
 Pad a numeric string on the left with zero digits until the given width is reached. Strings starting with a sign are handled correctly.
 
-### `replace`(*str, old, new*)
+### `replace`(str, old, new)
 
 Return a copy of string *str* with all occurrences of substring *old* replaced by *new*. If the optional argument *maxsplit* is given, the first *maxsplit* occurrences are replaced.
 
@@ -15667,25 +15653,38 @@ The module defines the following exception and functions:
 
 Exception raised on various occasions; argument is a string describing what is wrong.
 
-### `pack`(*fmt, v1, v2, <span class="roman">…</span>*)
+### `pack`(fmt, v1, v2, <span class="roman">…</span>)
 
 Return a string containing the values *`v1`*`, `*`v2`*`, `<span class="roman">`…`</span> packed according to the given format. The arguments must match the values required by the format exactly.
 
-### `unpack`(*fmt, string*)
+### `unpack`(fmt, string)
 
 Unpack the string (presumably packed by `pack(`*`fmt`*`, `<span class="roman">`…`</span>`)`) according to the given format. The result is a tuple even if it contains exactly one item. The string must contain exactly the amount of data required by the format (i.e. `len(`*`string`*`)` must equal `calcsize(`*`fmt`*`)`).
 
-### `calcsize`(*fmt*)
+### `calcsize`(fmt)
 
 Return the size of the struct (and hence of the string) corresponding to the given format.
 
 Format characters have the following meaning; the conversion between C and Python values should be obvious given their types:
 
-<div class="tableiv">
-
-c\|l\|l\|csampFormatC TypePythonNotes
-
-</div>
+|     |          |          |     |
+|:----|:---------|:---------|:----|
+| x   | pad byte | no value |     |
+| c   |          |          |     |
+|     |          |          |     |
+|     |          |          |     |
+|     |          |          |     |
+|     |          |          |     |
+|     |          |          |     |
+|     |          |          |     |
+|     |          |          |     |
+|     |          |          |     |
+|     |          |          |     |
+|     |          |          |     |
+|     |          |          |     |
+|     |          |          |     |
+|     |          |          |     |
+|     |          |          |     |
 
 Notes:
 
@@ -15708,14 +15707,13 @@ By default, C numbers are represented in the machine’s native format and byte 
 
 Alternatively, the first character of the format string can be used to indicate the byte order, size and alignment of the packed data, according to the following table:
 
-|                                         |                        |          |
-|:----------------------------------------|:-----------------------|:---------|
-| CharacterByte orderSize and alignment @ | native                 | native   |
-| =                                       | native                 | standard |
-| \<                                      | little-endian          | standard |
-| \>                                      | big-endian             | standard |
-| !                                       | network (= big-endian) | standard |
-|                                         |                        |          |
+|     |                        |          |
+|:----|:-----------------------|:---------|
+| @   | native                 | native   |
+| =   | native                 | standard |
+| \<  | little-endian          | standard |
+| \>  | big-endian             | standard |
+| !   | network (= big-endian) | standard |
 
 If the first character is not one of these, `@` is assumed.
 
@@ -15759,7 +15757,7 @@ The `sunau` module provides a convenient interface to the Sun AU sound format. N
 
 The `sunau` module defines the following functions:
 
-### `open`(*file, mode*)
+### `open`(file, mode)
 
 If *file* is a string, open the file by that name, otherwise treat it as a seekable file-like object. *mode* can be any of
 
@@ -15773,7 +15771,7 @@ Note that it does not allow read/write files.
 
 A *mode* of `’r’` returns a `AU_read` object, while a *mode* of `’w’` or `’wb’` returns a `AU_write` object.
 
-### `openfp`(*file, mode*)
+### `openfp`(file, mode)
 
 A synonym for `open`, maintained for backwards compatibility.
 
@@ -15789,7 +15787,7 @@ The `sunau` module defines the following data item:
 
 An integer every valid Sun AU file begins with a big-endian encoding of.
 
-## AU_read Objects <span id="au-read-objects" label="au-read-objects"></span>
+## AU_read Objects 
 
 AU_read objects, as returned by `open()` above, have the following methods:
 
@@ -15825,7 +15823,7 @@ Human-readable version of `getcomptype()`. The supported types have the respecti
 
 Returns a tuple `(`*`nchannels`*`, `*`sampwidth`*`, `*`framerate`*`, `*`nframes`*`, `*`comptype`*`, `*`compname`*`)`, equivalent to output of the `get*()` methods.
 
-### `readframes`(*n*)
+### `readframes`(n)
 
 Reads and returns at most *n* frames of audio, as a string of bytes.
 
@@ -15835,7 +15833,7 @@ Rewind the file pointer to the beginning of the audio stream.
 
 The following two methods define a term “position” which is compatible between them, and is otherwise implementation dependent.
 
-### `setpos`(*pos*)
+### `setpos`(pos)
 
 Set the file pointer to the specified position.
 
@@ -15849,35 +15847,35 @@ The following two functions are defined for compatibility with the `aifc`, and d
 
 Returns `None`.
 
-### `getmark`(*id*)
+### `getmark`(id)
 
 Raise an error.
 
-## AU_write Objects <span id="au-write-objects" label="au-write-objects"></span>
+## AU_write Objects 
 
 AU_write objects, as returned by `open()` above, have the following methods:
 
-### `setnchannels`(*n*)
+### `setnchannels`(n)
 
 Set the number of channels.
 
-### `setsampwidth`(*n*)
+### `setsampwidth`(n)
 
 Set the sample width (in bytes.)
 
-### `setframerate`(*n*)
+### `setframerate`(n)
 
 Set the frame rate.
 
-### `setnframes`(*n*)
+### `setnframes`(n)
 
 Set the number of frames. This can be later changed, when and if more frames are written.
 
-### `setcomptype`(*type, name*)
+### `setcomptype`(type, name)
 
 Set the compression type and description. Only `’NONE’` and `’ULAW’` are supported on output.
 
-### `setparams`(*tuple*)
+### `setparams`(tuple)
 
 The *tuple* should be `(`*`nchannels`*`, `*`sampwidth`*`, `*`framerate`*`, `*`nframes`*`, `*`comptype`*`, `*`compname`*`)`, with values valid for the `set*()` methods. Set all parameters.
 
@@ -15885,11 +15883,11 @@ The *tuple* should be `(`*`nchannels`*`, `*`sampwidth`*`, `*`framerate`*`, `*`nf
 
 Return current position in the file, with the same disclaimer for the `AU_read.tell()` and `AU_read.setpos()` methods.
 
-### `writeframesraw`(*data*)
+### `writeframesraw`(data)
 
 Write audio frames, without correcting *nframes*.
 
-### `writeframes`(*data*)
+### `writeframes`(data)
 
 Write audio frames and make sure *nframes* is correct.
 
@@ -15914,13 +15912,13 @@ This module defines the following variables and functions:
 
 This exception is raised on all errors. The argument is a string describing what went wrong.
 
-### `open`(*mode*)
+### `open`(mode)
 
 This function opens the audio device and returns a Sun audio device object. This object can then be used to do I/O on. The *mode* parameter is one of `’r’` for record-only access, `’w’` for play-only access, `’rw’` for both and `’control’` for access to the control device. Since only one process is allowed to have the recorder or player open at the same time it is a good idea to open the device only for the activity needed. See for details.
 
 As per the manpage, this module first looks in the environment variable `AUDIODEV` for the base audio device filename. If not found, it falls back to `/dev/audio`. The control device is calculated by appending “ctl” to the base audio device.
 
-## Audio Device Objects <span id="audio-device-objects" label="audio-device-objects"></span>
+## Audio Device Objects 
 
 The audio device objects are returned by `open()` define the following methods (except `control` objects which only provide `getinfo()`, `setinfo()`, `fileno()`, and `drain()`):
 
@@ -15952,15 +15950,15 @@ This method returns the number of samples that are buffered on the recording sid
 
 This method returns the number of samples buffered on the playback side. Unfortunately, this number cannot be used to determine a number of samples that can be written without blocking since the kernel output queue length seems to be variable.
 
-### `read`(*size*)
+### `read`(size)
 
 This method reads *size* samples from the audio input and returns them as a Python string. The function blocks until enough data is available.
 
-### `setinfo`(*status*)
+### `setinfo`(status)
 
 This method sets the audio device status parameters. The *status* parameter is an device status object as returned by `getinfo()` and possibly modified by the program.
 
-### `write`(*samples*)
+### `write`(samples)
 
 Write is passed a Python string containing audio samples to be played. If there is enough buffer space free it will immediately return, otherwise it will block.
 
@@ -16044,7 +16042,7 @@ Exit from Python. This is implemented by raising the `SystemExit` exception, so 
 
 This value is not actually defined by the module, but can be set by the user (or by a program) to specify a clean-up action at program exit. When set, it should be a parameterless function. This function will be called when the interpreter exits. Only one function may be installed in this way; to allow multiple functions which will be called at termination, use the `atexit` module. Note: the exit function is not called when the program is killed by a signal, when a Python fatal internal error is detected, or when `os._exit()` is called.
 
-### `getrefcount`(*object*)
+### `getrefcount`(object)
 
 Return the reference count of the *object*. The count returned is generally one higher than you might expect, because it includes the (temporary) reference as an argument to `getrefcount()`.
 
@@ -16071,7 +16069,7 @@ These three variables are not always defined; they are set when an exception is 
 
 ### `maxint`
 
-The largest positive integer supported by Python’s regular integer type. This is at least 2\*\*31-1. The largest negative integer is `-maxint-1` – the asymmetry results from the use of 2’s complement binary arithmetic.
+The largest positive integer supported by Python’s regular integer type. This is at least 2**31-1. The largest negative integer is `-maxint-1` – the asymmetry results from the use of 2’s complement binary arithmetic.
 
 ### `modules`
 
@@ -16095,21 +16093,21 @@ A string giving the site-specific directory prefix where the platform independen
 
 Strings specifying the primary and secondary prompt of the interpreter. These are only defined if the interpreter is in interactive mode. Their initial values in this case are `’>>> ’` and `’... ’`. If a non-string object is assigned to either variable, its `str()` is re-evaluated each time the interpreter prepares to read a new interactive command; this can be used to implement a dynamic prompt.
 
-### `setcheckinterval`(*interval*)
+### `setcheckinterval`(interval)
 
 Set the interpreter’s “check interval”. This integer value determines how often the interpreter checks for periodic things such as thread switches and signal handlers. The default is `10`, meaning the check is performed every 10 Python virtual instructions. Setting it to a larger value may increase performance for programs using threads. Setting it to a value `<=` 0 checks every virtual instruction, maximizing responsiveness as well as overhead.
 
-### `setprofile`(*profilefunc*)
+### `setprofile`(profilefunc)
 
 Set the system’s profile function, which allows you to implement a Python source code profiler in Python. See the chapter on the Python Profiler. The system’s profile function is called similarly to the system’s trace function (see `settrace()`), but it isn’t called for each executed line of code (only on call and return and when an exception occurs). Also, its return value is not used, so it can just return `None`.
 
-### `setrecursionlimit`(*limit*)
+### `setrecursionlimit`(limit)
 
 Set the maximum depth of the Python interpreter stack to *limit*. This limit prevents infinite recursion from causing an overflow of the C stack and crashing Python.
 
 The highest possible limit is platform-dependent. A user may need to set the limit higher when she has a program that requires deep recursion and a platform that supports a higher limit. This should be done with care, because a too-high limit can lead to a crash.
 
-### `settrace`(*tracefunc*)
+### `settrace`(tracefunc)
 
 Set the system’s trace function, which allows you to implement a Python source code debugger in Python. See section “How It Works” in the chapter on the Python Debugger.
 
@@ -16148,11 +16146,11 @@ This module provides an interface to the Unix `syslog` library routines. Refer t
 
 The module defines the following functions:
 
-### `syslog`( *message*)
+### `syslog`( message)
 
 Send the string *message* to the system logger. A trailing newline is added if necessary. Each message is tagged with a priority composed of a *facility* and a *level*. The optional *priority* argument, which defaults to , determines the message priority. If the facility is not encoded in *priority* using logical-or (`LOG_INFO | LOG_USER`), the value given in the `openlog()` call is used.
 
-### `openlog`(*ident*)
+### `openlog`(ident)
 
 Logging options other than the defaults can be set by explicitly opening the log file with `openlog()` prior to calling `syslog()`. The defaults are (usually) *ident* = `’syslog’`, *logopt* = `0`, *facility* = . The *ident* argument is a string which is prepended to every message. The optional *logopt* argument is a bit field - see below for possible values to combine. The optional *facility* argument sets the default facility for messages which do not have a facility explicitly encoded.
 
@@ -16160,7 +16158,7 @@ Logging options other than the defaults can be set by explicitly opening the log
 
 Close the log file.
 
-### `setlogmask`(*maskpri*)
+### `setlogmask`(maskpri)
 
 Set the priority mask to *maskpri* and return the previous mask value. Calls to `syslog()` with a priority level not set in *maskpri* are ignored. The default is to log all priorities. The function `LOG_MASK(`*`pri`*`)` calculates the mask for the individual priority *pri*. The function `LOG_UPTO(`*`pri`*`)` calculates the mask for all priorities up to and including *pri*.
 
@@ -16180,7 +16178,7 @@ Log options:
 
 **Warning:** The API provided by this module is likely to change in future releases; such changes may not be backward compatible.
 
-### `check`(*file_or_dir*)
+### `check`(file_or_dir)
 
 If *file_or_dir* is a directory and not a symbolic link, then recursively descend the directory tree named by *file_or_dir*, checking all `.py` files along the way. If *file_or_dir* is an ordinary Python source file, it is checked for whitespace related problems. The diagnostic messages are written to standard output using the print statement.
 
@@ -16196,7 +16194,7 @@ Flag indicating whether to print only the filenames of files containing whitespa
 
 Raised by `tokeneater()` if detecting an ambiguous indent. Captured and handled in `check()`.
 
-### `tokeneater`(*type, token, start, end, line*)
+### `tokeneater`(type, token, start, end, line)
 
 This function is used by `check()` as a callback parameter to the function `tokenize.tokenize()`.
 
@@ -16217,11 +16215,11 @@ This class has many `read_*()` methods. Note that some of them raise `EOFError` 
 
 #### See also:
 
-## Telnet Objects <span id="telnet-objects" label="telnet-objects"></span>
+## Telnet Objects 
 
 `Telnet` instances have the following methods:
 
-### `read_until`(*expected*)
+### `read_until`(expected)
 
 Read until a given string is encountered or until timeout.
 
@@ -16259,17 +16257,17 @@ Return any data available in the cooked queue (very lazy).
 
 Raise `EOFError` if connection closed and no data available. Return `’’` if no cooked data available otherwise. This method never blocks.
 
-### `open`(*host*)
+### `open`(host)
 
 Connect to a host. The optional second argument is the port number, which defaults to the standard telnet port (23).
 
 Do not try to reopen an already connected instance.
 
-### `msg`(*msg*)
+### `msg`(msg)
 
 Print a debug message when the debug level is `>` 0. If extra arguments are present, they are substituted in the message using the standard string formatting operator.
 
-### `set_debuglevel`(*debuglevel*)
+### `set_debuglevel`(debuglevel)
 
 Set the debug level. The higher the value of *debuglevel*, the more debug output you get (on `sys.stdout`).
 
@@ -16285,7 +16283,7 @@ Return the socket object used internally.
 
 Return the file descriptor of the socket object used internally.
 
-### `write`(*buffer*)
+### `write`(buffer)
 
 Write a string to the socket, doubling any IAC characters. This can block if the connection is blocked. May raise `socket.error` if the connection is closed.
 
@@ -16297,7 +16295,7 @@ Interaction function, emulates a very dumb telnet client.
 
 Multithreaded version of `interact()`.
 
-### `expect`(*list*)
+### `expect`(list)
 
 Read until one from a list of a regular expressions matches.
 
@@ -16309,7 +16307,7 @@ If end of file is found and no text was read, raise `EOFError`. Otherwise, when 
 
 If a regular expression ends with a greedy match (e.g. `.*`) or if more than one expression can match the same input, the results are indeterministic, and may depend on the I/O timing.
 
-## Telnet Example <span id="telnet-example" label="telnet-example"></span>
+## Telnet Example 
 
 A simple example illustrating typical use:
 
@@ -16378,27 +16376,27 @@ This module should be used in conjunction with the `TERMIOS`module, which define
 
 The module defines the following functions:
 
-### `tcgetattr`(*fd*)
+### `tcgetattr`(fd)
 
 Return a list containing the tty attributes for file descriptor *fd*, as follows: `[`*iflag*, *oflag*, *cflag*, *lflag*, *ispeed*, *ospeed*, *cc*`]` where *cc* is a list of the tty special characters (each a string of length 1, except the items with indices and , which are integers when these fields are defined). The interpretation of the flags and the speeds as well as the indexing in the *cc* array must be done using the symbolic constants defined in the `TERMIOS` module.
 
-### `tcsetattr`(*fd, when, attributes*)
+### `tcsetattr`(fd, when, attributes)
 
 Set the tty attributes for file descriptor *fd* from the *attributes*, which is a list like the one returned by `tcgetattr()`. The *when* argument determines when the attributes are changed: to change immediately, to change after transmitting all queued output, or to change after transmitting all queued output and discarding all queued input.
 
-### `tcsendbreak`(*fd, duration*)
+### `tcsendbreak`(fd, duration)
 
 Send a break on file descriptor *fd*. A zero *duration* sends a break for 0.25–0.5 seconds; a nonzero *duration* has a system dependent meaning.
 
-### `tcdrain`(*fd*)
+### `tcdrain`(fd)
 
 Wait until all output written to file descriptor *fd* has been transmitted.
 
-### `tcflush`(*fd, queue*)
+### `tcflush`(fd, queue)
 
 Discard queued data on file descriptor *fd*. The *queue* selector specifies which queue: for the input queue, for the output queue, or for both queues.
 
-### `tcflow`(*fd, action*)
+### `tcflow`(fd, action)
 
 Suspend or resume input or output on file descriptor *fd*. The *action* argument can be to suspend output, to restart output, to suspend input, or to restart input.
 
@@ -16444,7 +16442,7 @@ Raised on thread-specific errors.
 
 This is the type of lock objects.
 
-### `start_new_thread`(*function, args*)
+### `start_new_thread`(function, args)
 
 Start a new thread. The thread executes the function *function* with the argument list *args* (which must be a tuple). The optional *kwargs* argument specifies a dictionary of keyword arguments. When the function returns, the thread silently exits. When the function terminates with an unhandled exception, a stack trace is printed and then the thread exits (but other threads continue to run).
 
@@ -16541,7 +16539,7 @@ The design of this module is loosely based on Java’s threading model. However,
 
 All of the methods described below are executed atomically.
 
-## Lock Objects <span id="lock-objects" label="lock-objects"></span>
+## Lock Objects 
 
 A primitive lock is a synchronization primitive that is not owned by a particular thread when locked. In Python, it is currently the lowest level synchronization primitive available, implemented directly by the `thread` extension module.
 
@@ -16569,7 +16567,7 @@ Do not call this method when the lock is unlocked.
 
 There is no return value.
 
-## RLock Objects <span id="rlock-objects" label="rlock-objects"></span>
+## RLock Objects 
 
 A reentrant lock is a synchronization primitive that may be acquired multiple times by the same thread. Internally, it uses the concepts of “owning thread” and “recursion level” in addition to the locked/unlocked state used by primitive locks. In the locked state, some thread owns the lock; in the unlocked state, no thread owns it.
 
@@ -16593,7 +16591,7 @@ Only call this method when the calling thread owns the lock. Do not call this me
 
 There is no return value.
 
-## Condition Objects <span id="condition-objects" label="condition-objects"></span>
+## Condition Objects 
 
 A condition variable is always associated with some kind of lock; this can be passed in or one will be created by default. (Passing one in is useful when several condition variables must share the same lock.)
 
@@ -16626,7 +16624,7 @@ To choose between `notify()` and `notifyAll()`, consider whether one state chang
 
 If the *lock* argument is given and not `None`, it must be a `Lock` or `RLock` object, and it is used as the underlying lock. Otherwise, a new `RLock` object is created and used as the underlying lock.
 
-### `acquire`(*\*args*)
+### `acquire`(*args)
 
 Acquire the underlying lock. This method calls the corresponding method on the underlying lock; the return value is whatever that method returns.
 
@@ -16658,7 +16656,7 @@ Note: the awakened thread does not actually return from its `wait()` call until 
 
 Wake up all threads waiting on this condition. This method acts like `notify()`, but wakes up all waiting threads instead of one.
 
-## Semaphore Objects <span id="semaphore-objects" label="semaphore-objects"></span>
+## Semaphore Objects 
 
 This is one of the oldest synchronization primitives in the history of computer science, invented by the early Dutch computer scientist Edsger W. Dijkstra (he used `P()` and `V()` instead of `acquire()` and `release()`).
 
@@ -16682,7 +16680,7 @@ When invoked with *blocking* set to false, do not block. If a call without an ar
 
 Release a semaphore, incrementing the internal counter by one. When it was zero on entry and another thread is waiting for it to become larger than zero again, wake up that thread.
 
-## Event Objects <span id="event-objects" label="event-objects"></span>
+## Event Objects 
 
 This is one of the simplest mechanisms for communication between threads: one thread signals an event and one or more other threads are waiting for it.
 
@@ -16710,7 +16708,7 @@ Block until the internal flag is true. If the internal flag is true on entry, re
 
 When the timeout argument is present and not `None`, it should be a floating point number specifying a timeout for the operation in seconds (or fractions thereof).
 
-## Thread Objects <span id="thread-objects" label="thread-objects"></span>
+## Thread Objects 
 
 This class represents an activity that is run in a separate thread of control. There are two ways to specify the activity: by passing a callable object to the constructor, or by overriding the `run()` method in a subclass. No other methods (except for the constructor) should be overridden in a subclass. In other words, *only* override the `__init__()` and `run()` methods of this class.
 
@@ -16728,7 +16726,7 @@ There is a “main thread” object; this corresponds to the initial thread of c
 
 There is the possibility that “dummy thread objects” are created. These are thread objects corresponding to “alien threads”. These are threads of control started outside the threading module, e.g. directly from C code. Dummy thread objects have limited functionality; they are always considered alive, active, and daemonic, and cannot be `join()`ed. They are never deleted, since it is impossible to detect the termination of alien threads.
 
-### class `Thread`(*group=None, target=None, name=None, args=(), kwargs={}*)
+### class `Thread`(group=None, target=None, name=None, args=(), kwargs={})
 
 This constructor should always be called with keyword arguments. Arguments are:
 
@@ -16772,7 +16770,7 @@ It is an error to attempt to `join()` a thread before it has been started.
 
 Return the thread’s name.
 
-### `setName`(*name*)
+### `setName`(name)
 
 Set the thread’s name.
 
@@ -16788,7 +16786,7 @@ Roughly, a thread is alive from the moment the `start()` method returns until it
 
 Return the thread’s daemon flag.
 
-### `setDaemon`(*daemonic*)
+### `setDaemon`(daemonic)
 
 Set the thread’s daemon flag to the Boolean value *daemonic*. This must be called before `start()` is called.
 
@@ -16821,16 +16819,15 @@ An explanation of some terminology and conventions is in order.
 
   |  |  |  |
   |:---|:---|:---|
-  | IndexFieldValues 0 | year | (e.g. 1993) |
-  | 1 | month | range \[1,12\] |
-  | 2 | day | range \[1,31\] |
-  | 3 | hour | range \[0,23\] |
-  | 4 | minute | range \[0,59\] |
-  | 5 | second | range \[0,61\]; see |
-  | in `strftime()` description | weekday | range \[0,6\], Monday is 0 |
-  | 7 | Julian day | range \[1,366\] |
+  | 0 | year | (e.g. 1993) |
+  | 1 | month | range [1,12] |
+  | 2 | day | range [1,31] |
+  | 3 | hour | range [0,23] |
+  | 4 | minute | range [0,59] |
+  | 5 | second | range [0,61]; see |
+  | in `strftime()` description | weekday | range [0,6], Monday is 0 |
+  | 7 | Julian day | range [1,366] |
   | 8 | daylight savings flag | 0, 1 or -1; see below |
-  |  |  |  |
 
   Note that unlike the C structure, the month value is a range of 1-12, not 0-11. A year value will be handled as described under “Year 2000 (Y2K) issues” above. A `-1` argument as daylight savings flag, passed to `mktime()` will usually result in the correct daylight savings state to be filled in.
 
@@ -16844,7 +16841,7 @@ Boolean value indicating whether two-digit year values will be accepted. This is
 
 The offset of the local DST timezone, in seconds west of UTC, if one is defined. This is negative if the local DST timezone is east of UTC (as in Western Europe, including the UK). Only use this if `daylight` is nonzero.
 
-### `asctime`(*tuple*)
+### `asctime`(tuple)
 
 Convert a tuple representing a time as returned by `gmtime()` or `localtime()` to a 24-character string of the following form: `’Sun Jun 20 23:21:05 1993’`. Note: unlike the C function of the same name, there is no trailing newline.
 
@@ -16852,7 +16849,7 @@ Convert a tuple representing a time as returned by `gmtime()` or `localtime()` t
 
 Return the current CPU time as a floating point number expressed in seconds. The precision, and in fact the very definition of the meaning of “CPU time”, depends on that of the C function of the same name, but in any case, this is the function to use for benchmarkingPython or timing algorithms.
 
-### `ctime`(*secs*)
+### `ctime`(secs)
 
 Convert a time expressed in seconds since the epoch to a string representing local time. `ctime(`*`secs`*`)` is equivalent to `asctime(localtime(`*`secs`*`))`.
 
@@ -16860,33 +16857,53 @@ Convert a time expressed in seconds since the epoch to a string representing loc
 
 Nonzero if a DST timezone is defined.
 
-### `gmtime`(*secs*)
+### `gmtime`(secs)
 
 Convert a time expressed in seconds since the epoch to a time tuple in UTC in which the dst flag is always zero. Fractions of a second are ignored. See above for a description of the tuple lay-out.
 
-### `localtime`(*secs*)
+### `localtime`(secs)
 
 Like `gmtime()` but converts to local time. The dst flag is set to `1` when DST applies to the given time.
 
-### `mktime`(*tuple*)
+### `mktime`(tuple)
 
 This is the inverse function of `localtime()`. Its argument is the full 9-tuple (since the dst flag is needed; use `-1` as the dst flag if it is unknown) which expresses the time in *local* time, not UTC. It returns a floating point number, for compatibility with `time()`. If the input value cannot be represented as a valid time, `OverflowError` is raised.
 
-### `sleep`(*secs*)
+### `sleep`(secs)
 
 Suspend execution for the given number of seconds. The argument may be a floating point number to indicate a more precise sleep time. The actual suspension time may be less than that requested because any caught signal will terminate the `sleep()` following execution of that signal’s catching routine. Also, the suspension time may be longer than requested by an arbitrary amount because of the scheduling of other activity in the system.
 
-### `strftime`(*format, tuple*)
+### `strftime`(format, tuple)
 
 Convert a tuple representing a time as returned by `gmtime()` or `localtime()` to a string as specified by the *format* argument. *format* must be a string.
 
 The following directives can be embedded in the *format* string. They are shown without the optional field width and precision specification, and are replaced by the indicated characters in the `strftime()` result:
 
-<div class="tableiii">
-
-c\|p24em\|ccodeDirectiveMeaningNotes
-
-</div>
+|  |  |  |
+|:---|:---|:---|
+| %a | Locale’s abbreviated weekday name. |  |
+| %A | Locale’s full weekday name. |  |
+| %b | Locale’s abbreviated month name. |  |
+| %B | Locale’s full month name. |  |
+| %c | Locale’s appropriate date and time representation. |  |
+| %d | Day of the month as a decimal number [01,31]. |  |
+| %H | Hour (24-hour clock) as a decimal number [00,23]. |  |
+| %I | Hour (12-hour clock) as a decimal number [01,12]. |  |
+| %j | Day of the year as a decimal number [001,366]. |  |
+| %m | Month as a decimal number [01,12]. |  |
+| %M | Minute as a decimal number [00,59]. |  |
+| %p | Locale’s equivalent of either AM or PM. |  |
+| %S | Second as a decimal number [00,61]. | \(1\) |
+| %U | Week number of the year (Sunday as the first day of the week) as a decimal number [00,53]. All days in a new year preceding the first Sunday are considered to be in week 0. |  |
+| %w | Weekday as a decimal number [0(Sunday),6]. |  |
+| %W | Week number of the year (Monday as the first day of the week) as a decimal number [00,53]. All days in a new year preceding the first Sunday are considered to be in week 0. |  |
+| %x | Locale’s appropriate date representation. |  |
+| %X | Locale’s appropriate time representation. |  |
+| %y | Year without century as a decimal number [00,99]. |  |
+| %Y | Year with century as a decimal number. |  |
+| %Z | Time zone name (or by no characters if no time zone exists). |  |
+| %% | A literal |  |
+| character. |  |  |
 
 Notes:
 
@@ -16897,7 +16914,7 @@ Additional directives may be supported on certain platforms, but only the ones l
 
 On some platforms, an optional field width and precision specification can immediately follow the initial `%` of a directive in the following order; this is also not portable. The field width is normally 2 except for `%j` where it is 3.
 
-### `strptime`(*string*)
+### `strptime`(string)
 
 Parse a string representing a time according to a format. The return value is a tuple as returned by `gmtime()` or `localtime()`. The *format* parameter uses the same directives as those used by `strftime()`; it defaults to `"%a %b %d %H:%M:%S %Y"` which matches the formatting returned by `ctime()`. The same platform caveats apply; see the local Unix documentation for restrictions or additional supported directives. If *string* cannot be parsed according to *format*, `ValueError` is raised. Values which are not provided as part of the input string are filled in with default values; the specific values are platform-dependent as the XPG standard does not provide sufficient information to constrain the result.
 
@@ -16930,15 +16947,15 @@ This module also provides one data object and some functions. The functions mirr
 
 Dictionary mapping the numeric values of the constants defined in this module back to name strings, allowing more human-readable representation of parse trees to be generated.
 
-### `ISTERMINAL`(*x*)
+### `ISTERMINAL`(x)
 
 Return true for terminal token values.
 
-### `ISNONTERMINAL`(*x*)
+### `ISNONTERMINAL`(x)
 
 Return true for non-terminal token values.
 
-### `ISEOF`(*x*)
+### `ISEOF`(x)
 
 Return true if *x* is the marker indicating the end of input.
 
@@ -16951,7 +16968,7 @@ Return true if *x* is the marker indicating the end of input.
 
 The scanner is exposed by a single function:
 
-### `tokenize`(*readline*)
+### `tokenize`(readline)
 
 The `tokenize()` function accepts two parameters: one representing the input stream, and one providing an output mechanism for `tokenize()`.
 
@@ -16972,11 +16989,11 @@ This module provides a standard interface to extract, format and print stack tra
 
 The module uses traceback objects — this is the object type that is stored in the variables `sys.exc_traceback` and `sys.last_traceback` and returned as the third item from `sys.exc_info()`. The module defines the following functions:
 
-### `print_tb`(*traceback*)
+### `print_tb`(traceback)
 
 Print up to *limit* stack trace entries from *traceback*. If *limit* is omitted or `None`, all entries are printed. If *file* is omitted or `None`, the output goes to `sys.stderr`; otherwise it should be an open file or file-like object to receive the output.
 
-### `print_exception`(*type, value, traceback*)
+### `print_exception`(type, value, traceback)
 
 Print exception information and up to *limit* stack trace entries from *traceback* to *file*. This differs from `print_tb()` in the following ways: (1) if *traceback* is not `None`, it prints a header `Traceback (innermost last):`; (2) it prints the exception *type* and *value* after the stack trace; (3) if *type* is `SyntaxError` and *value* has the appropriate format, it prints the line where the syntax error occurred with a caret indicating the approximate position of the error.
 
@@ -16992,7 +17009,7 @@ This is a shorthand for ‘`print_exception(sys.last_type,` `sys.last_value,` `s
 
 This function prints a stack trace from its invocation point. The optional *f* argument can be used to specify an alternate stack frame to start. The optional *limit* and *file* arguments have the same meaning as for `print_exception()`.
 
-### `extract_tb`(*traceback*)
+### `extract_tb`(traceback)
 
 Return a list of up to *limit* “pre-processed” stack trace entries extracted from the traceback object *traceback*. It is useful for alternate formatting of stack traces. If *limit* is omitted or `None`, all entries are extracted. A “pre-processed” stack trace entry is a quadruple (*filename*, *line number*, *function name*, *text*) representing the information that is usually printed for a stack trace. The *text* is a string with leading and trailing whitespace stripped; if the source is not available it is `None`.
 
@@ -17000,19 +17017,19 @@ Return a list of up to *limit* “pre-processed” stack trace entries extracted
 
 Extract the raw traceback from the current stack frame. The return value has the same format as for `extract_tb()`. The optional *f* and *limit* arguments have the same meaning as for `print_stack()`.
 
-### `format_list`(*list*)
+### `format_list`(list)
 
 Given a list of tuples as returned by `extract_tb()` or `extract_stack()`, return a list of strings ready for printing. Each string in the resulting list corresponds to the item with the same index in the argument list. Each string ends in a newline; the strings may contain internal newlines as well, for those items whose source text line is not `None`.
 
-### `format_exception_only`(*type, value*)
+### `format_exception_only`(type, value)
 
 Format the exception part of a traceback. The arguments are the exception type and value such as given by `sys.last_type` and `sys.last_value`. The return value is a list of strings, each ending in a newline. Normally, the list contains a single string; however, for `SyntaxError` exceptions, it contains several lines that (when printed) display detailed information about where the syntax error occurred. The message indicating which exception occurred is the always last string in the list.
 
-### `format_exception`(*type, value, tb*)
+### `format_exception`(type, value, tb)
 
 Format a stack trace and the exception information. The arguments have the same meaning as the corresponding arguments to `print_exception()`. The return value is a list of strings, each ending in a newline and some containing internal newlines. When these lines are concatenated and printed, exactly the same text is printed as does `print_exception()`.
 
-### `format_tb`(*tb*)
+### `format_tb`(tb)
 
 A shorthand for `format_list(extract_tb(`*`tb`*`, `*`limit`*`))`.
 
@@ -17020,11 +17037,11 @@ A shorthand for `format_list(extract_tb(`*`tb`*`, `*`limit`*`))`.
 
 A shorthand for `format_list(extract_stack(`*`f`*`, `*`limit`*`))`.
 
-### `tb_lineno`(*tb*)
+### `tb_lineno`(tb)
 
 This function returns the current line number set in the traceback object. This is normally the same as the *`tb`*`.tb_lineno` field of the object, but when optimization is used (the -O flag) this field is not updated correctly; this function calculates the correct value.
 
-## Traceback Example <span id="traceback-example" label="traceback-example"></span>
+## Traceback Example 
 
 This simple example implements a basic read-eval-print loop, similar to (but less useful than) the standard Python interactive interpreter loop. For a more complete implementation of the interpreter loop, refer to the `code` module.
 
@@ -17053,11 +17070,11 @@ Because it requires the `termios` module, it will work only on Unix.
 
 The `tty` module defines the following functions:
 
-### `setraw`(*fd*)
+### `setraw`(fd)
 
 Change the mode of the file descriptor *fd* to raw. If *when* is omitted, it defaults to , and is passed to `termios.tcsetattr()`.
 
-### `setcbreak`(*fd*)
+### `setcbreak`(fd)
 
 Change the mode of file descriptor *fd* to cbreak. If *when* is omitted, it defaults to , and is passed to `termios.tcsetattr()`.
 
@@ -17090,23 +17107,23 @@ Clear the screen, re-center the pen, and set variables to the default values.
 
 Clear the screen.
 
-### `tracer`(*flag*)
+### `tracer`(flag)
 
 Set tracing on/off (according to whether flag is true or not). Tracing means line are drawn more slowly, with an animation of an arrow along the line.
 
-### `forward`(*distance*)
+### `forward`(distance)
 
 Go forward *distance* steps.
 
-### `backward`(*distance*)
+### `backward`(distance)
 
 Go backward *distance* steps.
 
-### `left`(*angle*)
+### `left`(angle)
 
 Turn left *angle* units. Units are by default degrees, but can be set via the `degrees()` and `radians()` functions.
 
-### `right`(*angle*)
+### `right`(angle)
 
 Turn right *angle* units. Units are by default degrees, but can be set via the `degrees()` and `radians()` functions.
 
@@ -17118,41 +17135,41 @@ Move the pen up — stop drawing.
 
 Move the pen up — draw when moving.
 
-### `width`(*width*)
+### `width`(width)
 
 Set the line width to *width*.
 
-### `color`(*s*)
+### `color`(s)
 
 Set the color by giving a Tk color string.
 
-### `color`(*(r, g, b)*)
+### `color`((r, g, b))
 
 Set the color by giving a RGB tuple, each between 0 and 1.
 
-### `color`(*r, g, b*)
+### `color`(r, g, b)
 
 Set the color by giving the RGB components, each between 0 and 1.
 
-### `write`(*text*)
+### `write`(text)
 
 Write *text* at the current pen position. If *move* is true, the pen is moved to the bottom-right corner of the text. By default, *move* is false.
 
-### `fill`(*flag*)
+### `fill`(flag)
 
 The complete specifications are rather complex, but the recommended usage is: call `fill(1)` before drawing a path you want to fill, and call `fill(0)` when you finish to draw the path.
 
-### `circle`(*radius*)
+### `circle`(radius)
 
 Draw a circle with radius *radius* whose center-point is where the pen would be if a `forward(`*`radius`*`)` were called. *extent* determines which part of a circle is drawn: if not given it defaults to a full circle.
 
 If *extent* is not a full circle, one endpoint of the arc is the current pen position. The arc is drawn in a counter clockwise direction if *radius* is positive, otherwise in a clockwise direction.
 
-### `goto`(*x, y*)
+### `goto`(x, y)
 
 Go to co-ordinates (*x*, *y*).
 
-### `goto`(*(x, y)*)
+### `goto`((x, y))
 
 Go to co-ordinates (*x*, *y*) (specified as a tuple instead of individually).
 
@@ -17174,11 +17191,11 @@ This module defines the following classes:
 
 Define a pen. All above functions can be called as a methods on the given pen. The constructor automatically creates a canvas do be drawn on.
 
-### class `RawPen`(*canvas*)
+### class `RawPen`(canvas)
 
 Define a pen which draws on a canvas *canvas*. This is useful if you want to use the module to create graphics in a “real” program.
 
-## Pen and RawPen Objects <span id="pen-rawpen-objects" label="pen-rawpen-objects"></span>
+## Pen and RawPen Objects 
 
 `Pen` and `RawPen` objects have all the global functions described above, except for `demo()` as methods, which manipulate the given pen.
 
@@ -17186,7 +17203,7 @@ The only method which is more powerful as a method is `degrees()`.
 
 ### `degrees`()
 
-*fullcircle* is by default 360. This can cause the pen to have any angular units whatever: give *fullcircle* 2\*$`\pi`$ for radians, or 400 for gradians.
+*fullcircle* is by default 360. This can cause the pen to have any angular units whatever: give *fullcircle* 2*$`\pi`$ for radians, or 400 for gradians.
 # `types` — Names for all built-in types
 
 *Names for all built-in types.*
@@ -17319,7 +17336,7 @@ The type of frame objects such as found in `tb.tb_frame` if `tb` is a traceback 
 ### `BufferType`
 
 The type of buffer objects created by the `buffer()`function.
-# Undocumented Modules <span id="undoc" label="undoc"></span>
+# Undocumented Modules 
 
 Here’s a quick listing of modules that are currently undocumented, but that should be documented. Feel free to contribute documentation for them! (Send via email to `python-docs@python.org`.)
 
@@ -17378,7 +17395,7 @@ These modules are used to implement the `os.path` module, and are not documented
 `toaiff`  
 — Convert "arbitrary" sound files to AIFF files; should probably become a tool or demo. Requires the external program .
 
-## Obsolete <span id="obsolete-modules" label="obsolete-modules"></span>
+## Obsolete 
 
 These modules are not normally available for import; additional work must be done to make them available.
 
@@ -17471,35 +17488,35 @@ The following are SGI specific, and may be out of touch with the current version
 
 The module uses the same names and symbols as defined by the UnicodeData File Format 3.0.0 (see `http://www.unicode.org/Public/UNIDATA/UnicodeData.html`). It defines the following functions:
 
-### `decimal`(*unichr*)
+### `decimal`(unichr)
 
 Returns the decimal value assigned to the Unicode character *unichr* as integer. If no such value is defined, *default* is returned, or, if not given, `ValueError` is raised.
 
-### `digit`(*unichr*)
+### `digit`(unichr)
 
 Returns the digit value assigned to the Unicode character *unichr* as integer. If no such value is defined, *default* is returned, or, if not given, `ValueError` is raised.
 
-### `numeric`(*unichr*)
+### `numeric`(unichr)
 
 Returns the numeric value assigned to the Unicode character *unichr* as float. If no such value is defined, *default* is returned, or, if not given, `ValueError` is raised.
 
-### `category`(*unichr*)
+### `category`(unichr)
 
 Returns the general category assigned to the Unicode character *unichr* as string.
 
-### `bidirectional`(*unichr*)
+### `bidirectional`(unichr)
 
 Returns the bidirectional category assigned to the Unicode character *unichr* as string. If no such value is defined, an empty string is returned.
 
-### `combining`(*unichr*)
+### `combining`(unichr)
 
 Returns the canonical combining class assigned to the Unicode character *unichr* as integer. Returns `0` if no combining class is defined.
 
-### `mirrored`(*unichr*)
+### `mirrored`(unichr)
 
 Returns the mirrored property of assigned to the Unicode character *unichr* as integer. Returns `1` if the character has been identified as a “mirrored” character in bidirectional text, `0` otherwise.
 
-### `decomposition`(*unichr*)
+### `decomposition`(unichr)
 
 Returns the character decomposition mapping assigned to the Unicode character *unichr* as string. An empty string is returned in case no such mapping is defined.
 # Unix Specific Services
@@ -17513,7 +17530,7 @@ This module provides a high-level interface for fetching data across the World-W
 
 It defines the following public functions:
 
-### `urlopen`(*url*)
+### `urlopen`(url)
 
 Open a network object denoted by a URL for reading. If the URL does not have a scheme identifier, or if it has `file:` as its scheme identifier, this opens a local file; otherwise it opens a socket to a server somewhere on the network. If the connection cannot be made, or if the server returns an error code, the `IOError` exception is raised. If all went well, a file-like object is returned. This supports the following methods: `read()`, `readline()`, `readlines()`, `fileno()`, `close()`, `info()` and `geturl()`.
 
@@ -17545,7 +17562,7 @@ The `urlopen()` function works transparently with proxies. In a Unix or Windows 
 
 In a Macintosh environment, `urlopen()` will retrieve proxy information from Internet Config.
 
-### `urlretrieve`(*url*)
+### `urlretrieve`(url)
 
 Copy a network object denoted by a URL to a local file, if necessary. If the URL points to a local file, or a valid cached copy of the object exists, the object is not copied. Return a tuple `(`*`filename`*`, `*`headers`*`)` where *filename* is the local file name under which the object can be found, and *headers* is either `None` (for a local object) or whatever the `info()` method of the object returned by `urlopen()` returned (for a remote object, possibly cached). Exceptions are the same as for `urlopen()`.
 
@@ -17557,27 +17574,27 @@ If the *url* uses the `http:` scheme identifier, the optional *data* argument ma
 
 Clear the cache that may have been built up by previous calls to `urlretrieve()`.
 
-### `quote`(*string*)
+### `quote`(string)
 
 Replace special characters in *string* using the `%xx` escape. Letters, digits, and the characters `_,.-` are never quoted. The optional *safe* parameter specifies additional characters that should not be quoted — its default value is `’/’`.
 
 Example: `quote(’/~connolly/’)` yields `’/%7econnolly/’`.
 
-### `quote_plus`(*string*)
+### `quote_plus`(string)
 
 Like `quote()`, but also replaces spaces by plus signs, as required for quoting HTML form values. Plus signs in the original string are escaped unless they are included in *safe*.
 
-### `unquote`(*string*)
+### `unquote`(string)
 
 Replace `%xx` escapes by their single-character equivalent.
 
 Example: `unquote(’/%7Econnolly/’)` yields `’/~connolly/’`.
 
-### `unquote_plus`(*string*)
+### `unquote_plus`(string)
 
 Like `unquote()`, but also replaces plus signs by spaces, as required for unquoting HTML form values.
 
-### `urlencode`(*dict*)
+### `urlencode`(dict)
 
 Convert a dictionary to a “url-encoded” string, suitable to pass to `urlopen()` above as the optional *data* argument. This is useful to pass a dictionary of form fields to a `POST` request. The resulting string is a series of *`key`*`=`*`value`* pairs separated by `&` characters, where both *key* and *value* are quoted using `quote_plus()` above.
 
@@ -17598,7 +17615,7 @@ By default, the `URLopener` class sends a `user-agent` header of `urllib/`*`VVV`
 
 Additional keyword parameters, collected in *x509*, are used for authentication with the `https:` scheme. The keywords *key_file* and *cert_file* are supported; both are needed to actually retrieve a resource at an `https:` URL.
 
-### class `FancyURLopener`(*...*)
+### class `FancyURLopener`(...)
 
 `FancyURLopener` subclasses `URLopener` providing default handling for the following HTTP response codes: 301, 302 or 401. For 301 and 302 response codes, the `location` header is used to fetch the actual URL. For 401 response codes (authentication required), basic HTTP authentication is performed.
 
@@ -17622,19 +17639,19 @@ Restrictions:
 
 - Although the `urllib` module contains (undocumented) routines to parse and unparse URL strings, the recommended interface for URL manipulation is in module `urlparse`.
 
-## URLopener Objects <span id="urlopener-objs" label="urlopener-objs"></span>
+## URLopener Objects 
 
 `URLopener` and `FancyURLopener` objects have the following attributes.
 
-### `open`(*fullurl*)
+### `open`(fullurl)
 
 Open *fullurl* using the appropriate protocol. This method sets up cache and proxy information, then calls the appropriate open method with its input arguments. If the scheme is not recognized, `open_unknown()` is called. The *data* argument has the same meaning as the *data* argument of `urlopen()`.
 
-### `open_unknown`(*fullurl*)
+### `open_unknown`(fullurl)
 
 Overridable interface to open unknown URL types.
 
-### `retrieve`(*url*)
+### `retrieve`(url)
 
 Retrieves the contents of *url* and places it in *filename*. The return value is a tuple consisting of a local filename and either a `mimetools.Message` object containing the response headers (for remote URLs) or None (for local URLs). The caller must then open and read the contents of *filename*. If *filename* is not given and the URL refers to a local file, the input filename is returned. If the URL is non-local and *filename* is not given, the filename is the output of `tempfile.mktemp()` with a suffix that matches the suffix of the last path component of the input URL. If *reporthook* is given, it must be a function accepting three numeric parameters. It will be called after each chunk of data is read from the network. *reporthook* is ignored for local URLs.
 
@@ -17669,7 +17686,7 @@ The module has been designed to match the Internet RFC on Relative Uniform Resou
 
 It defines the following functions:
 
-### `urlparse`(*urlstring*)
+### `urlparse`(urlstring)
 
 Parse a URL into 6 components, returning a 6-tuple: (addressing scheme, network location, path, parameters, query, fragment identifier). This corresponds to the general structure of a URL: *`scheme`*`://`*`netloc`*`/`*`path`*`;`*`parameters`*`?`*`query`*`#`*`fragment`*. Each tuple item is a string, possibly empty. The components are not broken up in smaller parts (e.g. the network location is a single string), and % escapes are not expanded. The delimiters as shown above are not part of the tuple items, except for a leading slash in the *path* component, which is retained if present.
 
@@ -17685,11 +17702,11 @@ If the *default_scheme* argument is specified, it gives the default addressing s
 
 If the *allow_fragments* argument is zero, fragment identifiers are not allowed, even if the URL’s addressing scheme normally does support them. The default value for this argument is `1`.
 
-### `urlunparse`(*tuple*)
+### `urlunparse`(tuple)
 
 Construct a URL string from a tuple as returned by `urlparse()`. This may result in a slightly different, but equivalent URL, if the URL that was parsed originally had redundant delimiters, e.g. a ? with an empty query (the draft states that these are equivalent).
 
-### `urljoin`(*base, url*)
+### `urljoin`(base, url)
 
 Construct a full (“absolute”) URL by combining a “base URL” (*base*) with a “relative URL” (*url*). Informally, this uses components of the base URL, in particular the addressing scheme, the network location and (part of) the path, to provide missing components in the relative URL.
 
@@ -17798,11 +17815,11 @@ A real Python string or Unicode object used to store the content of the `UserStr
 
 This code was contributed by Lance Ellinghouse, and modified by Jack Jansen. The `uu` module defines the following functions:
 
-### `encode`(*in_file, out_file*)
+### `encode`(in_file, out_file)
 
 Uuencode file *in_file* into file *out_file*. The uuencoded file will have the header specifying *name* and *mode* as the defaults for the results of decoding the file. The default defaults are taken from *in_file*, or `’-’` and `0666` respectively.
 
-### `decode`(*in_file*)
+### `decode`(in_file)
 
 This call decodes uuencoded file *in_file* placing the result on file *out_file*. If *out_file* is a pathname, *mode* is used to set the permission bits if the file must be created. Defaults for *out_file* and *mode* are taken from the uuencode header.
 
@@ -17817,7 +17834,7 @@ The `wave` module provides a convenient interface to the WAV sound format. It do
 
 The `wave` module defines the following function and exception:
 
-### `open`(*file*)
+### `open`(file)
 
 If *file* is a string, open the file by that name, other treat it as a seekable file-like object. *mode* can be any of
 
@@ -17831,7 +17848,7 @@ Note that it does not allow read/write WAV files.
 
 A *mode* of `’r’` or `’rb’` returns a `Wave_read` object, while a *mode* of `’w’` or `’wb’` returns a `Wave_write` object. If *mode* is omitted and a file-like object is passed as *file*, *`file`*`.mode` is used as the default value for *mode* (the `b` flag is still added if necessary).
 
-### `openfp`(*file, mode*)
+### `openfp`(file, mode)
 
 A synonym for `open()`, maintained for backwards compatibility.
 
@@ -17839,7 +17856,7 @@ A synonym for `open()`, maintained for backwards compatibility.
 
 An error raised when something is impossible because it violates the WAV specification or hits an implementation deficiency.
 
-## Wave_read Objects <span id="Wave-read-objects" label="Wave-read-objects"></span>
+## Wave_read Objects 
 
 Wave_read objects, as returned by `open()`, have the following methods:
 
@@ -17875,7 +17892,7 @@ Human-readable version of `getcomptype()`. Usually `’not compressed’` parall
 
 Returns a tuple `(`*`nchannels`*`, `*`sampwidth`*`, `*`framerate`*`, `*`nframes`*`, `*`comptype`*`, `*`compname`*`)`, equivalent to output of the `get*()` methods.
 
-### `readframes`(*n*)
+### `readframes`(n)
 
 Reads and returns at most *n* frames of audio, as a string of bytes.
 
@@ -17889,13 +17906,13 @@ The following two methods are defined for compatibility with the `aifc` module, 
 
 Returns `None`.
 
-### `getmark`(*id*)
+### `getmark`(id)
 
 Raise an error.
 
 The following two methods define a term “position” which is compatible between them, and is otherwise implementation dependent.
 
-### `setpos`(*pos*)
+### `setpos`(pos)
 
 Set the file pointer to the specified position.
 
@@ -17903,7 +17920,7 @@ Set the file pointer to the specified position.
 
 Return current file pointer position.
 
-## Wave_write Objects <span id="Wave-write-objects" label="Wave-write-objects"></span>
+## Wave_write Objects 
 
 Wave_write objects, as returned by `open()`, have the following methods:
 
@@ -17911,27 +17928,27 @@ Wave_write objects, as returned by `open()`, have the following methods:
 
 Make sure *nframes* is correct, and close the file. This method is called upon deletion.
 
-### `setnchannels`(*n*)
+### `setnchannels`(n)
 
 Set the number of channels.
 
-### `setsampwidth`(*n*)
+### `setsampwidth`(n)
 
 Set the sample width to *n* bytes.
 
-### `setframerate`(*n*)
+### `setframerate`(n)
 
 Set the frame rate to *n*.
 
-### `setnframes`(*n*)
+### `setnframes`(n)
 
 Set the number of frames to *n*. This will be changed later if more frames are written.
 
-### `setcomptype`(*type, name*)
+### `setcomptype`(type, name)
 
 Set the compression type and description.
 
-### `setparams`(*tuple*)
+### `setparams`(tuple)
 
 The *tuple* should be `(`*`nchannels`*`, `*`sampwidth`*`, `*`framerate`*`, `*`nframes`*`, `*`comptype`*`, `*`compname`*`)`, with values valid for the `set*()` methods. Sets all parameters.
 
@@ -17939,11 +17956,11 @@ The *tuple* should be `(`*`nchannels`*`, `*`sampwidth`*`, `*`framerate`*`, `*`nf
 
 Return current position in the file, with the same disclaimer for the `Wave_read.tell()` and `Wave_read.setpos()` methods.
 
-### `writeframesraw`(*data*)
+### `writeframesraw`(data)
 
 Write audio frames, without correcting *nframes*.
 
-### `writeframes`(*data*)
+### `writeframes`(data)
 
 Write audio frames and make sure *nframes* is correct.
 
@@ -17964,11 +17981,11 @@ Exception raised when a browser control error occurs.
 
 The following functions are defined:
 
-### `open`(*url*)
+### `open`(url)
 
 Display *url* using the default browser. If *new* is true, a new browser window is opened if possible.
 
-### `open_new`(*url*)
+### `open_new`(url)
 
 Open *url* in a new window of the default browser, if possible, otherwise, open *url* in the only browser window.
 
@@ -17976,21 +17993,21 @@ Open *url* in a new window of the default browser, if possible, otherwise, open 
 
 Return a controller object for the browser type *name*.
 
-### `register`(*name, constructor*)
+### `register`(name, constructor)
 
 Register the browser type *name*. Once a browser type is registered, the `get()` function can return a controller for that browser type. If *instance* is not provided, or is `None`, *constructor* will be called without parameters to create an instance when needed. If *instance* is provided, *constructor* will never be called, and may be `None`.
 
 Several browser types are defined. This table gives the type names that may be passed to the `get()` function and the names of the implementation classes, all defined in this module.
 
-|                                     |     |     |
-|:------------------------------------|:----|:----|
-| Type NameClass NameNotes ’netscape’ |     |     |
-|                                     |     |     |
-|                                     |     |     |
-|                                     |     |     |
-|                                     |     |     |
-|                                     |     |     |
-|                                     |     |     |
+|            |     |     |
+|:-----------|:----|:----|
+| ’netscape’ |     |     |
+|            |     |     |
+|            |     |     |
+|            |     |     |
+|            |     |     |
+|            |     |     |
+|            |     |     |
 
 Notes:
 
@@ -18003,15 +18020,15 @@ Only on Windows platforms; requires the common extension modules `win32api` and 
 \(3\)  
 Only on MacOS platforms; requires the standard MacPython `ic` module, described in the Macintosh Library Modules manual.
 
-## Browser Controller Objects <span id="browser-controllers" label="browser-controllers"></span>
+## Browser Controller Objects 
 
 Browser controllers provide two methods which parallel two of the module-level convenience functions:
 
-### `open`(*url*)
+### `open`(url)
 
 Display *url* using the browser handled by this controller. If *new* is true, a new browser window is opened if possible.
 
-### `open_new`(*url*)
+### `open_new`(url)
 
 Open *url* in a new window of the browser handled by this controller, if possible, otherwise, open *url* in the only browser window.
 # `whichdb` — Guess which DBM module created a database
@@ -18020,7 +18037,7 @@ Open *url* in a new window of the browser handled by this controller, if possibl
 
 The single function in this module attempts to guess which of the several simple database modules available–`dbm`, `gdbm`, or `dbhash`–should be used to open a given file.
 
-### `whichdb`(*filename*)
+### `whichdb`(filename)
 
 Returns one of the following values: `None` if the file can’t be opened because it’s unreadable or doesn’t exist; the empty string (`’’`) if the file’s format can’t be guessed; or a string containing the required module name, such as `’dbm’` or `’gdbm’`.
 # `whrandom` — Pseudo-random number generator
@@ -18033,23 +18050,23 @@ This module implements a Wichmann-Hill pseudo-random number generator class that
 
 Initializes the random number generator from the integers *x*, *y* and *z*. When the module is first imported, the random number is initialized using values derived from the current time. If *x*, *y*, and *z* are either omitted or `0`, the seed will be computed from the current system time. If one or two of the parameters are `0`, but not all three, the zero values are replaced by ones. This causes some apparently different seeds to be equal, with the corresponding result on the pseudo-random series produced by the generator.
 
-### `choice`(*seq*)
+### `choice`(seq)
 
 Chooses a random element from the non-empty sequence *seq* and returns it.
 
-### `randint`(*a, b*)
+### `randint`(a, b)
 
 Returns a random integer *N* such that *`a`*`<=`*`N`*`<=`*`b`*.
 
 ### `random`()
 
-Returns the next random floating point number in the range \[0.0 ... 1.0).
+Returns the next random floating point number in the range [0.0 ... 1.0).
 
-### `seed`(*x, y, z*)
+### `seed`(x, y, z)
 
 Initializes the random number generator from the integers *x*, *y* and *z*. When the module is first imported, the random number is initialized using values derived from the current time.
 
-### `uniform`(*a, b*)
+### `uniform`(a, b)
 
 Returns a random real number *N* such that *`a`*`<=`*`N`*`<`*`b`*.
 
@@ -18073,13 +18090,13 @@ This module exposes a very low-level interface to the Windows registry; it is ex
 
 This module offers the following functions:
 
-### `CloseKey`(*hkey*)
+### `CloseKey`(hkey)
 
 Closes a previously opened registry key. The hkey argument specifies a previously opened key.
 
 Note that if *hkey* is not closed using this method, (or the `handle.Close()` closed when the *hkey* object is destroyed by Python.
 
-### `ConnectRegistry`(*computer_name, key*)
+### `ConnectRegistry`(computer_name, key)
 
 Establishes a connection to a predefined registry handle on another computer, and returns a *handle object*
 
@@ -18089,7 +18106,7 @@ Establishes a connection to a predefined registry handle on another computer, an
 
 The return value is the handle of the opened key. If the function fails, an `EnvironmentError` exception is raised.
 
-### `CreateKey`(*key, sub_key*)
+### `CreateKey`(key, sub_key)
 
 Creates or opens the specified key, returning a *handle object*
 
@@ -18103,7 +18120,7 @@ If the key already exists, this function opens the existing key
 
 The return value is the handle of the opened key. If the function fails, an `EnvironmentError` exception is raised.
 
-### `DeleteKey`(*key, sub_key*)
+### `DeleteKey`(key, sub_key)
 
 Deletes the specified key.
 
@@ -18115,7 +18132,7 @@ Deletes the specified key.
 
 If the method succeeds, the entire key, including all of its values, is removed. If the method fails, an `EnvironmentError` exception is raised.
 
-### `DeleteValue`(*key, value*)
+### `DeleteValue`(key, value)
 
 Removes a named value from a registry key.
 
@@ -18123,7 +18140,7 @@ Removes a named value from a registry key.
 
 *value* is a string that identifies the value to remove.
 
-### `EnumKey`(*key, index*)
+### `EnumKey`(key, index)
 
 Enumerates subkeys of an open registry key, returning a string.
 
@@ -18133,7 +18150,7 @@ Enumerates subkeys of an open registry key, returning a string.
 
 The function retrieves the name of one subkey each time it is called. It is typically called repeatedly until an `EnvironmentError` exception is raised, indicating, no more values are available.
 
-### `EnumValue`(*key, index*)
+### `EnumValue`(key, index)
 
 Enumerates values of an open registry key, returning a tuple.
 
@@ -18151,7 +18168,7 @@ An object that holds the value data, and whose type depends on the underlying re
 
 is an integer that identifies the type of the value data.
 
-### `FlushKey`(*key*)
+### `FlushKey`(key)
 
 Writes all the attributes of a key to the registry.
 
@@ -18161,7 +18178,7 @@ It is not necessary to call RegFlushKey to change a key. Registry changes are fl
 
 *If you don’t know whether a `FlushKey()` call is required, it probably isn’t.*
 
-### `RegLoadKey`(*key, sub_key, file_name*)
+### `RegLoadKey`(key, sub_key, file_name)
 
 Creates a subkey under the specified key and stores registration information from a specified file into that subkey.
 
@@ -18177,7 +18194,7 @@ If *key* is a handle returned by `ConnectRegistry()`, then the path specified in
 
 The Win32 documentation implies *key* must be in the or tree. This may or may not be true.
 
-### `OpenKey`(*key, sub_key*)
+### `OpenKey`(key, sub_key)
 
 Opens the specified key, returning a *handle object*
 
@@ -18197,7 +18214,7 @@ If the function fails, `EnvironmentError` is raised.
 
 The functionality of `OpenKeyEx()` is provided via `OpenKey()`, by the use of default arguments.
 
-### `QueryInfoKey`(*key*)
+### `QueryInfoKey`(key)
 
 Returns information about a key, as a tuple.
 
@@ -18211,7 +18228,7 @@ An integer that identifies the number of values this key has.
 
 A long integer that identifies when the key was last modified (if available) as 100’s of nanoseconds since Jan 1, 1600.
 
-### `QueryValue`(*key, sub_key*)
+### `QueryValue`(key, sub_key)
 
 Retrieves the unnamed value for a key, as a string
 
@@ -18221,7 +18238,7 @@ Retrieves the unnamed value for a key, as a string
 
 Values in the registry have name, type, and data components. This method retrieves the data for a key’s first value that has a NULL name. But the underlying API call doesn’t return the type, Lame Lame Lame, DO NOT USE THIS!!!
 
-### `QueryValueEx`(*key, value_name*)
+### `QueryValueEx`(key, value_name)
 
 Retrieves the type and data for a specified value name associated with an open registry key.
 
@@ -18235,7 +18252,7 @@ The value of the registry item.
 
 An integer that identifies the registry type for this value.
 
-### `SaveKey`(*key, file_name*)
+### `SaveKey`(key, file_name)
 
 Saves the specified key, and all its subkeys to the specified file.
 
@@ -18247,7 +18264,7 @@ If *key* represents a key on a remote computer, the path described by *file_name
 
 This function passes NULL for *security_attributes* to the API.
 
-### `SetValue`(*key, sub_key, type, value*)
+### `SetValue`(key, sub_key, type, value)
 
 Associates a value with a specified key.
 
@@ -18265,7 +18282,7 @@ Value lengths are limited by available memory. Long values (more than 2048 bytes
 
 The key identified by the *key* parameter must have been opened with access.
 
-### `SetValueEx`(*key, value_name, reserved, type, value*)
+### `SetValueEx`(key, value_name, reserved, type, value)
 
 Stores data in the value field of an open registry key.
 
@@ -18305,7 +18322,7 @@ To open the key, use the `CreateKeyEx()` or `OpenKey()` methods.
 
 Value lengths are limited by available memory. Long values (more than 2048 bytes) should be stored as files with the filenames stored in the configuration registry. This helps the registry perform efficiently.
 
-## Registry handle objects <span id="handle-object" label="handle-object"></span>
+## Registry handle objects 
 
 This object wraps a Windows HKEY object, automatically closing it when the object is destroyed. To guarantee cleanup, you can call either the `Close()` method on the object, or the `CloseKey()` function.
 
@@ -18343,11 +18360,11 @@ After calling this function, the handle is effectively invalidated, but the hand
 
 The `winsound` module provides access to the basic sound-playing machinery provided by Windows platforms. It includes two functions and several constants.
 
-### `Beep`(*frequency, duration*)
+### `Beep`(frequency, duration)
 
 Beep the PC’s speaker. The *frequency* parameter specifies frequency, in hertz, of the sound, and must be in the range 37 through 32,767 (`0x25` through `0x7fff`). The *duration* parameter specifies the number of milliseconds the sound should last. If the system is not able to beep the speaker, `RuntimeError` is raised. *New in version 1.5.3.*
 
-### `PlaySound`(*sound, flags*)
+### `PlaySound`(sound, flags)
 
 Call the underlying function from the Platform API. The *sound* parameter may be a filename, audio data as a string, or `None`. Its interpretation depends on the value of *flags*, which can be a bit-wise ORed combination of the constants described below. If the system indicates an error, `RuntimeError` is raised.
 
@@ -18400,11 +18417,11 @@ The `xdrlib` module defines two classes, one for packing variables into XDR repr
 
 `Packer` is the class for packing data into XDR representation. The `Packer` class is instantiated with no arguments.
 
-### class `Unpacker`(*data*)
+### class `Unpacker`(data)
 
 `Unpacker` is the complementary class which unpacks XDR data values from a string buffer. The input buffer is given as *data*.
 
-## Packer Objects <span id="xdr-packer-objects" label="xdr-packer-objects"></span>
+## Packer Objects 
 
 `Packer` instances have the following methods:
 
@@ -18418,39 +18435,39 @@ Resets the pack buffer to the empty string.
 
 In general, you can pack any of the most common XDR data types by calling the appropriate `pack_`*`type`*`()` method. Each method takes a single argument, the value to pack. The following simple data type packing methods are supported: `pack_uint()`, `pack_int()`, `pack_enum()`, `pack_bool()`, `pack_uhyper()`, and `pack_hyper()`.
 
-### `pack_float`(*value*)
+### `pack_float`(value)
 
 Packs the single-precision floating point number *value*.
 
-### `pack_double`(*value*)
+### `pack_double`(value)
 
 Packs the double-precision floating point number *value*.
 
 The following methods support packing strings, bytes, and opaque data:
 
-### `pack_fstring`(*n, s*)
+### `pack_fstring`(n, s)
 
 Packs a fixed length string, *s*. *n* is the length of the string but it is *not* packed into the data buffer. The string is padded with null bytes if necessary to guaranteed 4 byte alignment.
 
-### `pack_fopaque`(*n, data*)
+### `pack_fopaque`(n, data)
 
 Packs a fixed length opaque data stream, similarly to `pack_fstring()`.
 
-### `pack_string`(*s*)
+### `pack_string`(s)
 
 Packs a variable length string, *s*. The length of the string is first packed as an unsigned integer, then the string data is packed with `pack_fstring()`.
 
-### `pack_opaque`(*data*)
+### `pack_opaque`(data)
 
 Packs a variable length opaque data string, similarly to `pack_string()`.
 
-### `pack_bytes`(*bytes*)
+### `pack_bytes`(bytes)
 
 Packs a variable length byte stream, similarly to `pack_string()`.
 
 The following methods support packing arrays and lists:
 
-### `pack_list`(*list, pack_item*)
+### `pack_list`(list, pack_item)
 
 Packs a *list* of homogeneous items. This method is useful for lists with an indeterminate size; i.e. the size is not available until the entire list has been walked. For each item in the list, an unsigned integer `1` is packed first, followed by the data value from the list. *pack_item* is the function that is called to pack the individual item. At the end of the list, an unsigned integer `0` is packed.
 
@@ -18460,19 +18477,19 @@ For example, to pack a list of integers, the code might appear like this:
     p = xdrlib.Packer()
     p.pack_list([1, 2, 3], p.pack_int)
 
-### `pack_farray`(*n, array, pack_item*)
+### `pack_farray`(n, array, pack_item)
 
 Packs a fixed length list (*array*) of homogeneous items. *n* is the length of the list; it is *not* packed into the buffer, but a `ValueError` exception is raised if `len(`*`array`*`)` is not equal to *n*. As above, *pack_item* is the function used to pack each element.
 
-### `pack_array`(*list, pack_item*)
+### `pack_array`(list, pack_item)
 
 Packs a variable length *list* of homogeneous items. First, the length of the list is packed as an unsigned integer, then each element is packed as in `pack_farray()` above.
 
-## Unpacker Objects <span id="xdr-unpacker-objects" label="xdr-unpacker-objects"></span>
+## Unpacker Objects 
 
 The `Unpacker` class offers the following methods:
 
-### `reset`(*data*)
+### `reset`(data)
 
 Resets the string buffer with the given *data*.
 
@@ -18480,7 +18497,7 @@ Resets the string buffer with the given *data*.
 
 Returns the current unpack position in the data buffer.
 
-### `set_position`(*position*)
+### `set_position`(position)
 
 Sets the data buffer unpack position to *position*. You should be careful about using `get_position()` and `set_position()`.
 
@@ -18504,11 +18521,11 @@ Unpacks a double-precision floating point number, similarly to `unpack_float()`.
 
 In addition, the following methods unpack strings, bytes, and opaque data:
 
-### `unpack_fstring`(*n*)
+### `unpack_fstring`(n)
 
 Unpacks and returns a fixed length string. *n* is the number of characters expected. Padding with null bytes to guaranteed 4 byte alignment is assumed.
 
-### `unpack_fopaque`(*n*)
+### `unpack_fopaque`(n)
 
 Unpacks and returns a fixed length opaque data stream, similarly to `unpack_fstring()`.
 
@@ -18526,19 +18543,19 @@ Unpacks and returns a variable length byte stream, similarly to `unpack_string()
 
 The following methods support unpacking arrays and lists:
 
-### `unpack_list`(*unpack_item*)
+### `unpack_list`(unpack_item)
 
 Unpacks and returns a list of homogeneous items. The list is unpacked one element at a time by first unpacking an unsigned integer flag. If the flag is `1`, then the item is unpacked and appended to the list. A flag of `0` indicates the end of the list. *unpack_item* is the function that is called to unpack the items.
 
-### `unpack_farray`(*n, unpack_item*)
+### `unpack_farray`(n, unpack_item)
 
 Unpacks and returns (as a list) a fixed length array of homogeneous items. *n* is number of list elements to expect in the buffer. As above, *unpack_item* is the function used to unpack each element.
 
-### `unpack_array`(*unpack_item*)
+### `unpack_array`(unpack_item)
 
 Unpacks and returns a variable length *list* of homogeneous items. First, the length of the list is unpacked as an unsigned integer, then each element is unpacked as in `unpack_farray()` above.
 
-## Exceptions <span id="xdr-exceptions" label="xdr-exceptions"></span>
+## Exceptions 
 
 Exceptions in this module are coded as class instances:
 
@@ -18594,7 +18611,7 @@ Stop processing tags. Treat all following input as literal input (CDATA).
 
 Enter literal mode (CDATA mode). This mode is automatically exited when the close tag matching the last unclosed open tag is encountered.
 
-### `feed`(*data*)
+### `feed`(data)
 
 Feed some text to the parser. It is processed insofar as it consists of complete tags; incomplete data is buffered until more data is fed or `close()` is called.
 
@@ -18602,7 +18619,7 @@ Feed some text to the parser. It is processed insofar as it consists of complete
 
 Force processing of all buffered data as if it were followed by an end-of-file mark. This method may be redefined by a derived class to define additional processing at the end of the input, but the redefined version should always call `close()`.
 
-### `translate_references`(*data*)
+### `translate_references`(data)
 
 Translate all entity and character references in *data* and return the translated string.
 
@@ -18610,63 +18627,63 @@ Translate all entity and character references in *data* and return the translate
 
 Return a mapping of namespace abbreviations to namespace URIs that are currently in effect.
 
-### `handle_xml`(*encoding, standalone*)
+### `handle_xml`(encoding, standalone)
 
 This method is called when the `<?xml ...?>` tag is processed. The arguments are the values of the encoding and standalone attributes in the tag. Both encoding and standalone are optional. The values passed to `handle_xml()` default to `None` and the string `’no’` respectively.
 
-### `handle_doctype`(*tag, pubid, syslit, data*)
+### `handle_doctype`(tag, pubid, syslit, data)
 
 Thismethod is called when the `<!DOCTYPE...>` declaration is processed. The arguments are the tag name of the root element, the Formal PublicIdentifier (or `None` if not specified), the system identifier, and the uninterpreted contents of the internal DTD subset as a string (or `None` if not present).
 
-### `handle_starttag`(*tag, method, attributes*)
+### `handle_starttag`(tag, method, attributes)
 
 This method is called to handle start tags for which a start tag handler is defined in the instance variable `elements`. The *tag* argument is the name of the tag, and the *method* argument is the function (method) which should be used to support semantic interpretation of the start tag. The *attributes* argument is a dictionary of attributes, the key being the *name* and the value being the *value* of the attribute found inside the tag’s `<>` brackets. Character and entity references in the *value* have been interpreted. For instance, for the start tag `<A HREF="http://www.cwi.nl/">`, this method would be called as `handle_starttag(’A’, self.elements[’A’][0], {’HREF’: ’http://www.cwi.nl/’})`. The base implementation simply calls *method* with *attributes* as the only argument.
 
-### `handle_endtag`(*tag, method*)
+### `handle_endtag`(tag, method)
 
 This method is called to handle endtags for which an end tag handler is defined in the instance variable `elements`. The *tag* argument is the name of the tag, and the *method* argument is the function (method) which should be used to support semantic interpretation of the end tag. For instance, for the endtag `</A>`, this method would be called as `handle_endtag(’A’, self.elements[’A’][1])`. The base implementation simply calls *method*.
 
-### `handle_data`(*data*)
+### `handle_data`(data)
 
 This method is called to process arbitrary data. It is intended to be overridden by a derived class; the base class implementation does nothing.
 
-### `handle_charref`(*ref*)
+### `handle_charref`(ref)
 
 This method is called to process a character reference of the form `&#`*`ref`*`;`. *ref* can either be a decimal number, or a hexadecimal number when preceded by an `x`. In the base implementation, *ref* must be a number in the range 0-255. It translates the character to ASCII and calls the method `handle_data()` with the character as argument. If *ref* is invalid or out of range, the method `unknown_charref(`*`ref`*`)` is called to handle the error. A subclass must override this method to provide support for character references outside of the ASCII range.
 
-### `handle_comment`(*comment*)
+### `handle_comment`(comment)
 
 This method is called when a comment is encountered. The *comment* argument is a string containing the text between the `<!--` and `-->` delimiters, but not the delimiters themselves. For example, the comment `<!--text-->` will cause this method to be called with the argument `’text’`. The default method does nothing.
 
-### `handle_cdata`(*data*)
+### `handle_cdata`(data)
 
 This method is called when a CDATA element is encountered. The *data* argument is a string containing the text between the `<![CDATA[` and `]]>` delimiters, but not the delimiters themselves. For example, the entity `<![CDATA[text]]>` will cause this method to be called with the argument `’text’`. The default method does nothing, and is intended to be overridden.
 
-### `handle_proc`(*name, data*)
+### `handle_proc`(name, data)
 
 This method is called when a processing instruction (PI) is encountered. The *name* is the PI target, and the *data* argument is a string containing the text between the PI target and the closing delimiter, but not the delimiter itself. For example, the instruction `<?XML text?>` will cause this method to be called with the arguments `’XML’` and `’text’`. The default method does nothing. Note that if a document starts with `<?xml ..?>`, `handle_xml()` is called to handle it.
 
-### `handle_special`(*data*)
+### `handle_special`(data)
 
 This method is called when a declaration is encountered. The *data* argument is a string containing the text between the `<!` and `>` delimiters, but not the delimiters themselves. For example, the entity declaration `<!ENTITY text>` will cause this method to be called with the argument `’ENTITY text’`. The default method does nothing. Note that `<!DOCTYPE ...>` is handled separately if it is located at the start of the document.
 
-### `syntax_error`(*message*)
+### `syntax_error`(message)
 
 This method is called when a syntax error is encountered. The *message* is a description of what was wrong. The default method raises a `RuntimeError` exception. If this method is overridden, it is permissible for it to return. This method is only called when the error can be recovered from. Unrecoverable errors raise a `RuntimeError` without first calling `syntax_error()`.
 
-### `unknown_starttag`(*tag, attributes*)
+### `unknown_starttag`(tag, attributes)
 
 This method is called to process an unknown start tag. It is intended to be overridden by a derived class; the base class implementation does nothing.
 
-### `unknown_endtag`(*tag*)
+### `unknown_endtag`(tag)
 
 This method is called to process an unknown end tag. It is intended to be overridden by a derived class; the base class implementation does nothing.
 
-### `unknown_charref`(*ref*)
+### `unknown_charref`(ref)
 
 This method is called to process unresolvable numeric character references. It is intended to be overridden by a derived class; the base class implementation does nothing.
 
-### `unknown_entityref`(*ref*)
+### `unknown_entityref`(ref)
 
 This method is called to process an unknown entity reference. It is intended to be overridden by a derived class; the base class implementation calls `syntax_error()` to signal an error.
 
@@ -18678,7 +18695,7 @@ Python and XML Processing
 
 SIG for XML Processing in Python
 
-## XML Namespaces <span id="xml-namespace" label="xml-namespace"></span>
+## XML Namespaces 
 
 This module has support for XML namespaces as defined in the XML Namespaces proposed recommendation. Tag and attribute names that are defined in an XML namespace are handled as if the name of the tag or element consisted of the namespace (i.e. the URL that defines the namespace) followed by a space and the name of the tag or attribute. For instance, the tag `<html xmlns=’http://www.w3.org/TR/REC-html40’>` is treated as if the tag name was `’http://www.w3.org/TR/REC-html40 html’`, and the tag `<html:a href=’http://frob.com’>` inside the above mentioned element is treated as if the tag name were `’http://www.w3.org/TR/REC-html40 a’` and the attribute name as if it were `’http://www.w3.org/TR/REC-html40 src’`.
 
@@ -18705,27 +18722,27 @@ The error raised for bad ZIP files.
 
 Level of printing, defaults to `1`.
 
-### class `ZipFile`(*...*)
+### class `ZipFile`(...)
 
 The class for reading and writing ZIP files. See “ZipFile Objects” (section <a href="#zipfile-objects" data-reference-type="ref" data-reference="zipfile-objects">[zipfile-objects]</a>) for constructor details.
 
-### `is_zipfile`(*path*)
+### `is_zipfile`(path)
 
 Returns true if *path* is a valid ZIP file based on its magic number, otherwise returns false. This module does not currently handle ZIP files which have appended comments.
 
-### `zip2date`(*zdate*)
+### `zip2date`(zdate)
 
 Return `(`*`year`*`, `*`month`*`, `*`day`*`)` for a ZIP date code.
 
-### `zip2time`(*ztime*)
+### `zip2time`(ztime)
 
 Return `(`*`hour`*`, `*`minute`*`, `*`second`*`)` for a ZIP time code.
 
-### `date2zip`(*year, month, day*)
+### `date2zip`(year, month, day)
 
 Return a ZIP date code.
 
-### `time2zip`(*hour, minute, second*)
+### `time2zip`(hour, minute, second)
 
 Return a ZIP time code.
 
@@ -18741,9 +18758,9 @@ The numeric constant for the usual ZIP compression method. This requires the zli
 
 XXX point to ZIP format definition XXX point to Info-ZIP home page; mention WiZ
 
-## ZipFile Objects <span id="zipfile-objects" label="zipfile-objects"></span>
+## ZipFile Objects 
 
-### class `ZipFile`(*filename*)
+### class `ZipFile`(filename)
 
 Open a ZIP file named *filename*. The *mode* parameter should be `’r’` to read an existing file, `’w’` to truncate and write a new file, or `’a’` to append to an existing file. For *mode* is `’a’` and *filename* refers to an existing ZIP file, then additional files are added to it. If *filename* does not refer to a ZIP file, then a new ZIP archive is appended to the file. This is meant for adding a ZIP archive to another file, such as `python.exe`. Using
 
@@ -18757,18 +18774,17 @@ XXX explain the "extra" string for the ZIP format
 
 A read-only dictionary whose keys are the names in the archive, and whose values are tuples as follows:
 
-|                |                                      |
-|:---------------|:-------------------------------------|
-| IndexMeaning 0 | File data seek offset                |
-| 1              | ZIP file "extra" data as a string    |
-| 2              | ZIP file bit flags                   |
-| 3              | ZIP file compression type            |
-| 4              | File modification time in DOS format |
-| 5              | File modification date in DOS format |
-| 6              | The CRC-32 of the uncompressed data  |
-| 7              | The compressed size of the file      |
-| 8              | The uncompressed size of the file    |
-|                |                                      |
+|     |                                      |
+|:----|:-------------------------------------|
+| 0   | File data seek offset                |
+| 1   | ZIP file "extra" data as a string    |
+| 2   | ZIP file bit flags                   |
+| 3   | ZIP file compression type            |
+| 4   | File modification time in DOS format |
+| 5   | File modification date in DOS format |
+| 6   | The CRC-32 of the uncompressed data  |
+| 7   | The compressed size of the file      |
+| 8   | The uncompressed size of the file    |
 
 The class ZipFile has these methods:
 
@@ -18780,19 +18796,19 @@ Return a list of names in the archive. Equivalent to *`zipfile`*`.TOC.keys()`.
 
 Print a table of contents for the archive to stdout.
 
-### `read`(*name*)
+### `read`(name)
 
 Return the bytes of the file in the archive. The archive must be open for read or append.
 
-### `writestr`(*bytes, arcname, year, month, day, hour, minute, second*)
+### `writestr`(bytes, arcname, year, month, day, hour, minute, second)
 
 Write the string *bytes* and the other data to the archive, and give the archive member the name *arcname*. *extra* is the ZIP extra data string. The archive must be opened with mode `’w’` or `’a’`.
 
-### `write`(*filename, arcname*)
+### `write`(filename, arcname)
 
 Write the file named *filename* to the archive, giving it the archive name *arcname*. *extra* is the ZIP extra data string. The archive must be open with mode `’w’` or `’a’`.
 
-### `writepy`(*pathname*)
+### `writepy`(pathname)
 
 Search for files `*.py` and add the corresponding file to the archive. The corresponding file is a `*.pyo` file if available, else a `*.pyc` file, compiling if necessary. If the pathname is a file, the filename must end with `.py`, and just the (corresponding `*.py[oc]`) file is added at the top level (no path information). If it is a directory, and the directory is not a package directory, then all the files `*.py[oc]` are added at the top level. If the directory is a package directory, then all `*.py[oc]` are added under the package name as a file path, and if any subdirectories are package directories, all of these are added recursively. *basename* is intended for internal use only. The `writepy()` method makes archives with file names like this:
 
@@ -18817,11 +18833,11 @@ The available exception and functions in this module are:
 
 Exception raised on compression and decompression errors.
 
-### `adler32`(*string*)
+### `adler32`(string)
 
 Computes a Adler-32 checksum of *string*. (An Adler-32 checksum is almost as reliable as a CRC32 but can be computed much more quickly.) If *value* is present, it is used as the starting value of the checksum; otherwise, a fixed default value is used. This allows computing a running checksum over the concatenation of several input strings. The algorithm is not cryptographically strong, and should not be used for authentication or digital signatures.
 
-### `compress`(*string*)
+### `compress`(string)
 
 Compresses the data in *string*, returning a string contained compressed data. *level* is an integer from `1` to `9` controlling the level of compression; `1` is fastest and produces the least compression, `9` is slowest and produces the most. The default value is `6`. Raises the `error` exception if any error occurs.
 
@@ -18829,11 +18845,11 @@ Compresses the data in *string*, returning a string contained compressed data. *
 
 Returns a compression object, to be used for compressing data streams that won’t fit into memory at once. *level* is an integer from `1` to `9` controlling the level of compression; `1` is fastest and produces the least compression, `9` is slowest and produces the most. The default value is `6`.
 
-### `crc32`(*string*)
+### `crc32`(string)
 
 Computes a CRC (Cyclic Redundancy Check) checksum of *string*. If *value* is present, it is used as the starting value of the checksum; otherwise, a fixed default value is used. This allows computing a running checksum over the concatenation of several input strings. The algorithm is not cryptographically strong, and should not be used for authentication or digital signatures.
 
-### `decompress`(*string*)
+### `decompress`(string)
 
 Decompresses the data in *string*, returning a string containing the uncompressed data. The *wbits* parameter controls the size of the window buffer. If *bufsize* is given, it is used as the initial size of the output buffer. Raises the `error` exception if any error occurs.
 
@@ -18847,7 +18863,7 @@ Returns a compression object, to be used for decompressing data streams that won
 
 Compression objects support the following methods:
 
-### `compress`(*string*)
+### `compress`(string)
 
 Compress *string*, returning a string containing compressed data for at least part of the data in *string*. This data should be concatenated to the output produced by any preceding calls to the `compress()` method. Some input may be kept in internal buffers for later processing.
 
@@ -18863,7 +18879,7 @@ A string which contains any unused data from the last string fed to this decompr
 
 The only way to determine where a string of compressed data ends is by actually decompressing it. This means that when compressed data is contained part of a larger file, you can only find the end of it by reading data and feeding it into a decompression object’s `decompress` method until the `unused_data` attribute is no longer the empty string.
 
-### `decompress`(*string*)
+### `decompress`(string)
 
 Decompress *string*, returning a string containing the uncompressed data corresponding to at least part of the data in *string*. This data should be concatenated to the output produced by any preceding calls to the `decompress()` method. Some of the input data may be preserved in internal buffers for later processing.
 

@@ -40,7 +40,9 @@ _run_pandoc() {
         --to=gfm \
         --wrap=none \
         --syntax-highlighting=none \
-        "$tmpfile" 2>/dev/null || true
+        "$tmpfile" 2>/dev/null \
+    | sed 's/\\\*/*/g; s/\\_/_/g; s/\\\[/[/g; s/\\\]/]/g' \
+    || true
     rm -f "$tmpfile"
 }
 

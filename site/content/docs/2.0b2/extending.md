@@ -7,7 +7,7 @@ weight: 40
 
 The following people have contributed sections to this document: Jim Fulton, Konrad Hinsen, Chris Phoenix, and Neil Schemenauer.
 
-# Extending Python with C or C++ <span id="intro" label="intro"></span>
+# Extending Python with C or C++ 
 
 It is quite easy to add new built-in modules to Python, if you know how to program in C. Such *extension modules* can do two things that can’t be done directly in Python: they can implement new built-in object types, and they can call C library functions and system calls.
 
@@ -15,7 +15,7 @@ To support extensions, the Python API (Application Programmers Interface) define
 
 The compilation of an extension module depends on its intended use as well as on your system setup; details are given in later chapters.
 
-## A Simple Example <span id="simpleExample" label="simpleExample"></span>
+## A Simple Example 
 
 Let’s create an extension module called `spam` (the favorite food of Monty Python fans...) and let’s say we want to create a Python interface to the C library function .[^1] This function takes a null-terminated character string as argument and returns an integer. We want this function to be callable from Python as follows:
 
@@ -56,7 +56,7 @@ The *args* argument will be a pointer to a Python tuple object containing the ar
 
 returns true (nonzero) if all arguments have the right type and its components have been stored in the variables whose addresses are passed. It returns false (zero) if an invalid argument list was passed. In the latter case it also raises an appropriate exception so the calling function can return NULL immediately (as we saw in the example).
 
-## Intermezzo: Errors and Exceptions <span id="errors" label="errors"></span>
+## Intermezzo: Errors and Exceptions 
 
 An important convention throughout the Python interpreter is the following: when a function fails, it should set an exception condition and return an error value (usually a NULL pointer). Exceptions are stored in a static global variable inside the interpreter; if this variable is NULL no exception has occurred. A second global variable stores the “associated value” of the exception (the second argument to ). A third variable contains the stack traceback in case the error originated in Python code. These three variables are the C equivalents of the Python variables `sys.exc_type`, `sys.exc_value` and `sys.exc_traceback` (see the section on module `sys` in the Python Library Reference). It is important to know about them to understand how errors are passed around.
 
@@ -101,7 +101,7 @@ and initialize it in your module’s initialization function () with an exceptio
 
 Note that the Python name for the exception object is `spam.error`. The function may create either a string or class, depending on whether the `-X` flag was passed to the interpreter. If `-X` was used, will be a string object, otherwise it will be a class object with the base class being `Exception`, described in the Python Library Reference under “Built-in Exceptions.”
 
-## Back to the Example <span id="backToExample" label="backToExample"></span>
+## Back to the Example 
 
 Going back to our example function, you should now be able to understand this statement:
 
@@ -127,7 +127,7 @@ If you have a C function that returns no useful argument (a function returning `
 
 is the C name for the special Python object `None`. It is a genuine Python object rather than a NULL pointer, which means “error” in most contexts, as we have seen.
 
-## The Module’s Method Table and Initialization Function <span id="methodTable" label="methodTable"></span>
+## The Module’s Method Table and Initialization Function 
 
 I promised to show how is called from Python programs. First, we need to list its name and address in a “method table”:
 
@@ -175,7 +175,7 @@ And example may be found in the file `Demo/embed/demo.c` in the Python source di
 
 A more substantial example module is included in the Python source distribution as `Modules/xxmodule.c`. This file may be used as a template or simply read as an example. The script included in the source distribution or Windows install provides a simple graphical user interface for declaring the functions and objects which a module should implement, and can generate a template which can be filled in. The script lives in the `Tools/modulator/` directory; see the `README` file there for more information.
 
-## Compilation and Linkage <span id="compilation" label="compilation"></span>
+## Compilation and Linkage 
 
 There are two more things to do before you can use your new extension: compiling and linking it with the Python system. If you use dynamic loading, the details depend on the style of dynamic loading your system uses; see the chapters about building extension modules on Unix (chapter <a href="#building-on-unix" data-reference-type="ref" data-reference="building-on-unix">[building-on-unix]</a>) and Windows (chapter <a href="#building-on-windows" data-reference-type="ref" data-reference="building-on-windows">[building-on-windows]</a>) for more information about this.
 
@@ -189,7 +189,7 @@ If your module requires additional libraries to link with, these can be listed o
 
     spam spammodule.o -lX11
 
-## Calling Python Functions from C <span id="callingPython" label="callingPython"></span>
+## Calling Python Functions from C 
 
 So far we have concentrated on making C functions callable from Python. The reverse is also useful: calling Python functions from C. This is especially the case for libraries that support so-called “callback” functions. If a C interface makes use of callbacks, the equivalent Python often needs to provide a callback mechanism to the Python programmer; the implementation will require calling the Python callback functions from a C callback. Other uses are also imaginable.
 
@@ -263,7 +263,7 @@ Depending on the desired interface to the Python callback function, you may also
 
 Note the placement of `Py_DECREF(arglist)` immediately after the call, before the error check! Also note that strictly spoken this code is not complete: may run out of memory, and this should be checked.
 
-## Format Strings for <span id="parseTuple" label="parseTuple"></span>
+## Format Strings for 
 
 The function is declared as follows:
 
@@ -273,103 +273,103 @@ The *arg* argument must be a tuple object containing an argument list passed fro
 
 Note that while checks that the Python arguments have the required types, it cannot check the validity of the addresses of C variables passed to the call: if you make mistakes there, your code will probably crash or at least overwrite random bits in memory. So be careful!
 
-A format string consists of zero or more “format units”. A format unit describes one Python object; it is usually a single character or a parenthesized sequence of format units. With a few exceptions, a format unit that is not a parenthesized sequence normally corresponds to a single address argument to . In the following description, the quoted form is the format unit; the entry in (round) parentheses is the Python object type that matches the format unit; and the entry in \[square\] brackets is the type of the C variable(s) whose address should be passed. (Use the `&` operator to pass a variable’s address.)
+A format string consists of zero or more “format units”. A format unit describes one Python object; it is usually a single character or a parenthesized sequence of format units. With a few exceptions, a format unit that is not a parenthesized sequence normally corresponds to a single address argument to . In the following description, the quoted form is the format unit; the entry in (round) parentheses is the Python object type that matches the format unit; and the entry in [square] brackets is the type of the C variable(s) whose address should be passed. (Use the `&` operator to pass a variable’s address.)
 
 Note that any Python object references which are provided to the caller are *borrowed* references; do not decrement their reference count!
 
-`s` (string or Unicode object) \[char \*\]  
+`s` (string or Unicode object) [char *]  
 Convert a Python string or Unicode object to a C pointer to a character string. You must not provide storage for the string itself; a pointer to an existing string is stored into the character pointer variable whose address you pass. The C string is null-terminated. The Python string must not contain embedded null bytes; if it does, a `TypeError` exception is raised. Unicode objects are converted to C strings using the default encoding. If this conversion fails, an `UnicodeError` is raised.
 
-`s#` (string, Unicode or any read buffer compatible object) \[char \*, int\]  
+`s#` (string, Unicode or any read buffer compatible object) [char *, int]  
 This variant on `s` stores into two C variables, the first one a pointer to a character string, the second one its length. In this case the Python string may contain embedded null bytes. Unicode objects pass back a pointer to the default encoded string version of the object if such a conversion is possible. All other read buffer compatible objects pass back a reference to the raw internal data representation.
 
-`z` (string or `None`) \[char \*\]  
+`z` (string or `None`) [char *]  
 Like `s`, but the Python object may also be `None`, in which case the C pointer is set to NULL.
 
-`z#` (string or `None` or any read buffer compatible object) \[char \*, int\]  
+`z#` (string or `None` or any read buffer compatible object) [char *, int]  
 This is to `s#` as `z` is to `s`.
 
-`u` (Unicode object) \[Py_UNICODE \*\]  
+`u` (Unicode object) [Py_UNICODE *]  
 Convert a Python Unicode object to a C pointer to a null-terminated buffer of 16-bit Unicode (UTF-16) data. As with `s`, there is no need to provide storage for the Unicode data buffer; a pointer to the existing Unicode data is stored into the Py_UNICODE pointer variable whose address you pass.
 
-`u#` (Unicode object) \[Py_UNICODE \*, int\]  
+`u#` (Unicode object) [Py_UNICODE *, int]  
 This variant on `u` stores into two C variables, the first one a pointer to a Unicode data buffer, the second one its length.
 
-`es` (string, Unicode object or character buffer compatible object) \[const char \*encoding, char \*\*buffer\]  
+`es` (string, Unicode object or character buffer compatible object) [const char *encoding, char **buffer]  
 This variant on `s` is used for encoding Unicode and objects convertible to Unicode into a character buffer. It only works for encoded data without embedded NULL bytes.
 
-The variant reads one C variable and stores into two C variables, the first one a pointer to an encoding name string (*encoding*), the second a pointer to a pointer to a character buffer (*\*\*buffer*, the buffer used for storing the encoded data) and the third one a pointer to an integer (*\*buffer_length*, the buffer length).
+The variant reads one C variable and stores into two C variables, the first one a pointer to an encoding name string (*encoding*), the second a pointer to a pointer to a character buffer (***buffer*, the buffer used for storing the encoded data) and the third one a pointer to an integer (**buffer_length*, the buffer length).
 
 The encoding name must map to a registered codec. If set to NULL, the default encoding is used.
 
-will allocate a buffer of the needed size using , copy the encoded data into this buffer and adjust *\*buffer* to reference the newly allocated storage. The caller is responsible for calling to free the allocated buffer after usage.
+will allocate a buffer of the needed size using , copy the encoded data into this buffer and adjust **buffer* to reference the newly allocated storage. The caller is responsible for calling to free the allocated buffer after usage.
 
-`es#` (string, Unicode object or character buffer compatible object) \[const char \*encoding, char \*\*buffer, int \*buffer_length\]  
-This variant on `s#` is used for encoding Unicode and objects convertible to Unicode into a character buffer. It reads one C variable and stores into two C variables, the first one a pointer to an encoding name string (*encoding*), the second a pointer to a pointer to a character buffer (*\*\*buffer*, the buffer used for storing the encoded data) and the third one a pointer to an integer (*\*buffer_length*, the buffer length).
+`es#` (string, Unicode object or character buffer compatible object) [const char *encoding, char **buffer, int *buffer_length]  
+This variant on `s#` is used for encoding Unicode and objects convertible to Unicode into a character buffer. It reads one C variable and stores into two C variables, the first one a pointer to an encoding name string (*encoding*), the second a pointer to a pointer to a character buffer (***buffer*, the buffer used for storing the encoded data) and the third one a pointer to an integer (**buffer_length*, the buffer length).
 
 The encoding name must map to a registered codec. If set to NULL, the default encoding is used.
 
 There are two modes of operation:
 
-If *\*buffer* points a NULL pointer, will allocate a buffer of the needed size using , copy the encoded data into this buffer and adjust *\*buffer* to reference the newly allocated storage. The caller is responsible for calling to free the allocated buffer after usage.
+If **buffer* points a NULL pointer, will allocate a buffer of the needed size using , copy the encoded data into this buffer and adjust **buffer* to reference the newly allocated storage. The caller is responsible for calling to free the allocated buffer after usage.
 
-If *\*buffer* points to a non-NULL pointer (an already allocated buffer), will use this location as buffer and interpret *\*buffer_length* as buffer size. It will then copy the encoded data into the buffer and 0-terminate it. Buffer overflow is signalled with an exception.
+If **buffer* points to a non-NULL pointer (an already allocated buffer), will use this location as buffer and interpret **buffer_length* as buffer size. It will then copy the encoded data into the buffer and 0-terminate it. Buffer overflow is signalled with an exception.
 
-In both cases, *\*buffer_length* is set to the length of the encoded data without the trailing 0-byte.
+In both cases, **buffer_length* is set to the length of the encoded data without the trailing 0-byte.
 
-`b` (integer) \[char\]  
+`b` (integer) [char]  
 Convert a Python integer to a tiny int, stored in a C `char`.
 
-`h` (integer) \[short int\]  
+`h` (integer) [short int]  
 Convert a Python integer to a C `short int`.
 
-`i` (integer) \[int\]  
+`i` (integer) [int]  
 Convert a Python integer to a plain C `int`.
 
-`l` (integer) \[long int\]  
+`l` (integer) [long int]  
 Convert a Python integer to a C `long int`.
 
-`c` (string of length 1) \[char\]  
+`c` (string of length 1) [char]  
 Convert a Python character, represented as a string of length 1, to a C `char`.
 
-`f` (float) \[float\]  
+`f` (float) [float]  
 Convert a Python floating point number to a C `float`.
 
-`d` (float) \[double\]  
+`d` (float) [double]  
 Convert a Python floating point number to a C `double`.
 
-`D` (complex) \[Py_complex\]  
+`D` (complex) [Py_complex]  
 Convert a Python complex number to a C `Py_complex` structure.
 
-`O` (object) \[PyObject \*\]  
+`O` (object) [PyObject *]  
 Store a Python object (without any conversion) in a C object pointer. The C program thus receives the actual object that was passed. The object’s reference count is not increased. The pointer stored is not NULL.
 
-`O!` (object) \[*typeobject*, PyObject \*\]  
+`O!` (object) [*typeobject*, PyObject *]  
 Store a Python object in a C object pointer. This is similar to `O`, but takes two C arguments: the first is the address of a Python type object, the second is the address of the C variable (of type `PyObject *`) into which the object pointer is stored. If the Python object does not have the required type, `TypeError` is raised.
 
-`O&` (object) \[*converter*, *anything*\]  
+`O&` (object) [*converter*, *anything*]  
 Convert a Python object to a C variable through a *converter* function. This takes two arguments: the first is a function, the second is the address of a C variable (of arbitrary type), converted to `void *`. The *converter* function in turn is called as follows:
 
 *status*` = `*converter*`(`*object*, *address*`);`
 
 where *object* is the Python object to be converted and *address* is the `void *` argument that was passed to . The returned *status* should be `1` for a successful conversion and `0` if the conversion has failed. When the conversion fails, the *converter* function should raise an exception.
 
-`S` (string) \[PyStringObject \*\]  
+`S` (string) [PyStringObject *]  
 Like `O` but requires that the Python object is a string object. Raises `TypeError` if the object is not a string object. The C variable may also be declared as `PyObject *`.
 
-`U` (Unicode string) \[PyUnicodeObject \*\]  
+`U` (Unicode string) [PyUnicodeObject *]  
 Like `O` but requires that the Python object is a Unicode object. Raises `TypeError` if the object is not a Unicode object. The C variable may also be declared as `PyObject *`.
 
-`t#` (read-only character buffer) \[char \*, int\]  
+`t#` (read-only character buffer) [char *, int]  
 Like `s#`, but accepts any object which implements the read-only buffer interface. The `char *` variable is set to point to the first byte of the buffer, and the `int` is set to the length of the buffer. Only single-segment buffer objects are accepted; `TypeError` is raised for all others.
 
-`w` (read-write character buffer) \[char \*\]  
+`w` (read-write character buffer) [char *]  
 Similar to `s`, but accepts any object which implements the read-write buffer interface. The caller must determine the length of the buffer by other means, or use `w#` instead. Only single-segment buffer objects are accepted; `TypeError` is raised for all others.
 
-`w#` (read-write character buffer) \[char \*, int\]  
+`w#` (read-write character buffer) [char *, int]  
 Like `s#`, but accepts any object which implements the read-write buffer interface. The `char *` variable is set to point to the first byte of the buffer, and the `int` is set to the length of the buffer. Only single-segment buffer objects are accepted; `TypeError` is raised for all others.
 
-`(`*`items`*`)` (tuple) \[*matching-items*\]  
+`(`*`items`*`)` (tuple) [*matching-items*]  
 The object must be a Python sequence whose length is the number of format units in *items*. The C arguments must correspond to the individual format units in *items*. Format units for sequences may be nested.
 
 **Note:** Prior to Python version 1.5.2, this format specifier only accepted a tuple containing the individual parameters, not an arbitrary sequence. Code which previously caused `TypeError` to be raised here may now proceed without an exception. This is not expected to be a problem for existing code.
@@ -436,7 +436,7 @@ Some example calls:
             /* Possible Python call: myfunction(1+2j) */
         }
 
-## Keyword Parsing with <span id="parseTupleAndKeywords" label="parseTupleAndKeywords"></span>
+## Keyword Parsing with 
 
 The function is declared as follows:
 
@@ -494,7 +494,7 @@ Here is an example module which uses keywords, based on an example by Geoff Phil
       Py_InitModule("keywdarg", keywdarg_methods);
     }
 
-## The Function <span id="buildValue" label="buildValue"></span>
+## The Function 
 
 This function is the counterpart to . It is declared as follows:
 
@@ -506,77 +506,77 @@ One difference with : while the latter requires its first argument to be a tuple
 
 When memory buffers are passed as parameters to supply data to build objects, as for the `s` and `s#` formats, the required data is copied. Buffers provided by the caller are never referenced by the objects created by . In other words, if your code invokes and passes the allocated memory to , your code is responsible for calling for that memory once returns.
 
-In the following description, the quoted form is the format unit; the entry in (round) parentheses is the Python object type that the format unit will return; and the entry in \[square\] brackets is the type of the C value(s) to be passed.
+In the following description, the quoted form is the format unit; the entry in (round) parentheses is the Python object type that the format unit will return; and the entry in [square] brackets is the type of the C value(s) to be passed.
 
 The characters space, tab, colon and comma are ignored in format strings (but not within format units such as `s#`). This can be used to make long format strings a tad more readable.
 
-`s` (string) \[char \*\]  
+`s` (string) [char *]  
 Convert a null-terminated C string to a Python object. If the C string pointer is NULL, `None` is used.
 
-`s#` (string) \[char \*, int\]  
+`s#` (string) [char *, int]  
 Convert a C string and its length to a Python object. If the C string pointer is NULL, the length is ignored and `None` is returned.
 
-`z` (string or `None`) \[char \*\]  
+`z` (string or `None`) [char *]  
 Same as `s`.
 
-`z#` (string or `None`) \[char \*, int\]  
+`z#` (string or `None`) [char *, int]  
 Same as `s#`.
 
-`u` (Unicode string) \[Py_UNICODE \*\]  
+`u` (Unicode string) [Py_UNICODE *]  
 Convert a null-terminated buffer of Unicode (UCS-2) data to a Python Unicode object. If the Unicode buffer pointer is NULL, `None` is returned.
 
-`u#` (Unicode string) \[Py_UNICODE \*, int\]  
+`u#` (Unicode string) [Py_UNICODE *, int]  
 Convert a Unicode (UCS-2) data buffer and its length to a Python Unicode object. If the Unicode buffer pointer is NULL, the length is ignored and `None` is returned.
 
-`u` (Unicode string) \[Py_UNICODE \*\]  
+`u` (Unicode string) [Py_UNICODE *]  
 Convert a null-terminated buffer of Unicode (UCS-2) data to a Python Unicode object. If the Unicode buffer pointer is NULL, `None` is returned.
 
-`u#` (Unicode string) \[Py_UNICODE \*, int\]  
+`u#` (Unicode string) [Py_UNICODE *, int]  
 Convert a Unicode (UCS-2) data buffer and its length to a Python Unicode object. If the Unicode buffer pointer is NULL, the length is ignored and `None` is returned.
 
-`i` (integer) \[int\]  
+`i` (integer) [int]  
 Convert a plain C `int` to a Python integer object.
 
-`b` (integer) \[char\]  
+`b` (integer) [char]  
 Same as `i`.
 
-`h` (integer) \[short int\]  
+`h` (integer) [short int]  
 Same as `i`.
 
-`l` (integer) \[long int\]  
+`l` (integer) [long int]  
 Convert a C `long int` to a Python integer object.
 
-`c` (string of length 1) \[char\]  
+`c` (string of length 1) [char]  
 Convert a C `int` representing a character to a Python string of length 1.
 
-`d` (float) \[double\]  
+`d` (float) [double]  
 Convert a C `double` to a Python floating point number.
 
-`f` (float) \[float\]  
+`f` (float) [float]  
 Same as `d`.
 
-`O` (object) \[PyObject \*\]  
+`O` (object) [PyObject *]  
 Pass a Python object untouched (except for its reference count, which is incremented by one). If the object passed in is a NULL pointer, it is assumed that this was caused because the call producing the argument found an error and set an exception. Therefore, will return NULL but won’t raise an exception. If no exception has been raised yet, is set.
 
-`S` (object) \[PyObject \*\]  
+`S` (object) [PyObject *]  
 Same as `O`.
 
-`U` (object) \[PyObject \*\]  
+`U` (object) [PyObject *]  
 Same as `O`.
 
-`N` (object) \[PyObject \*\]  
+`N` (object) [PyObject *]  
 Same as `O`, except it doesn’t increment the reference count on the object. Useful when the object is created by a call to an object constructor in the argument list.
 
-`O&` (object) \[*converter*, *anything*\]  
+`O&` (object) [*converter*, *anything*]  
 Convert *anything* to a Python object through a *converter* function. The function is called with *anything* (which should be compatible with `void *`) as its argument and should return a “new” Python object, or NULL if an error occurred.
 
-`(`*`items`*`)` (tuple) \[*matching-items*\]  
+`(`*`items`*`)` (tuple) [*matching-items*]  
 Convert a sequence of C values to a Python tuple with the same number of items.
 
-`[`*`items`*`]` (list) \[*matching-items*\]  
+`[`*`items`*`]` (list) [*matching-items*]  
 Convert a sequence of C values to a Python list with the same number of items.
 
-`{`*`items`*`}` (dictionary) \[*matching-items*\]  
+`{`*`items`*`}` (dictionary) [*matching-items*]  
 Convert a sequence of C values to a Python dictionary. Each pair of consecutive C values adds one item to the dictionary, serving as key and value, respectively.
 
 If there is an error in the format string, the exception is raised and NULL returned.
@@ -599,7 +599,7 @@ Examples (to the left the call, to the right the resulting Python value):
         Py_BuildValue("((ii)(ii)) (ii)",
                       1, 2, 3, 4, 5, 6)          (((1, 2), (3, 4)), (5, 6))
 
-## Reference Counts <span id="refcounts" label="refcounts"></span>
+## Reference Counts 
 
 In languages like C or C++, the programmer is responsible for dynamic allocation and deallocation of memory on the heap. In C, this is done using the functions and . In C++, the operators and are used with essentially the same meaning; they are actually implemented using and , so we’ll restrict the following discussion to the latter.
 
@@ -611,7 +611,7 @@ Since Python makes heavy use of and , it needs a strategy to avoid memory leaks 
 
 An alternative strategy is called *automatic garbage collection*. (Sometimes, reference counting is also referred to as a garbage collection strategy, hence my use of “automatic” to distinguish the two.) The big advantage of automatic garbage collection is that the user doesn’t need to call explicitly. (Another claimed advantage is an improvement in speed or memory usage — this is no hard fact however.) The disadvantage is that for C, there is no truly portable automatic garbage collector, while reference counting can be implemented portably (as long as the functions and are available — which the C Standard guarantees). Maybe some day a sufficiently portable automatic garbage collector will be available for C. Until then, we’ll have to live with reference counts.
 
-### Reference Counting in Python <span id="refcountsInPython" label="refcountsInPython"></span>
+### Reference Counting in Python 
 
 There are two macros, `Py_INCREF(x)` and `Py_DECREF(x)`, which handle the incrementing and decrementing of the reference count. also frees the object when the count reaches zero. For flexibility, it doesn’t call directly — rather, it makes a call through a function pointer in the object’s *type object*. For this purpose (and others), every object also contains a pointer to its type object.
 
@@ -623,7 +623,7 @@ The advantage of borrowing over owning a reference is that you don’t need to t
 
 A borrowed reference can be changed into an owned reference by calling . This does not affect the status of the owner from which the reference was borrowed — it creates a new owned reference, and gives full owner responsibilities (i.e., the new owner must dispose of the reference properly, as well as the previous owner).
 
-### Ownership Rules <span id="ownershipRules" label="ownershipRules"></span>
+### Ownership Rules 
 
 Whenever an object reference is passed into or out of a function, it is part of the function’s interface specification whether ownership is transferred with the reference or not.
 
@@ -639,7 +639,7 @@ When a C function is called from Python, it borrows references to its arguments 
 
 The object reference returned from a C function that is called from Python must be an owned reference — ownership is tranferred from the function to its caller.
 
-### Thin Ice <span id="thinIce" label="thinIce"></span>
+### Thin Ice 
 
 There are a few situations where seemingly harmless use of a borrowed reference can lead to problems. These all have to do with implicit invocations of the interpreter, which can cause the owner of a reference to dispose of it.
 
@@ -681,7 +681,7 @@ The second case of problems with a borrowed reference is a variant involving thr
         PyObject_Print(item, stdout, 0); /* BUG! */
     }
 
-### NULL Pointers <span id="nullPointers" label="nullPointers"></span>
+### NULL Pointers 
 
 In general, functions that take object references as arguments do not expect you to pass them NULL pointers, and will dump core (or cause later core dumps) if you do so. Functions that return object references generally return NULL only to indicate that an exception occurred. The reason for not testing for NULL arguments is that functions often pass the objects they receive on to other function — if each function were to test for NULL, there would be a lot of redundant tests and the code would run more slowly.
 
@@ -695,11 +695,11 @@ The C function calling mechanism guarantees that the argument list passed to C f
 
 It is a severe error to ever let a NULL pointer “escape” to the Python user.
 
-## Writing Extensions in C++ <span id="cplusplus" label="cplusplus"></span>
+## Writing Extensions in C++ 
 
 It is possible to write extension modules in C++. Some restrictions apply. If the main program (the Python interpreter) is compiled and linked by the C compiler, global or static objects with constructors cannot be used. This is not a problem if the main program is linked by the C++ compiler. Functions that will be called by the Python interpreter (in particular, module initalization functions) have to be declared using `extern "C"`. It is unnecessary to enclose the Python header files in `extern "C" {...}` — they use this form already if the symbol `__cplusplus` is defined (all recent C++ compilers define this symbol).
 
-## Providing a C API for an Extension Module <span id="using-cobjects" label="using-cobjects"></span>
+## Providing a C API for an Extension Module 
 
 Many extension modules just provide new functions and types to be used from Python, but sometimes the code in an extension module can be useful for other extension modules. For example, an extension module could implement a type “collection” which works like lists without order. Just like the standard Python list type has a C API which permits extension modules to create and manipulate lists, this new collection type should have a set of C functions for direct manipulation from other extension modules.
 
@@ -839,7 +839,7 @@ The main disadvantage of this approach is that the file `spammodule.h` is rather
 
 Finally it should be mentioned that CObjects offer additional functionality, which is especially useful for memory allocation and deallocation of the pointer stored in a CObject. The details are described in the Python/C API Reference Manual in the section “CObjects” and in the implementation of CObjects (files `Include/cobject.h` and `Objects/cobject.c` in the Python source code distribution).
 
-# Building C and C++ Extensions on Unix <span id="building-on-unix" label="building-on-unix"></span>
+# Building C and C++ Extensions on Unix 
 
 Starting in Python 1.4, Python provides a special make file for building make files for building dynamically-linked extensions and custom interpreters. The make file make file builds a make file that reflects various system variables determined by configure when the Python interpreter was built, so people building module’s don’t have to resupply these settings. This vastly simplifies the process of building extensions and custom interpreters on Unix systems.
 
@@ -891,7 +891,7 @@ This creates the file, Makefile. To build the extensions, simply run the created
 
 It’s not necessary to re-run `Makefile.pre.in` if the `Setup` file is changed. The make file automatically rebuilds itself if the `Setup` file changes.
 
-## Building Custom Interpreters <span id="custom-interps" label="custom-interps"></span>
+## Building Custom Interpreters 
 
 The make file built by `Makefile.pre.in` can be run with the `static` target to build an interpreter:
 
@@ -899,20 +899,20 @@ The make file built by `Makefile.pre.in` can be run with the `static` target to 
 
 Any modules defined in the Setup file before the `*shared*` line will be statically linked into the interpreter. Typically, a `*shared*` line is omitted from the Setup file when a custom interpreter is desired.
 
-## Module Definition Options <span id="module-defn-options" label="module-defn-options"></span>
+## Module Definition Options 
 
 Several compiler options are supported:
 
-|                  |                                                  |
-|:-----------------|:-------------------------------------------------|
-| OptionMeaning -C | Tell the C pre-processor not to discard comments |
-| -D               |                                                  |
-| =*value*         |                                                  |
-|                  |                                                  |
-|                  |                                                  |
-|                  |                                                  |
-|                  |                                                  |
-|                  |                                                  |
+|          |                                                  |
+|:---------|:-------------------------------------------------|
+| -C       | Tell the C pre-processor not to discard comments |
+| -D       |                                                  |
+| =*value* |                                                  |
+|          |                                                  |
+|          |                                                  |
+|          |                                                  |
+|          |                                                  |
+|          |                                                  |
 
 Other compiler options can be included (snuck in) by putting them in variables.
 
@@ -920,7 +920,7 @@ Source files can include files with `.c`, `.C`, `.cc`, `.cpp`, `.cxx`, and `.c++
 
 Other input files include files with `.a`, `.o`, `.sl`, and `.so` extensions.
 
-## Example <span id="module-defn-example" label="module-defn-example"></span>
+## Example 
 
 Here is a more complicated example from `Modules/Setup.in`:
 
@@ -931,7 +931,7 @@ which could also be written as:
 
     mpz mpzmodule.c -I$(GMP) -L$(GMP) -lgmp
 
-## Distributing your extension modules <span id="distributing" label="distributing"></span>
+## Distributing your extension modules 
 
 When distributing your extension modules in source form, make sure to include a `Setup` file. The `Setup` file should be named `Setup.in` in the distribution. The make file make file, `Makefile.pre.in`, will copy `Setup.in` to `Setup`. Distributing a `Setup.in` file makes it easy for people to customize the `Setup` file while keeping the original in `Setup.in`.
 
@@ -941,11 +941,11 @@ Do not distribute a make file. People building your modules should use `Makefile
 
 Work is being done to make building and installing Python extensions easier for all platforms; this work in likely to supplant the current approach at some point in the future. For more information or to participate in the effort, refer to `http://www.python.org/sigs/distutils-sig/` on the Python Web site.
 
-# Building C and C++ Extensions on Windows <span id="building-on-windows" label="building-on-windows"></span>
+# Building C and C++ Extensions on Windows 
 
 This chapter briefly explains how to create a Windows extension module for Python using Microsoft Visual C++, and follows with more detailed background information on how it works. The explanatory material is useful for both the Windows programmer learning to build Python extensions and the Unix programmer interested in producing software which can be successfully built on both Unix and Windows.
 
-## A Cookbook Approach <span id="win-cookbook" label="win-cookbook"></span>
+## A Cookbook Approach 
 
 This section provides a recipe for building a Python extension on Windows.
 
@@ -973,7 +973,7 @@ and add the following to the module initialization function:
 
 Refer to section 3 of the Python FAQ (`http://www.python.org/doc/FAQ.html`) for details on why you must do this.
 
-## Differences Between Unix and Windows <span id="dynamic-linking" label="dynamic-linking"></span>
+## Differences Between Unix and Windows 
 
 Unix and Windows use completely different paradigms for run-time loading of code. Before you try to build a module that can be dynamically loaded, be aware of how your system works.
 
@@ -989,7 +989,7 @@ Suppose you are building two dynamic-load modules, B and C, which should share a
 
 In Windows, using an import library is sort of like using `import spam`; it gives you access to spam’s names, but does not create a separate copy. On Unix, linking with a library is more like `from spam import *`; it does create a separate copy.
 
-## Using DLLs in Practice <span id="win-dlls" label="win-dlls"></span>
+## Using DLLs in Practice 
 
 Windows Python is built in Microsoft Visual C++; using other compilers may or may not work (though Borland seems to). The rest of this section is MSVC++ specific.
 
@@ -1006,7 +1006,7 @@ Not every identifier is exported to the lookup table. If you want any other modu
 
 Developer Studio will throw in a lot of import libraries that you do not really need, adding about 100K to your executable. To get rid of them, use the Project Settings dialog, Link tab, to specify *ignore default libraries*. Add the correct `msvcrt`*`xx`*`.lib` to the list of libraries.
 
-# Embedding Python in Another Application <span id="embedding" label="embedding"></span>
+# Embedding Python in Another Application 
 
 Embedding Python is similar to extending it, but not quite. The difference is that when you extend Python, the main program of the application is still the Python interpreter, while if you embed Python, the main program may have nothing to do with Python — instead, some parts of the application occasionally call the Python interpreter to run some Python code.
 
@@ -1016,11 +1016,11 @@ There are several different ways to call the interpreter: you can pass a string 
 
 A simple demo of embedding Python can be found in the directory `Demo/embed/` of the source distribution.
 
-## Embedding Python in C++ <span id="embeddingInCplusplus" label="embeddingInCplusplus"></span>
+## Embedding Python in C++ 
 
 It is also possible to embed Python in a C++ program; precisely how this is done will depend on the details of the C++ system used; in general you will need to write the main program in C++, and use the C++ compiler to compile and link your program. There is no need to recompile Python itself using C++.
 
-## Linking Requirements <span id="link-reqs" label="link-reqs"></span>
+## Linking Requirements 
 
 While the script shipped with the Python sources will correctly build Python to export the symbols needed by dynamically linked extensions, this is not automatically inherited by applications which embed the Python library statically, at least on Unix. This is an issue when the application is linked to the static runtime library (`libpython.a`) and needs to load dynamic extensions (implemented as `.so` files).
 

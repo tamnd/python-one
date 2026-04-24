@@ -23,7 +23,7 @@ The following functions are available in this module: `chdir()`, `close()`, `dup
 
 One additional function is available:
 
-### `xstat`(*path*)
+### `xstat`(path)
 
 This function returns the same information as `stat()`, but with three additional values appended: the size of the resource fork of the file and its 4-character creator and type.
 
@@ -65,11 +65,11 @@ Bits in the status as returned by `Status()`.
 
 Return `1` if the Communication Toolbox is available, zero otherwise.
 
-### `CMNew`(*name, sizes*)
+### `CMNew`(name, sizes)
 
 Create a connection object using the connection tool named *name*. *sizes* is a 6-tuple given buffer sizes for data in, data out, control in, control out, attention in and attention out. Alternatively, passing `None` for *sizes* will result in default buffer sizes.
 
-## Connection Objects <span id="connection-object" label="connection-object"></span>
+## Connection Objects 
 
 For all connection methods that take a *timeout* argument, a value of `-1` is indefinite, meaning that the command runs to completion.
 
@@ -79,27 +79,27 @@ If this member is set to a value other than `None` it should point to a function
 
 *Note:* for reasons beyond my understanding the callback routine is currently never called. You are advised against using asynchronous calls for the time being.
 
-### `Open`(*timeout*)
+### `Open`(timeout)
 
 Open an outgoing connection, waiting at most *timeout* seconds for the connection to be established.
 
-### `Listen`(*timeout*)
+### `Listen`(timeout)
 
 Wait for an incoming connection. Stop waiting after *timeout* seconds. This call is only meaningful to some tools.
 
-### `accept`(*yesno*)
+### `accept`(yesno)
 
 Accept (when *yesno* is non-zero) or reject an incoming call after `Listen()` returned.
 
-### `Close`(*timeout, now*)
+### `Close`(timeout, now)
 
 Close a connection. When *now* is zero, the close is orderly (i.e. outstanding output is flushed, etc.) with a timeout of *timeout* seconds. When *now* is non-zero the close is immediate, discarding output.
 
-### `Read`(*len, chan, timeout*)
+### `Read`(len, chan, timeout)
 
 Read *len* bytes, or until *timeout* seconds have passed, from the channel *chan* (which is one of , or ). Return a 2-tuple: the data read and the end-of-message flag, .
 
-### `Write`(*buf, chan, timeout, eom*)
+### `Write`(buf, chan, timeout, eom)
 
 Write *buf* to channel *chan*, aborting after *timeout* seconds. When *eom* has the value , an end-of-message indicator will be written after the data (if this concept has a meaning for this communication tool). The method returns the number of bytes written.
 
@@ -111,7 +111,7 @@ Return connection status as the 2-tuple `(`*`sizes`*`, `*`flags`*`)`. *sizes* is
 
 Return the configuration string of the communication tool. These configuration strings are tool-dependent, but usually easily parsed and modified.
 
-### `SetConfig`(*str*)
+### `SetConfig`(str)
 
 Set the configuration string for the tool. The strings are parsed left-to-right, with later values taking precedence. This means individual configuration parameters can be modified by simply appending something like `’baud 4800’` to the end of the string returned by `GetConfig()` and passing that to this method. The method returns the number of characters actually parsed by the tool before it encountered an error (or completed successfully).
 
@@ -131,7 +131,7 @@ Abort an outstanding asynchronous `Open()` or `Listen()`.
 
 Reset a connection. Exact meaning depends on the tool.
 
-### `Break`(*length*)
+### `Break`(length)
 
 Send a break. Whether this means anything, what it means and interpretation of the *length* parameter depends on the tool in use.
 
@@ -153,7 +153,7 @@ Options for the `setmode` method. and enable character echo, the other two disab
 
 Open a new console window. Return a console window object.
 
-### `fopen`(*fp*)
+### `fopen`(fp)
 
 Return the console window object corresponding with the given file object. *fp* should be one of `sys.stdin`, `sys.stdout` or `sys.stderr`.
 
@@ -187,11 +187,11 @@ If set non-zero, the window will wait for user action before closing.
 
 The file object corresponding to this console window. If the file is buffered, you should call *`file`*`.flush()` between `write()` and `read()` calls.
 
-### `setmode`(*mode*)
+### `setmode`(mode)
 
 Set the input mode of the console to , etc.
 
-### `settabs`(*n*)
+### `settabs`(n)
 
 Set the tabsize to *n* spaces.
 
@@ -203,11 +203,11 @@ Clear to end-of-screen.
 
 Clear to end-of-line.
 
-### `inverse`(*onoff*)
+### `inverse`(onoff)
 
 Enable inverse-video mode: characters with the high bit set are displayed in inverse video (this disables the upper half of a non-ASCII character set).
 
-### `gotoxy`(*x, y*)
+### `gotoxy`(x, y)
 
 Set the cursor to position `(`*`x`*`, `*`y`*`)`.
 
@@ -237,27 +237,27 @@ Open the domain name resolver extension. If *filename* is given it should be the
 
 Close the resolver extension. Again, not needed for normal use.
 
-### `StrToAddr`(*hostname*)
+### `StrToAddr`(hostname)
 
 Look up the IP address for *hostname*. This call returns a dnr result object of the “address” variation.
 
-### `AddrToName`(*addr*)
+### `AddrToName`(addr)
 
 Do a reverse lookup on the 32-bit integer IP-address *addr*. Returns a dnr result object of the “address” variation.
 
-### `AddrToStr`(*addr*)
+### `AddrToStr`(addr)
 
 Convert the 32-bit integer IP-address *addr* to a dotted-decimal string. Returns the string.
 
-### `HInfo`(*hostname*)
+### `HInfo`(hostname)
 
 Query the nameservers for a `HInfo` record for host *hostname*. These records contain hardware and software information about the machine in question (if they are available in the first place). Returns a dnr result object of the “hinfo” variety.
 
-### `MXInfo`(*domain*)
+### `MXInfo`(domain)
 
 Query the nameservers for a mail exchanger for *domain*. This is the hostname of a host willing to accept SMTPmail for the given domain. Returns a dnr result object of the “mx” variety.
 
-## DNR Result Objects <span id="dnr-result-object" label="dnr-result-object"></span>
+## DNR Result Objects 
 
 Since the DNR calls all execute asynchronously you do not get the results back immediately. Instead, you get a dnr result object. You can check this object to see whether the query is complete, and access its attributes to obtain the information when it is.
 
@@ -310,15 +310,15 @@ The simplest way to use the module to convert names to dotted-decimal strings, w
 
 This module provides access to Macintosh FSSpec handling, the Alias Manager, aliases and the Standard File package. Whenever a function or method expects a *file* argument, this argument can be one of three things: (1) a full or partial Macintosh pathname, (2) an object or (3) a 3-tuple `(`*`wdRefNum`*`, `*`parID`*`, `*`name`*`)` as described in Inside Macintosh: Files. A description of aliases and the Standard File package can also be found there.
 
-### `FSSpec`(*file*)
+### `FSSpec`(file)
 
 Create an object for the specified file.
 
-### `RawFSSpec`(*data*)
+### `RawFSSpec`(data)
 
 Create an object given the raw data for the C structure for the as a string. This is mainly useful if you have obtained an structure over a network.
 
-### `RawAlias`(*data*)
+### `RawAlias`(data)
 
 Create an object given the raw data for the C structure for the alias as a string. This is mainly useful if you have obtained an structure over a network.
 
@@ -326,7 +326,7 @@ Create an object given the raw data for the C structure for the alias as a strin
 
 Create a zero-filled object.
 
-### `ResolveAliasFile`(*file*)
+### `ResolveAliasFile`(file)
 
 Resolve an alias file. Returns a 3-tuple `(`*`fsspec`*`, `*`isfolder`*`, `*`aliased`*`)` where *fsspec* is the resulting object, *isfolder* is true if *fsspec* points to a folder and *aliased* is true if the file was an alias in the first place (otherwise the object for the file itself is returned).
 
@@ -334,11 +334,11 @@ Resolve an alias file. Returns a 3-tuple `(`*`fsspec`*`, `*`isfolder`*`, `*`alia
 
 Present the user with a standard “open input file” dialog. Optionally, you can pass up to four 4-character file types to limit the files the user can choose from. The function returns an object and a flag indicating that the user completed the dialog without cancelling.
 
-### `PromptGetFile`(*prompt*)
+### `PromptGetFile`(prompt)
 
 Similar to `StandardGetFile()` but allows you to specify a prompt.
 
-### `StandardPutFile`(*prompt,* )
+### `StandardPutFile`(prompt, )
 
 Present the user with a standard “open output file” dialog. *prompt* is the prompt string, and the optional *default* argument initializes the output file name. The function returns an object and a flag indicating that the user completed the dialog without cancelling.
 
@@ -352,21 +352,21 @@ Set the folder that is initially presented to the user when one of the file sele
 
 Note that starting with system 7.5 the user can change Standard File behaviour with the “general controls” controlpanel, thereby making this call inoperative.
 
-### `FindFolder`(*where, which, create*)
+### `FindFolder`(where, which, create)
 
 Locates one of the “special” folders that MacOS knows about, such as the trash or the Preferences folder. *where* is the disk to search, *which* is the 4-character string specifying which folder to locate. Setting *create* causes the folder to be created if it does not exist. Returns a `(`*`vrefnum`*`, `*`dirid`*`)` tuple.
 
-### `NewAliasMinimalFromFullPath`(*pathname*)
+### `NewAliasMinimalFromFullPath`(pathname)
 
 Return a minimal object that points to the given file, which must be specified as a full pathname. This is the only way to create an pointing to a non-existing file.
 
 The constants for *where* and *which* can be obtained from the standard module *MACFS*.
 
-### `FindApplication`(*creator*)
+### `FindApplication`(creator)
 
 Locate the application with 4-char creator code *creator*. The function returns an object pointing to the application.
 
-## FSSpec objects <span id="fsspec-objects" label="fsspec-objects"></span>
+## FSSpec objects 
 
 ### `data`
 
@@ -392,7 +392,7 @@ Create a minimal alias pointing to this file.
 
 Return the 4-character creator and type of the file.
 
-### `SetCreatorType`(*creator, type*)
+### `SetCreatorType`(creator, type)
 
 Set the 4-character creator and type of the file.
 
@@ -400,7 +400,7 @@ Set the 4-character creator and type of the file.
 
 Return a object describing the finder info for the file.
 
-### `SetFInfo`(*finfo*)
+### `SetFInfo`(finfo)
 
 Set the finder info for the file to the values given as *finfo* (an object).
 
@@ -408,11 +408,11 @@ Set the finder info for the file to the values given as *finfo* (an object).
 
 Return a tuple with three floating point values representing the creation date, modification date and backup date of the file.
 
-### `SetDates`(*crdate, moddate, backupdate*)
+### `SetDates`(crdate, moddate, backupdate)
 
 Set the creation, modification and backup date of the file. The values are in the standard floating point format used for times throughout Python.
 
-## Alias Objects <span id="alias-objects" label="alias-objects"></span>
+## Alias Objects 
 
 ### `data`
 
@@ -422,17 +422,17 @@ The raw data for the Alias record, suitable for storing in a resource or transmi
 
 Resolve the alias. If the alias was created as a relative alias you should pass the file relative to which it is. Return the FSSpec for the file pointed to and a flag indicating whether the object itself was modified during the search process. If the file does not exist but the path leading up to it does exist a valid fsspec is returned.
 
-### `GetInfo`(*num*)
+### `GetInfo`(num)
 
 An interface to the C routine .
 
-### `Update`(*file,* )
+### `Update`(file, )
 
 Update the alias to point to the *file* given. If *file2* is present a relative alias will be created.
 
 Note that it is currently not possible to directly manipulate a resource as an object. Hence, after calling `Update()` or after `Resolve()` indicates that the alias has changed the Python program is responsible for getting the `data` value from the object and modifying the resource.
 
-## FInfo Objects <span id="finfo-objects" label="finfo-objects"></span>
+## FInfo Objects 
 
 See Inside Macintosh: Files for a complete description of what the various fields mean.
 
@@ -476,7 +476,7 @@ The `ic` module defines the following class and function:
 
 Create an internet config object. The signature is a 4-character creator code of the current application (default `’Pyth’`) which may influence some of ICs settings. The optional *ic* argument is a low-level `icglue.icinstance` created beforehand, this may be useful if you want to get preferences from a different config file, etc.
 
-### `launchurl`(*url*)
+### `launchurl`(url)
 
 These functions are “shortcuts” to the methods of the same name, described below.
 
@@ -490,27 +490,27 @@ If the module does not know how to represent the data it returns an instance of 
 
 Besides the dictionary interface, `IC` objects have the following methods:
 
-### `launchurl`(*url*)
+### `launchurl`(url)
 
 Parse the given URL, lauch the correct application and pass it the URL. The optional *hint* can be a scheme name such as `’mailto:’`, in which case incomplete URLs are completed with this scheme. If *hint* is not provided, incomplete URLs are invalid.
 
-### `parseurl`(*data*)
+### `parseurl`(data)
 
 Find an URL somewhere in *data* and return start position, end position and the URL. The optional *start* and *end* can be used to limit the search, so for instance if a user clicks in a long textfield you can pass the whole textfield and the click-position in *start* and this routine will return the whole URL in which the user clicked. As above, *hint* is an optional scheme used to complete incomplete URLs.
 
-### `mapfile`(*file*)
+### `mapfile`(file)
 
 Return the mapping entry for the given *file*, which can be passed as either a filename or an `macfs.FSSpec()` result, and which need not exist.
 
 The mapping entry is returned as a tuple `(`*`version`*`, `*`type`*`, `*`creator`*`, `*`postcreator`*`, `*`flags`*`, `*`extension`*`, `*`appname`*`, `*`postappname`*`, `*`mimetype`*`, `*`entryname`*`)`, where *version* is the entry version number, *type* is the 4-character filetype, *creator* is the 4-character creator type, *postcreator* is the 4-character creator code of an optional application to post-process the file after downloading, *flags* are various bits specifying whether to transfer in binary or ascii and such, *extension* is the filename extension for this file type, *appname* is the printable name of the application to which this file belongs, *postappname* is the name of the postprocessing application, *mimetype* is the MIME type of this file and *entryname* is the name of this entry.
 
-### `maptypecreator`(*type, creator*)
+### `maptypecreator`(type, creator)
 
 Return the mapping entry for files with given 4-character *type* and *creator* codes. The optional *filename* may be specified to further help finding the correct entry (if the creator code is `’????’`, for instance).
 
 The mapping entry is returned in the same format as for *mapfile*.
 
-### `settypecreator`(*file*)
+### `settypecreator`(file)
 
 Given an existing *file*, specified either as a filename or as an `macfs.FSSpec()` result, set its creator and type correctly based on its extension. The finder is told about the change, so the finder icon will be updated quickly.
 
@@ -526,7 +526,7 @@ Note the capitalisation of the module name, this is a historical artifact.
 
 This exception is raised on MacOS generated errors, either from functions in this module or from other mac-specific modules like the toolbox interfaces. The arguments are the integer error code (the value) and a textual description of the error code. Symbolic names for all known error codes are defined in the standard module `macerrors`.
 
-### `SetEventHandler`(*handler*)
+### `SetEventHandler`(handler)
 
 In the inner interpreter loop Python will occasionally check for events, unless disabled with `ScheduleParams()`. With this function you can pass a Python event-handler function that will be called if an event is available. The event is passed as parameter and the function should return non-zero if the event has been fully processed, otherwise event processing continues (by passing the event to the console window package, for instance).
 
@@ -538,27 +538,27 @@ Influence the interpreter inner loop event handling. *Interval* specifies how of
 
 All parameters are optional, and default to the current value. The return value of this function is a tuple with the old values of these options. Initial defaults are that all processing is enabled, checking is done every quarter second and the CPU is given up for a quarter second when in the background.
 
-### `HandleEvent`(*ev*)
+### `HandleEvent`(ev)
 
 Pass the event record *ev* back to the Python event loop, or possibly to the handler for the `sys.stdout` window (based on the compiler used to build Python). This allows Python programs that do their own event handling to still have some command-period and window-switching capability.
 
 If you attempt to call this function from an event handler set through `SetEventHandler()` you will get an exception.
 
-### `GetErrorString`(*errno*)
+### `GetErrorString`(errno)
 
 Return the textual description of MacOS error code *errno*.
 
-### `splash`(*resid*)
+### `splash`(resid)
 
 This function will put a splash window on-screen, with the contents of the DLOG resource specified by *resid*. Calling with a zero argument will remove the splash screen. This function is useful if you want an applet to post a splash screen early in initialization without first having to load numerous extension modules.
 
-### `DebugStr`(*message* )
+### `DebugStr`(message )
 
 Drop to the low-level debugger with message *message*. The optional *object* argument is not used, but can easily be inspected from the debugger.
 
 Note that you should use this function with extreme care: if no low-level debugger like MacsBug is installed this call will crash your system. It is intended mainly for developers of Python extension modules.
 
-### `openrf`(*name* )
+### `openrf`(name )
 
 Open the resource fork of a file. Arguments are the same as for the built-in function `open()`. The object returned has file-like semantics, but it is not a Python file object, so there may be subtle differences.
 
@@ -570,21 +570,21 @@ This module contains some convenience routines for file-manipulation on the Maci
 
 The `macostools` module defines the following functions:
 
-### `copy`(*src, dst*)
+### `copy`(src, dst)
 
 Copy file *src* to *dst*. The files can be specified as pathnames or objects. If *createpath* is non-zero *dst* must be a pathname and the folders leading to the destination are created if necessary. The method copies data and resource fork and some finder information (creator, type, flags) and optionally the creation, modification and backup times (default is to copy them). Custom icons, comments and icon position are not copied.
 
 If the source is an alias the original to which the alias points is copied, not the aliasfile.
 
-### `copytree`(*src, dst*)
+### `copytree`(src, dst)
 
 Recursively copy a file tree from *src* to *dst*, creating folders as needed. *src* and *dst* should be specified as pathnames.
 
-### `mkalias`(*src, dst*)
+### `mkalias`(src, dst)
 
 Create a finder alias *dst* pointing to *src*. Both may be specified as pathnames or objects.
 
-### `touched`(*dst*)
+### `touched`(dst)
 
 Tell the finder that some bits of finder-information such as creator or type for file *dst* has changed. The file can be specified by pathname or fsspec. This call should prod the finder into redrawing the files icon.
 
@@ -604,19 +604,19 @@ All file and folder parameters can be specified either as full pathnames or as o
 
 The `findertools` module defines the following functions:
 
-### `launch`(*file*)
+### `launch`(file)
 
 Tell the finder to launch *file*. What launching means depends on the file: applications are started, folders are opened and documents are opened in the correct application.
 
-### `Print`(*file*)
+### `Print`(file)
 
 Tell the finder to print a file (again specified by full pathname or ). The behaviour is identical to selecting the file and using the print command in the finder.
 
-### `copy`(*file, destdir*)
+### `copy`(file, destdir)
 
 Tell the finder to copy a file or folder *file* to folder *destdir*. The function returns an object pointing to the new file.
 
-### `move`(*file, destdir*)
+### `move`(file, destdir)
 
 Tell the finder to move a file or folder *file* to folder *destdir*. The function returns an object pointing to the new file.
 
@@ -652,11 +652,11 @@ Return the 32-bit integer IP address of the network interface.
 
 Return the 32-bit integer network mask of the interface.
 
-### `TCPCreate`(*size*)
+### `TCPCreate`(size)
 
 Create a TCP Stream object. *size* is the size of the receive buffer, `4096` is suggested by various sources.
 
-### `UDPCreate`(*size, port*)
+### `UDPCreate`(size, port)
 
 Create a UDP Stream object. *size* is the size of the receive buffer (and, hence, the size of the biggest datagram you can receive on this port). *port* is the UDP port number you want to receive datagrams on, a value of zero will make MacTCP select a free port.
 
@@ -666,7 +666,7 @@ Create a UDP Stream object. *size* is the size of the receive buffer (and, hence
 
 When set to a value different than `None` this should refer to a function with two integer parameters: an event code and a detail. This function will be called upon network-generated events such as urgent data arrival. Macintosh documentation calls this the *asynchronous service routine*. In addition, it is called with eventcode `MACTCP.PassiveOpenDone` when a `PassiveOpen()` completes. This is a Python addition to the MacTCP semantics. It is safe to do further calls from *asr*.
 
-### `PassiveOpen`(*port*)
+### `PassiveOpen`(port)
 
 Wait for an incoming connection on TCP port *port* (zero makes the system pick a free port). The call returns immediately, and you should use `wait()` to wait for completion. You should not issue any method calls other than `wait()`, `isdone()` or `GetSockName()` before the call completes.
 
@@ -682,15 +682,15 @@ Return `1` if a `PassiveOpen()` has completed.
 
 Return the TCP address of this side of a connection as a 2-tuple `(`*`host`*`, `*`port`*`)`, both integers.
 
-### `ActiveOpen`(*lport, host, rport*)
+### `ActiveOpen`(lport, host, rport)
 
 Open an outgoing connection to TCP address `(`*`host`*`, `*`rport`*`)`. Use local port *lport* (zero makes the system pick a free port). This call blocks until the connection has been established.
 
-### `Send`(*buf, push, urgent*)
+### `Send`(buf, push, urgent)
 
 Send data *buf* over the connection. *push* and *urgent* are flags as specified by the TCP standard.
 
-### `Rcv`(*timeout*)
+### `Rcv`(timeout)
 
 Receive data. The call returns when *timeout* seconds have passed or when (according to the MacTCP documentation) “a reasonable amount of data has been received”. The return value is a 3-tuple `(`*`data`*`, `*`urgent`*`, `*`mark`*`)`. If urgent data is outstanding `Rcv` will always return that before looking at any normal data. The first call returning urgent data will have the *urgent* flag set, the last will have the *mark* flag set.
 
@@ -738,11 +738,11 @@ The asynchronous service routine to be called on events such as datagram arrival
 
 A read-only member giving the port number of this UDP Stream.
 
-### `Read`(*timeout*)
+### `Read`(timeout)
 
 Read a datagram, waiting at most *timeout* seconds (-1 is infinite). Return the data.
 
-### `Write`(*host, port, buf*)
+### `Write`(host, port, buf)
 
 Send *buf* as a datagram to IP-address *host*, port *port*.
 
@@ -760,7 +760,7 @@ Test availability of the Speech Manager extension (and, on the PowerPC, the Spee
 
 Return the (integer) version number of the Speech Manager.
 
-### `SpeakString`(*str*)
+### `SpeakString`(str)
 
 Utter the string *str* using the default voice, asynchronously. This aborts any speech that may still be active from prior `SpeakString()` invocations.
 
@@ -772,7 +772,7 @@ Return the number of speech channels busy, system-wide.
 
 Return the number of different voices available.
 
-### `GetIndVoice`(*num*)
+### `GetIndVoice`(num)
 
 Return a object for voice number *num*.
 
@@ -792,7 +792,7 @@ Return a new Speech Channel object using this voice.
 
 A Speech Channel object allows you to speak strings with slightly more control than `SpeakString()`, and allows you to use multiple speakers at the same time. Please note that channel pitch and rate are interrelated in some way, so that to make your Macintosh sing you will have to adjust both.
 
-### `SpeakText`(*str*)
+### `SpeakText`(str)
 
 Start uttering the given string.
 
@@ -804,7 +804,7 @@ Stop babbling.
 
 Return the current pitch of the channel, as a floating-point number.
 
-### `SetPitch`(*pitch*)
+### `SetPitch`(pitch)
 
 Set the pitch of the channel.
 
@@ -812,7 +812,7 @@ Set the pitch of the channel.
 
 Get the speech rate (utterances per minute) of the channel as a floating point number.
 
-### `SetRate`(*rate*)
+### `SetRate`(rate)
 
 Set the speech rate of the channel.
 
@@ -824,15 +824,15 @@ The `EasyDialogs` module contains some simple dialogs for the Macintosh, modelle
 
 The `EasyDialogs` module defines the following functions:
 
-### `Message`(*str*)
+### `Message`(str)
 
 A modal dialog with the message text *str*, which should be at most 255 characters long, is displayed. Control is returned when the user clicks “OK”.
 
-### `AskString`(*prompt*)
+### `AskString`(prompt)
 
 Ask the user to input a string value, in a modal dialog. *prompt* is the promt message, the optional *default* arg is the initial value for the string. All strings can be at most 255 bytes long. `AskString()` returns the string entered or `None` in case the user cancelled.
 
-### `AskYesNoCancel`(*question*)
+### `AskYesNoCancel`(question)
 
 Present a dialog with text *question* and three buttons labelled “yes”, “no” and “cancel”. Return `1` for yes, `0` for no and `-1` for cancel. The default return value chosen by hitting return is `0`. This can be changed with the optional *default* argument.
 
@@ -862,11 +862,11 @@ An object representing the complete application. See below for a description of 
 
 An object representing the menubar. This object is usually not created by the user.
 
-### `Menu`(*bar, title*)
+### `Menu`(bar, title)
 
 An object representing a menu. Upon creation you pass the `MenuBar` the menu appears in, the *title* string and a position (1-based) *after* where the menu should appear (default: at the end).
 
-### `MenuItem`(*menu, title*)
+### `MenuItem`(menu, title)
 
 Create a menu item object. The arguments are the menu to crate the item it, the item title string and optionally the keyboard shortcut and a callback routine. The callback is called with the arguments menu-id, item number within menu (1-based), current front window and the event record.
 
@@ -874,23 +874,23 @@ In stead of a callable object the callback can also be a string. In this case me
 
 Calling the `MenuBar` `fixmenudimstate()` method sets the correct dimming for all menu items based on the current front window.
 
-### `Separator`(*menu*)
+### `Separator`(menu)
 
 Add a separator to the end of a menu.
 
-### `SubMenu`(*menu, label*)
+### `SubMenu`(menu, label)
 
 Create a submenu named *label* under menu *menu*. The menu object is returned.
 
-### `Window`(*parent*)
+### `Window`(parent)
 
 Creates a (modeless) window. *Parent* is the application object to which the window belongs. The window is not displayed until later.
 
-### `DialogWindow`(*parent*)
+### `DialogWindow`(parent)
 
 Creates a modeless dialog window.
 
-### `windowbounds`(*width, height*)
+### `windowbounds`(width, height)
 
 Return a `(`*`left`*`, `*`top`*`, `*`right`*`, `*`bottom`*`)` tuple suitable for creation of a window of given width and height. The window will be staggered with respect to previous windows, and an attempt is made to keep the whole window on-screen. The window will however always be exact the size given, so parts may be offscreen.
 
@@ -902,7 +902,7 @@ Set the mouse cursor to a watch.
 
 Set the mouse cursor to an arrow.
 
-## Application Objects <span id="application-objects" label="application-objects"></span>
+## Application Objects 
 
 Application objects have the following methods, among others:
 
@@ -922,7 +922,7 @@ The event loop is split into many small parts, each of which can be overridden. 
 
 In general, all event handlers should return `1` if the event is fully handled and `0` otherwise (because the front window was not a FrameWork window, for instance). This is needed so that update events and such can be passed on to other windows like the Sioux console window. Calling `MacOS.HandleEvent()` is not allowed within *our_dispatch* or its callees, since this may result in an infinite loop if the code is called through the Python inner-loop event handler.
 
-### `asyncevents`(*onoff*)
+### `asyncevents`(onoff)
 
 Call this method with a nonzero parameter to enable asynchronous event handling. This will tell the inner interpreter loop to call the application event handler *async_dispatch* whenever events are available. This will cause FrameWork window updates and the user interface to remain working during long computations, but will slow the interpreter down and may cause surprising results in non-reentrant code (such as FrameWork itself). By default *async_dispatch* will immedeately call *our_dispatch* but you may override this to handle only certain events asynchronously. Events you do not handle will be passed to Sioux and such.
 
@@ -932,19 +932,19 @@ The old on/off value is returned.
 
 Terminate the running `mainloop()` call at the next convenient moment.
 
-### `do_char`(*c, event*)
+### `do_char`(c, event)
 
 The user typed character *c*. The complete details of the event can be found in the *event* structure. This method can also be provided in a `Window` object, which overrides the application-wide handler if the window is frontmost.
 
-### `do_dialogevent`(*event*)
+### `do_dialogevent`(event)
 
 Called early in the event loop to handle modeless dialog events. The default method simply dispatches the event to the relevant dialog (not through the the `DialogWindow` object involved). Override if you need special handling of dialog events (keyboard shortcuts, etc).
 
-### `idle`(*event*)
+### `idle`(event)
 
 Called by the main event loop when no events are available. The null-event is passed (so you can look at mouse position, etc).
 
-## Window Objects <span id="window-objects" label="window-objects"></span>
+## Window Objects 
 
 Window objects have the following methods, among others:
 
@@ -956,31 +956,31 @@ Override this method to open a window. Store the MacOS window-id in `self.wid` a
 
 Override this method to do any special processing on window close. Call the `do_postclose()` method to cleanup the parent state.
 
-### `do_postresize`(*width, height, macoswindowid*)
+### `do_postresize`(width, height, macoswindowid)
 
 Called after the window is resized. Override if more needs to be done than calling `InvalRect`.
 
-### `do_contentclick`(*local, modifiers, event*)
+### `do_contentclick`(local, modifiers, event)
 
 The user clicked in the content part of a window. The arguments are the coordinates (window-relative), the key modifiers and the raw event.
 
-### `do_update`(*macoswindowid, event*)
+### `do_update`(macoswindowid, event)
 
 An update event for the window was received. Redraw the window.
 
-### `do_activate`(*activate, event*)
+### `do_activate`(activate, event)
 
 The window was activated (*`activate`*` == 1`) or deactivated (*`activate`*` == 0`). Handle things like focus highlighting, etc.
 
-## ControlsWindow Object <span id="controlswindow-object" label="controlswindow-object"></span>
+## ControlsWindow Object 
 
 ControlsWindow objects have the following methods besides those of `Window` objects:
 
-### `do_controlhit`(*window, control, pcode, event*)
+### `do_controlhit`(window, control, pcode, event)
 
 Part *pcode* of control *control* was hit by the user. Tracking and such has already been taken care of.
 
-## ScrolledWindow Object <span id="scrolledwindow-object" label="scrolledwindow-object"></span>
+## ScrolledWindow Object 
 
 ScrolledWindow objects are ControlsWindow objects with the following extra methods:
 
@@ -996,35 +996,35 @@ You must supply this method. It should return a tuple `(`*`x`*`, `*`y`*`)` givin
 
 Call this method when the document has changed. It will call `getscrollbarvalues()` and update the scrollbars.
 
-### `scrollbar_callback`(*which, what, value*)
+### `scrollbar_callback`(which, what, value)
 
 Supplied by you and called after user interaction. *which* will be `’x’` or `’y’`, *what* will be `’-’`, `’--’`, `’set’`, `’++’` or `’+’`. For `’set’`, *value* will contain the new scrollbar position.
 
-### `scalebarvalues`(*absmin, absmax, curmin, curmax*)
+### `scalebarvalues`(absmin, absmax, curmin, curmax)
 
 Auxiliary method to help you calculate values to return from `getscrollbarvalues()`. You pass document minimum and maximum value and topmost (leftmost) and bottommost (rightmost) visible values and it returns the correct number or `None`.
 
-### `do_activate`(*onoff, event*)
+### `do_activate`(onoff, event)
 
 Takes care of dimming/highlighting scrollbars when a window becomes frontmost vv. If you override this method call this one at the end of your method.
 
-### `do_postresize`(*width, height, window*)
+### `do_postresize`(width, height, window)
 
 Moves scrollbars to the correct position. Call this method initially if you override it.
 
-### `do_controlhit`(*window, control, pcode, event*)
+### `do_controlhit`(window, control, pcode, event)
 
 Handles scrollbar interaction. If you override it call this method first, a nonzero return value indicates the hit was in the scrollbars and has been handled.
 
-## DialogWindow Objects <span id="dialogwindow-objects" label="dialogwindow-objects"></span>
+## DialogWindow Objects 
 
 DialogWindow objects have the following methods besides those of `Window` objects:
 
-### `open`(*resid*)
+### `open`(resid)
 
 Create the dialog window, from the DLOG resource with id *resid*. The dialog object is stored in `self.wid`.
 
-### `do_itemhit`(*item, event*)
+### `do_itemhit`(item, event)
 
 Item number *item* was hit. You are responsible for redrawing toggle buttons, etc.
 
@@ -1046,13 +1046,13 @@ A class that handles AppleEvent dispatch. Your application should subclass this 
 
 A class that is more or less compatible with `FrameWork.Application` but with less functionality. Its event loop supports the apple menu, command-dot and AppleEvents; other events are passed on to the Python interpreter and/or Sioux. Useful if your application wants to use `AEServer` but does not provide its own windows, etc.
 
-## AEServer Objects <span id="aeserver-objects" label="aeserver-objects"></span>
+## AEServer Objects 
 
-### `installaehandler`(*classe, type, callback*)
+### `installaehandler`(classe, type, callback)
 
 Installs an AppleEvent handler. *classe* and *type* are the four-character OSA Class and Type designators, `’****’` wildcards are allowed. When a matching AppleEvent is received the parameters are decoded and your callback is invoked.
 
-### `callback`(*\_object, \*\*kwargs*)
+### `callback`(_object, **kwargs)
 
 Your callback is called with the OSA Direct Object as first positional parameter. The other parameters are passed as keyword arguments, with the 4-character designator as name. Three extra keyword parameters are passed: `_class` and `_type` are the Class and Type designators and `_attributes` is a dictionary with the AppleEvent attributes.
 
@@ -1089,11 +1089,11 @@ Bits in the status as returned by `Status()`.
 
 Return `1` if the Communication Toolbox is available, zero otherwise.
 
-### `CMNew`(*name, sizes*)
+### `CMNew`(name, sizes)
 
 Create a connection object using the connection tool named *name*. *sizes* is a 6-tuple given buffer sizes for data in, data out, control in, control out, attention in and attention out. Alternatively, passing `None` for *sizes* will result in default buffer sizes.
 
-## Connection Objects <span id="connection-object" label="connection-object"></span>
+## Connection Objects 
 
 For all connection methods that take a *timeout* argument, a value of `-1` is indefinite, meaning that the command runs to completion.
 
@@ -1103,27 +1103,27 @@ If this member is set to a value other than `None` it should point to a function
 
 *Note:* for reasons beyond my understanding the callback routine is currently never called. You are advised against using asynchronous calls for the time being.
 
-### `Open`(*timeout*)
+### `Open`(timeout)
 
 Open an outgoing connection, waiting at most *timeout* seconds for the connection to be established.
 
-### `Listen`(*timeout*)
+### `Listen`(timeout)
 
 Wait for an incoming connection. Stop waiting after *timeout* seconds. This call is only meaningful to some tools.
 
-### `accept`(*yesno*)
+### `accept`(yesno)
 
 Accept (when *yesno* is non-zero) or reject an incoming call after `Listen()` returned.
 
-### `Close`(*timeout, now*)
+### `Close`(timeout, now)
 
 Close a connection. When *now* is zero, the close is orderly (i.e. outstanding output is flushed, etc.) with a timeout of *timeout* seconds. When *now* is non-zero the close is immediate, discarding output.
 
-### `Read`(*len, chan, timeout*)
+### `Read`(len, chan, timeout)
 
 Read *len* bytes, or until *timeout* seconds have passed, from the channel *chan* (which is one of , or ). Return a 2-tuple: the data read and the end-of-message flag, .
 
-### `Write`(*buf, chan, timeout, eom*)
+### `Write`(buf, chan, timeout, eom)
 
 Write *buf* to channel *chan*, aborting after *timeout* seconds. When *eom* has the value , an end-of-message indicator will be written after the data (if this concept has a meaning for this communication tool). The method returns the number of bytes written.
 
@@ -1135,7 +1135,7 @@ Return connection status as the 2-tuple `(`*`sizes`*`, `*`flags`*`)`. *sizes* is
 
 Return the configuration string of the communication tool. These configuration strings are tool-dependent, but usually easily parsed and modified.
 
-### `SetConfig`(*str*)
+### `SetConfig`(str)
 
 Set the configuration string for the tool. The strings are parsed left-to-right, with later values taking precedence. This means individual configuration parameters can be modified by simply appending something like `’baud 4800’` to the end of the string returned by `GetConfig()` and passing that to this method. The method returns the number of characters actually parsed by the tool before it encountered an error (or completed successfully).
 
@@ -1155,7 +1155,7 @@ Abort an outstanding asynchronous `Open()` or `Listen()`.
 
 Reset a connection. Exact meaning depends on the tool.
 
-### `Break`(*length*)
+### `Break`(length)
 
 Send a break. Whether this means anything, what it means and interpretation of the *length* parameter depends on the tool in use.
 # `FrameWork` — Interactive application framework
@@ -1176,11 +1176,11 @@ An object representing the complete application. See below for a description of 
 
 An object representing the menubar. This object is usually not created by the user.
 
-### `Menu`(*bar, title*)
+### `Menu`(bar, title)
 
 An object representing a menu. Upon creation you pass the `MenuBar` the menu appears in, the *title* string and a position (1-based) *after* where the menu should appear (default: at the end).
 
-### `MenuItem`(*menu, title*)
+### `MenuItem`(menu, title)
 
 Create a menu item object. The arguments are the menu to crate the item it, the item title string and optionally the keyboard shortcut and a callback routine. The callback is called with the arguments menu-id, item number within menu (1-based), current front window and the event record.
 
@@ -1188,23 +1188,23 @@ In stead of a callable object the callback can also be a string. In this case me
 
 Calling the `MenuBar` `fixmenudimstate()` method sets the correct dimming for all menu items based on the current front window.
 
-### `Separator`(*menu*)
+### `Separator`(menu)
 
 Add a separator to the end of a menu.
 
-### `SubMenu`(*menu, label*)
+### `SubMenu`(menu, label)
 
 Create a submenu named *label* under menu *menu*. The menu object is returned.
 
-### `Window`(*parent*)
+### `Window`(parent)
 
 Creates a (modeless) window. *Parent* is the application object to which the window belongs. The window is not displayed until later.
 
-### `DialogWindow`(*parent*)
+### `DialogWindow`(parent)
 
 Creates a modeless dialog window.
 
-### `windowbounds`(*width, height*)
+### `windowbounds`(width, height)
 
 Return a `(`*`left`*`, `*`top`*`, `*`right`*`, `*`bottom`*`)` tuple suitable for creation of a window of given width and height. The window will be staggered with respect to previous windows, and an attempt is made to keep the whole window on-screen. The window will however always be exact the size given, so parts may be offscreen.
 
@@ -1216,7 +1216,7 @@ Set the mouse cursor to a watch.
 
 Set the mouse cursor to an arrow.
 
-## Application Objects <span id="application-objects" label="application-objects"></span>
+## Application Objects 
 
 Application objects have the following methods, among others:
 
@@ -1236,7 +1236,7 @@ The event loop is split into many small parts, each of which can be overridden. 
 
 In general, all event handlers should return `1` if the event is fully handled and `0` otherwise (because the front window was not a FrameWork window, for instance). This is needed so that update events and such can be passed on to other windows like the Sioux console window. Calling `MacOS.HandleEvent()` is not allowed within *our_dispatch* or its callees, since this may result in an infinite loop if the code is called through the Python inner-loop event handler.
 
-### `asyncevents`(*onoff*)
+### `asyncevents`(onoff)
 
 Call this method with a nonzero parameter to enable asynchronous event handling. This will tell the inner interpreter loop to call the application event handler *async_dispatch* whenever events are available. This will cause FrameWork window updates and the user interface to remain working during long computations, but will slow the interpreter down and may cause surprising results in non-reentrant code (such as FrameWork itself). By default *async_dispatch* will immedeately call *our_dispatch* but you may override this to handle only certain events asynchronously. Events you do not handle will be passed to Sioux and such.
 
@@ -1246,19 +1246,19 @@ The old on/off value is returned.
 
 Terminate the running `mainloop()` call at the next convenient moment.
 
-### `do_char`(*c, event*)
+### `do_char`(c, event)
 
 The user typed character *c*. The complete details of the event can be found in the *event* structure. This method can also be provided in a `Window` object, which overrides the application-wide handler if the window is frontmost.
 
-### `do_dialogevent`(*event*)
+### `do_dialogevent`(event)
 
 Called early in the event loop to handle modeless dialog events. The default method simply dispatches the event to the relevant dialog (not through the the `DialogWindow` object involved). Override if you need special handling of dialog events (keyboard shortcuts, etc).
 
-### `idle`(*event*)
+### `idle`(event)
 
 Called by the main event loop when no events are available. The null-event is passed (so you can look at mouse position, etc).
 
-## Window Objects <span id="window-objects" label="window-objects"></span>
+## Window Objects 
 
 Window objects have the following methods, among others:
 
@@ -1270,31 +1270,31 @@ Override this method to open a window. Store the MacOS window-id in `self.wid` a
 
 Override this method to do any special processing on window close. Call the `do_postclose()` method to cleanup the parent state.
 
-### `do_postresize`(*width, height, macoswindowid*)
+### `do_postresize`(width, height, macoswindowid)
 
 Called after the window is resized. Override if more needs to be done than calling `InvalRect`.
 
-### `do_contentclick`(*local, modifiers, event*)
+### `do_contentclick`(local, modifiers, event)
 
 The user clicked in the content part of a window. The arguments are the coordinates (window-relative), the key modifiers and the raw event.
 
-### `do_update`(*macoswindowid, event*)
+### `do_update`(macoswindowid, event)
 
 An update event for the window was received. Redraw the window.
 
-### `do_activate`(*activate, event*)
+### `do_activate`(activate, event)
 
 The window was activated (*`activate`*` == 1`) or deactivated (*`activate`*` == 0`). Handle things like focus highlighting, etc.
 
-## ControlsWindow Object <span id="controlswindow-object" label="controlswindow-object"></span>
+## ControlsWindow Object 
 
 ControlsWindow objects have the following methods besides those of `Window` objects:
 
-### `do_controlhit`(*window, control, pcode, event*)
+### `do_controlhit`(window, control, pcode, event)
 
 Part *pcode* of control *control* was hit by the user. Tracking and such has already been taken care of.
 
-## ScrolledWindow Object <span id="scrolledwindow-object" label="scrolledwindow-object"></span>
+## ScrolledWindow Object 
 
 ScrolledWindow objects are ControlsWindow objects with the following extra methods:
 
@@ -1310,35 +1310,35 @@ You must supply this method. It should return a tuple `(`*`x`*`, `*`y`*`)` givin
 
 Call this method when the document has changed. It will call `getscrollbarvalues()` and update the scrollbars.
 
-### `scrollbar_callback`(*which, what, value*)
+### `scrollbar_callback`(which, what, value)
 
 Supplied by you and called after user interaction. *which* will be `’x’` or `’y’`, *what* will be `’-’`, `’--’`, `’set’`, `’++’` or `’+’`. For `’set’`, *value* will contain the new scrollbar position.
 
-### `scalebarvalues`(*absmin, absmax, curmin, curmax*)
+### `scalebarvalues`(absmin, absmax, curmin, curmax)
 
 Auxiliary method to help you calculate values to return from `getscrollbarvalues()`. You pass document minimum and maximum value and topmost (leftmost) and bottommost (rightmost) visible values and it returns the correct number or `None`.
 
-### `do_activate`(*onoff, event*)
+### `do_activate`(onoff, event)
 
 Takes care of dimming/highlighting scrollbars when a window becomes frontmost vv. If you override this method call this one at the end of your method.
 
-### `do_postresize`(*width, height, window*)
+### `do_postresize`(width, height, window)
 
 Moves scrollbars to the correct position. Call this method initially if you override it.
 
-### `do_controlhit`(*window, control, pcode, event*)
+### `do_controlhit`(window, control, pcode, event)
 
 Handles scrollbar interaction. If you override it call this method first, a nonzero return value indicates the hit was in the scrollbars and has been handled.
 
-## DialogWindow Objects <span id="dialogwindow-objects" label="dialogwindow-objects"></span>
+## DialogWindow Objects 
 
 DialogWindow objects have the following methods besides those of `Window` objects:
 
-### `open`(*resid*)
+### `open`(resid)
 
 Create the dialog window, from the DLOG resource with id *resid*. The dialog object is stored in `self.wid`.
 
-### `do_itemhit`(*item, event*)
+### `do_itemhit`(item, event)
 
 Item number *item* was hit. You are responsible for redrawing toggle buttons, etc.
 # Introduction
@@ -1361,7 +1361,7 @@ The following functions are available in this module: `chdir()`, `close()`, `dup
 
 One additional function is available:
 
-### `xstat`(*path*)
+### `xstat`(path)
 
 This function returns the same information as `stat()`, but with three additional values appended: the size of the resource fork of the file and its 4-character creator and type.
 
@@ -1390,7 +1390,7 @@ Options for the `setmode` method. and enable character echo, the other two disab
 
 Open a new console window. Return a console window object.
 
-### `fopen`(*fp*)
+### `fopen`(fp)
 
 Return the console window object corresponding with the given file object. *fp* should be one of `sys.stdin`, `sys.stdout` or `sys.stderr`.
 
@@ -1424,11 +1424,11 @@ If set non-zero, the window will wait for user action before closing.
 
 The file object corresponding to this console window. If the file is buffered, you should call *`file`*`.flush()` between `write()` and `read()` calls.
 
-### `setmode`(*mode*)
+### `setmode`(mode)
 
 Set the input mode of the console to , etc.
 
-### `settabs`(*n*)
+### `settabs`(n)
 
 Set the tabsize to *n* spaces.
 
@@ -1440,11 +1440,11 @@ Clear to end-of-screen.
 
 Clear to end-of-line.
 
-### `inverse`(*onoff*)
+### `inverse`(onoff)
 
 Enable inverse-video mode: characters with the high bit set are displayed in inverse video (this disables the upper half of a non-ASCII character set).
 
-### `gotoxy`(*x, y*)
+### `gotoxy`(x, y)
 
 Set the cursor to position `(`*`x`*`, `*`y`*`)`.
 
@@ -1473,27 +1473,27 @@ Open the domain name resolver extension. If *filename* is given it should be the
 
 Close the resolver extension. Again, not needed for normal use.
 
-### `StrToAddr`(*hostname*)
+### `StrToAddr`(hostname)
 
 Look up the IP address for *hostname*. This call returns a dnr result object of the “address” variation.
 
-### `AddrToName`(*addr*)
+### `AddrToName`(addr)
 
 Do a reverse lookup on the 32-bit integer IP-address *addr*. Returns a dnr result object of the “address” variation.
 
-### `AddrToStr`(*addr*)
+### `AddrToStr`(addr)
 
 Convert the 32-bit integer IP-address *addr* to a dotted-decimal string. Returns the string.
 
-### `HInfo`(*hostname*)
+### `HInfo`(hostname)
 
 Query the nameservers for a `HInfo` record for host *hostname*. These records contain hardware and software information about the machine in question (if they are available in the first place). Returns a dnr result object of the “hinfo” variety.
 
-### `MXInfo`(*domain*)
+### `MXInfo`(domain)
 
 Query the nameservers for a mail exchanger for *domain*. This is the hostname of a host willing to accept SMTPmail for the given domain. Returns a dnr result object of the “mx” variety.
 
-## DNR Result Objects <span id="dnr-result-object" label="dnr-result-object"></span>
+## DNR Result Objects 
 
 Since the DNR calls all execute asynchronously you do not get the results back immediately. Instead, you get a dnr result object. You can check this object to see whether the query is complete, and access its attributes to obtain the information when it is.
 
@@ -1545,15 +1545,15 @@ The simplest way to use the module to convert names to dotted-decimal strings, w
 
 This module provides access to Macintosh FSSpec handling, the Alias Manager, aliases and the Standard File package. Whenever a function or method expects a *file* argument, this argument can be one of three things: (1) a full or partial Macintosh pathname, (2) an object or (3) a 3-tuple `(`*`wdRefNum`*`, `*`parID`*`, `*`name`*`)` as described in Inside Macintosh: Files. A description of aliases and the Standard File package can also be found there.
 
-### `FSSpec`(*file*)
+### `FSSpec`(file)
 
 Create an object for the specified file.
 
-### `RawFSSpec`(*data*)
+### `RawFSSpec`(data)
 
 Create an object given the raw data for the C structure for the as a string. This is mainly useful if you have obtained an structure over a network.
 
-### `RawAlias`(*data*)
+### `RawAlias`(data)
 
 Create an object given the raw data for the C structure for the alias as a string. This is mainly useful if you have obtained an structure over a network.
 
@@ -1561,7 +1561,7 @@ Create an object given the raw data for the C structure for the alias as a strin
 
 Create a zero-filled object.
 
-### `ResolveAliasFile`(*file*)
+### `ResolveAliasFile`(file)
 
 Resolve an alias file. Returns a 3-tuple `(`*`fsspec`*`, `*`isfolder`*`, `*`aliased`*`)` where *fsspec* is the resulting object, *isfolder* is true if *fsspec* points to a folder and *aliased* is true if the file was an alias in the first place (otherwise the object for the file itself is returned).
 
@@ -1569,11 +1569,11 @@ Resolve an alias file. Returns a 3-tuple `(`*`fsspec`*`, `*`isfolder`*`, `*`alia
 
 Present the user with a standard “open input file” dialog. Optionally, you can pass up to four 4-character file types to limit the files the user can choose from. The function returns an object and a flag indicating that the user completed the dialog without cancelling.
 
-### `PromptGetFile`(*prompt*)
+### `PromptGetFile`(prompt)
 
 Similar to `StandardGetFile()` but allows you to specify a prompt.
 
-### `StandardPutFile`(*prompt,* )
+### `StandardPutFile`(prompt, )
 
 Present the user with a standard “open output file” dialog. *prompt* is the prompt string, and the optional *default* argument initializes the output file name. The function returns an object and a flag indicating that the user completed the dialog without cancelling.
 
@@ -1587,21 +1587,21 @@ Set the folder that is initially presented to the user when one of the file sele
 
 Note that starting with system 7.5 the user can change Standard File behaviour with the “general controls” controlpanel, thereby making this call inoperative.
 
-### `FindFolder`(*where, which, create*)
+### `FindFolder`(where, which, create)
 
 Locates one of the “special” folders that MacOS knows about, such as the trash or the Preferences folder. *where* is the disk to search, *which* is the 4-character string specifying which folder to locate. Setting *create* causes the folder to be created if it does not exist. Returns a `(`*`vrefnum`*`, `*`dirid`*`)` tuple.
 
-### `NewAliasMinimalFromFullPath`(*pathname*)
+### `NewAliasMinimalFromFullPath`(pathname)
 
 Return a minimal object that points to the given file, which must be specified as a full pathname. This is the only way to create an pointing to a non-existing file.
 
 The constants for *where* and *which* can be obtained from the standard module *MACFS*.
 
-### `FindApplication`(*creator*)
+### `FindApplication`(creator)
 
 Locate the application with 4-char creator code *creator*. The function returns an object pointing to the application.
 
-## FSSpec objects <span id="fsspec-objects" label="fsspec-objects"></span>
+## FSSpec objects 
 
 ### `data`
 
@@ -1627,7 +1627,7 @@ Create a minimal alias pointing to this file.
 
 Return the 4-character creator and type of the file.
 
-### `SetCreatorType`(*creator, type*)
+### `SetCreatorType`(creator, type)
 
 Set the 4-character creator and type of the file.
 
@@ -1635,7 +1635,7 @@ Set the 4-character creator and type of the file.
 
 Return a object describing the finder info for the file.
 
-### `SetFInfo`(*finfo*)
+### `SetFInfo`(finfo)
 
 Set the finder info for the file to the values given as *finfo* (an object).
 
@@ -1643,11 +1643,11 @@ Set the finder info for the file to the values given as *finfo* (an object).
 
 Return a tuple with three floating point values representing the creation date, modification date and backup date of the file.
 
-### `SetDates`(*crdate, moddate, backupdate*)
+### `SetDates`(crdate, moddate, backupdate)
 
 Set the creation, modification and backup date of the file. The values are in the standard floating point format used for times throughout Python.
 
-## Alias Objects <span id="alias-objects" label="alias-objects"></span>
+## Alias Objects 
 
 ### `data`
 
@@ -1657,17 +1657,17 @@ The raw data for the Alias record, suitable for storing in a resource or transmi
 
 Resolve the alias. If the alias was created as a relative alias you should pass the file relative to which it is. Return the FSSpec for the file pointed to and a flag indicating whether the object itself was modified during the search process. If the file does not exist but the path leading up to it does exist a valid fsspec is returned.
 
-### `GetInfo`(*num*)
+### `GetInfo`(num)
 
 An interface to the C routine .
 
-### `Update`(*file,* )
+### `Update`(file, )
 
 Update the alias to point to the *file* given. If *file2* is present a relative alias will be created.
 
 Note that it is currently not possible to directly manipulate a resource as an object. Hence, after calling `Update()` or after `Resolve()` indicates that the alias has changed the Python program is responsible for getting the `data` value from the object and modifying the resource.
 
-## FInfo Objects <span id="finfo-objects" label="finfo-objects"></span>
+## FInfo Objects 
 
 See Inside Macintosh: Files for a complete description of what the various fields mean.
 
@@ -1710,7 +1710,7 @@ The `ic` module defines the following class and function:
 
 Create an internet config object. The signature is a 4-character creator code of the current application (default `’Pyth’`) which may influence some of ICs settings. The optional *ic* argument is a low-level `icglue.icinstance` created beforehand, this may be useful if you want to get preferences from a different config file, etc.
 
-### `launchurl`(*url*)
+### `launchurl`(url)
 
 These functions are “shortcuts” to the methods of the same name, described below.
 
@@ -1724,27 +1724,27 @@ If the module does not know how to represent the data it returns an instance of 
 
 Besides the dictionary interface, `IC` objects have the following methods:
 
-### `launchurl`(*url*)
+### `launchurl`(url)
 
 Parse the given URL, lauch the correct application and pass it the URL. The optional *hint* can be a scheme name such as `’mailto:’`, in which case incomplete URLs are completed with this scheme. If *hint* is not provided, incomplete URLs are invalid.
 
-### `parseurl`(*data*)
+### `parseurl`(data)
 
 Find an URL somewhere in *data* and return start position, end position and the URL. The optional *start* and *end* can be used to limit the search, so for instance if a user clicks in a long textfield you can pass the whole textfield and the click-position in *start* and this routine will return the whole URL in which the user clicked. As above, *hint* is an optional scheme used to complete incomplete URLs.
 
-### `mapfile`(*file*)
+### `mapfile`(file)
 
 Return the mapping entry for the given *file*, which can be passed as either a filename or an `macfs.FSSpec()` result, and which need not exist.
 
 The mapping entry is returned as a tuple `(`*`version`*`, `*`type`*`, `*`creator`*`, `*`postcreator`*`, `*`flags`*`, `*`extension`*`, `*`appname`*`, `*`postappname`*`, `*`mimetype`*`, `*`entryname`*`)`, where *version* is the entry version number, *type* is the 4-character filetype, *creator* is the 4-character creator type, *postcreator* is the 4-character creator code of an optional application to post-process the file after downloading, *flags* are various bits specifying whether to transfer in binary or ascii and such, *extension* is the filename extension for this file type, *appname* is the printable name of the application to which this file belongs, *postappname* is the name of the postprocessing application, *mimetype* is the MIME type of this file and *entryname* is the name of this entry.
 
-### `maptypecreator`(*type, creator*)
+### `maptypecreator`(type, creator)
 
 Return the mapping entry for files with given 4-character *type* and *creator* codes. The optional *filename* may be specified to further help finding the correct entry (if the creator code is `’????’`, for instance).
 
 The mapping entry is returned in the same format as for *mapfile*.
 
-### `settypecreator`(*file*)
+### `settypecreator`(file)
 
 Given an existing *file*, specified either as a filename or as an `macfs.FSSpec()` result, set its creator and type correctly based on its extension. The finder is told about the change, so the finder icon will be updated quickly.
 # `MacOS` — Access to MacOS interpreter features
@@ -1759,7 +1759,7 @@ Note the capitalisation of the module name, this is a historical artifact.
 
 This exception is raised on MacOS generated errors, either from functions in this module or from other mac-specific modules like the toolbox interfaces. The arguments are the integer error code (the value) and a textual description of the error code. Symbolic names for all known error codes are defined in the standard module `macerrors`.
 
-### `SetEventHandler`(*handler*)
+### `SetEventHandler`(handler)
 
 In the inner interpreter loop Python will occasionally check for events, unless disabled with `ScheduleParams()`. With this function you can pass a Python event-handler function that will be called if an event is available. The event is passed as parameter and the function should return non-zero if the event has been fully processed, otherwise event processing continues (by passing the event to the console window package, for instance).
 
@@ -1771,27 +1771,27 @@ Influence the interpreter inner loop event handling. *Interval* specifies how of
 
 All parameters are optional, and default to the current value. The return value of this function is a tuple with the old values of these options. Initial defaults are that all processing is enabled, checking is done every quarter second and the CPU is given up for a quarter second when in the background.
 
-### `HandleEvent`(*ev*)
+### `HandleEvent`(ev)
 
 Pass the event record *ev* back to the Python event loop, or possibly to the handler for the `sys.stdout` window (based on the compiler used to build Python). This allows Python programs that do their own event handling to still have some command-period and window-switching capability.
 
 If you attempt to call this function from an event handler set through `SetEventHandler()` you will get an exception.
 
-### `GetErrorString`(*errno*)
+### `GetErrorString`(errno)
 
 Return the textual description of MacOS error code *errno*.
 
-### `splash`(*resid*)
+### `splash`(resid)
 
 This function will put a splash window on-screen, with the contents of the DLOG resource specified by *resid*. Calling with a zero argument will remove the splash screen. This function is useful if you want an applet to post a splash screen early in initialization without first having to load numerous extension modules.
 
-### `DebugStr`(*message* )
+### `DebugStr`(message )
 
 Drop to the low-level debugger with message *message*. The optional *object* argument is not used, but can easily be inspected from the debugger.
 
 Note that you should use this function with extreme care: if no low-level debugger like MacsBug is installed this call will crash your system. It is intended mainly for developers of Python extension modules.
 
-### `openrf`(*name* )
+### `openrf`(name )
 
 Open the resource fork of a file. Arguments are the same as for the built-in function `open()`. The object returned has file-like semantics, but it is not a Python file object, so there may be subtle differences.
 # `macostools` — Convenience routines for file manipulation
@@ -1802,21 +1802,21 @@ This module contains some convenience routines for file-manipulation on the Maci
 
 The `macostools` module defines the following functions:
 
-### `copy`(*src, dst*)
+### `copy`(src, dst)
 
 Copy file *src* to *dst*. The files can be specified as pathnames or objects. If *createpath* is non-zero *dst* must be a pathname and the folders leading to the destination are created if necessary. The method copies data and resource fork and some finder information (creator, type, flags) and optionally the creation, modification and backup times (default is to copy them). Custom icons, comments and icon position are not copied.
 
 If the source is an alias the original to which the alias points is copied, not the aliasfile.
 
-### `copytree`(*src, dst*)
+### `copytree`(src, dst)
 
 Recursively copy a file tree from *src* to *dst*, creating folders as needed. *src* and *dst* should be specified as pathnames.
 
-### `mkalias`(*src, dst*)
+### `mkalias`(src, dst)
 
 Create a finder alias *dst* pointing to *src*. Both may be specified as pathnames or objects.
 
-### `touched`(*dst*)
+### `touched`(dst)
 
 Tell the finder that some bits of finder-information such as creator or type for file *dst* has changed. The file can be specified by pathname or fsspec. This call should prod the finder into redrawing the files icon.
 
@@ -1836,19 +1836,19 @@ All file and folder parameters can be specified either as full pathnames or as o
 
 The `findertools` module defines the following functions:
 
-### `launch`(*file*)
+### `launch`(file)
 
 Tell the finder to launch *file*. What launching means depends on the file: applications are started, folders are opened and documents are opened in the correct application.
 
-### `Print`(*file*)
+### `Print`(file)
 
 Tell the finder to print a file (again specified by full pathname or ). The behaviour is identical to selecting the file and using the print command in the finder.
 
-### `copy`(*file, destdir*)
+### `copy`(file, destdir)
 
 Tell the finder to copy a file or folder *file* to folder *destdir*. The function returns an object pointing to the new file.
 
-### `move`(*file, destdir*)
+### `move`(file, destdir)
 
 Tell the finder to move a file or folder *file* to folder *destdir*. The function returns an object pointing to the new file.
 
@@ -1877,7 +1877,7 @@ Test availability of the Speech Manager extension (and, on the PowerPC, the Spee
 
 Return the (integer) version number of the Speech Manager.
 
-### `SpeakString`(*str*)
+### `SpeakString`(str)
 
 Utter the string *str* using the default voice, asynchronously. This aborts any speech that may still be active from prior `SpeakString()` invocations.
 
@@ -1889,7 +1889,7 @@ Return the number of speech channels busy, system-wide.
 
 Return the number of different voices available.
 
-### `GetIndVoice`(*num*)
+### `GetIndVoice`(num)
 
 Return a object for voice number *num*.
 
@@ -1909,7 +1909,7 @@ Return a new Speech Channel object using this voice.
 
 A Speech Channel object allows you to speak strings with slightly more control than `SpeakString()`, and allows you to use multiple speakers at the same time. Please note that channel pitch and rate are interrelated in some way, so that to make your Macintosh sing you will have to adjust both.
 
-### `SpeakText`(*str*)
+### `SpeakText`(str)
 
 Start uttering the given string.
 
@@ -1921,7 +1921,7 @@ Stop babbling.
 
 Return the current pitch of the channel, as a floating-point number.
 
-### `SetPitch`(*pitch*)
+### `SetPitch`(pitch)
 
 Set the pitch of the channel.
 
@@ -1929,7 +1929,7 @@ Set the pitch of the channel.
 
 Get the speech rate (utterances per minute) of the channel as a floating point number.
 
-### `SetRate`(*rate*)
+### `SetRate`(rate)
 
 Set the speech rate of the channel.
 # `mactcp` — The MacTCP interfaces
@@ -1952,11 +1952,11 @@ Return the 32-bit integer IP address of the network interface.
 
 Return the 32-bit integer network mask of the interface.
 
-### `TCPCreate`(*size*)
+### `TCPCreate`(size)
 
 Create a TCP Stream object. *size* is the size of the receive buffer, `4096` is suggested by various sources.
 
-### `UDPCreate`(*size, port*)
+### `UDPCreate`(size, port)
 
 Create a UDP Stream object. *size* is the size of the receive buffer (and, hence, the size of the biggest datagram you can receive on this port). *port* is the UDP port number you want to receive datagrams on, a value of zero will make MacTCP select a free port.
 
@@ -1966,7 +1966,7 @@ Create a UDP Stream object. *size* is the size of the receive buffer (and, hence
 
 When set to a value different than `None` this should refer to a function with two integer parameters: an event code and a detail. This function will be called upon network-generated events such as urgent data arrival. Macintosh documentation calls this the *asynchronous service routine*. In addition, it is called with eventcode `MACTCP.PassiveOpenDone` when a `PassiveOpen()` completes. This is a Python addition to the MacTCP semantics. It is safe to do further calls from *asr*.
 
-### `PassiveOpen`(*port*)
+### `PassiveOpen`(port)
 
 Wait for an incoming connection on TCP port *port* (zero makes the system pick a free port). The call returns immediately, and you should use `wait()` to wait for completion. You should not issue any method calls other than `wait()`, `isdone()` or `GetSockName()` before the call completes.
 
@@ -1982,15 +1982,15 @@ Return `1` if a `PassiveOpen()` has completed.
 
 Return the TCP address of this side of a connection as a 2-tuple `(`*`host`*`, `*`port`*`)`, both integers.
 
-### `ActiveOpen`(*lport, host, rport*)
+### `ActiveOpen`(lport, host, rport)
 
 Open an outgoing connection to TCP address `(`*`host`*`, `*`rport`*`)`. Use local port *lport* (zero makes the system pick a free port). This call blocks until the connection has been established.
 
-### `Send`(*buf, push, urgent*)
+### `Send`(buf, push, urgent)
 
 Send data *buf* over the connection. *push* and *urgent* are flags as specified by the TCP standard.
 
-### `Rcv`(*timeout*)
+### `Rcv`(timeout)
 
 Receive data. The call returns when *timeout* seconds have passed or when (according to the MacTCP documentation) “a reasonable amount of data has been received”. The return value is a 3-tuple `(`*`data`*`, `*`urgent`*`, `*`mark`*`)`. If urgent data is outstanding `Rcv` will always return that before looking at any normal data. The first call returning urgent data will have the *urgent* flag set, the last will have the *mark* flag set.
 
@@ -2038,11 +2038,11 @@ The asynchronous service routine to be called on events such as datagram arrival
 
 A read-only member giving the port number of this UDP Stream.
 
-### `Read`(*timeout*)
+### `Read`(timeout)
 
 Read a datagram, waiting at most *timeout* seconds (-1 is infinite). Return the data.
 
-### `Write`(*host, port, buf*)
+### `Write`(host, port, buf)
 
 Send *buf* as a datagram to IP-address *host*, port *port*.
 # `EasyDialogs` — Basic Macintosh dialogs
@@ -2053,15 +2053,15 @@ The `EasyDialogs` module contains some simple dialogs for the Macintosh, modelle
 
 The `EasyDialogs` module defines the following functions:
 
-### `Message`(*str*)
+### `Message`(str)
 
 A modal dialog with the message text *str*, which should be at most 255 characters long, is displayed. Control is returned when the user clicks “OK”.
 
-### `AskString`(*prompt*)
+### `AskString`(prompt)
 
 Ask the user to input a string value, in a modal dialog. *prompt* is the promt message, the optional *default* arg is the initial value for the string. All strings can be at most 255 bytes long. `AskString()` returns the string entered or `None` in case the user cancelled.
 
-### `AskYesNoCancel`(*question*)
+### `AskYesNoCancel`(question)
 
 Present a dialog with text *question* and three buttons labelled “yes”, “no” and “cancel”. Return `1` for yes, `0` for no and `-1` for cancel. The default return value chosen by hitting return is `0`. This can be changed with the optional *default* argument.
 
@@ -2090,13 +2090,13 @@ A class that handles AppleEvent dispatch. Your application should subclass this 
 
 A class that is more or less compatible with `FrameWork.Application` but with less functionality. Its event loop supports the apple menu, command-dot and AppleEvents; other events are passed on to the Python interpreter and/or Sioux. Useful if your application wants to use `AEServer` but does not provide its own windows, etc.
 
-## AEServer Objects <span id="aeserver-objects" label="aeserver-objects"></span>
+## AEServer Objects 
 
-### `installaehandler`(*classe, type, callback*)
+### `installaehandler`(classe, type, callback)
 
 Installs an AppleEvent handler. *classe* and *type* are the four-character OSA Class and Type designators, `’****’` wildcards are allowed. When a matching AppleEvent is received the parameters are decoded and your callback is invoked.
 
-### `callback`(*\_object, \*\*kwargs*)
+### `callback`(_object, **kwargs)
 
 Your callback is called with the OSA Direct Object as first positional parameter. The other parameters are passed as keyword arguments, with the 4-character designator as name. Three extra keyword parameters are passed: `_class` and `_type` are the Class and Type designators and `_attributes` is a dictionary with the AppleEvent attributes.
 

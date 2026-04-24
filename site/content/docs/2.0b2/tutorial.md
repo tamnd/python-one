@@ -3,7 +3,7 @@ title: "Tutorial"
 weight: 10
 ---
 
-# Whetting Your Appetite <span id="intro" label="intro"></span>
+# Whetting Your Appetite 
 
 If you ever wrote a large shell script, you probably know this feeling: you’d love to add yet another feature, but it’s already so slow, and so big, and so complicated; or the feature involves a system call or other function that is only accessible from C …Usually the problem at hand isn’t serious enough to warrant rewriting the script in C; perhaps the problem requires variable-length strings or other data types (like sorted lists of file names) that are easy in the shell but lots of work to implement in C, or perhaps you’re not sufficiently familiar with C.
 
@@ -27,7 +27,7 @@ Python is *extensible*: if you know how to program in C it is easy to add a new 
 
 By the way, the language is named after the BBC show “Monty Python’s Flying Circus” and has nothing to do with nasty reptiles. Making references to Monty Python skits in documentation is not only allowed, it is encouraged!
 
-## Where From Here <span id="where" label="where"></span>
+## Where From Here 
 
 Now that you are all excited about Python, you’ll want to examine it in some more detail. Since the best way to learn a language is using it, you are invited here to do so.
 
@@ -35,9 +35,9 @@ In the next chapter, the mechanics of using the interpreter are explained. This 
 
 The rest of the tutorial introduces various features of the Python language and system through examples, beginning with simple expressions, statements and data types, through functions and modules, and finally touching upon advanced concepts like exceptions and user-defined classes.
 
-# Using the Python Interpreter <span id="using" label="using"></span>
+# Using the Python Interpreter 
 
-## Invoking the Interpreter <span id="invoking" label="invoking"></span>
+## Invoking the Interpreter 
 
 The Python interpreter is usually installed as `/usr/local/bin/python` on those machines where it is available; putting `/usr/local/bin` in your Unix shell’s search path makes it possible to start it by typing the command
 
@@ -57,11 +57,11 @@ Note that there is a difference between `python file` and `python <file`. In the
 
 When a script file is used, it is sometimes useful to be able to run the script and enter interactive mode afterwards. This can be done by passing `-i` before the script. (This does not work if the script is read from standard input, for the same reason as explained in the previous paragraph.)
 
-### Argument Passing <span id="argPassing" label="argPassing"></span>
+### Argument Passing 
 
 When known to the interpreter, the script name and additional arguments thereafter are passed to the script in the variable `sys.argv`, which is a list of strings. Its length is at least one; when no script and no arguments are given, `sys.argv[0]` is an empty string. When the script name is given as `’-’` (meaning standard input), `sys.argv[0]` is set to `’-’`. When `-c` *command* is used, `sys.argv[0]` is set to `’-c’`. Options found after `-c` *command* are not consumed by the Python interpreter’s option processing but left in `sys.argv` for the command to handle.
 
-### Interactive Mode <span id="interactive" label="interactive"></span>
+### Interactive Mode 
 
 When commands are read from a tty, the interpreter is said to be in *interactive mode*. In this mode it prompts for the next command with the *primary prompt*, usually three greater-than signs (`>>> `); for continuation lines it prompts with the *secondary prompt*, by default three dots (`... `). The interpreter prints a welcome message stating its version number and a copyright notice before printing the first prompt, e.g.:
 
@@ -78,15 +78,15 @@ Continuation lines are needed when entering a multi-line construct. As an exampl
     ... 
     Be careful not to fall off!
 
-## The Interpreter and Its Environment <span id="interp" label="interp"></span>
+## The Interpreter and Its Environment 
 
-### Error Handling <span id="error" label="error"></span>
+### Error Handling 
 
 When an error occurs, the interpreter prints an error message and a stack trace. In interactive mode, it then returns to the primary prompt; when input came from a file, it exits with a nonzero exit status after printing the stack trace. (Exceptions handled by an `except` clause in a `try` statement are not errors in this context.) Some errors are unconditionally fatal and cause an exit with a nonzero exit; this applies to internal inconsistencies and some cases of running out of memory. All error messages are written to the standard error stream; normal output from the executed commands is written to standard output.
 
 Typing the interrupt character (usually Control-C or DEL) to the primary or secondary prompt cancels the input and returns to the primary prompt.[^1] Typing an interrupt while a command is executing raises the `KeyboardInterrupt` exception, which may be handled by a `try` statement.
 
-### Executable Python Scripts <span id="scripts" label="scripts"></span>
+### Executable Python Scripts 
 
 On BSD’ish Unix systems, Python scripts can be made directly executable, like shell scripts, by putting the line
 
@@ -94,7 +94,7 @@ On BSD’ish Unix systems, Python scripts can be made directly executable, like 
 
 (assuming that the interpreter is on the user’s ) at the beginning of the script and giving the file an executable mode. The `#!` must be the first two characters of the file. Note that the hash, or pound, character, `#`, is used to start a comment in Python.
 
-### The Interactive Startup File <span id="startup" label="startup"></span>
+### The Interactive Startup File 
 
 When you use Python interactively, it is frequently handy to have some standard commands executed every time the interpreter is started. You can do this by setting an environment variable named to the name of a file containing your start-up commands. This is similar to the `.profile` feature of the Unix shells.
 
@@ -107,7 +107,7 @@ If you want to read an additional start-up file from the current directory, you 
     if filename and os.path.isfile(filename):
         execfile(filename)
 
-# An Informal Introduction to Python <span id="informal" label="informal"></span>
+# An Informal Introduction to Python 
 
 In the following examples, input and output are distinguished by the presence or absence of prompts (`>>> ` and `... `): to repeat the example, you must type everything after the prompt, when the prompt appears; lines that do not begin with a prompt are output from the interpreter.
 
@@ -122,11 +122,11 @@ Some examples:
                              # ... and now a third!
     STRING = "# This is not a comment."
 
-## Using Python as a Calculator <span id="calculator" label="calculator"></span>
+## Using Python as a Calculator 
 
 Let’s try some simple Python commands. Start the interpreter and wait for the primary prompt, `>>> `. (It shouldn’t take long.)
 
-### Numbers <span id="numbers" label="numbers"></span>
+### Numbers 
 
 The interpreter acts as a simple calculator: you can type an expression at it and it will write the value. Expression syntax is straightforward: the operators `+`, `-`, `*` and `/` work just like in most other languages (for example, Pascal or C); parentheses can be used for grouping. For example:
 
@@ -215,7 +215,7 @@ In interactive mode, the last printed expression is assigned to the variable `_`
 
 This variable should be treated as read-only by the user. Don’t explicitly assign a value to it — you would create an independent local variable with the same name masking the built-in variable with its magic behavior.
 
-### Strings <span id="strings" label="strings"></span>
+### Strings 
 
 Besides numbers, Python can also manipulate strings, which can be expressed in several ways. They can be enclosed in single quotes or double quotes:
 
@@ -376,7 +376,7 @@ The built-in function `len()` returns the length of a string:
     >>> len(s)
     34
 
-### Unicode Strings <span id="unicodeStrings" label="unicodeStrings"></span>
+### Unicode Strings 
 
 Starting with Python 2.0 a new data type for storing text data is available to the programmer: the Unicode object. It can be used to store and manipulate Unicode data (see `http://www.unicode.org`) and integrates well with the existing string objects providing auto-conversions where necessary.
 
@@ -426,7 +426,7 @@ To convert the Unicode string back into a string using the original encoding, th
     >>> u"���".encode('UTF-8')
     '\303\244\303\266\303\274'
 
-### Lists <span id="lists" label="lists"></span>
+### Lists 
 
 Python knows a number of *compound* data types, used to group together other values. The most versatile is the *list*, which can be written as a list of comma-separated values (items) between square brackets. List items need not all have the same type.
 
@@ -498,7 +498,7 @@ It is possible to nest lists (create lists containing other lists), for example:
 
 Note that in the last example, `p[1]` and `q` really refer to the same object! We’ll come back to *object semantics* later.
 
-## First Steps Towards Programming <span id="firstSteps" label="firstSteps"></span>
+## First Steps Towards Programming 
 
 Of course, we can use Python for more complicated tasks than adding two and two together. For instance, we can write an initial subsequence of the *Fibonacci* series as follows:
 
@@ -541,11 +541,11 @@ This example introduces several new features.
 
   Note that the interpreter inserts a newline before it prints the next prompt if the last line was not completed.
 
-# More Control Flow Tools <span id="moreControl" label="moreControl"></span>
+# More Control Flow Tools 
 
 Besides the statement just introduced, Python knows the usual control flow statements known from other languages, with some twists.
 
-##  Statements <span id="if" label="if"></span>
+##  Statements 
 
 Perhaps the most well-known statement type is the statement. For example:
 
@@ -565,7 +565,7 @@ There can be zero or more parts, and the part is optional. The keyword ‘’ is
 
 is a substitute for the *switch* or *case* statements found in other languages.
 
-##  Statements <span id="for" label="for"></span>
+##  Statements 
 
 The statement in Python differs a bit from what you may be used to in C or Pascal. Rather than always iterating over an arithmetic progression of numbers (like in Pascal), or giving the user the ability to define both the iteration step and halting condition (as C), Python’s statement iterates over the items of any sequence (e.g., a list or a string), in the order that they appear in the sequence. For example (no pun intended):
 
@@ -586,7 +586,7 @@ It is not safe to modify the sequence being iterated over in the loop (this can 
     >>> a
     ['defenestrate', 'cat', 'window', 'defenestrate']
 
-## The `range()` Function <span id="range" label="range"></span>
+## The `range()` Function 
 
 If you do need to iterate over a sequence of numbers, the built-in function `range()` comes in handy. It generates lists containing arithmetic progressions, e.g.:
 
@@ -614,7 +614,7 @@ To iterate over the indices of a sequence, combine `range()` and `len()` as foll
     3 little
     4 lamb
 
-##  and Statements, and Clauses on Loops <span id="break" label="break"></span>
+##  and Statements, and Clauses on Loops 
 
 The statement, like in C, breaks out of the smallest enclosing or loop.
 
@@ -639,7 +639,7 @@ Loop statements may have an `else` clause; it is executed when the loop terminat
     8 equals 2 * 4
     9 equals 3 * 3
 
-##  Statements <span id="pass" label="pass"></span>
+##  Statements 
 
 The statement does nothing. It can be used when a statement is required syntactically but the program requires no action. For example:
 
@@ -647,7 +647,7 @@ The statement does nothing. It can be used when a statement is required syntacti
     ...       pass # Busy-wait for keyboard interrupt
     ... 
 
-## Defining Functions <span id="functions" label="functions"></span>
+## Defining Functions 
 
 We can create a function that writes the Fibonacci series to an arbitrary boundary:
 
@@ -702,11 +702,11 @@ This example, as usual, demonstrates some new Python features:
 
 - The statement `result.append(b)` calls a *method* of the list object `result`. A method is a function that ‘belongs’ to an object and is named `obj.methodname`, where `obj` is some object (this may be an expression), and `methodname` is the name of a method that is defined by the object’s type. Different types define different methods. Methods of different types may have the same name without causing ambiguity. (It is possible to define your own object types and methods, using *classes*, as discussed later in this tutorial.) The method `append()` shown in the example, is defined for list objects; it adds a new element at the end of the list. In this example it is equivalent to `result = result + [b]`, but more efficient.
 
-## More on Defining Functions <span id="defining" label="defining"></span>
+## More on Defining Functions 
 
 It is also possible to define functions with a variable number of arguments. There are three forms, which can be combined.
 
-### Default Argument Values <span id="defaultArgs" label="defaultArgs"></span>
+### Default Argument Values 
 
 The most useful form is to specify a default value for one or more arguments. This creates a function that can be called with fewer arguments than it is defined, e.g.
 
@@ -753,7 +753,7 @@ If you don’t want the default to be shared between subsequent calls, you can w
         l.append(a)
         return l
 
-### Keyword Arguments <span id="keywordArgs" label="keywordArgs"></span>
+### Keyword Arguments 
 
 Functions can also be called using keyword arguments of the form *`keyword`*` = `*`value`*. For instance, the following function:
 
@@ -815,21 +815,21 @@ and of course it would print:
     shopkeeper : Michael Palin
     sketch : Cheese Shop Sketch
 
-### Arbitrary Argument Lists <span id="arbitraryArgs" label="arbitraryArgs"></span>
+### Arbitrary Argument Lists 
 
 Finally, the least frequently used option is to specify that a function can be called with an arbitrary number of arguments. These arguments will be wrapped up in a tuple. Before the variable number of arguments, zero or more normal arguments may occur.
 
     def fprintf(file, format, *args):
         file.write(format % args)
 
-### Lambda Forms <span id="lambda" label="lambda"></span>
+### Lambda Forms 
 
 By popular demand, a few features commonly found in functional programming languages and Lisp have been added to Python. With the keyword, small anonymous functions can be created. Here’s a function that returns the sum of its two arguments: `lambda a, b: a+b`. Lambda forms can be used wherever function objects are required. They are syntactically restricted to a single expression. Semantically, they are just syntactic sugar for a normal function definition. Like nested function definitions, lambda forms cannot reference variables from the containing scope, but this can be overcome through the judicious use of default argument values, e.g.
 
     def make_incrementor(n):
         return lambda x, incr=n: x+incr
 
-### Documentation Strings <span id="docstrings" label="docstrings"></span>
+### Documentation Strings 
 
 There are emerging conventions about the content and formatting of documentation strings. The first line should always be a short, concise summary of the object’s purpose. For brevity, it should not explicitly state the object’s name or type, since these are available by other means (except if the name happens to be a verb describing a function’s operation). This line should begin with a capital letter and end with a period.
 
@@ -852,11 +852,11 @@ Here is an example of a multi-line docstring:
         No, really, it doesn't do anything.
         
 
-# Data Structures <span id="structures" label="structures"></span>
+# Data Structures 
 
 This chapter describes some things you’ve learned about already in more detail, and adds some new things as well.
 
-## More on Lists <span id="moreLists" label="moreLists"></span>
+## More on Lists 
 
 The list data type has some more methods. Here are all of the methods of list objects:
 
@@ -908,7 +908,7 @@ An example that uses most of the list methods:
     >>> a
     [-1, 1, 66.6, 333, 333, 1234.5]
 
-### Using Lists as Stacks <span id="lists-as-stacks" label="lists-as-stacks"></span>
+### Using Lists as Stacks 
 
 The list methods make it very easy to use a list as a stack, where the last element added is the first element retrieved (“last-in, first-out”). To add an item to the top of the stack, use `append()`. To retrieve an item from the top of the stack, use `pop()` without an explicit index. For example:
 
@@ -928,7 +928,7 @@ The list methods make it very easy to use a list as a stack, where the last elem
     >>> stack
     [3, 4]
 
-### Using Lists as Queues <span id="lists-as-queues" label="lists-as-queues"></span>
+### Using Lists as Queues 
 
 You can also use a list conveniently as a queue, where the first element added is the first element retrieved (“first-in, first-out”). To add an item to the back of the queue, use `append()`. To retrieve an item from the front of the queue, use `pop()` with `0` as the index. For example:
 
@@ -942,7 +942,7 @@ You can also use a list conveniently as a queue, where the first element added i
     >>> queue
     ['Michael', 'Terry', 'Graham']
 
-### Functional Programming Tools <span id="functional" label="functional"></span>
+### Functional Programming Tools 
 
 There are three built-in functions that are very useful when used with lists: `filter()`, `map()`, and `reduce()`.
 
@@ -1022,7 +1022,7 @@ List comprehensions provide a concise way to create lists without resorting to u
     >>> [x+y for x in vec1 for y in vec2]
     [6, 5, -7, 8, 7, -5, 10, 9, -3]
 
-## The statement <span id="del" label="del"></span>
+## The statement 
 
 There is a way to remove an item from a list given its index instead of its value: the statement. This can also be used to remove slices from a list (which we did earlier by assignment of an empty list to the slice). For example:
 
@@ -1041,7 +1041,7 @@ can also be used to delete entire variables:
 
 Referencing the name `a` hereafter is an error (at least until another value is assigned to it). We’ll find other uses for later.
 
-## Tuples and Sequences <span id="tuples" label="tuples"></span>
+## Tuples and Sequences 
 
 We saw that lists and strings have many common properties, e.g., indexing and slicing operations. They are two examples of *sequence* data types. Since Python is an evolving language, other sequence data types may be added. There is also another standard sequence data type: the *tuple*.
 
@@ -1083,7 +1083,7 @@ Occasionally, the corresponding operation on lists is useful: *list unpacking*. 
     >>> a = ['spam', 'eggs', 100, 1234]
     >>> [a1, a2, a3, a4] = a
 
-## Dictionaries <span id="dictionaries" label="dictionaries"></span>
+## Dictionaries 
 
 Another useful data type built into Python is the *dictionary*. Dictionaries are sometimes found in other languages as “associative memories” or “associative arrays”. Unlike sequences, which are indexed by a range of numbers, dictionaries are indexed by *keys*, which can be any immutable type; strings and numbers can always be keys. Tuples can be used as keys if they contain only strings, numbers, or tuples. You can’t use lists as keys, since lists can be modified in place using their `append()` method.
 
@@ -1110,7 +1110,7 @@ Here is a small example using a dictionary:
     >>> tel.has_key('guido')
     1
 
-## More on Conditions <span id="conditions" label="conditions"></span>
+## More on Conditions 
 
 The conditions used in `while` and `if` statements above can contain other operators besides comparisons.
 
@@ -1131,7 +1131,7 @@ It is possible to assign the result of a comparison or other Boolean expression 
 
 Note that in Python, unlike C, assignment cannot occur inside expressions. C programmers may grumble about this, but it avoids a common class of problems encountered in C programs: typing `=` in an expression when `==` was intended.
 
-## Comparing Sequences and Other Types <span id="comparing" label="comparing"></span>
+## Comparing Sequences and Other Types 
 
 Sequence objects may be compared to other objects with the same sequence type. The comparison uses *lexicographical* ordering: first the first two items are compared, and if they differ this determines the outcome of the comparison; if they are equal, the next two items are compared, and so on, until either sequence is exhausted. If two items to be compared are themselves sequences of the same type, the lexicographical comparison is carried out recursively. If all items of two sequences compare equal, the sequences are considered equal. If one sequence is an initial subsequence of the other, the shorted sequence is the smaller one. Lexicographical ordering for strings uses the ASCII ordering for individual characters. Some examples of comparisons between sequences with the same types:
 
@@ -1145,7 +1145,7 @@ Sequence objects may be compared to other objects with the same sequence type. T
 
 Note that comparing objects of different types is legal. The outcome is deterministic but arbitrary: the types are ordered by their name. Thus, a list is always smaller than a string, a string is always smaller than a tuple, etc. Mixed numeric types are compared according to their numeric value, so 0 equals 0.0, etc.[^3]
 
-# Modules <span id="modules" label="modules"></span>
+# Modules 
 
 If you quit from the Python interpreter and enter it again, the definitions you have made (functions and variables) are lost. Therefore, if you want to write a somewhat longer program, you are better off using a text editor to prepare the input for the interpreter and running it with that file as input instead. This is known as creating a *script*. As your program gets longer, you may want to split it into several files for easier maintenance. You may also want to use a handy function that you’ve written in several programs without copying its definition into each program.
 
@@ -1188,7 +1188,7 @@ If you intend to use a function often you can assign it to a local name:
     >>> fib(500)
     1 1 2 3 5 8 13 21 34 55 89 144 233 377
 
-## More on Modules <span id="moreModules" label="moreModules"></span>
+## More on Modules 
 
 A module can contain executable statements as well as function definitions. These statements are intended to initialize the module. They are executed only the *first* time the module is imported somewhere.[^4]
 
@@ -1212,7 +1212,7 @@ There is even a variant to import all names that a module defines:
 
 This imports all names except those beginning with an underscore (`_`).
 
-### The Module Search Path <span id="searchPath" label="searchPath"></span>
+### The Module Search Path 
 
 When a module named `spam` is imported, the interpreter searches for a file named `spam.py` in the current directory, and then in the list of directories specified by the environment variable . This has the same syntax as the shell variable , i.e., a list of directory names. When is not set, or when the file is not found there, the search continues in an installation-dependent default path; on Unix, this is usually `.:/usr/local/lib/python`.
 
@@ -1238,7 +1238,7 @@ Some tips for experts:
 
 - The module `compileall`can create `.pyc` files (or `.pyo` files when `-O` is used) for all modules in a directory.
 
-## Standard Modules <span id="standardModules" label="standardModules"></span>
+## Standard Modules 
 
 Python comes with a library of standard modules, described in a separate document, the Python Library Reference (“Library Reference” hereafter). Some modules are built into the interpreter; these provide access to operations that are not part of the core of the language but are nevertheless built in, either for efficiency or to provide access to operating system primitives such as system calls. The set of such modules is a configuration option; e.g., the `amoeba` module is only provided on systems that somehow support Amoeba primitives. One particular module deserves some attention: `sys`, which is built into every Python interpreter. The variables `sys.ps1` and `sys.ps2` define the strings used as primary and secondary prompts:
 
@@ -1259,7 +1259,7 @@ The variable `sys.path` is a list of strings that determine the interpreter’s 
     >>> import sys
     >>> sys.path.append('/ufs/guido/lib/python')
 
-## The `dir()` Function <span id="dir" label="dir"></span>
+## The `dir()` Function 
 
 The built-in function `dir()` is used to find out which names a module defines. It returns a sorted list of strings:
 
@@ -1295,7 +1295,7 @@ Note that it lists all types of names: variables, modules, functions, etc.
     'map', 'max', 'min', 'oct', 'open', 'ord', 'pow', 'range', 'raw_input',
     'reduce', 'reload', 'repr', 'round', 'setattr', 'str', 'type', 'xrange']
 
-## Packages <span id="packages" label="packages"></span>
+## Packages 
 
 Packages are a way of structuring Python’s module namespace by using “dotted module names”. For example, the module name `A.B` designates a submodule named `B` in a package named `A`. Just like the use of modules saves the authors of different modules from having to worry about each other’s global variable names, the use of dotted module names saves the authors of multi-module packages like NumPy or the Python Imaging Library from having to worry about each other’s module names.
 
@@ -1355,11 +1355,11 @@ Note that when using `from `*`package`*` import `*`item`*, the item can be eithe
 
 Contrarily, when using syntax like `import `*`item.subitem.subsubitem`*, each item except for the last must be a package; the last item can be a module or a package but can’t be a class or function or variable defined in the previous item.
 
-### Importing \* From a Package <span id="pkg-import-star" label="pkg-import-star"></span>
+### Importing * From a Package 
 
 Now what happens when the user writes `from Sound.Effects import *`? Ideally, one would hope that this somehow goes out to the filesystem, finds which submodules are present in the package, and imports them all. Unfortunately, this operation does not work very well on Mac and Windows platforms, where the filesystem does not always have accurate information about the case of a filename! On these platforms, there is no guaranteed way to know whether a file `ECHO.PY` should be imported as a module `echo`, `Echo` or `ECHO`. (For example, Windows 95 has the annoying practice of showing all file names with a capitalized first letter.) The DOS 8+3 filename restriction adds another interesting problem for long module names.
 
-The only solution is for the package author to provide an explicit index of the package. The import statement uses the following convention: if a package’s `__init__.py` code defines a list named `__all__`, it is taken to be the list of module names that should be imported when `from `*`package`*` import *` is encountered. It is up to the package author to keep this list up-to-date when a new version of the package is released. Package authors may also decide not to support it, if they don’t see a use for importing \* from their package. For example, the file `Sounds/Effects/__init__.py` could contain the following code:
+The only solution is for the package author to provide an explicit index of the package. The import statement uses the following convention: if a package’s `__init__.py` code defines a list named `__all__`, it is taken to be the list of module names that should be imported when `from `*`package`*` import *` is encountered. It is up to the package author to keep this list up-to-date when a new version of the package is released. Package authors may also decide not to support it, if they don’t see a use for importing * from their package. For example, the file `Sounds/Effects/__init__.py` could contain the following code:
 
     __all__ = ["echo", "surround", "reverse"]
 
@@ -1373,7 +1373,7 @@ If `__all__` is not defined, the statement `from Sound.Effects import *` does *n
 
 In this example, the echo and surround modules are imported in the current namespace because they are defined in the `Sound.Effects` package when the `from...import` statement is executed. (This also works when `__all__` is defined.)
 
-Note that in general the practicing of importing \* from a module or package is frowned upon, since it often causes poorly readable code. However, it is okay to use it to save typing in interactive sessions, and certain modules are designed to export only names that follow certain patterns.
+Note that in general the practicing of importing * from a module or package is frowned upon, since it often causes poorly readable code. However, it is okay to use it to save typing in interactive sessions, and certain modules are designed to export only names that follow certain patterns.
 
 Remember, there is nothing wrong with using `from Package import specific_submodule`! In fact, this is the recommended notation unless the importing module needs to use submodules with the same name from different packages.
 
@@ -1383,11 +1383,11 @@ The submodules often need to refer to each other. For example, the `surround` mo
 
 When packages are structured into subpackages (as with the `Sound` package in the example), there’s no shortcut to refer to submodules of sibling packages - the full name of the subpackage must be used. For example, if the module `Sound.Filters.vocoder` needs to use the `echo` module in the `Sound.Effects` package, it can use `from Sound.Effects import echo`.
 
-# Input and Output <span id="io" label="io"></span>
+# Input and Output 
 
 There are several ways to present the output of a program; data can be printed in a human-readable form, or written to a file for future use. This chapter will discuss some of the possibilities.
 
-## Fancier Output Formatting <span id="formatting" label="formatting"></span>
+## Fancier Output Formatting 
 
 So far we’ve encountered two ways of writing values: *expression statements* and the statement. (A third way is using the `write()` method of file objects; the standard output file can be referenced as `sys.stdout`. See the Library Reference for more information on this.)
 
@@ -1486,7 +1486,7 @@ If you have a really long format string that you don’t want to split up, it wo
 
 This is particularly useful in combination with the new built-in `vars()` function, which returns a dictionary containing all local variables.
 
-## Reading and Writing Files <span id="files" label="files"></span>
+## Reading and Writing Files 
 
 `open()`returns a file object, and is most commonly used with two arguments: `open(`*`filename`*`, `*`mode`*`)`.
 
@@ -1498,7 +1498,7 @@ The first argument is a string containing the filename. The second argument is a
 
 On Windows and the Macintosh, `’b’` appended to the mode opens the file in binary mode, so there are also modes like `’rb’`, `’wb’`, and `’r+b’`. Windows makes a distinction between text and binary files; the end-of-line characters in text files are automatically altered slightly when data is read or written. This behind-the-scenes modification to file data is fine for ASCII text files, but it’ll corrupt binary data like that in JPEGs or `.EXE` files. Be very careful to use binary mode when reading and writing such files. (Note that the precise semantics of text mode on the Macintosh depends on the underlying C library being used.)
 
-### Methods of File Objects <span id="fileMethods" label="fileMethods"></span>
+### Methods of File Objects 
 
 The rest of the examples in this section will assume that a file object called `f` has already been created.
 
@@ -1548,7 +1548,7 @@ When you’re done with a file, call `f.close()` to close it and free up any sys
 
 File objects have some additional methods, such as `isatty()` and `truncate()` which are less frequently used; consult the Library Reference for a complete guide to file objects.
 
-### The `pickle` Module <span id="pickle" label="pickle"></span>
+### The `pickle` Module 
 
 Strings can easily be written to and read from a file. Numbers take a bit more effort, since the `read()` method only returns strings, which will have to be passed to a function like `string.atoi()`, which takes a string like `’123’` and returns its numeric value 123. However, when you want to save more complex data types like lists, dictionaries, or class instances, things get a lot more complicated.
 
@@ -1566,11 +1566,11 @@ To unpickle the object again, if `f` is a file object which has been opened for 
 
 `pickle` is the standard way to make Python objects which can be stored and reused by other programs or by a future invocation of the same program; the technical term for this is a *persistent* object. Because `pickle` is so widely used, many authors who write Python extensions take care to ensure that new data types such as matrices can be properly pickled and unpickled.
 
-# Errors and Exceptions <span id="errors" label="errors"></span>
+# Errors and Exceptions 
 
 Until now error messages haven’t been more than mentioned, but if you have tried out the examples you have probably seen some. There are (at least) two distinguishable kinds of errors: *syntax errors* and *exceptions*.
 
-## Syntax Errors <span id="syntaxErrors" label="syntaxErrors"></span>
+## Syntax Errors 
 
 Syntax errors, also known as parsing errors, are perhaps the most common kind of complaint you get while you are still learning Python:
 
@@ -1582,7 +1582,7 @@ Syntax errors, also known as parsing errors, are perhaps the most common kind of
 
 The parser repeats the offending line and displays a little ‘arrow’ pointing at the earliest point in the line where the error was detected. The error is caused by (or at least detected at) the token *preceding* the arrow: in the example, the error is detected at the keyword , since a colon (`:`) is missing before it. File name and line number are printed so you know where to look in case the input came from a script.
 
-## Exceptions <span id="exceptions" label="exceptions"></span>
+## Exceptions 
 
 Even if a statement or expression is syntactically correct, it may cause an error when an attempt is made to execute it. Errors detected during execution are called *exceptions* and are not unconditionally fatal: you will soon learn how to handle them in Python programs. Most exceptions are not handled by programs, however, and result in error messages as shown here:
 
@@ -1607,7 +1607,7 @@ The preceding part of the error message shows the context where the exception ha
 
 The *Python Library Reference* lists the built-in exceptions and their meanings.
 
-## Handling Exceptions <span id="handling" label="handling"></span>
+## Handling Exceptions 
 
 It is possible to write programs that handle selected exceptions. Look at the following example, which asks the user for input until a valid integer has been entered, but allows the user to interrupt the program (using `Control-C` or whatever the operating system supports); note that a user-generated interruption is signalled by raising the `KeyboardInterrupt` exception.
 
@@ -1686,7 +1686,7 @@ Exception handlers don’t just handle exceptions if they occur immediately in t
     ... 
     Handling run-time error: integer division or modulo
 
-## Raising Exceptions <span id="raising" label="raising"></span>
+## Raising Exceptions 
 
 The statement allows the programmer to force a specified exception to occur. For example:
 
@@ -1697,7 +1697,7 @@ The statement allows the programmer to force a specified exception to occur. For
 
 The first argument to names the exception to be raised. The optional second argument specifies the exception’s argument.
 
-## User-defined Exceptions <span id="userExceptions" label="userExceptions"></span>
+## User-defined Exceptions 
 
 Programs may name their own exceptions by assigning a string to a variable or creating a new exception class. For example:
 
@@ -1722,7 +1722,7 @@ Many standard modules use this to report errors that may occur in functions they
 
 More information on classes is presented in chapter <a href="#classes" data-reference-type="ref" data-reference="classes">[classes]</a>, “Classes.”
 
-## Defining Clean-up Actions <span id="cleanup" label="cleanup"></span>
+## Defining Clean-up Actions 
 
 The statement has another optional clause which is intended to define clean-up actions that must be executed under all circumstances. For example:
 
@@ -1740,13 +1740,13 @@ A *finally clause* is executed whether or not an exception has occurred in the t
 
 A statement must either have one or more except clauses or one finally clause, but not both.
 
-# Classes <span id="classes" label="classes"></span>
+# Classes 
 
 Python’s class mechanism adds classes to the language with a minimum of new syntax and semantics. It is a mixture of the class mechanisms found in C++ and Modula-3. As is true for modules, classes in Python do not put an absolute barrier between definition and user, but rather rely on the politeness of the user not to “break into the definition.” The most important features of classes are retained with full power, however: the class inheritance mechanism allows multiple base classes, a derived class can override any methods of its base class or classes, a method can call the method of a base class with the same name. Objects can contain an arbitrary amount of private data.
 
 In C++ terminology, all class members (including the data members) are *public*, and all member functions are *virtual*. There are no special constructors or destructors. As in Modula-3, there are no shorthands for referencing the object’s members from its methods: the method function is declared with an explicit first argument representing the object, which is provided implicitly by the call. As in Smalltalk, classes themselves are objects, albeit in the wider sense of the word: in Python, all data types are objects. This provides semantics for importing and renaming. But, just like in C++ or Modula-3, built-in types cannot be used as base classes for extension by the user. Also, like in C++ but unlike in Modula-3, most built-in operators with special syntax (arithmetic operators, subscripting etc.) can be redefined for class instances.
 
-## A Word About Terminology <span id="terminology" label="terminology"></span>
+## A Word About Terminology 
 
 Lacking universally accepted terminology to talk about classes, I will make occasional use of Smalltalk and C++ terms. (I would use Modula-3 terms, since its object-oriented semantics are closer to those of Python than C++, but I expect that few readers have heard of it.)
 
@@ -1754,7 +1754,7 @@ I also have to warn you that there’s a terminological pitfall for object-orien
 
 Objects have individuality, and multiple names (in multiple scopes) can be bound to the same object. This is known as aliasing in other languages. This is usually not appreciated on a first glance at Python, and can be safely ignored when dealing with immutable basic types (numbers, strings, tuples). However, aliasing has an (intended!) effect on the semantics of Python code involving mutable objects such as lists, dictionaries, and most types representing entities outside the program (files, windows, etc.). This is usually used to the benefit of the program, since aliases behave like pointers in some respects. For example, passing an object is cheap since only a pointer is passed by the implementation; and if a function modifies an object passed as an argument, the caller will see the change — this obviates the need for two different argument passing mechanisms as in Pascal.
 
-## Python Scopes and Name Spaces <span id="scopes" label="scopes"></span>
+## Python Scopes and Name Spaces 
 
 Before introducing classes, I first have to tell you something about Python’s scope rules. Class definitions play some neat tricks with namespaces, and you need to know how scopes and namespaces work to fully understand what’s going on. Incidentally, knowledge about this subject is useful for any advanced Python programmer.
 
@@ -1780,11 +1780,11 @@ It is important to realize that scopes are determined textually: the global scop
 
 A special quirk of Python is that assignments always go into the innermost scope. Assignments do not copy data — they just bind names to objects. The same is true for deletions: the statement `del x` removes the binding of `x` from the namespace referenced by the local scope. In fact, all operations that introduce new names use the local scope: in particular, import statements and function definitions bind the module or function name in the local scope. (The statement can be used to indicate that particular variables live in the global scope.)
 
-## A First Look at Classes <span id="firstClasses" label="firstClasses"></span>
+## A First Look at Classes 
 
 Classes introduce a little bit of new syntax, three new object types, and some new semantics.
 
-### Class Definition Syntax <span id="classDefinition" label="classDefinition"></span>
+### Class Definition Syntax 
 
 The simplest form of class definition looks like this:
 
@@ -1803,7 +1803,7 @@ When a class definition is entered, a new namespace is created, and used as the 
 
 When a class definition is left normally (via the end), a *class object* is created. This is basically a wrapper around the contents of the namespace created by the class definition; we’ll learn more about class objects in the next section. The original local scope (the one in effect just before the class definitions was entered) is reinstated, and the class object is bound here to the class name given in the class definition header (`ClassName` in the example).
 
-### Class Objects <span id="classObjects" label="classObjects"></span>
+### Class Objects 
 
 Class objects support two kinds of operations: attribute references and instantiation.
 
@@ -1843,7 +1843,7 @@ Of course, the `__init__()` method may have arguments for greater flexibility. I
     >>> x.r, x.i
     (3.0, -4.5)
 
-### Instance Objects <span id="instanceObjects" label="instanceObjects"></span>
+### Instance Objects 
 
 Now what can we do with instance objects? The only operations understood by instance objects are attribute references. There are two kinds of valid attribute names.
 
@@ -1859,7 +1859,7 @@ The second kind of attribute references understood by instance objects are *meth
 
 Valid method names of an instance object depend on its class. By definition, all attributes of a class that are (user-defined) function objects define corresponding methods of its instances. So in our example, `x.f` is a valid method reference, since `MyClass.f` is a function, but `x.i` is not, since `MyClass.i` is not. But `x.f` is not the same thing as `MyClass.f` — it is a *method object*, not a function object.
 
-### Method Objects <span id="methodObjects" label="methodObjects"></span>
+### Method Objects 
 
 Usually, a method is called immediately, e.g.:
 
@@ -1879,9 +1879,9 @@ Actually, you may have guessed the answer: the special thing about methods is th
 
 If you still don’t understand how methods work, a look at the implementation can perhaps clarify matters. When an instance attribute is referenced that isn’t a data attribute, its class is searched. If the name denotes a valid class attribute that is a function object, a method object is created by packing (pointers to) the instance object and the function object just found together in an abstract object: this is the method object. When the method object is called with an argument list, it is unpacked again, a new argument list is constructed from the instance object and the original argument list, and the function object is called with this new argument list.
 
-## Random Remarks <span id="remarks" label="remarks"></span>
+## Random Remarks 
 
-\[These should perhaps be placed more carefully...\]
+[These should perhaps be placed more carefully...]
 
 Data attributes override method attributes with the same name; to avoid accidental name conflicts, which may cause hard-to-find bugs in large programs, it is wise to use some kind of convention that minimizes the chance of conflicts, e.g., capitalize method names, prefix data attribute names with a small unique string (perhaps just an underscore), or use verbs for methods and nouns for data attributes.
 
@@ -1920,7 +1920,7 @@ Methods may call other methods by using method attributes of the `self` argument
 
 Methods may reference global names in the same way as ordinary functions. The global scope associated with a method is the module containing the class definition. (The class itself is never used as a global scope!) While one rarely encounters a good reason for using global data in a method, there are many legitimate uses of the global scope: for one thing, functions and modules imported into the global scope can be used by methods, as well as functions and classes defined in it. Usually, the class containing the method is itself defined in this global scope, and in the next section we’ll find some good reasons why a method would want to reference its own class!
 
-## Inheritance <span id="inheritance" label="inheritance"></span>
+## Inheritance 
 
 Of course, a language feature would not be worthy of the name “class” without supporting inheritance. The syntax for a derived class definition looks as follows:
 
@@ -1943,7 +1943,7 @@ Derived classes may override methods of their base classes. Because methods have
 
 An overriding method in a derived class may in fact want to extend rather than simply replace the base class method of the same name. There is a simple way to call the base class method directly: just call `BaseClassName.methodname(self, arguments)`. This is occasionally useful to clients as well. (Note that this only works if the base class is defined or imported directly in the global scope.)
 
-### Multiple Inheritance <span id="multiple" label="multiple"></span>
+### Multiple Inheritance 
 
 Python supports a limited form of multiple inheritance as well. A class definition with multiple base classes looks as follows:
 
@@ -1960,7 +1960,7 @@ The only rule necessary to explain the semantics is the resolution rule used for
 
 It is clear that indiscriminate use of multiple inheritance is a maintenance nightmare, given the reliance in Python on conventions to avoid accidental name conflicts. A well-known problem with multiple inheritance is a class derived from two classes that happen to have a common base class. While it is easy enough to figure out what happens in this case (the instance will have a single copy of “instance variables” or data attributes used by the common base class), it is not clear that these semantics are in any way useful.
 
-## Private Variables <span id="private" label="private"></span>
+## Private Variables 
 
 There is limited support for class-private identifiers. Any identifier of the form `__spam` (at least two leading underscores, at most one trailing underscore) is now textually replaced with `_classname__spam`, where `classname` is the current class name with leading underscore(s) stripped. This mangling is done without regard of the syntactic position of the identifier, so it can be used to define class-private instance and class variables, methods, as well as globals, and even to store instance variables private to this class on instances of *other* classes. Truncation may occur when the mangled name would be longer than 255 characters. Outside classes, or when the class name consists of only underscores, no mangling occurs.
 
@@ -1983,7 +1983,7 @@ Here’s an example of a class that implements its own `__getattr__()` and `__se
         def __setattr__(self, name, value):
             self.__vdict[name] = value
 
-## Odds and Ends <span id="odds" label="odds"></span>
+## Odds and Ends 
 
 Sometimes it is useful to have a data type similar to the Pascal “record” or C “struct”, bundling together a couple of named data items. An empty class definition will do nicely, e.g.:
 
@@ -2001,7 +2001,7 @@ A piece of Python code that expects a particular abstract data type can often be
 
 Instance method objects have attributes, too: `m.im_self` is the object of which the method is an instance, and `m.im_func` is the function object corresponding to the method.
 
-### Exceptions Can Be Classes <span id="exceptionClasses" label="exceptionClasses"></span>
+### Exceptions Can Be Classes 
 
 User-defined exceptions are no longer limited to being string objects — they can be identified by classes as well. Using this mechanism it is possible to create extensible hierarchies of exceptions.
 
@@ -2038,7 +2038,7 @@ Note that if the except clauses were reversed (with `except B` first), it would 
 
 When an error message is printed for an unhandled exception which is a class, the class name is printed, then a colon and a space, and finally the instance converted to a string using the built-in function `str()`.
 
-# What Now? <span id="whatNow" label="whatNow"></span>
+# What Now? 
 
 Hopefully reading this tutorial has reinforced your interest in using Python. Now what should you do?
 
@@ -2050,21 +2050,21 @@ For Python-related questions and problem reports, you can post to the newsgroup 
 
 asking (and answering) questions, suggesting new features, and announcing new modules. Before posting, be sure to check the list of Frequently Asked Questions (also called the FAQ), at `http://www.python.org/doc/FAQ.html`, or look for it in the `Misc/` directory of the Python source distribution. Mailing list archives are available at `http://www.python.org/pipermail/`. The FAQ answers many of the questions that come up again and again, and may already contain the solution for your problem.
 
-# Interactive Input Editing and History Substitution <span id="interacting" label="interacting"></span>
+# Interactive Input Editing and History Substitution 
 
 Some versions of the Python interpreter support editing of the current input line and history substitution, similar to facilities found in the Korn shell and the GNU Bash shell. This is implemented using the *GNU Readline* library, which supports Emacs-style and vi-style editing. This library has its own documentation which I won’t duplicate here; however, the basics are easily explained. The interactive editing and history described here are optionally available in the Unix and CygWin versions of the interpreter.
 
 This chapter does *not* document the editing facilities of Mark Hammond’s PythonWin package or the Tk-based environment, IDLE, distributed with Python. The command line history recall which operates within DOS boxes on NT and some other DOS and Windows flavors is yet another beast.
 
-## Line Editing <span id="lineEditing" label="lineEditing"></span>
+## Line Editing 
 
 If supported, input line editing is active whenever the interpreter prints a primary or secondary prompt. The current line can be edited using the conventional Emacs control characters. The most important of these are: `C-A` (Control-A) moves the cursor to the beginning of the line, `C-E` to the end, `C-B` moves it one position to the left, `C-F` to the right. Backspace erases the character to the left of the cursor, `C-D` the character to its right. `C-K` kills (erases) the rest of the line to the right of the cursor, `C-Y` yanks back the last killed string. `C-underscore` undoes the last change you made; it can be repeated for cumulative effect.
 
-## History Substitution <span id="history" label="history"></span>
+## History Substitution 
 
 History substitution works as follows. All non-empty input lines issued are saved in a history buffer, and when a new prompt is given you are positioned on a new line at the bottom of this buffer. `C-P` moves one line up (back) in the history buffer, `C-N` moves one down. Any line in the history buffer can be edited; an asterisk appears in front of the prompt to mark a line as modified. Pressing the `Return` key passes the current line to the interpreter. `C-R` starts an incremental reverse search; `C-S` starts a forward search.
 
-## Key Bindings <span id="keyBindings" label="keyBindings"></span>
+## Key Bindings 
 
 The key bindings and some other parameters of the Readline library can be customized by placing commands in an initialization file called `~/.inputrc`. Key bindings have the form
 
@@ -2104,7 +2104,7 @@ Automatic completion of variable and module names is optionally available. To en
 
 This binds the TAB key to the completion function, so hitting the TAB key twice suggests completions; it looks at Python statement names, the current local variables, and the available module names. For dotted expressions such as `string.a`, it will evaluate the the expression up to the final `.` and then suggest completions from the attributes of the resulting object. Note that this may execute application-defined code if an object with a `__getattr__()` method is part of the expression.
 
-## Commentary <span id="commentary" label="commentary"></span>
+## Commentary 
 
 This facility is an enormous step forward compared to earlier versions of the interpreter; however, some wishes are left: It would be nice if the proper indentation were suggested on continuation lines (the parser knows if an indent token is required next). The completion mechanism might use the interpreter’s symbol table. A command to check (or even suggest) matching parentheses, quotes, etc., would also be useful.
 
