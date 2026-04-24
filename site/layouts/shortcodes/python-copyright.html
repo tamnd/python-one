@@ -1,0 +1,32 @@
+{{ $version := .Get "version" }}
+{{ $holder := "" }}
+{{ $years := "" }}
+{{ $extra := "" }}
+
+{{ if or (eq $version "2.0b1") (eq $version "2.0b2") (eq $version "2.0c1") }}
+  {{ $holder = "BeOpen.com" }}
+  {{ $years = "2000" }}
+  {{ $extra = "Python 1.6 and earlier: Copyright &copy; 1995&ndash;2000 Corporation for National Research Initiatives (CNRI). Python 1.2 and earlier: Copyright &copy; 1990&ndash;1995 Stichting Mathematisch Centrum (CWI)." }}
+{{ else if or (eq $version "1.6b1") (eq $version "1.6") (eq $version "1.5") (eq $version "1.5.1") (eq $version "1.5.2") (eq $version "1.5.2b1") (eq $version "1.5.2b2") (eq $version "1.5.2c1") (eq $version "1.4") (eq $version "1.3") }}
+  {{ $holder = "Corporation for National Research Initiatives (CNRI)" }}
+  {{ $years = "1995&ndash;2000" }}
+  {{ $extra = "Python 1.2 and earlier: Copyright &copy; 1990&ndash;1995 Stichting Mathematisch Centrum (CWI)." }}
+{{ else }}
+  {{ $holder = "Stichting Mathematisch Centrum (CWI)" }}
+  {{ $years = "1990&ndash;1995" }}
+  {{ $extra = "" }}
+{{ end }}
+
+<div class="python-copyright">
+  <div class="python-copyright-inner">
+    <span class="python-copyright-label">Python {{ $version }}</span>
+    <span class="python-copyright-text">
+      Copyright &copy; {{ $years | safeHTML }} {{ $holder }}.
+      All rights reserved.
+      {{ if $extra }}<br><span class="python-copyright-extra">{{ $extra | safeHTML }}</span>{{ end }}
+    </span>
+    <span class="python-copyright-link">
+      <a href="https://github.com/tamnd/python-one/tree/main/src/{{ $version }}/">Source</a>
+    </span>
+  </div>
+</div>

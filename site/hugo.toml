@@ -1,0 +1,13 @@
+baseURL = "https://tamnd.github.io/python-one/"
+languageCode = "en-us"
+title = "Python One"
+theme = "book"
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[params]
+  repositoryUrl = "https://github.com/tamnd/python-one"
+  BookSearch = true
+  BookToC = true
+  BookSection = "docs"

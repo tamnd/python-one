@@ -1,0 +1,80 @@
+% Preamble injected before each .tex file so pandoc can handle
+% Python-documentation-specific LaTeX macros.
+
+% Inline code / identifier styles - all become \texttt
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\module}[1]{\texttt{#1}}
+\newcommand{\function}[1]{\texttt{#1}}
+\newcommand{\class}[1]{\texttt{#1}}
+\newcommand{\exception}[1]{\texttt{#1}}
+\newcommand{\data}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\texttt{#1}}
+\newcommand{\kbd}[1]{\texttt{#1}}
+\newcommand{\samp}[1]{\texttt{#1}}
+\newcommand{\var}[1]{\emph{#1}}
+\newcommand{\env}[1]{\texttt{#1}}
+\newcommand{\refmodule}[2][]{\texttt{#2}}
+\newcommand{\member}[1]{\texttt{#1}}
+\newcommand{\method}[1]{\texttt{#1}}
+\newcommand{\attr}[1]{\texttt{#1}}
+\newcommand{\ctype}[1]{\texttt{#1}}
+\newcommand{\cfunc}[1]{\texttt{#1}}
+\newcommand{\cmacro}[1]{\texttt{#1}}
+
+% Text style macros
+\newcommand{\dfn}[1]{\emph{#1}}
+\newcommand{\strong}[1]{\textbf{#1}}
+
+% Named constants
+\newcommand{\UNIX}{Unix}
+\newcommand{\Cpp}{C++}
+\newcommand{\C}{C}
+\newcommand{\ABC}{ABC}
+\newcommand{\EOF}{EOF}
+\newcommand{\NULL}{NULL}
+\newcommand{\Python}{Python}
+\newcommand{\email}[1]{\texttt{#1}}
+\newcommand{\url}[1]{\texttt{#1}}
+\newcommand{\citetitle}[2][]{#2}
+
+% Block-code wrappers used in early docs (1.0.1-1.4)
+\newcommand{\bcode}{}
+\newcommand{\ecode}{}
+
+% Module declaration - discard
+\newcommand{\declaremodule}[3][]{}
+\newcommand{\modulesynopsis}[1]{\emph{#1}\\}
+\newcommand{\platform}[1]{}
+\newcommand{\versionadded}[1]{\emph{New in version #1.}}
+\newcommand{\versionchanged}[1]{\emph{Changed in version #1.}}
+\newcommand{\deprecated}[2]{\emph{Deprecated since version #1: #2}}
+
+% Index commands - discard (no index in web docs)
+\newcommand{\index}[1]{}
+\newcommand{\indexii}[2]{}
+\newcommand{\indexiii}[3]{}
+\newcommand{\indexiv}[4]{}
+\newcommand{\kwindex}[1]{}
+\newcommand{\stindex}[1]{}
+\newcommand{\exindex}[1]{}
+\newcommand{\obindex}[1]{}
+\newcommand{\bifuncindex}[1]{}
+\newcommand{\modindex}[1]{}
+\newcommand{\bimodindex}[1]{}
+\newcommand{\stmodindex}[1]{}
+\newcommand{\exmodindex}[1]{}
+\newcommand{\refmodindex}[1]{}
+\newcommand{\refbimodindex}[1]{}
+\newcommand{\refexmodindex}[1]{}
+\newcommand{\refstmodindex}[1]{}
+\newcommand{\setindexsubitem}[1]{}
+\newcommand{\withsubitem}[2]{#2}
+\newcommand{\ttindex}[1]{}
+
+% Misc layout commands - discard
+\newcommand{\linebreak}{}
+\newcommand{\noindent}{}
+\newcommand{\sectionauthor}[2]{}
+\newcommand{\moduleauthor}[2]{}
+\newcommand{\maintainer}[2]{}
+\newcommand{\makemodindex}{}

@@ -1,0 +1,41 @@
+.python-copyright {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--gray-200, #e5e7eb);
+}
+
+.python-copyright-inner {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  font-size: 0.8rem;
+  color: var(--body-font-color);
+  opacity: 0.65;
+}
+
+.python-copyright-label {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.python-copyright-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.python-copyright-extra {
+  font-size: 0.75em;
+  opacity: 0.8;
+}
+
+.python-copyright-link a {
+  white-space: nowrap;
+  text-decoration: none;
+  opacity: 0.7;
+}
+
+.python-copyright-link a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
