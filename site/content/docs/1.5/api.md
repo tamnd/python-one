@@ -217,53 +217,39 @@ Sometimes, it is desirable to “uninitialize” Python. For instance, the appli
 
 XXX These utilities should be moved to some other section...
 
-<div class="cfuncdesc">
+#### `Py_FatalError`(*char \*message*)
 
-voidPy_FatalErrorchar \*message Print a fatal error message and kill the process. No cleanup is performed. This function should only be invoked when a condition is detected that would make it dangerous to continue using the Python interpreter; e.g., when the object administration appears to be corrupted. On Unix, the standard C library function `abort()` is called which will attempt to produce a `core` file.
+Print a fatal error message and kill the process. No cleanup is performed. This function should only be invoked when a condition is detected that would make it dangerous to continue using the Python interpreter; e.g., when the object administration appears to be corrupted. On Unix, the standard C library function `abort()` is called which will attempt to produce a `core` file.
 
-</div>
+#### `Py_Exit`(*int status*)
 
-<div class="cfuncdesc">
+Exit the current process. This calls `Py_Finalize()` and then calls the standard C library function `exit(0)`.
 
-voidPy_Exitint status Exit the current process. This calls `Py_Finalize()` and then calls the standard C library function `exit(0)`.
+#### `Py_AtExit`(*void (\*func) ()*)
 
-</div>
-
-<div class="cfuncdesc">
-
-intPy_AtExitvoid (\*func) () Register a cleanup function to be called by `Py_Finalize()`. The cleanup function will be called with no arguments and should return no value. At most 32 cleanup functions can be registered. When the registration is successful, `Py_AtExit` returns 0; on failure, it returns -1. The cleanup function registered last is called first. Each cleanup function will be called at most once.
-
-</div>
+Register a cleanup function to be called by `Py_Finalize()`. The cleanup function will be called with no arguments and should return no value. At most 32 cleanup functions can be registered. When the registration is successful, `Py_AtExit` returns 0; on failure, it returns -1. The cleanup function registered last is called first. Each cleanup function will be called at most once.
 
 # Reference Counting
 
 The macros in this section are used for managing reference counts of Python objects.
 
-<div class="cfuncdesc">
+#### `Py_INCREF`(*PyObject \*o*)
 
-voidPy_INCREFPyObject \*o Increment the reference count for object `o`. The object must not be NULL; if you aren’t sure that it isn’t NULL, use `Py_XINCREF()`.
+Increment the reference count for object `o`. The object must not be NULL; if you aren’t sure that it isn’t NULL, use `Py_XINCREF()`.
 
-</div>
+#### `Py_XINCREF`(*PyObject \*o*)
 
-<div class="cfuncdesc">
+Increment the reference count for object `o`. The object may be NULL, in which case the macro has no effect.
 
-voidPy_XINCREFPyObject \*o Increment the reference count for object `o`. The object may be NULL, in which case the macro has no effect.
+#### `Py_DECREF`(*PyObject \*o*)
 
-</div>
-
-<div class="cfuncdesc">
-
-voidPy_DECREFPyObject \*o Decrement the reference count for object `o`. The object must not be NULL; if you aren’t sure that it isn’t NULL, use `Py_XDECREF()`. If the reference count reaches zero, the object’s type’s deallocation function (which must not be NULL) is invoked.
+Decrement the reference count for object `o`. The object must not be NULL; if you aren’t sure that it isn’t NULL, use `Py_XDECREF()`. If the reference count reaches zero, the object’s type’s deallocation function (which must not be NULL) is invoked.
 
 **Warning:** The deallocation function can cause arbitrary Python code to be invoked (e.g. when a class instance with a `__del__()` method is deallocated). While exceptions in such code are not propagated, the executed code has free access to all Python global variables. This means that any object that is reachable from a global variable should be in a consistent state before `Py_DECREF()` is invoked. For example, code to delete an object from a list should copy a reference to the deleted object in a temporary variable, update the list data structure, and then call `Py_DECREF()` for the temporary variable.
 
-</div>
+#### `Py_XDECREF`(*PyObject \*o*)
 
-<div class="cfuncdesc">
-
-voidPy_XDECREFPyObject \*o Decrement the reference count for object `o`.The object may be NULL, in which case the macro has no effect; otherwise the effect is the same as for `Py_DECREF()`, and the same warning applies.
-
-</div>
+Decrement the reference count for object `o`.The object may be NULL, in which case the macro has no effect; otherwise the effect is the same as for `Py_DECREF()`, and the same warning applies.
 
 The following functions or macros are only for internal use: `_Py_Dealloc`, `_Py_ForgetReference`, `_Py_NewReference`, as well as the global variable `_Py_RefTotal`.
 
@@ -275,113 +261,77 @@ The functions in this chapter will let you handle and raise Python exceptions. I
 
 The error indicator consists of three Python objects corresponding to the Python variables `sys.exc_type`, `sys.exc_value` and `sys.exc_traceback`. API functions exist to interact with the error indicator in various ways. There is a separate error indicator for each thread.
 
-<div class="cfuncdesc">
+#### `PyErr_Print`()
 
-voidPyErr_Print Print a standard traceback to `sys.stderr` and clear the error indicator. Call this function only when the error indicator is set. (Otherwise it will cause a fatal error!)
+Print a standard traceback to `sys.stderr` and clear the error indicator. Call this function only when the error indicator is set. (Otherwise it will cause a fatal error!)
 
-</div>
+#### `PyErr_Occurred`()
 
-<div class="cfuncdesc">
+Test whether the error indicator is set. If set, return the exception `type` (the first argument to the last call to one of the `PyErr_Set*()` functions or to `PyErr_Restore()`). If not set, return NULL. You do not own a reference to the return value, so you do not need to `Py_DECREF()` it. Note: do not compare the return value to a specific exception; use `PyErr_ExceptionMatches` instead, shown below.
 
-PyObject \*PyErr_Occurred Test whether the error indicator is set. If set, return the exception `type` (the first argument to the last call to one of the `PyErr_Set*()` functions or to `PyErr_Restore()`). If not set, return NULL. You do not own a reference to the return value, so you do not need to `Py_DECREF()` it. Note: do not compare the return value to a specific exception; use `PyErr_ExceptionMatches` instead, shown below.
+#### `PyErr_ExceptionMatches`(*PyObject \*exc*)
 
-</div>
+**(NEW in 1.5a4!)** Equivalent to `PyErr_GivenExceptionMatches(PyErr_Occurred(), `*`exc`*`)`. This should only be called when an exception is actually set.
 
-<div class="cfuncdesc">
+#### `PyErr_GivenExceptionMatches`(*PyObject \*given, PyObject \*exc*)
 
-intPyErr_ExceptionMatchesPyObject \*exc **(NEW in 1.5a4!)** Equivalent to `PyErr_GivenExceptionMatches(PyErr_Occurred(), `*`exc`*`)`. This should only be called when an exception is actually set.
+**(NEW in 1.5a4!)** Return true if the *given* exception matches the exception in *exc*. If *exc* is a class object, this also returns true when *given* is a subclass. If *exc* is a tuple, all exceptions in the tuple (and recursively in subtuples) are searched for a match. This should only be called when an exception is actually set.
 
-</div>
+#### `PyErr_NormalizeException`(*PyObject\*\*exc, PyObject\*\*val, PyObject\*\*tb*)
 
-<div class="cfuncdesc">
+**(NEW in 1.5a4!)** Under certain circumstances, the values returned by `PyErr_Fetch()` below can be “unnormalized”, meaning that *\*exc* is a class object but *\*val* is not an instance of the same class. This function can be used to instantiate the class in that case. If the values are already normalized, nothing happens.
 
-intPyErr_GivenExceptionMatchesPyObject \*given, PyObject \*exc **(NEW in 1.5a4!)** Return true if the *given* exception matches the exception in *exc*. If *exc* is a class object, this also returns true when *given* is a subclass. If *exc* is a tuple, all exceptions in the tuple (and recursively in subtuples) are searched for a match. This should only be called when an exception is actually set.
+#### `PyErr_Clear`()
 
-</div>
+Clear the error indicator. If the error indicator is not set, there is no effect.
 
-<div class="cfuncdesc">
+#### `PyErr_Fetch`(*PyObject \*\*ptype, PyObject \*\*pvalue, PyObject \*\*ptraceback*)
 
-voidPyErr_NormalizeExceptionPyObject\*\*exc, PyObject\*\*val, PyObject\*\*tb **(NEW in 1.5a4!)** Under certain circumstances, the values returned by `PyErr_Fetch()` below can be “unnormalized”, meaning that *\*exc* is a class object but *\*val* is not an instance of the same class. This function can be used to instantiate the class in that case. If the values are already normalized, nothing happens.
+Retrieve the error indicator into three variables whose addresses are passed. If the error indicator is not set, set all three variables to NULL. If it is set, it will be cleared and you own a reference to each object retrieved. The value and traceback object may be NULL even when the type object is not. **Note:** this function is normally only used by code that needs to handle exceptions or by code that needs to save and restore the error indicator temporarily.
 
-</div>
+#### `PyErr_Restore`(*PyObject \*type, PyObject \*value, PyObject \*traceback*)
 
-<div class="cfuncdesc">
+Set the error indicator from the three objects. If the error indicator is already set, it is cleared first. If the objects are NULL, the error indicator is cleared. Do not pass a NULL type and non-NULL value or traceback. The exception type should be a string or class; if it is a class, the value should be an instance of that class. Do not pass an invalid exception type or value. (Violating these rules will cause subtle problems later.) This call takes away a reference to each object, i.e. you must own a reference to each object before the call and after the call you no longer own these references. (If you don’t understand this, don’t use this function. I warned you.) **Note:** this function is normally only used by code that needs to save and restore the error indicator temporarily.
 
-voidPyErr_Clear Clear the error indicator. If the error indicator is not set, there is no effect.
+#### `PyErr_SetString`(*PyObject \*type, char \*message*)
 
-</div>
+This is the most common way to set the error indicator. The first argument specifies the exception type; it is normally one of the standard exceptions, e.g. `PyExc_RuntimeError`. You need not increment its reference count. The second argument is an error message; it is converted to a string object.
 
-<div class="cfuncdesc">
+#### `PyErr_SetObject`(*PyObject \*type, PyObject \*value*)
 
-voidPyErr_FetchPyObject \*\*ptype, PyObject \*\*pvalue, PyObject \*\*ptraceback Retrieve the error indicator into three variables whose addresses are passed. If the error indicator is not set, set all three variables to NULL. If it is set, it will be cleared and you own a reference to each object retrieved. The value and traceback object may be NULL even when the type object is not. **Note:** this function is normally only used by code that needs to handle exceptions or by code that needs to save and restore the error indicator temporarily.
+This function is similar to `PyErr_SetString()` but lets you specify an arbitrary Python object for the “value” of the exception. You need not increment its reference count.
 
-</div>
+#### `PyErr_SetNone`(*PyObject \*type*)
 
-<div class="cfuncdesc">
+This is a shorthand for `PyErr_SetString(`*`type`*`, Py_None`.
 
-voidPyErr_RestorePyObject \*type, PyObject \*value, PyObject \*traceback Set the error indicator from the three objects. If the error indicator is already set, it is cleared first. If the objects are NULL, the error indicator is cleared. Do not pass a NULL type and non-NULL value or traceback. The exception type should be a string or class; if it is a class, the value should be an instance of that class. Do not pass an invalid exception type or value. (Violating these rules will cause subtle problems later.) This call takes away a reference to each object, i.e. you must own a reference to each object before the call and after the call you no longer own these references. (If you don’t understand this, don’t use this function. I warned you.) **Note:** this function is normally only used by code that needs to save and restore the error indicator temporarily.
+#### `PyErr_BadArgument`()
 
-</div>
+This is a shorthand for `PyErr_SetString(PyExc_TypeError, `*`message`*`)`, where *message* indicates that a built-in operation was invoked with an illegal argument. It is mostly for internal use.
 
-<div class="cfuncdesc">
+#### `PyErr_NoMemory`()
 
-voidPyErr_SetStringPyObject \*type, char \*message This is the most common way to set the error indicator. The first argument specifies the exception type; it is normally one of the standard exceptions, e.g. `PyExc_RuntimeError`. You need not increment its reference count. The second argument is an error message; it is converted to a string object.
+This is a shorthand for `PyErr_SetNone(PyExc_MemoryError)`; it returns NULL so an object allocation function can write `return PyErr_NoMemory();` when it runs out of memory.
 
-</div>
+#### `PyErr_SetFromErrno`(*PyObject \*type*)
 
-<div class="cfuncdesc">
+This is a convenience function to raise an exception when a C library function has returned an error and set the C variable `errno`. It constructs a tuple object whose first item is the integer `errno` value and whose second item is the corresponding error message (gotten from `strerror()`), and then calls `PyErr_SetObject(`*`type`*`, `*`object`*`)`. On Unix, when the `errno` value is `EINTR`, indicating an interrupted system call, this calls `PyErr_CheckSignals()`, and if that set the error indicator, leaves it set to that. The function always returns NULL, so a wrapper function around a system call can write `return PyErr_NoMemory();` when the system call returns an error.
 
-voidPyErr_SetObjectPyObject \*type, PyObject \*value This function is similar to `PyErr_SetString()` but lets you specify an arbitrary Python object for the “value” of the exception. You need not increment its reference count.
+#### `PyErr_BadInternalCall`()
 
-</div>
+This is a shorthand for `PyErr_SetString(PyExc_TypeError, `*`message`*`)`, where *message* indicates that an internal operation (e.g. a Python/C API function) was invoked with an illegal argument. It is mostly for internal use.
 
-<div class="cfuncdesc">
+#### `PyErr_CheckSignals`()
 
-voidPyErr_SetNonePyObject \*type This is a shorthand for `PyErr_SetString(`*`type`*`, Py_None`.
+This function interacts with Python’s signal handling. It checks whether a signal has been sent to the processes and if so, invokes the corresponding signal handler. If the `signal` module is supported, this can invoke a signal handler written in Python. In all cases, the default effect for `SIGINT` is to raise the `KeyboadInterrupt` exception. If an exception is raised the error indicator is set and the function returns 1; otherwise the function returns 0. The error indicator may or may not be cleared if it was previously set.
 
-</div>
+#### `PyErr_SetInterrupt`()
 
-<div class="cfuncdesc">
+This function is obsolete (XXX or platform dependent?). It simulates the effect of a `SIGINT` signal arriving – the next time `PyErr_CheckSignals()` is called, `KeyboadInterrupt` will be raised.
 
-intPyErr_BadArgument This is a shorthand for `PyErr_SetString(PyExc_TypeError, `*`message`*`)`, where *message* indicates that a built-in operation was invoked with an illegal argument. It is mostly for internal use.
+#### `PyErr_NewException`(*char \*name, PyObject \*base, PyObject \*dict*)
 
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*PyErr_NoMemory This is a shorthand for `PyErr_SetNone(PyExc_MemoryError)`; it returns NULL so an object allocation function can write `return PyErr_NoMemory();` when it runs out of memory.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*PyErr_SetFromErrnoPyObject \*type This is a convenience function to raise an exception when a C library function has returned an error and set the C variable `errno`. It constructs a tuple object whose first item is the integer `errno` value and whose second item is the corresponding error message (gotten from `strerror()`), and then calls `PyErr_SetObject(`*`type`*`, `*`object`*`)`. On Unix, when the `errno` value is `EINTR`, indicating an interrupted system call, this calls `PyErr_CheckSignals()`, and if that set the error indicator, leaves it set to that. The function always returns NULL, so a wrapper function around a system call can write `return PyErr_NoMemory();` when the system call returns an error.
-
-</div>
-
-<div class="cfuncdesc">
-
-voidPyErr_BadInternalCall This is a shorthand for `PyErr_SetString(PyExc_TypeError, `*`message`*`)`, where *message* indicates that an internal operation (e.g. a Python/C API function) was invoked with an illegal argument. It is mostly for internal use.
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyErr_CheckSignals This function interacts with Python’s signal handling. It checks whether a signal has been sent to the processes and if so, invokes the corresponding signal handler. If the `signal` module is supported, this can invoke a signal handler written in Python. In all cases, the default effect for `SIGINT` is to raise the `KeyboadInterrupt` exception. If an exception is raised the error indicator is set and the function returns 1; otherwise the function returns 0. The error indicator may or may not be cleared if it was previously set.
-
-</div>
-
-<div class="cfuncdesc">
-
-voidPyErr_SetInterrupt This function is obsolete (XXX or platform dependent?). It simulates the effect of a `SIGINT` signal arriving – the next time `PyErr_CheckSignals()` is called, `KeyboadInterrupt` will be raised.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*PyErr_NewExceptionchar \*name, PyObject \*base, PyObject \*dict **(NEW in 1.5a4!)** This utility function creates and returns a new exception object. The *name* argument must be the name of the new exception, a C string of the form `module.class`. The *base* and *dict* arguments are normally NULL. Normally, this creates a class object derived from the root for all exceptions, the built-in name `Exception` (accessible in C as `PyExc_Exception`). In this case the `__module__` attribute of the new class is set to the first part (up to the last dot) of the *name* argument, and the class name is set to the last part (after the last dot). When the user has specified the `-X` command line option to use string exceptions, for backward compatibility, or when the *base* argument is not a class object (and not NULL), a string object created from the entire *name* argument is returned. The *base* argument can be used to specify an alternate base class. The *dict* argument can be used to specify a dictionary of class variables and methods.
-
-</div>
+**(NEW in 1.5a4!)** This utility function creates and returns a new exception object. The *name* argument must be the name of the new exception, a C string of the form `module.class`. The *base* and *dict* arguments are normally NULL. Normally, this creates a class object derived from the root for all exceptions, the built-in name `Exception` (accessible in C as `PyExc_Exception`). In this case the `__module__` attribute of the new class is set to the first part (up to the last dot) of the *name* argument, and the class name is set to the last part (after the last dot). When the user has specified the `-X` command line option to use string exceptions, for backward compatibility, or when the *base* argument is not a class object (and not NULL), a string object created from the entire *name* argument is returned. The *base* argument can be used to specify an alternate base class. The *dict* argument can be used to specify a dictionary of class variables and methods.
 
 ## Standard Exceptions
 
@@ -393,109 +343,77 @@ The functions in this chapter perform various utility tasks, such as parsing fun
 
 ## OS Utilities
 
-<div class="cfuncdesc">
+#### `Py_FdIsInteractive`(*FILE \*fp, char \*filename*)
 
-intPy_FdIsInteractiveFILE \*fp, char \*filename Return true (nonzero) if the standard I/O file `fp` with name `filename` is deemed interactive. This is the case for files for which `isatty(fileno(fp))` is true. If the global flag `Py_InteractiveFlag` is true, this function also returns true if the `name` pointer is NULL or if the name is equal to one of the strings `"<stdin>"` or `"???"`.
+Return true (nonzero) if the standard I/O file `fp` with name `filename` is deemed interactive. This is the case for files for which `isatty(fileno(fp))` is true. If the global flag `Py_InteractiveFlag` is true, this function also returns true if the `name` pointer is NULL or if the name is equal to one of the strings `"<stdin>"` or `"???"`.
 
-</div>
+#### `PyOS_GetLastModificationTime`(*char \*filename*)
 
-<div class="cfuncdesc">
-
-longPyOS_GetLastModificationTimechar \*filename Return the time of last modification of the file `filename`. The result is encoded in the same way as the timestamp returned by the standard C library function `time()`.
-
-</div>
+Return the time of last modification of the file `filename`. The result is encoded in the same way as the timestamp returned by the standard C library function `time()`.
 
 ## Importing modules
 
-<div class="cfuncdesc">
+#### `PyImport_ImportModule`(*char \*name*)
 
-PyObject \*PyImport_ImportModulechar \*name This is a simplified interface to `PyImport_ImportModuleEx` below, leaving the *globals* and *locals* arguments set to NULL. When the *name* argument contains a dot (i.e., when it specifies a submodule of a package), the *fromlist* argument is set to the list `[’*’]` so that the return value is the named module rather than the top-level package containing it as would otherwise be the case. (Unfortunately, this has an additional side effect when *name* in fact specifies a subpackage instead of a submodule: the submodules specified in the package’s `__all__` variable are loaded.) Return a new reference to the imported module, or NULL with an exception set on failure (the module may still be created in this case).
+This is a simplified interface to `PyImport_ImportModuleEx` below, leaving the *globals* and *locals* arguments set to NULL. When the *name* argument contains a dot (i.e., when it specifies a submodule of a package), the *fromlist* argument is set to the list `[’*’]` so that the return value is the named module rather than the top-level package containing it as would otherwise be the case. (Unfortunately, this has an additional side effect when *name* in fact specifies a subpackage instead of a submodule: the submodules specified in the package’s `__all__` variable are loaded.) Return a new reference to the imported module, or NULL with an exception set on failure (the module may still be created in this case).
 
-</div>
+#### `PyImport_ImportModuleEx`(*char \*name, PyObject \*globals, PyObject \*locals, PyObject \*fromlist*)
 
-<div class="cfuncdesc">
-
-PyObject \*PyImport_ImportModuleExchar \*name, PyObject \*globals, PyObject \*locals, PyObject \*fromlist **(NEW in 1.5a4!)** Import a module. This is best described by referring to the built-in Python function `__import()__`, as the standard `__import__()` function calls this function directly.
+**(NEW in 1.5a4!)** Import a module. This is best described by referring to the built-in Python function `__import()__`, as the standard `__import__()` function calls this function directly.
 
 The return value is a new reference to the imported module or top-level package, or NULL with an exception set on failure (the module may still be created in this case). Like for `__import__()`, the return value when a submodule of a package was requested is normally the top-level package, unless a non-empty *fromlist* was given.
 
-</div>
+#### `PyImport_Import`(*PyObject \*name*)
 
-<div class="cfuncdesc">
+This is a higher-level interface that calls the current “import hook function”. It invokes the `__import__()` function from the `__builtins__` of the current globals. This means that the import is done using whatever import hooks are installed in the current environment, e.g. by `rexec` or `ihooks`.
 
-PyObject \*PyImport_ImportPyObject \*name This is a higher-level interface that calls the current “import hook function”. It invokes the `__import__()` function from the `__builtins__` of the current globals. This means that the import is done using whatever import hooks are installed in the current environment, e.g. by `rexec` or `ihooks`.
+#### `PyImport_ReloadModule`(*PyObject \*m*)
 
-</div>
+Reload a module. This is best described by referring to the built-in Python function `reload()`, as the standard `reload()` function calls this function directly. Return a new reference to the reloaded module, or NULL with an exception set on failure (the module still exists in this case).
 
-<div class="cfuncdesc">
+#### `PyImport_AddModule`(*char \*name*)
 
-PyObject \*PyImport_ReloadModulePyObject \*m Reload a module. This is best described by referring to the built-in Python function `reload()`, as the standard `reload()` function calls this function directly. Return a new reference to the reloaded module, or NULL with an exception set on failure (the module still exists in this case).
+Return the module object corresponding to a module name. The *name* argument may be of the form `package.module`). First check the modules dictionary if there’s one there, and if not, create a new one and insert in in the modules dictionary. Because the former action is most common, this does not return a new reference, and you do not own the returned reference. Return NULL with an exception set on failure.
 
-</div>
+#### `PyImport_ExecCodeModule`(*char \*name, PyObject \*co*)
 
-<div class="cfuncdesc">
+Given a module name (possibly of the form `package.module`) and a code object read from a Python bytecode file or obtained from the built-in function `compile()`, load the module. Return a new reference to the module object, or NULL with an exception set if an error occurred (the module may still be created in this case). (This function would reload the module if it was already imported.)
 
-PyObject \*PyImport_AddModulechar \*name Return the module object corresponding to a module name. The *name* argument may be of the form `package.module`). First check the modules dictionary if there’s one there, and if not, create a new one and insert in in the modules dictionary. Because the former action is most common, this does not return a new reference, and you do not own the returned reference. Return NULL with an exception set on failure.
+#### `PyImport_GetMagicNumber`()
 
-</div>
+Return the magic number for Python bytecode files (a.k.a. `.pyc` and `.pyo` files). The magic number should be present in the first four bytes of the bytecode file, in little-endian byte order.
 
-<div class="cfuncdesc">
+#### `PyImport_GetModuleDict`()
 
-PyObject \*PyImport_ExecCodeModulechar \*name, PyObject \*co Given a module name (possibly of the form `package.module`) and a code object read from a Python bytecode file or obtained from the built-in function `compile()`, load the module. Return a new reference to the module object, or NULL with an exception set if an error occurred (the module may still be created in this case). (This function would reload the module if it was already imported.)
+Return the dictionary used for the module administration (a.k.a. `sys.modules`). Note that this is a per-interpreter variable.
 
-</div>
+#### `_PyImport_Init`()
 
-<div class="cfuncdesc">
+Initialize the import mechanism. For internal use only.
 
-longPyImport_GetMagicNumber Return the magic number for Python bytecode files (a.k.a. `.pyc` and `.pyo` files). The magic number should be present in the first four bytes of the bytecode file, in little-endian byte order.
+#### `PyImport_Cleanup`()
 
-</div>
+Empty the module table. For internal use only.
 
-<div class="cfuncdesc">
+#### `_PyImport_Fini`()
 
-PyObject \*PyImport_GetModuleDict Return the dictionary used for the module administration (a.k.a. `sys.modules`). Note that this is a per-interpreter variable.
+Finalize the import mechanism. For internal use only.
 
-</div>
+#### `_PyImport_FindExtension`(*char \*, char \**)
 
-<div class="cfuncdesc">
+For internal use only.
 
-void\_PyImport_Init Initialize the import mechanism. For internal use only.
+#### `_PyImport_FixupExtension`(*char \*, char \**)
 
-</div>
+For internal use only.
 
-<div class="cfuncdesc">
+#### `PyImport_ImportFrozenModule`(*char \**)
 
-voidPyImport_Cleanup Empty the module table. For internal use only.
+Load a frozen module. Return `1` for success, `0` if the module is not found, and `-1` with an exception set if the initialization failed. To access the imported module on a successful load, use `PyImport_ImportModule())`. (Note the misnomer – this function would reload the module if it was already imported.)
 
-</div>
+#### `struct _frozen`
 
-<div class="cfuncdesc">
-
-void\_PyImport_Fini Finalize the import mechanism. For internal use only.
-
-</div>
-
-<div class="cfuncdesc">
-
-extern PyObject \*\_PyImport_FindExtensionchar \*, char \* For internal use only.
-
-</div>
-
-<div class="cfuncdesc">
-
-extern PyObject \*\_PyImport_FixupExtensionchar \*, char \* For internal use only.
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyImport_ImportFrozenModulechar \* Load a frozen module. Return `1` for success, `0` if the module is not found, and `-1` with an exception set if the initialization failed. To access the imported module on a successful load, use `PyImport_ImportModule())`. (Note the misnomer – this function would reload the module if it was already imported.)
-
-</div>
-
-<div class="ctypedesc">
-
-struct \_frozen This is the structure type definition for frozen module descriptors, as generated by the `freeze` utility (see `Tools/freeze/` in the Python source distribution). Its definition is:
+This is the structure type definition for frozen module descriptors, as generated by the `freeze` utility (see `Tools/freeze/` in the Python source distribution). Its definition is:
 
     struct _frozen {
         char *name;
@@ -503,13 +421,9 @@ struct \_frozen This is the structure type definition for frozen module descript
         int size;
     };
 
-</div>
+#### `PyImport_FrozenModules`
 
-<div class="cvardesc">
-
-struct \_frozen \*PyImport_FrozenModules This pointer is initialized to point to an array of `struct _frozen` records, terminated by one whose members are all NULL or zero. When a frozen module is imported, it is searched in this table. Third party code could play tricks with this to provide a dynamically created collection of frozen modules.
-
-</div>
+This pointer is initialized to point to an array of `struct _frozen` records, terminated by one whose members are all NULL or zero. When a frozen module is imported, it is searched in this table. Third party code could play tricks with this to provide a dynamically created collection of frozen modules.
 
 # Debugging
 
@@ -519,65 +433,25 @@ XXX Explain Py_DEBUG, Py_TRACE_REFS, Py_REF_DEBUG.
 
 The functions in this chapter will let you execute Python source code given in a file or a buffer, but they will not let you interact in a more detailed way with the interpreter.
 
-<div class="cfuncdesc">
+#### `PyRun_AnyFile`(*FILE \*, char \**)
 
-intPyRun_AnyFileFILE \*, char \*
+#### `PyRun_SimpleString`(*char \**)
 
-</div>
+#### `PyRun_SimpleFile`(*FILE \*, char \**)
 
-<div class="cfuncdesc">
+#### `PyRun_InteractiveOne`(*FILE \*, char \**)
 
-intPyRun_SimpleStringchar \*
+#### `PyRun_InteractiveLoop`(*FILE \*, char \**)
 
-</div>
+#### `PyParser_SimpleParseString`(*char \*, int*)
 
-<div class="cfuncdesc">
+#### `PyParser_SimpleParseFile`(*FILE \*, char \*, int*)
 
-intPyRun_SimpleFileFILE \*, char \*
+#### `PyObject *PyRun_String`(*char \*, int, PyObject \*, PyObject \**)
 
-</div>
+#### `PyObject *PyRun_File`(*FILE \*, char \*, int, PyObject \*, PyObject \**)
 
-<div class="cfuncdesc">
-
-intPyRun_InteractiveOneFILE \*, char \*
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyRun_InteractiveLoopFILE \*, char \*
-
-</div>
-
-<div class="cfuncdesc">
-
-struct \_node \*PyParser_SimpleParseStringchar \*, int
-
-</div>
-
-<div class="cfuncdesc">
-
-struct \_node \*PyParser_SimpleParseFileFILE \*, char \*, int
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*PyRun_Stringchar \*, int, PyObject \*, PyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*PyRun_FileFILE \*, char \*, int, PyObject \*, PyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*Py_CompileStringchar \*, char \*, int
-
-</div>
+#### `PyObject *Py_CompileString`(*char \*, char \*, int*)
 
 # Abstract Objects Layer
 
@@ -585,501 +459,339 @@ The functions in this chapter interact with Python objects regardless of their t
 
 ## Object Protocol
 
-<div class="cfuncdesc">
+#### `PyObject_Print`(*PyObject \*o, FILE \*fp, int flags*)
 
-intPyObject_PrintPyObject \*o, FILE \*fp, int flags Print an object `o`, on file `fp`. Returns -1 on error The flags argument is used to enable certain printing options. The only option currently supported is `Py_Print_RAW`.
+Print an object `o`, on file `fp`. Returns -1 on error The flags argument is used to enable certain printing options. The only option currently supported is `Py_Print_RAW`.
 
-</div>
+#### `PyObject_HasAttrString`(*PyObject \*o, char \*attr_name*)
 
-<div class="cfuncdesc">
+Returns 1 if o has the attribute attr_name, and 0 otherwise. This is equivalent to the Python expression: `hasattr(o,attr_name)`. This function always succeeds.
 
-intPyObject_HasAttrStringPyObject \*o, char \*attr_name Returns 1 if o has the attribute attr_name, and 0 otherwise. This is equivalent to the Python expression: `hasattr(o,attr_name)`. This function always succeeds.
+#### `PyObject_GetAttrString`(*PyObject \*o, char \*attr_name*)
 
-</div>
+Retrieve an attribute named attr_name from object o. Returns the attribute value on success, or NULL on failure. This is the equivalent of the Python expression: `o.attr_name`.
 
-<div class="cfuncdesc">
+#### `PyObject_HasAttr`(*PyObject \*o, PyObject \*attr_name*)
 
-PyObject\*PyObject_GetAttrStringPyObject \*o, char \*attr_name Retrieve an attribute named attr_name from object o. Returns the attribute value on success, or NULL on failure. This is the equivalent of the Python expression: `o.attr_name`.
+Returns 1 if o has the attribute attr_name, and 0 otherwise. This is equivalent to the Python expression: `hasattr(o,attr_name)`. This function always succeeds.
 
-</div>
+#### `PyObject_GetAttr`(*PyObject \*o, PyObject \*attr_name*)
 
-<div class="cfuncdesc">
+Retrieve an attribute named attr_name from object o. Returns the attribute value on success, or NULL on failure. This is the equivalent of the Python expression: o.attr_name.
 
-intPyObject_HasAttrPyObject \*o, PyObject \*attr_name Returns 1 if o has the attribute attr_name, and 0 otherwise. This is equivalent to the Python expression: `hasattr(o,attr_name)`. This function always succeeds.
+#### `PyObject_SetAttrString`(*PyObject \*o, char \*attr_name, PyObject \*v*)
 
-</div>
+Set the value of the attribute named `attr_name`, for object `o`, to the value `v`. Returns -1 on failure. This is the equivalent of the Python statement: `o.attr_name=v`.
 
-<div class="cfuncdesc">
+#### `PyObject_SetAttr`(*PyObject \*o, PyObject \*attr_name, PyObject \*v*)
 
-PyObject\*PyObject_GetAttrPyObject \*o, PyObject \*attr_name Retrieve an attribute named attr_name from object o. Returns the attribute value on success, or NULL on failure. This is the equivalent of the Python expression: o.attr_name.
+Set the value of the attribute named `attr_name`, for object `o`, to the value `v`. Returns -1 on failure. This is the equivalent of the Python statement: `o.attr_name=v`.
 
-</div>
+#### `PyObject_DelAttrString`(*PyObject \*o, char \*attr_name*)
 
-<div class="cfuncdesc">
+Delete attribute named `attr_name`, for object `o`. Returns -1 on failure. This is the equivalent of the Python statement: `del o.attr_name`.
 
-intPyObject_SetAttrStringPyObject \*o, char \*attr_name, PyObject \*v Set the value of the attribute named `attr_name`, for object `o`, to the value `v`. Returns -1 on failure. This is the equivalent of the Python statement: `o.attr_name=v`.
+#### `PyObject_DelAttr`(*PyObject \*o, PyObject \*attr_name*)
 
-</div>
+Delete attribute named `attr_name`, for object `o`. Returns -1 on failure. This is the equivalent of the Python statement: `del o.attr_name`.
 
-<div class="cfuncdesc">
+#### `PyObject_Cmp`(*PyObject \*o1, PyObject \*o2, int \*result*)
 
-intPyObject_SetAttrPyObject \*o, PyObject \*attr_name, PyObject \*v Set the value of the attribute named `attr_name`, for object `o`, to the value `v`. Returns -1 on failure. This is the equivalent of the Python statement: `o.attr_name=v`.
+Compare the values of `o1` and `o2` using a routine provided by `o1`, if one exists, otherwise with a routine provided by `o2`. The result of the comparison is returned in `result`. Returns -1 on failure. This is the equivalent of the Python statement: `result=cmp(o1,o2)`.
 
-</div>
+#### `PyObject_Compare`(*PyObject \*o1, PyObject \*o2*)
 
-<div class="cfuncdesc">
+Compare the values of `o1` and `o2` using a routine provided by `o1`, if one exists, otherwise with a routine provided by `o2`. Returns the result of the comparison on success. On error, the value returned is undefined. This is equivalent to the Python expression: `cmp(o1,o2)`.
 
-intPyObject_DelAttrStringPyObject \*o, char \*attr_name Delete attribute named `attr_name`, for object `o`. Returns -1 on failure. This is the equivalent of the Python statement: `del o.attr_name`.
+#### `PyObject_Repr`(*PyObject \*o*)
 
-</div>
+Compute the string representation of object, `o`. Returns the string representation on success, NULL on failure. This is the equivalent of the Python expression: `repr(o)`. Called by the `repr()` built-in function and by reverse quotes.
 
-<div class="cfuncdesc">
+#### `PyObject_Str`(*PyObject \*o*)
 
-intPyObject_DelAttrPyObject \*o, PyObject \*attr_name Delete attribute named `attr_name`, for object `o`. Returns -1 on failure. This is the equivalent of the Python statement: `del o.attr_name`.
+Compute the string representation of object, `o`. Returns the string representation on success, NULL on failure. This is the equivalent of the Python expression: `str(o)`. Called by the `str()` built-in function and by the `print` statement.
 
-</div>
+#### `PyCallable_Check`(*PyObject \*o*)
 
-<div class="cfuncdesc">
+Determine if the object `o`, is callable. Return 1 if the object is callable and 0 otherwise. This function always succeeds.
 
-intPyObject_CmpPyObject \*o1, PyObject \*o2, int \*result Compare the values of `o1` and `o2` using a routine provided by `o1`, if one exists, otherwise with a routine provided by `o2`. The result of the comparison is returned in `result`. Returns -1 on failure. This is the equivalent of the Python statement: `result=cmp(o1,o2)`.
+#### `PyObject_CallObject`(*PyObject \*callable_object, PyObject \*args*)
 
-</div>
+Call a callable Python object `callable_object`, with arguments given by the tuple `args`. If no arguments are needed, then args may be NULL. Returns the result of the call on success, or NULL on failure. This is the equivalent of the Python expression: `apply(o, args)`.
 
-<div class="cfuncdesc">
+#### `PyObject_CallFunction`(*PyObject \*callable_object, char \*format, ...*)
 
-intPyObject_ComparePyObject \*o1, PyObject \*o2 Compare the values of `o1` and `o2` using a routine provided by `o1`, if one exists, otherwise with a routine provided by `o2`. Returns the result of the comparison on success. On error, the value returned is undefined. This is equivalent to the Python expression: `cmp(o1,o2)`.
+Call a callable Python object `callable_object`, with a variable number of C arguments. The C arguments are described using a mkvalue-style format string. The format may be NULL, indicating that no arguments are provided. Returns the result of the call on success, or NULL on failure. This is the equivalent of the Python expression: `apply(o,args)`.
 
-</div>
+#### `PyObject_CallMethod`(*PyObject \*o, char \*m, char \*format, ...*)
 
-<div class="cfuncdesc">
+Call the method named `m` of object `o` with a variable number of C arguments. The C arguments are described by a mkvalue format string. The format may be NULL, indicating that no arguments are provided. Returns the result of the call on success, or NULL on failure. This is the equivalent of the Python expression: `o.method(args)`. Note that Special method names, such as "`__add__`", "`__getitem__`", and so on are not supported. The specific abstract-object routines for these must be used.
 
-PyObject\*PyObject_ReprPyObject \*o Compute the string representation of object, `o`. Returns the string representation on success, NULL on failure. This is the equivalent of the Python expression: `repr(o)`. Called by the `repr()` built-in function and by reverse quotes.
+#### `PyObject_Hash`(*PyObject \*o*)
 
-</div>
+Compute and return the hash value of an object `o`. On failure, return -1. This is the equivalent of the Python expression: `hash(o)`.
 
-<div class="cfuncdesc">
+#### `PyObject_IsTrue`(*PyObject \*o*)
 
-PyObject\*PyObject_StrPyObject \*o Compute the string representation of object, `o`. Returns the string representation on success, NULL on failure. This is the equivalent of the Python expression: `str(o)`. Called by the `str()` built-in function and by the `print` statement.
+Returns 1 if the object `o` is considered to be true, and 0 otherwise. This is equivalent to the Python expression: `not not o`. This function always succeeds.
 
-</div>
+#### `PyObject_Type`(*PyObject \*o*)
 
-<div class="cfuncdesc">
+On success, returns a type object corresponding to the object type of object `o`. On failure, returns NULL. This is equivalent to the Python expression: `type(o)`.
 
-intPyCallable_CheckPyObject \*o Determine if the object `o`, is callable. Return 1 if the object is callable and 0 otherwise. This function always succeeds.
+#### `PyObject_Length`(*PyObject \*o*)
 
-</div>
+Return the length of object `o`. If the object `o` provides both sequence and mapping protocols, the sequence length is returned. On error, -1 is returned. This is the equivalent to the Python expression: `len(o)`.
 
-<div class="cfuncdesc">
+#### `PyObject_GetItem`(*PyObject \*o, PyObject \*key*)
 
-PyObject\*PyObject_CallObjectPyObject \*callable_object, PyObject \*args Call a callable Python object `callable_object`, with arguments given by the tuple `args`. If no arguments are needed, then args may be NULL. Returns the result of the call on success, or NULL on failure. This is the equivalent of the Python expression: `apply(o, args)`.
+Return element of `o` corresponding to the object `key` or NULL on failure. This is the equivalent of the Python expression: `o[key]`.
 
-</div>
+#### `PyObject_SetItem`(*PyObject \*o, PyObject \*key, PyObject \*v*)
 
-<div class="cfuncdesc">
+Map the object `key` to the value `v`. Returns -1 on failure. This is the equivalent of the Python statement: `o[key]=v`.
 
-PyObject\*PyObject_CallFunctionPyObject \*callable_object, char \*format, ... Call a callable Python object `callable_object`, with a variable number of C arguments. The C arguments are described using a mkvalue-style format string. The format may be NULL, indicating that no arguments are provided. Returns the result of the call on success, or NULL on failure. This is the equivalent of the Python expression: `apply(o,args)`.
+#### `PyObject_DelItem`(*PyObject \*o, PyObject \*key, PyObject \*v*)
 
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyObject_CallMethodPyObject \*o, char \*m, char \*format, ... Call the method named `m` of object `o` with a variable number of C arguments. The C arguments are described by a mkvalue format string. The format may be NULL, indicating that no arguments are provided. Returns the result of the call on success, or NULL on failure. This is the equivalent of the Python expression: `o.method(args)`. Note that Special method names, such as "`__add__`", "`__getitem__`", and so on are not supported. The specific abstract-object routines for these must be used.
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyObject_HashPyObject \*o Compute and return the hash value of an object `o`. On failure, return -1. This is the equivalent of the Python expression: `hash(o)`.
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyObject_IsTruePyObject \*o Returns 1 if the object `o` is considered to be true, and 0 otherwise. This is equivalent to the Python expression: `not not o`. This function always succeeds.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyObject_TypePyObject \*o On success, returns a type object corresponding to the object type of object `o`. On failure, returns NULL. This is equivalent to the Python expression: `type(o)`.
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyObject_LengthPyObject \*o Return the length of object `o`. If the object `o` provides both sequence and mapping protocols, the sequence length is returned. On error, -1 is returned. This is the equivalent to the Python expression: `len(o)`.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyObject_GetItemPyObject \*o, PyObject \*key Return element of `o` corresponding to the object `key` or NULL on failure. This is the equivalent of the Python expression: `o[key]`.
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyObject_SetItemPyObject \*o, PyObject \*key, PyObject \*v Map the object `key` to the value `v`. Returns -1 on failure. This is the equivalent of the Python statement: `o[key]=v`.
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyObject_DelItemPyObject \*o, PyObject \*key, PyObject \*v Delete the mapping for `key` from `*o`. Returns -1 on failure. This is the equivalent of the Python statement: `del o[key]`.
-
-</div>
+Delete the mapping for `key` from `*o`. Returns -1 on failure. This is the equivalent of the Python statement: `del o[key]`.
 
 ## Number Protocol
 
-<div class="cfuncdesc">
+#### `PyNumber_Check`(*PyObject \*o*)
 
-intPyNumber_CheckPyObject \*o Returns 1 if the object `o` provides numeric protocols, and false otherwise. This function always succeeds.
+Returns 1 if the object `o` provides numeric protocols, and false otherwise. This function always succeeds.
 
-</div>
+#### `PyNumber_Add`(*PyObject \*o1, PyObject \*o2*)
 
-<div class="cfuncdesc">
+Returns the result of adding `o1` and `o2`, or null on failure. This is the equivalent of the Python expression: `o1+o2`.
 
-PyObject\*PyNumber_AddPyObject \*o1, PyObject \*o2 Returns the result of adding `o1` and `o2`, or null on failure. This is the equivalent of the Python expression: `o1+o2`.
+#### `PyNumber_Subtract`(*PyObject \*o1, PyObject \*o2*)
 
-</div>
+Returns the result of subtracting `o2` from `o1`, or null on failure. This is the equivalent of the Python expression: `o1-o2`.
 
-<div class="cfuncdesc">
+#### `PyNumber_Multiply`(*PyObject \*o1, PyObject \*o2*)
 
-PyObject\*PyNumber_SubtractPyObject \*o1, PyObject \*o2 Returns the result of subtracting `o2` from `o1`, or null on failure. This is the equivalent of the Python expression: `o1-o2`.
+Returns the result of multiplying `o1` and `o2`, or null on failure. This is the equivalent of the Python expression: `o1*o2`.
 
-</div>
+#### `PyNumber_Divide`(*PyObject \*o1, PyObject \*o2*)
 
-<div class="cfuncdesc">
+Returns the result of dividing `o1` by `o2`, or null on failure. This is the equivalent of the Python expression: `o1/o2`.
 
-PyObject\*PyNumber_MultiplyPyObject \*o1, PyObject \*o2 Returns the result of multiplying `o1` and `o2`, or null on failure. This is the equivalent of the Python expression: `o1*o2`.
+#### `PyNumber_Remainder`(*PyObject \*o1, PyObject \*o2*)
 
-</div>
+Returns the remainder of dividing `o1` by `o2`, or null on failure. This is the equivalent of the Python expression: `o1%o2`.
 
-<div class="cfuncdesc">
+#### `PyNumber_Divmod`(*PyObject \*o1, PyObject \*o2*)
 
-PyObject\*PyNumber_DividePyObject \*o1, PyObject \*o2 Returns the result of dividing `o1` by `o2`, or null on failure. This is the equivalent of the Python expression: `o1/o2`.
+See the built-in function divmod. Returns NULL on failure. This is the equivalent of the Python expression: `divmod(o1,o2)`.
 
-</div>
+#### `PyNumber_Power`(*PyObject \*o1, PyObject \*o2, PyObject \*o3*)
 
-<div class="cfuncdesc">
+See the built-in function pow. Returns NULL on failure. This is the equivalent of the Python expression: `pow(o1,o2,o3)`, where `o3` is optional.
 
-PyObject\*PyNumber_RemainderPyObject \*o1, PyObject \*o2 Returns the remainder of dividing `o1` by `o2`, or null on failure. This is the equivalent of the Python expression: `o1%o2`.
+#### `PyNumber_Negative`(*PyObject \*o*)
 
-</div>
+Returns the negation of `o` on success, or null on failure. This is the equivalent of the Python expression: `-o`.
 
-<div class="cfuncdesc">
+#### `PyNumber_Positive`(*PyObject \*o*)
 
-PyObject\*PyNumber_DivmodPyObject \*o1, PyObject \*o2 See the built-in function divmod. Returns NULL on failure. This is the equivalent of the Python expression: `divmod(o1,o2)`.
+Returns `o` on success, or NULL on failure. This is the equivalent of the Python expression: `+o`.
 
-</div>
+#### `PyNumber_Absolute`(*PyObject \*o*)
 
-<div class="cfuncdesc">
+Returns the absolute value of `o`, or null on failure. This is the equivalent of the Python expression: `abs(o)`.
 
-PyObject\*PyNumber_PowerPyObject \*o1, PyObject \*o2, PyObject \*o3 See the built-in function pow. Returns NULL on failure. This is the equivalent of the Python expression: `pow(o1,o2,o3)`, where `o3` is optional.
+#### `PyNumber_Invert`(*PyObject \*o*)
 
-</div>
+Returns the bitwise negation of `o` on success, or NULL on failure. This is the equivalent of the Python expression: `õ`.
 
-<div class="cfuncdesc">
+#### `PyNumber_Lshift`(*PyObject \*o1, PyObject \*o2*)
 
-PyObject\*PyNumber_NegativePyObject \*o Returns the negation of `o` on success, or null on failure. This is the equivalent of the Python expression: `-o`.
+Returns the result of left shifting `o1` by `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1 << o2`.
 
-</div>
+#### `PyNumber_Rshift`(*PyObject \*o1, PyObject \*o2*)
 
-<div class="cfuncdesc">
+Returns the result of right shifting `o1` by `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1 >> o2`.
 
-PyObject\*PyNumber_PositivePyObject \*o Returns `o` on success, or NULL on failure. This is the equivalent of the Python expression: `+o`.
+#### `PyNumber_And`(*PyObject \*o1, PyObject \*o2*)
 
-</div>
+Returns the result of "anding" `o2` and `o2` on success and NULL on failure. This is the equivalent of the Python expression: `o1 and o2`.
 
-<div class="cfuncdesc">
+#### `PyNumber_Xor`(*PyObject \*o1, PyObject \*o2*)
 
-PyObject\*PyNumber_AbsolutePyObject \*o Returns the absolute value of `o`, or null on failure. This is the equivalent of the Python expression: `abs(o)`.
+Returns the bitwise exclusive or of `o1` by `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1^o2`.
 
-</div>
+#### `PyNumber_Or`(*PyObject \*o1, PyObject \*o2*)
 
-<div class="cfuncdesc">
+Returns the result of `o1` and `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1 or o2`.
 
-PyObject\*PyNumber_InvertPyObject \*o Returns the bitwise negation of `o` on success, or NULL on failure. This is the equivalent of the Python expression: `õ`.
+#### `PyNumber_Coerce`(*PyObject \*o1, PyObject \*o2*)
 
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyNumber_LshiftPyObject \*o1, PyObject \*o2 Returns the result of left shifting `o1` by `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1 << o2`.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyNumber_RshiftPyObject \*o1, PyObject \*o2 Returns the result of right shifting `o1` by `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1 >> o2`.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyNumber_AndPyObject \*o1, PyObject \*o2 Returns the result of "anding" `o2` and `o2` on success and NULL on failure. This is the equivalent of the Python expression: `o1 and o2`.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyNumber_XorPyObject \*o1, PyObject \*o2 Returns the bitwise exclusive or of `o1` by `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1^o2`.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyNumber_OrPyObject \*o1, PyObject \*o2 Returns the result of `o1` and `o2` on success, or NULL on failure. This is the equivalent of the Python expression: `o1 or o2`.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyNumber_CoercePyObject \*o1, PyObject \*o2 This function takes the addresses of two variables of type `PyObject*`.
+This function takes the addresses of two variables of type `PyObject*`.
 
 If the objects pointed to by `*p1` and `*p2` have the same type, increment their reference count and return 0 (success). If the objects can be converted to a common numeric type, replace `*p1` and `*p2` by their converted value (with ’new’ reference counts), and return 0. If no conversion is possible, or if some other error occurs, return -1 (failure) and don’t increment the reference counts. The call `PyNumber_Coerce(&o1, &o2)` is equivalent to the Python statement `o1, o2 = coerce(o1, o2)`.
 
-</div>
+#### `PyNumber_Int`(*PyObject \*o*)
 
-<div class="cfuncdesc">
+Returns the `o` converted to an integer object on success, or NULL on failure. This is the equivalent of the Python expression: `int(o)`.
 
-PyObject\*PyNumber_IntPyObject \*o Returns the `o` converted to an integer object on success, or NULL on failure. This is the equivalent of the Python expression: `int(o)`.
+#### `PyNumber_Long`(*PyObject \*o*)
 
-</div>
+Returns the `o` converted to a long integer object on success, or NULL on failure. This is the equivalent of the Python expression: `long(o)`.
 
-<div class="cfuncdesc">
+#### `PyNumber_Float`(*PyObject \*o*)
 
-PyObject\*PyNumber_LongPyObject \*o Returns the `o` converted to a long integer object on success, or NULL on failure. This is the equivalent of the Python expression: `long(o)`.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyNumber_FloatPyObject \*o Returns the `o` converted to a float object on success, or NULL on failure. This is the equivalent of the Python expression: `float(o)`.
-
-</div>
+Returns the `o` converted to a float object on success, or NULL on failure. This is the equivalent of the Python expression: `float(o)`.
 
 ## Sequence protocol
 
-<div class="cfuncdesc">
+#### `PySequence_Check`(*PyObject \*o*)
 
-intPySequence_CheckPyObject \*o Return 1 if the object provides sequence protocol, and 0 otherwise. This function always succeeds.
+Return 1 if the object provides sequence protocol, and 0 otherwise. This function always succeeds.
 
-</div>
+#### `PySequence_Concat`(*PyObject \*o1, PyObject \*o2*)
 
-<div class="cfuncdesc">
+Return the concatenation of `o1` and `o2` on success, and NULL on failure. This is the equivalent of the Python expression: `o1+o2`.
 
-PyObject\*PySequence_ConcatPyObject \*o1, PyObject \*o2 Return the concatenation of `o1` and `o2` on success, and NULL on failure. This is the equivalent of the Python expression: `o1+o2`.
+#### `PySequence_Repeat`(*PyObject \*o, int count*)
 
-</div>
+Return the result of repeating sequence object `o` `count` times, or NULL on failure. This is the equivalent of the Python expression: `o*count`.
 
-<div class="cfuncdesc">
+#### `PySequence_GetItem`(*PyObject \*o, int i*)
 
-PyObject\*PySequence_RepeatPyObject \*o, int count Return the result of repeating sequence object `o` `count` times, or NULL on failure. This is the equivalent of the Python expression: `o*count`.
+Return the ith element of `o`, or NULL on failure. This is the equivalent of the Python expression: `o[i]`.
 
-</div>
+#### `PySequence_GetSlice`(*PyObject \*o, int i1, int i2*)
 
-<div class="cfuncdesc">
+Return the slice of sequence object `o` between `i1` and `i2`, or NULL on failure. This is the equivalent of the Python expression, `o[i1:i2]`.
 
-PyObject\*PySequence_GetItemPyObject \*o, int i Return the ith element of `o`, or NULL on failure. This is the equivalent of the Python expression: `o[i]`.
+#### `PySequence_SetItem`(*PyObject \*o, int i, PyObject \*v*)
 
-</div>
+Assign object `v` to the `i`th element of `o`. Returns -1 on failure. This is the equivalent of the Python statement, `o[i]=v`.
 
-<div class="cfuncdesc">
+#### `PySequence_DelItem`(*PyObject \*o, int i*)
 
-PyObject\*PySequence_GetSlicePyObject \*o, int i1, int i2 Return the slice of sequence object `o` between `i1` and `i2`, or NULL on failure. This is the equivalent of the Python expression, `o[i1:i2]`.
+Delete the `i`th element of object `v`. Returns -1 on failure. This is the equivalent of the Python statement: `del o[i]`.
 
-</div>
+#### `PySequence_SetSlice`(*PyObject \*o, int i1, int i2, PyObject \*v*)
 
-<div class="cfuncdesc">
+Assign the sequence object `v` to the slice in sequence object `o` from `i1` to `i2`. This is the equivalent of the Python statement, `o[i1:i2]=v`.
 
-intPySequence_SetItemPyObject \*o, int i, PyObject \*v Assign object `v` to the `i`th element of `o`. Returns -1 on failure. This is the equivalent of the Python statement, `o[i]=v`.
+#### `PySequence_DelSlice`(*PyObject \*o, int i1, int i2*)
 
-</div>
+Delete the slice in sequence object, `o`, from `i1` to `i2`. Returns -1 on failure. This is the equivalent of the Python statement: `del o[i1:i2]`.
 
-<div class="cfuncdesc">
+#### `PySequence_Tuple`(*PyObject \*o*)
 
-intPySequence_DelItemPyObject \*o, int i Delete the `i`th element of object `v`. Returns -1 on failure. This is the equivalent of the Python statement: `del o[i]`.
+Returns the `o` as a tuple on success, and NULL on failure. This is equivalent to the Python expression: `tuple(o)`.
 
-</div>
+#### `PySequence_Count`(*PyObject \*o, PyObject \*value*)
 
-<div class="cfuncdesc">
+Return the number of occurrences of `value` on `o`, that is, return the number of keys for which `o[key]==value`. On failure, return -1. This is equivalent to the Python expression: `o.count(value)`.
 
-intPySequence_SetSlicePyObject \*o, int i1, int i2, PyObject \*v Assign the sequence object `v` to the slice in sequence object `o` from `i1` to `i2`. This is the equivalent of the Python statement, `o[i1:i2]=v`.
+#### `PySequence_In`(*PyObject \*o, PyObject \*value*)
 
-</div>
+Determine if `o` contains `value`. If an item in `o` is equal to `value`, return 1, otherwise return 0. On error, return -1. This is equivalent to the Python expression: `value in o`.
 
-<div class="cfuncdesc">
+#### `PySequence_Index`(*PyObject \*o, PyObject \*value*)
 
-intPySequence_DelSlicePyObject \*o, int i1, int i2 Delete the slice in sequence object, `o`, from `i1` to `i2`. Returns -1 on failure. This is the equivalent of the Python statement: `del o[i1:i2]`.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PySequence_TuplePyObject \*o Returns the `o` as a tuple on success, and NULL on failure. This is equivalent to the Python expression: `tuple(o)`.
-
-</div>
-
-<div class="cfuncdesc">
-
-intPySequence_CountPyObject \*o, PyObject \*value Return the number of occurrences of `value` on `o`, that is, return the number of keys for which `o[key]==value`. On failure, return -1. This is equivalent to the Python expression: `o.count(value)`.
-
-</div>
-
-<div class="cfuncdesc">
-
-intPySequence_InPyObject \*o, PyObject \*value Determine if `o` contains `value`. If an item in `o` is equal to `value`, return 1, otherwise return 0. On error, return -1. This is equivalent to the Python expression: `value in o`.
-
-</div>
-
-<div class="cfuncdesc">
-
-intPySequence_IndexPyObject \*o, PyObject \*value Return the first index for which `o[i]==value`. On error, return -1. This is equivalent to the Python expression: `o.index(value)`.
-
-</div>
+Return the first index for which `o[i]==value`. On error, return -1. This is equivalent to the Python expression: `o.index(value)`.
 
 ## Mapping protocol
 
-<div class="cfuncdesc">
+#### `PyMapping_Check`(*PyObject \*o*)
 
-intPyMapping_CheckPyObject \*o Return 1 if the object provides mapping protocol, and 0 otherwise. This function always succeeds.
+Return 1 if the object provides mapping protocol, and 0 otherwise. This function always succeeds.
 
-</div>
+#### `PyMapping_Length`(*PyObject \*o*)
 
-<div class="cfuncdesc">
+Returns the number of keys in object `o` on success, and -1 on failure. For objects that do not provide sequence protocol, this is equivalent to the Python expression: `len(o)`.
 
-intPyMapping_LengthPyObject \*o Returns the number of keys in object `o` on success, and -1 on failure. For objects that do not provide sequence protocol, this is equivalent to the Python expression: `len(o)`.
+#### `PyMapping_DelItemString`(*PyObject \*o, char \*key*)
 
-</div>
+Remove the mapping for object `key` from the object `o`. Return -1 on failure. This is equivalent to the Python statement: `del o[key]`.
 
-<div class="cfuncdesc">
+#### `PyMapping_DelItem`(*PyObject \*o, PyObject \*key*)
 
-intPyMapping_DelItemStringPyObject \*o, char \*key Remove the mapping for object `key` from the object `o`. Return -1 on failure. This is equivalent to the Python statement: `del o[key]`.
+Remove the mapping for object `key` from the object `o`. Return -1 on failure. This is equivalent to the Python statement: `del o[key]`.
 
-</div>
+#### `PyMapping_HasKeyString`(*PyObject \*o, char \*key*)
 
-<div class="cfuncdesc">
+On success, return 1 if the mapping object has the key `key` and 0 otherwise. This is equivalent to the Python expression: `o.has_key(key)`. This function always succeeds.
 
-intPyMapping_DelItemPyObject \*o, PyObject \*key Remove the mapping for object `key` from the object `o`. Return -1 on failure. This is equivalent to the Python statement: `del o[key]`.
+#### `PyMapping_HasKey`(*PyObject \*o, PyObject \*key*)
 
-</div>
+Return 1 if the mapping object has the key `key` and 0 otherwise. This is equivalent to the Python expression: `o.has_key(key)`. This function always succeeds.
 
-<div class="cfuncdesc">
+#### `PyMapping_Keys`(*PyObject \*o*)
 
-intPyMapping_HasKeyStringPyObject \*o, char \*key On success, return 1 if the mapping object has the key `key` and 0 otherwise. This is equivalent to the Python expression: `o.has_key(key)`. This function always succeeds.
+On success, return a list of the keys in object `o`. On failure, return NULL. This is equivalent to the Python expression: `o.keys()`.
 
-</div>
+#### `PyMapping_Values`(*PyObject \*o*)
 
-<div class="cfuncdesc">
+On success, return a list of the values in object `o`. On failure, return NULL. This is equivalent to the Python expression: `o.values()`.
 
-intPyMapping_HasKeyPyObject \*o, PyObject \*key Return 1 if the mapping object has the key `key` and 0 otherwise. This is equivalent to the Python expression: `o.has_key(key)`. This function always succeeds.
+#### `PyMapping_Items`(*PyObject \*o*)
 
-</div>
+On success, return a list of the items in object `o`, where each item is a tuple containing a key-value pair. On failure, return NULL. This is equivalent to the Python expression: `o.items()`.
 
-<div class="cfuncdesc">
+#### `PyMapping_Clear`(*PyObject \*o*)
 
-PyObject\*PyMapping_KeysPyObject \*o On success, return a list of the keys in object `o`. On failure, return NULL. This is equivalent to the Python expression: `o.keys()`.
+Make object `o` empty. Returns 1 on success and 0 on failure. This is equivalent to the Python statement: `for key in o.keys(): del o[key]`
 
-</div>
+#### `PyMapping_GetItemString`(*PyObject \*o, char \*key*)
 
-<div class="cfuncdesc">
+Return element of `o` corresponding to the object `key` or NULL on failure. This is the equivalent of the Python expression: `o[key]`.
 
-PyObject\*PyMapping_ValuesPyObject \*o On success, return a list of the values in object `o`. On failure, return NULL. This is equivalent to the Python expression: `o.values()`.
+#### `PyMapping_SetItemString`(*PyObject \*o, char \*key, PyObject \*v*)
 
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyMapping_ItemsPyObject \*o On success, return a list of the items in object `o`, where each item is a tuple containing a key-value pair. On failure, return NULL. This is equivalent to the Python expression: `o.items()`.
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyMapping_ClearPyObject \*o Make object `o` empty. Returns 1 on success and 0 on failure. This is equivalent to the Python statement: `for key in o.keys(): del o[key]`
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyMapping_GetItemStringPyObject \*o, char \*key Return element of `o` corresponding to the object `key` or NULL on failure. This is the equivalent of the Python expression: `o[key]`.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyMapping_SetItemStringPyObject \*o, char \*key, PyObject \*v Map the object `key` to the value `v` in object `o`. Returns -1 on failure. This is the equivalent of the Python statement: `o[key]=v`.
-
-</div>
+Map the object `key` to the value `v` in object `o`. Returns -1 on failure. This is the equivalent of the Python statement: `o[key]=v`.
 
 ## Constructors
 
-<div class="cfuncdesc">
+#### `PyFile_FromString`(*char \*file_name, char \*mode*)
 
-PyObject\*PyFile_FromStringchar \*file_name, char \*mode On success, returns a new file object that is opened on the file given by `file_name`, with a file mode given by `mode`, where `mode` has the same semantics as the standard C routine, fopen. On failure, return -1.
+On success, returns a new file object that is opened on the file given by `file_name`, with a file mode given by `mode`, where `mode` has the same semantics as the standard C routine, fopen. On failure, return -1.
 
-</div>
+#### `PyFile_FromFile`(*FILE \*fp, char \*file_name, char \*mode, int close_on_del*)
 
-<div class="cfuncdesc">
+Return a new file object for an already opened standard C file pointer, `fp`. A file name, `file_name`, and open mode, `mode`, must be provided as well as a flag, `close_on_del`, that indicates whether the file is to be closed when the file object is destroyed. On failure, return -1.
 
-PyObject\*PyFile_FromFileFILE \*fp, char \*file_name, char \*mode, int close_on_del Return a new file object for an already opened standard C file pointer, `fp`. A file name, `file_name`, and open mode, `mode`, must be provided as well as a flag, `close_on_del`, that indicates whether the file is to be closed when the file object is destroyed. On failure, return -1.
+#### `PyFloat_FromDouble`(*double v*)
 
-</div>
+Returns a new float object with the value `v` on success, and NULL on failure.
 
-<div class="cfuncdesc">
+#### `PyInt_FromLong`(*long v*)
 
-PyObject\*PyFloat_FromDoubledouble v Returns a new float object with the value `v` on success, and NULL on failure.
+Returns a new int object with the value `v` on success, and NULL on failure.
 
-</div>
+#### `PyList_New`(*int l*)
 
-<div class="cfuncdesc">
+Returns a new list of length `l` on success, and NULL on failure.
 
-PyObject\*PyInt_FromLonglong v Returns a new int object with the value `v` on success, and NULL on failure.
+#### `PyLong_FromLong`(*long v*)
 
-</div>
+Returns a new long object with the value `v` on success, and NULL on failure.
 
-<div class="cfuncdesc">
+#### `PyLong_FromDouble`(*double v*)
 
-PyObject\*PyList_Newint l Returns a new list of length `l` on success, and NULL on failure.
+Returns a new long object with the value `v` on success, and NULL on failure.
 
-</div>
+#### `PyDict_New`()
 
-<div class="cfuncdesc">
+Returns a new empty dictionary on success, and NULL on failure.
 
-PyObject\*PyLong_FromLonglong v Returns a new long object with the value `v` on success, and NULL on failure.
+#### `PyString_FromString`(*char \*v*)
 
-</div>
+Returns a new string object with the value `v` on success, and NULL on failure.
 
-<div class="cfuncdesc">
+#### `PyString_FromStringAndSize`(*char \*v, int l*)
 
-PyObject\*PyLong_FromDoubledouble v Returns a new long object with the value `v` on success, and NULL on failure.
+Returns a new string object with the value `v` and length `l` on success, and NULL on failure.
 
-</div>
+#### `PyTuple_New`(*int l*)
 
-<div class="cfuncdesc">
-
-PyObject\*PyDict_New Returns a new empty dictionary on success, and NULL on failure.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyString_FromStringchar \*v Returns a new string object with the value `v` on success, and NULL on failure.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyString_FromStringAndSizechar \*v, int l Returns a new string object with the value `v` and length `l` on success, and NULL on failure.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject\*PyTuple_Newint l Returns a new tuple of length `l` on success, and NULL on failure.
-
-</div>
+Returns a new tuple of length `l` on success, and NULL on failure.
 
 # Concrete Objects Layer
 
@@ -1087,57 +799,35 @@ The functions in this chapter are specific to certain Python object types. Passi
 
 # Defining New Object Types
 
-<div class="cfuncdesc">
+#### `_PyObject_New`(*PyTypeObject \*type*)
 
-PyObject \*\_PyObject_NewPyTypeObject \*type
+#### `_PyObject_NewVar`(*PyTypeObject \*type, int size*)
 
-</div>
+#### `_PyObject_NEW`(*TYPE, PyTypeObject \**)
 
-<div class="cfuncdesc">
-
-PyObject \*\_PyObject_NewVarPyTypeObject \*type, int size
-
-</div>
-
-<div class="cfuncdesc">
-
-TYPE\_PyObject_NEWTYPE, PyTypeObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-TYPE\_PyObject_NEW_VARTYPE, PyTypeObject \*, int size
-
-</div>
+#### `_PyObject_NEW_VAR`(*TYPE, PyTypeObject \*, int size*)
 
 # Initialization, Finalization, and Threads
 
-<div class="cfuncdesc">
+#### `Py_Initialize`()
 
-voidPy_Initialize Initialize the Python interpreter. In an application embedding Python, this should be called before using any other Python/C API functions; with the exception of `Py_SetProgramName()`, `PyEval_InitThreads()`, `PyEval_ReleaseLock()`, and `PyEval_AcquireLock()`. This initializes the table of loaded modules (`sys.modules`), and creates the fundamental modules `__builtin__`, `__main__` and `sys`. It also initializes the module search path (`sys.path`). It does not set `sys.argv`; use `PySys_SetArgv()` for that. This is a no-op when called for a second time (without calling `Py_Finalize()` first). There is no return value; it is a fatal error if the initialization fails.
+Initialize the Python interpreter. In an application embedding Python, this should be called before using any other Python/C API functions; with the exception of `Py_SetProgramName()`, `PyEval_InitThreads()`, `PyEval_ReleaseLock()`, and `PyEval_AcquireLock()`. This initializes the table of loaded modules (`sys.modules`), and creates the fundamental modules `__builtin__`, `__main__` and `sys`. It also initializes the module search path (`sys.path`). It does not set `sys.argv`; use `PySys_SetArgv()` for that. This is a no-op when called for a second time (without calling `Py_Finalize()` first). There is no return value; it is a fatal error if the initialization fails.
 
-</div>
+#### `Py_IsInitialized`()
 
-<div class="cfuncdesc">
+**(NEW in 1.5a4!)** Return true (nonzero) when the Python interpreter has been initialized, false (zero) if not. After `Py_Finalize()` is called, this returns false until `Py_Initialize()` is called again.
 
-intPy_IsInitialized **(NEW in 1.5a4!)** Return true (nonzero) when the Python interpreter has been initialized, false (zero) if not. After `Py_Finalize()` is called, this returns false until `Py_Initialize()` is called again.
+#### `Py_Finalize`()
 
-</div>
-
-<div class="cfuncdesc">
-
-voidPy_Finalize **(NEW in 1.5a3!)** Undo all initializations made by `Py_Initialize()` and subsequent use of Python/C API functions, and destroy all sub-interpreters (see `Py_NewInterpreter()` below) that were created and not yet destroyed since the last call to `Py_Initialize()`. Ideally, this frees all memory allocated by the Python interpreter. This is a no-op when called for a second time (without calling `Py_Initialize()` again first). There is no return value; errors during finalization are ignored.
+**(NEW in 1.5a3!)** Undo all initializations made by `Py_Initialize()` and subsequent use of Python/C API functions, and destroy all sub-interpreters (see `Py_NewInterpreter()` below) that were created and not yet destroyed since the last call to `Py_Initialize()`. Ideally, this frees all memory allocated by the Python interpreter. This is a no-op when called for a second time (without calling `Py_Initialize()` again first). There is no return value; errors during finalization are ignored.
 
 This function is provided for a number of reasons. An embedding application might want to restart Python without having to restart the application itself. An application that has loaded the Python interpreter from a dynamically loadable library (or DLL) might want to free all memory allocated by Python before unloading the DLL. During a hunt for memory leaks in an application a developer might want to free all memory allocated by Python before exiting from the application.
 
 *Bugs and caveats:* The destruction of modules and objects in modules is done in random order; this may cause destructors (`__del__` methods) to fail when they depend on other objects (even functions) or modules. Dynamically loaded extension modules loaded by Python are not unloaded. Small amounts of memory allocated by the Python interpreter may not be freed (if you find a leak, please report it). Memory tied up in circular references between objects is not freed. Some memory allocated by extension modules may not be freed. Some extension may not work properly if their initialization routine is called more than once; this can happen if an applcation calls `Py_Initialize()` and `Py_Finalize()` more than once.
 
-</div>
+#### `Py_NewInterpreter`()
 
-<div class="cfuncdesc">
-
-PyThreadState \*Py_NewInterpreter **(NEW in 1.5a3!)** Create a new sub-interpreter. This is an (almost) totally separate environment for the execution of Python code. In particular, the new interpreter has separate, independent versions of all imported modules, including the fundamental modules `__builtin__`, `__main__` and `sys`. The table of loaded modules (`sys.modules`) and the module search path (`sys.path`) are also separate. The new environment has no `sys.argv` variable. It has new standard I/O stream file objects `sys.stdin`, `sys.stdout` and `sys.stderr` (however these refer to the same underlying `FILE` structures in the C library).
+**(NEW in 1.5a3!)** Create a new sub-interpreter. This is an (almost) totally separate environment for the execution of Python code. In particular, the new interpreter has separate, independent versions of all imported modules, including the fundamental modules `__builtin__`, `__main__` and `sys`. The table of loaded modules (`sys.modules`) and the module search path (`sys.path`) are also separate. The new environment has no `sys.argv` variable. It has new standard I/O stream file objects `sys.stdin`, `sys.stdout` and `sys.stderr` (however these refer to the same underlying `FILE` structures in the C library).
 
 The return value points to the first thread state created in the new sub-interpreter. This thread state is made the current thread state. Note that no actual thread is created; see the discussion of thread states below. If creation of the new interpreter is unsuccessful, NULL is returned; no exception is set since the exception state is stored in the current thread state and there may not be a current thread state. (Like all other Python/C API functions, the global interpreter lock must be held before calling this function and is still held when it returns; however, unlike most other Python/C API functions, there needn’t be a current thread state on entry.)
 
@@ -1145,35 +835,25 @@ Extension modules are shared between (sub-)interpreters as follows: the first ti
 
 *Bugs and caveats:* Because sub-interpreters (and the main interpreter) are part of the same process, the insulation between them isn’t perfect – for example, using low-level file operations like `os.close()` they can (accidentally or maliciously) affect each other’s open files. Because of the way extensions are shared between (sub-)interpreters, some extensions may not work properly; this is especially likely when the extension makes use of (static) global variables, or when the extension manipulates its module’s dictionary after its initialization. It is possible to insert objects created in one sub-interpreter into a namespace of another sub-interpreter; this should be done with great care to avoid sharing user-defined functions, methods, instances or classes between sub-interpreters, since import operations executed by such objects may affect the wrong (sub-)interpreter’s dictionary of loaded modules. (XXX This is a hard-to-fix bug that will be addressed in a future release.)
 
-</div>
+#### `Py_EndInterpreter`(*PyThreadState \*tstate*)
 
-<div class="cfuncdesc">
+**(NEW in 1.5a3!)** Destroy the (sub-)interpreter represented by the given thread state. The given thread state must be the current thread state. See the discussion of thread states below. When the call returns, the current thread state is NULL. All thread states associated with this interpreted are destroyed. (The global interpreter lock must be held before calling this function and is still held when it returns.) `Py_Finalize()` will destroy all sub-interpreters that haven’t been explicitly destroyed at that point.
 
-voidPy_EndInterpreterPyThreadState \*tstate **(NEW in 1.5a3!)** Destroy the (sub-)interpreter represented by the given thread state. The given thread state must be the current thread state. See the discussion of thread states below. When the call returns, the current thread state is NULL. All thread states associated with this interpreted are destroyed. (The global interpreter lock must be held before calling this function and is still held when it returns.) `Py_Finalize()` will destroy all sub-interpreters that haven’t been explicitly destroyed at that point.
+#### `Py_SetProgramName`(*char \*name*)
 
-</div>
+**(NEW in 1.5a3!)** This function should be called before `Py_Initialize()` is called for the first time, if it is called at all. It tells the interpreter the value of the `argv[0]` argument to the `main()` function of the program. This is used by `Py_GetPath()` and some other functions below to find the Python run-time libraries relative to the interpreter executable. The default value is `"python"`. The argument should point to a zero-terminated character string in static storage whose contents will not change for the duration of the program’s execution. No code in the Python interpreter will change the contents of this storage.
 
-<div class="cfuncdesc">
+#### `Py_GetProgramName`()
 
-voidPy_SetProgramNamechar \*name **(NEW in 1.5a3!)** This function should be called before `Py_Initialize()` is called for the first time, if it is called at all. It tells the interpreter the value of the `argv[0]` argument to the `main()` function of the program. This is used by `Py_GetPath()` and some other functions below to find the Python run-time libraries relative to the interpreter executable. The default value is `"python"`. The argument should point to a zero-terminated character string in static storage whose contents will not change for the duration of the program’s execution. No code in the Python interpreter will change the contents of this storage.
+Return the program name set with `Py_SetProgramName()`, or the default. The returned string points into static storage; the caller should not modify its value.
 
-</div>
+#### `Py_GetPrefix`()
 
-<div class="cfuncdesc">
+Return the “prefix” for installed platform-independent files. This is derived through a number of complicated rules from the program name set with `Py_SetProgramName()` and some environment variables; for example, if the program name is `"/usr/local/bin/python"`, the prefix is `"/usr/local"`. The returned string points into static storage; the caller should not modify its value. This corresponds to the `prefix` variable in the top-level `Makefile` and the `--prefix` argument to the `configure` script at build time. The value is available to Python code as `sys.prefix`. It is only useful on Unix. See also the next function.
 
-char \*Py_GetProgramName Return the program name set with `Py_SetProgramName()`, or the default. The returned string points into static storage; the caller should not modify its value.
+#### `Py_GetExecPrefix`()
 
-</div>
-
-<div class="cfuncdesc">
-
-char \*Py_GetPrefix Return the “prefix” for installed platform-independent files. This is derived through a number of complicated rules from the program name set with `Py_SetProgramName()` and some environment variables; for example, if the program name is `"/usr/local/bin/python"`, the prefix is `"/usr/local"`. The returned string points into static storage; the caller should not modify its value. This corresponds to the `prefix` variable in the top-level `Makefile` and the `--prefix` argument to the `configure` script at build time. The value is available to Python code as `sys.prefix`. It is only useful on Unix. See also the next function.
-
-</div>
-
-<div class="cfuncdesc">
-
-char \*Py_GetExecPrefix Return the “exec-prefix” for installed platform-*de*pendent files. This is derived through a number of complicated rules from the program name set with `Py_SetProgramName()` and some environment variables; for example, if the program name is `"/usr/local/bin/python"`, the exec-prefix is `"/usr/local"`. The returned string points into static storage; the caller should not modify its value. This corresponds to the `exec_prefix` variable in the top-level `Makefile` and the `--exec_prefix` argument to the `configure` script at build time. The value is available to Python code as `sys.exec_prefix`. It is only useful on Unix.
+Return the “exec-prefix” for installed platform-*de*pendent files. This is derived through a number of complicated rules from the program name set with `Py_SetProgramName()` and some environment variables; for example, if the program name is `"/usr/local/bin/python"`, the exec-prefix is `"/usr/local"`. The returned string points into static storage; the caller should not modify its value. This corresponds to the `exec_prefix` variable in the top-level `Makefile` and the `--exec_prefix` argument to the `configure` script at build time. The value is available to Python code as `sys.exec_prefix`. It is only useful on Unix.
 
 Background: The exec-prefix differs from the prefix when platform dependent files (such as executables and shared libraries) are installed in a different directory tree. In a typical installation, platform dependent files may be installed in the `"/usr/local/plat"` subtree while platform independent may be installed in `"/usr/local"`.
 
@@ -1181,72 +861,52 @@ Generally speaking, a platform is a combination of hardware and software familie
 
 System administrators will know how to configure the `mount` or `automount` programs to share `"/usr/local"` between platforms while having `"/usr/local/plat"` be a different filesystem for each platform.
 
-</div>
+#### `Py_GetProgramFullPath`()
 
-<div class="cfuncdesc">
+**(NEW in 1.5a3!)** Return the full program name of the Python executable; this is computed as a side-effect of deriving the default module search path from the program name (set by `Py_SetProgramName()` above). The returned string points into static storage; the caller should not modify its value. The value is available to Python code as `sys.executable`.
 
-char \*Py_GetProgramFullPath **(NEW in 1.5a3!)** Return the full program name of the Python executable; this is computed as a side-effect of deriving the default module search path from the program name (set by `Py_SetProgramName()` above). The returned string points into static storage; the caller should not modify its value. The value is available to Python code as `sys.executable`.
+#### `Py_GetPath`()
 
-</div>
-
-<div class="cfuncdesc">
-
-char \*Py_GetPath Return the default module search path; this is computed from the program name (set by `Py_SetProgramName()` above) and some environment variables. The returned string consists of a series of directory names separated by a platform dependent delimiter character. The delimiter character is `’:’` on Unix, `’;’` on DOS/Windows, and `’`\
+Return the default module search path; this is computed from the program name (set by `Py_SetProgramName()` above) and some environment variables. The returned string consists of a series of directory names separated by a platform dependent delimiter character. The delimiter character is `’:’` on Unix, `’;’` on DOS/Windows, and `’`\
 `n’` (the ASCII newline character) on Macintosh. The returned string points into static storage; the caller should not modify its value. The value is available to Python code as the list `sys.path`, which may be modified to change the future search path for loaded modules.
 
-</div>
+#### `Py_GetVersion`()
 
-<div class="cfuncdesc">
-
-const char \*Py_GetVersion Return the version of this Python interpreter. This is a string that looks something like
+Return the version of this Python interpreter. This is a string that looks something like
 
     "1.5a3 (#67, Aug 1 1997, 22:34:28) [GCC 2.7.2.2]"
 
 The first word (up to the first space character) is the current Python version; the first three characters are the major and minor version separated by a period. The returned string points into static storage; the caller should not modify its value. The value is available to Python code as the list `sys.version`.
 
-</div>
+#### `Py_GetPlatform`()
 
-<div class="cfuncdesc">
+Return the platform identifier for the current platform. On Unix, this is formed from the “official” name of the operating system, converted to lower case, followed by the major revision number; e.g., for Solaris 2.x, which is also known as SunOS 5.x, the value is `"sunos5"`. On Macintosh, it is `"mac"`. On Windows, it is `"win"`. The returned string points into static storage; the caller should not modify its value. The value is available to Python code as `sys.platform`.
 
-const char \*Py_GetPlatform Return the platform identifier for the current platform. On Unix, this is formed from the “official” name of the operating system, converted to lower case, followed by the major revision number; e.g., for Solaris 2.x, which is also known as SunOS 5.x, the value is `"sunos5"`. On Macintosh, it is `"mac"`. On Windows, it is `"win"`. The returned string points into static storage; the caller should not modify its value. The value is available to Python code as `sys.platform`.
+#### `Py_GetCopyright`()
 
-</div>
-
-<div class="cfuncdesc">
-
-const char \*Py_GetCopyright Return the official copyright string for the current Python version, for example
+Return the official copyright string for the current Python version, for example
 
 `"Copyright 1991-1995 Stichting Mathematisch Centrum, Amsterdam"`
 
 The returned string points into static storage; the caller should not modify its value. The value is available to Python code as the list `sys.copyright`.
 
-</div>
+#### `Py_GetCompiler`()
 
-<div class="cfuncdesc">
-
-const char \*Py_GetCompiler Return an indication of the compiler used to build the current Python version, in square brackets, for example
+Return an indication of the compiler used to build the current Python version, in square brackets, for example
 
 `"[GCC 2.7.2.2]"`
 
 The returned string points into static storage; the caller should not modify its value. The value is available to Python code as part of the variable `sys.version`.
 
-</div>
+#### `Py_GetBuildInfo`()
 
-<div class="cfuncdesc">
-
-const char \*Py_GetBuildInfo Return information about the sequence number and build date and time of the current Python interpreter instance, for example
+Return information about the sequence number and build date and time of the current Python interpreter instance, for example
 
     "#67, Aug  1 1997, 22:34:28"
 
 The returned string points into static storage; the caller should not modify its value. The value is available to Python code as part of the variable `sys.version`.
 
-</div>
-
-<div class="cfuncdesc">
-
-intPySys_SetArgvint argc, char \*\*argv
-
-</div>
+#### `PySys_SetArgv`(*int argc, char \*\*argv*)
 
 ## Thread State and the Global Interpreter Lock
 
@@ -1304,23 +964,19 @@ When creating a thread data structure, you need to provide an interpreter state 
 
 XXX More?
 
-<div class="ctypedesc">
+#### `PyInterpreterState`
 
-PyInterpreterState **(NEW in 1.5a3!)** This data structure represents the state shared by a number of cooperating threads. Threads belonging to the same interpreter share their module administration and a few other internal items. There are no public members in this structure.
+**(NEW in 1.5a3!)** This data structure represents the state shared by a number of cooperating threads. Threads belonging to the same interpreter share their module administration and a few other internal items. There are no public members in this structure.
 
 Threads belonging to different interpreters initially share nothing, except process state like available memory, open file descriptors and such. The global interpreter lock is also shared by all threads, regardless of to which interpreter they belong.
 
-</div>
+#### `PyThreadState`
 
-<div class="ctypedesc">
+**(NEW in 1.5a3!)** This data structure represents the state of a single thread. The only public data member is `PyInterpreterState *interp`, which points to this thread’s interpreter state.
 
-PyThreadState **(NEW in 1.5a3!)** This data structure represents the state of a single thread. The only public data member is `PyInterpreterState *interp`, which points to this thread’s interpreter state.
+#### `PyEval_InitThreads`()
 
-</div>
-
-<div class="cfuncdesc">
-
-voidPyEval_InitThreads Initialize and acquire the global interpreter lock. It should be called in the main thread before creating a second thread or engaging in any other thread operations such as `PyEval_ReleaseLock()` or `PyEval_ReleaseThread(tstate)`. It is not needed before calling `PyEval_SaveThread()` or `PyEval_RestoreThread()`.
+Initialize and acquire the global interpreter lock. It should be called in the main thread before creating a second thread or engaging in any other thread operations such as `PyEval_ReleaseLock()` or `PyEval_ReleaseThread(tstate)`. It is not needed before calling `PyEval_SaveThread()` or `PyEval_RestoreThread()`.
 
 This is a no-op when called for a second time. It is safe to call this function before calling `Py_Initialize()`.
 
@@ -1330,117 +986,79 @@ It is **not** safe to call this function when it is unknown which thread (if any
 
 This function is not available when thread support is disabled at compile time.
 
-</div>
+#### `PyEval_AcquireLock`()
 
-<div class="cfuncdesc">
+**(NEW in 1.5a3!)** Acquire the global interpreter lock. The lock must have been created earlier. If this thread already has the lock, a deadlock ensues. This function is not available when thread support is disabled at compile time.
 
-voidPyEval_AcquireLock **(NEW in 1.5a3!)** Acquire the global interpreter lock. The lock must have been created earlier. If this thread already has the lock, a deadlock ensues. This function is not available when thread support is disabled at compile time.
+#### `PyEval_ReleaseLock`()
 
-</div>
+**(NEW in 1.5a3!)** Release the global interpreter lock. The lock must have been created earlier. This function is not available when thread support is disabled at compile time.
 
-<div class="cfuncdesc">
+#### `PyEval_AcquireThread`(*PyThreadState \*tstate*)
 
-voidPyEval_ReleaseLock **(NEW in 1.5a3!)** Release the global interpreter lock. The lock must have been created earlier. This function is not available when thread support is disabled at compile time.
+**(NEW in 1.5a3!)** Acquire the global interpreter lock and then set the current thread state to *tstate*, which should not be NULL. The lock must have been created earlier. If this thread already has the lock, deadlock ensues. This function is not available when thread support is disabled at compile time.
 
-</div>
+#### `PyEval_ReleaseThread`(*PyThreadState \*tstate*)
 
-<div class="cfuncdesc">
+**(NEW in 1.5a3!)** Reset the current thread state to NULL and release the global interpreter lock. The lock must have been created earlier and must be held by the current thread. The *tstate* argument, which must not be NULL, is only used to check that it represents the current thread state – if it isn’t, a fatal error is reported. This function is not available when thread support is disabled at compile time.
 
-voidPyEval_AcquireThreadPyThreadState \*tstate **(NEW in 1.5a3!)** Acquire the global interpreter lock and then set the current thread state to *tstate*, which should not be NULL. The lock must have been created earlier. If this thread already has the lock, deadlock ensues. This function is not available when thread support is disabled at compile time.
+#### `PyEval_SaveThread`()
 
-</div>
+**(Different return type in 1.5a3!)** Release the interpreter lock (if it has been created and thread support is enabled) and reset the thread state to NULL, returning the previous thread state (which is not NULL). If the lock has been created, the current thread must have acquired it. (This function is available even when thread support is disabled at compile time.)
 
-<div class="cfuncdesc">
+#### `PyEval_RestoreThread`(*PyThreadState \*tstate*)
 
-voidPyEval_ReleaseThreadPyThreadState \*tstate **(NEW in 1.5a3!)** Reset the current thread state to NULL and release the global interpreter lock. The lock must have been created earlier and must be held by the current thread. The *tstate* argument, which must not be NULL, is only used to check that it represents the current thread state – if it isn’t, a fatal error is reported. This function is not available when thread support is disabled at compile time.
+**(Different argument type in 1.5a3!)** Acquire the interpreter lock (if it has been created and thread support is enabled) and set the thread state to *tstate*, which must not be NULL. If the lock has been created, the current thread must not have acquired it, otherwise deadlock ensues. (This function is available even when thread support is disabled at compile time.)
 
-</div>
+#### `Py_BEGIN_ALLOW_THREADS`
 
-<div class="cfuncdesc">
+This macro expands to `{ PyThreadState *_save; _save = PyEval_SaveThread();`. Note that it contains an opening brace; it must be matched with a following `Py_END_ALLOW_THREADS` macro. See above for further discussion of this macro. It is a no-op when thread support is disabled at compile time.
 
-PyThreadState \*PyEval_SaveThread **(Different return type in 1.5a3!)** Release the interpreter lock (if it has been created and thread support is enabled) and reset the thread state to NULL, returning the previous thread state (which is not NULL). If the lock has been created, the current thread must have acquired it. (This function is available even when thread support is disabled at compile time.)
+#### `Py_END_ALLOW_THREADS`
 
-</div>
+This macro expands to `PyEval_RestoreThread(_save); } `. Note that it contains a closing brace; it must be matched with an earlier `Py_BEGIN_ALLOW_THREADS` macro. See above for further discussion of this macro. It is a no-op when thread support is disabled at compile time.
 
-<div class="cfuncdesc">
+#### `Py_BEGIN_BLOCK_THREADS`
 
-voidPyEval_RestoreThreadPyThreadState \*tstate **(Different argument type in 1.5a3!)** Acquire the interpreter lock (if it has been created and thread support is enabled) and set the thread state to *tstate*, which must not be NULL. If the lock has been created, the current thread must not have acquired it, otherwise deadlock ensues. (This function is available even when thread support is disabled at compile time.)
+This macro expands to `PyEval_RestoreThread(_save);` i.e. it is equivalent to `Py_END_ALLOW_THREADS` without the closing brace. It is a no-op when thread support is disabled at compile time.
 
-</div>
+#### `Py_BEGIN_UNBLOCK_THREADS`
 
-<div class="ctypedesc">
-
-Py_BEGIN_ALLOW_THREADS This macro expands to `{ PyThreadState *_save; _save = PyEval_SaveThread();`. Note that it contains an opening brace; it must be matched with a following `Py_END_ALLOW_THREADS` macro. See above for further discussion of this macro. It is a no-op when thread support is disabled at compile time.
-
-</div>
-
-<div class="ctypedesc">
-
-Py_END_ALLOW_THREADS This macro expands to `PyEval_RestoreThread(_save); } `. Note that it contains a closing brace; it must be matched with an earlier `Py_BEGIN_ALLOW_THREADS` macro. See above for further discussion of this macro. It is a no-op when thread support is disabled at compile time.
-
-</div>
-
-<div class="ctypedesc">
-
-Py_BEGIN_BLOCK_THREADS This macro expands to `PyEval_RestoreThread(_save);` i.e. it is equivalent to `Py_END_ALLOW_THREADS` without the closing brace. It is a no-op when thread support is disabled at compile time.
-
-</div>
-
-<div class="ctypedesc">
-
-Py_BEGIN_UNBLOCK_THREADS This macro expands to `_save = PyEval_SaveThread();` i.e. it is equivalent to `Py_BEGIN_ALLOW_THREADS` without the opening brace and variable declaration. It is a no-op when thread support is disabled at compile time.
-
-</div>
+This macro expands to `_save = PyEval_SaveThread();` i.e. it is equivalent to `Py_BEGIN_ALLOW_THREADS` without the opening brace and variable declaration. It is a no-op when thread support is disabled at compile time.
 
 All of the following functions are only available when thread support is enabled at compile time, and must be called only when the interpreter lock has been created. They are all new in 1.5a3.
 
-<div class="cfuncdesc">
+#### `PyInterpreterState_New`()
 
-PyInterpreterState \*PyInterpreterState_New Create a new interpreter state object. The interpreter lock must be held.
+Create a new interpreter state object. The interpreter lock must be held.
 
-</div>
+#### `PyInterpreterState_Clear`(*PyInterpreterState \*interp*)
 
-<div class="cfuncdesc">
+Reset all information in an interpreter state object. The interpreter lock must be held.
 
-voidPyInterpreterState_ClearPyInterpreterState \*interp Reset all information in an interpreter state object. The interpreter lock must be held.
+#### `PyInterpreterState_Delete`(*PyInterpreterState \*interp*)
 
-</div>
+Destroy an interpreter state object. The interpreter lock need not be held. The interpreter state must have been reset with a previous call to `PyInterpreterState_Clear()`.
 
-<div class="cfuncdesc">
+#### `PyThreadState_New`(*PyInterpreterState \*interp*)
 
-voidPyInterpreterState_DeletePyInterpreterState \*interp Destroy an interpreter state object. The interpreter lock need not be held. The interpreter state must have been reset with a previous call to `PyInterpreterState_Clear()`.
+Create a new thread state object belonging to the given interpreter object. The interpreter lock must be held.
 
-</div>
+#### `PyThreadState_Clear`(*PyThreadState \*tstate*)
 
-<div class="cfuncdesc">
+Reset all information in a thread state object. The interpreter lock must be held.
 
-PyThreadState \*PyThreadState_NewPyInterpreterState \*interp Create a new thread state object belonging to the given interpreter object. The interpreter lock must be held.
+#### `PyThreadState_Delete`(*PyThreadState \*tstate*)
 
-</div>
+Destroy a thread state object. The interpreter lock need not be held. The thread state must have been reset with a previous call to `PyThreadState_Clear()`.
 
-<div class="cfuncdesc">
+#### `PyThreadState_Get`()
 
-voidPyThreadState_ClearPyThreadState \*tstate Reset all information in a thread state object. The interpreter lock must be held.
+Return the current thread state. The interpreter lock must be held. When the current thread state is NULL, this issues a fatal error (so that the caller needn’t check for NULL).
 
-</div>
+#### `PyThreadState_Swap`(*PyThreadState \*tstate*)
 
-<div class="cfuncdesc">
-
-voidPyThreadState_DeletePyThreadState \*tstate Destroy a thread state object. The interpreter lock need not be held. The thread state must have been reset with a previous call to `PyThreadState_Clear()`.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyThreadState \*PyThreadState_Get Return the current thread state. The interpreter lock must be held. When the current thread state is NULL, this issues a fatal error (so that the caller needn’t check for NULL).
-
-</div>
-
-<div class="cfuncdesc">
-
-PyThreadState \*PyThreadState_SwapPyThreadState \*tstate Swap the current thread state with the thread state given by the argument *tstate*, which may be NULL. The interpreter lock must be held.
-
-</div>
+Swap the current thread state with the thread state given by the argument *tstate*, which may be NULL. The interpreter lock must be held.
 
 ## Defining New Object Types
 
@@ -1484,25 +1102,15 @@ This section describes Python type objects and the singleton object `None`.
 
 ### Type Objects
 
-<div class="ctypedesc">
+#### `PyTypeObject`
 
-PyTypeObject
-
-</div>
-
-<div class="cvardesc">
-
-PyObject \*PyType_Type
-
-</div>
+#### `PyType_Type`
 
 ### The None Object
 
-<div class="cvardesc">
+#### `Py_None`
 
-PyObject \*Py_None XXX macro
-
-</div>
+XXX macro
 
 ## Sequence Objects
 
@@ -1510,679 +1118,363 @@ Generic operations on sequence objects were discussed in the previous chapter; t
 
 ### String Objects
 
-<div class="ctypedesc">
+#### `PyStringObject`
 
-PyStringObject This subtype of `PyObject` represents a Python string object.
+This subtype of `PyObject` represents a Python string object.
 
-</div>
+#### `PyString_Type`
 
-<div class="cvardesc">
+This instance of `PyTypeObject` represents the Python string type.
 
-PyTypeObjectPyString_Type This instance of `PyTypeObject` represents the Python string type.
+#### `PyString_Check`(*PyObject \*o*)
 
-</div>
+#### `PyString_FromStringAndSize`(*const char \*, int*)
 
-<div class="cfuncdesc">
+#### `PyString_FromString`(*const char \**)
 
-intPyString_CheckPyObject \*o
+#### `PyString_Size`(*PyObject \**)
 
-</div>
+#### `PyString_AsString`(*PyObject \**)
 
-<div class="cfuncdesc">
+#### `PyString_Concat`(*PyObject \*\*, PyObject \**)
 
-PyObject \*PyString_FromStringAndSizeconst char \*, int
+#### `PyString_ConcatAndDel`(*PyObject \*\*, PyObject \**)
 
-</div>
+#### `_PyString_Resize`(*PyObject \*\*, int*)
 
-<div class="cfuncdesc">
+#### `PyString_Format`(*PyObject \*, PyObject \**)
 
-PyObject \*PyString_FromStringconst char \*
+#### `PyString_InternInPlace`(*PyObject \*\**)
 
-</div>
+#### `PyString_InternFromString`(*const char \**)
 
-<div class="cfuncdesc">
+#### `PyString_AS_STRING`(*PyStringObject \**)
 
-intPyString_SizePyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-char \*PyString_AsStringPyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-voidPyString_ConcatPyObject \*\*, PyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-voidPyString_ConcatAndDelPyObject \*\*, PyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-int\_PyString_ResizePyObject \*\*, int
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*PyString_FormatPyObject \*, PyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-voidPyString_InternInPlacePyObject \*\*
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*PyString_InternFromStringconst char \*
-
-</div>
-
-<div class="cfuncdesc">
-
-char \*PyString_AS_STRINGPyStringObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyString_GET_SIZEPyStringObject \*
-
-</div>
+#### `PyString_GET_SIZE`(*PyStringObject \**)
 
 ### Tuple Objects
 
-<div class="ctypedesc">
+#### `PyTupleObject`
 
-PyTupleObject This subtype of `PyObject` represents a Python tuple object.
+This subtype of `PyObject` represents a Python tuple object.
 
-</div>
+#### `PyTuple_Type`
 
-<div class="cvardesc">
+This instance of `PyTypeObject` represents the Python tuple type.
 
-PyTypeObjectPyTuple_Type This instance of `PyTypeObject` represents the Python tuple type.
+#### `PyTuple_Check`(*PyObject \*p*)
 
-</div>
+Return true if the argument is a tuple object.
 
-<div class="cfuncdesc">
+#### `PyTuple_New`(*int s*)
 
-intPyTuple_CheckPyObject \*p Return true if the argument is a tuple object.
+Return a new tuple object of size `s`
 
-</div>
+#### `PyTuple_Size`(*PyTupleObject \*p*)
 
-<div class="cfuncdesc">
+akes a pointer to a tuple object, and returns the size of that tuple.
 
-PyTupleObject \*PyTuple_Newint s Return a new tuple object of size `s`
+#### `PyTuple_GetItem`(*PyTupleObject \*p, int pos*)
 
-</div>
+returns the object at position `pos` in the tuple pointed to by `p`.
 
-<div class="cfuncdesc">
+#### `PyTuple_GET_ITEM`(*PyTupleObject \*p, int pos*)
 
-intPyTuple_SizePyTupleObject \*p akes a pointer to a tuple object, and returns the size of that tuple.
+does the same, but does no checking of it’s arguments.
 
-</div>
+#### `PyTuple_GetSlice`(*PyTupleObject \*p, int low, int high*)
 
-<div class="cfuncdesc">
+takes a slice of the tuple pointed to by `p` from `low` to `high` and returns it as a new tuple.
 
-PyObject \*PyTuple_GetItemPyTupleObject \*p, int pos returns the object at position `pos` in the tuple pointed to by `p`.
+#### `PyTuple_SetItem`(*PyTupleObject \*p, int pos, PyObject \*o*)
 
-</div>
+inserts a reference to object `o` at position `pos` of the tuple pointed to by `p`. It returns 0 on success.
 
-<div class="cfuncdesc">
-
-PyObject \*PyTuple_GET_ITEMPyTupleObject \*p, int pos does the same, but does no checking of it’s arguments.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyTupleObject \*PyTuple_GetSlicePyTupleObject \*p, int low, int high takes a slice of the tuple pointed to by `p` from `low` to `high` and returns it as a new tuple.
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyTuple_SetItemPyTupleObject \*p, int pos, PyObject \*o inserts a reference to object `o` at position `pos` of the tuple pointed to by `p`. It returns 0 on success.
-
-</div>
-
-<div class="cfuncdesc">
-
-voidPyTuple_SET_ITEMPyTupleObject \*p, int pos, PyObject \*o
+#### `PyTuple_SET_ITEM`(*PyTupleObject \*p, int pos, PyObject \*o*)
 
 does the same, but does no error checking, and should *only* be used to fill in brand new tuples.
 
-</div>
+#### `_PyTuple_Resize`(*PyTupleObject \*p, int new, int last_is_sticky*)
 
-<div class="cfuncdesc">
-
-PyTupleObject \*\_PyTuple_ResizePyTupleObject \*p, int new, int last_is_sticky can be used to resize a tuple. Because tuples are *supposed* to be immutable, this should only be used if there is only one module referencing the object. Do *not* use this if the tuple may already be known to some other part of the code. `last_is_sticky` is a flag - if set, the tuple will grow or shrink at the front, otherwise it will grow or shrink at the end. Think of this as destroying the old tuple and creating a new one, only more efficiently.
-
-</div>
+can be used to resize a tuple. Because tuples are *supposed* to be immutable, this should only be used if there is only one module referencing the object. Do *not* use this if the tuple may already be known to some other part of the code. `last_is_sticky` is a flag - if set, the tuple will grow or shrink at the front, otherwise it will grow or shrink at the end. Think of this as destroying the old tuple and creating a new one, only more efficiently.
 
 ### List Objects
 
-<div class="ctypedesc">
+#### `PyListObject`
 
-PyListObject This subtype of `PyObject` represents a Python list object.
+This subtype of `PyObject` represents a Python list object.
 
-</div>
+#### `PyList_Type`
 
-<div class="cvardesc">
+This instance of `PyTypeObject` represents the Python list type.
 
-PyTypeObjectPyList_Type This instance of `PyTypeObject` represents the Python list type.
+#### `PyList_Check`(*PyObject \*p*)
 
-</div>
+returns true if it’s argument is a `PyListObject`
 
-<div class="cfuncdesc">
+#### `PyList_New`(*int size*)
 
-intPyList_CheckPyObject \*p returns true if it’s argument is a `PyListObject`
+#### `PyList_Size`(*PyObject \**)
 
-</div>
+#### `PyList_GetItem`(*PyObject \*, int*)
 
-<div class="cfuncdesc">
+#### `PyList_SetItem`(*PyObject \*, int, PyObject \**)
 
-PyObject \*PyList_Newint size
+#### `PyList_Insert`(*PyObject \*, int, PyObject \**)
 
-</div>
+#### `PyList_Append`(*PyObject \*, PyObject \**)
 
-<div class="cfuncdesc">
+#### `PyList_GetSlice`(*PyObject \*, int, int*)
 
-intPyList_SizePyObject \*
+#### `PyList_SetSlice`(*PyObject \*, int, int, PyObject \**)
 
-</div>
+#### `PyList_Sort`(*PyObject \**)
 
-<div class="cfuncdesc">
+#### `PyList_Reverse`(*PyObject \**)
 
-PyObject \*PyList_GetItemPyObject \*, int
+#### `PyList_AsTuple`(*PyObject \**)
 
-</div>
+#### `PyList_GET_ITEM`(*PyObject \*list, int i*)
 
-<div class="cfuncdesc">
-
-intPyList_SetItemPyObject \*, int, PyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyList_InsertPyObject \*, int, PyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyList_AppendPyObject \*, PyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*PyList_GetSlicePyObject \*, int, int
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyList_SetSlicePyObject \*, int, int, PyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyList_SortPyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyList_ReversePyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*PyList_AsTuplePyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*PyList_GET_ITEMPyObject \*list, int i
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyList_GET_SIZEPyObject \*list
-
-</div>
+#### `PyList_GET_SIZE`(*PyObject \*list*)
 
 ## Mapping Objects
 
 ### Dictionary Objects
 
-<div class="ctypedesc">
+#### `PyDictObject`
 
-PyDictObject This subtype of `PyObject` represents a Python dictionary object.
+This subtype of `PyObject` represents a Python dictionary object.
 
-</div>
+#### `PyDict_Type`
 
-<div class="cvardesc">
+This instance of `PyTypeObject` represents the Python dictionary type.
 
-PyTypeObjectPyDict_Type This instance of `PyTypeObject` represents the Python dictionary type.
+#### `PyDict_Check`(*PyObject \*p*)
 
-</div>
+returns true if it’s argument is a PyDictObject
 
-<div class="cfuncdesc">
+#### `PyDict_New`()
 
-intPyDict_CheckPyObject \*p returns true if it’s argument is a PyDictObject
+returns a new empty dictionary.
 
-</div>
+#### `PyDict_Clear`(*PyDictObject \*p*)
 
-<div class="cfuncdesc">
+empties an existing dictionary and deletes it.
 
-PyDictObject \*PyDict_New returns a new empty dictionary.
+#### `PyDict_SetItem`(*PyDictObject \*p, PyObject \*key, PyObject \*val*)
 
-</div>
+inserts `value` into the dictionary with a key of `key`. Both `key` and `value` should be PyObjects, and `key` should be hashable.
 
-<div class="cfuncdesc">
+#### `PyDict_SetItemString`(*PyDictObject \*p, char \*key, PyObject \*val*)
 
-voidPyDict_ClearPyDictObject \*p empties an existing dictionary and deletes it.
+inserts `value` into the dictionary using `key` as a key. `key` should be a char \*
 
-</div>
+#### `PyDict_DelItem`(*PyDictObject \*p, PyObject \*key*)
 
-<div class="cfuncdesc">
+removes the entry in dictionary `p` with key `key`. `key` is a PyObject.
 
-intPyDict_SetItemPyDictObject \*p, PyObject \*key, PyObject \*val inserts `value` into the dictionary with a key of `key`. Both `key` and `value` should be PyObjects, and `key` should be hashable.
+#### `PyDict_DelItemString`(*PyDictObject \*p, char \*key*)
 
-</div>
+removes the entry in dictionary `p` which has a key specified by the `char *``key`.
 
-<div class="cfuncdesc">
+#### `PyDict_GetItem`(*PyDictObject \*p, PyObject \*key*)
 
-intPyDict_SetItemStringPyDictObject \*p, char \*key, PyObject \*val inserts `value` into the dictionary using `key` as a key. `key` should be a char \*
+returns the object from dictionary `p` which has a key `key`.
 
-</div>
+#### `PyDict_GetItemString`(*PyDictObject \*p, char \*key*)
 
-<div class="cfuncdesc">
+does the same, but `key` is specified as a `char *`, rather than a `PyObject *`.
 
-intPyDict_DelItemPyDictObject \*p, PyObject \*key removes the entry in dictionary `p` with key `key`. `key` is a PyObject.
+#### `PyDict_Items`(*PyDictObject \*p*)
 
-</div>
+returns a PyListObject containing all the items from the dictionary, as in the mapping method `items()` (see the Reference Guide)
 
-<div class="cfuncdesc">
+#### `PyDict_Keys`(*PyDictObject \*p*)
 
-intPyDict_DelItemStringPyDictObject \*p, char \*key removes the entry in dictionary `p` which has a key specified by the `char *``key`.
+returns a PyListObject containing all the keys from the dictionary, as in the mapping method `keys()` (see the Reference Guide)
 
-</div>
+#### `PyDict_Values`(*PyDictObject \*p*)
 
-<div class="cfuncdesc">
+returns a PyListObject containing all the values from the dictionary, as in the mapping method `values()` (see the Reference Guide)
 
-PyObject \*PyDict_GetItemPyDictObject \*p, PyObject \*key returns the object from dictionary `p` which has a key `key`.
+#### `PyDict_Size`(*PyDictObject \*p*)
 
-</div>
+returns the number of items in the dictionary.
 
-<div class="cfuncdesc">
-
-PyObject \*PyDict_GetItemStringPyDictObject \*p, char \*key does the same, but `key` is specified as a `char *`, rather than a `PyObject *`.
-
-</div>
-
-<div class="cfuncdesc">
-
-PyListObject \*PyDict_ItemsPyDictObject \*p returns a PyListObject containing all the items from the dictionary, as in the mapping method `items()` (see the Reference Guide)
-
-</div>
-
-<div class="cfuncdesc">
-
-PyListObject \*PyDict_KeysPyDictObject \*p returns a PyListObject containing all the keys from the dictionary, as in the mapping method `keys()` (see the Reference Guide)
-
-</div>
-
-<div class="cfuncdesc">
-
-PyListObject \*PyDict_ValuesPyDictObject \*p returns a PyListObject containing all the values from the dictionary, as in the mapping method `values()` (see the Reference Guide)
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyDict_SizePyDictObject \*p returns the number of items in the dictionary.
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyDict_NextPyDictObject \*p, int ppos, PyObject \*\*pkey, PyObject \*\*pvalue
-
-</div>
+#### `PyDict_Next`(*PyDictObject \*p, int ppos, PyObject \*\*pkey, PyObject \*\*pvalue*)
 
 ## Numeric Objects
 
 ### Plain Integer Objects
 
-<div class="ctypedesc">
+#### `PyIntObject`
 
-PyIntObject This subtype of `PyObject` represents a Python integer object.
+This subtype of `PyObject` represents a Python integer object.
 
-</div>
+#### `PyInt_Type`
 
-<div class="cvardesc">
+This instance of `PyTypeObject` represents the Python plain integer type.
 
-PyTypeObjectPyInt_Type This instance of `PyTypeObject` represents the Python plain integer type.
+#### `PyInt_Check`(*PyObject \**)
 
-</div>
+#### `PyInt_FromLong`(*long ival*)
 
-<div class="cfuncdesc">
-
-intPyInt_CheckPyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-PyIntObject \*PyInt_FromLonglong ival creates a new integer object with a value of `ival`.
+creates a new integer object with a value of `ival`.
 
 The current implementation keeps an array of integer objects for all integers between -1 and 100, when you create an int in that range you actually just get back a reference to the existing object. So it should be possible to change the value of 1. I suspect the behaviour of python in this case is undefined. :-)
 
-</div>
+#### `PyInt_AS_LONG`(*PyIntObject \*io*)
 
-<div class="cfuncdesc">
+returns the value of the object `io`.
 
-longPyInt_AS_LONGPyIntObject \*io returns the value of the object `io`.
+#### `PyInt_AsLong`(*PyObject \*io*)
 
-</div>
+will first attempt to cast the object to a PyIntObject, if it is not already one, and the return it’s value.
 
-<div class="cfuncdesc">
+#### `PyInt_GetMax`()
 
-longPyInt_AsLongPyObject \*io will first attempt to cast the object to a PyIntObject, if it is not already one, and the return it’s value.
-
-</div>
-
-<div class="cfuncdesc">
-
-longPyInt_GetMax returns the systems idea of the largest int it can handle (LONG_MAX, as defined in the system header files)
-
-</div>
+returns the systems idea of the largest int it can handle (LONG_MAX, as defined in the system header files)
 
 ### Long Integer Objects
 
-<div class="ctypedesc">
+#### `PyLongObject`
 
-PyLongObject This subtype of `PyObject` represents a Python long integer object.
+This subtype of `PyObject` represents a Python long integer object.
 
-</div>
+#### `PyLong_Type`
 
-<div class="cvardesc">
+This instance of `PyTypeObject` represents the Python long integer type.
 
-PyTypeObjectPyLong_Type This instance of `PyTypeObject` represents the Python long integer type.
+#### `PyLong_Check`(*PyObject \*p*)
 
-</div>
+returns true if it’s argument is a `PyLongObject`
 
-<div class="cfuncdesc">
+#### `PyLong_FromLong`(*long*)
 
-intPyLong_CheckPyObject \*p returns true if it’s argument is a `PyLongObject`
+#### `PyLong_FromUnsignedLong`(*unsigned long*)
 
-</div>
+#### `PyLong_FromDouble`(*double*)
 
-<div class="cfuncdesc">
+#### `PyLong_AsLong`(*PyObject \**)
 
-PyObject \*PyLong_FromLonglong
+#### `PyLong_AsUnsignedLong`(*PyObject* )
 
-</div>
+#### `PyLong_AsDouble`(*PyObject \**)
 
-<div class="cfuncdesc">
-
-PyObject \*PyLong_FromUnsignedLongunsigned long
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*PyLong_FromDoubledouble
-
-</div>
-
-<div class="cfuncdesc">
-
-longPyLong_AsLongPyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-unsigned longPyLong_AsUnsignedLongPyObject
-
-</div>
-
-<div class="cfuncdesc">
-
-doublePyLong_AsDoublePyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*\*PyLong_FromStringchar \*, char \*\*, int
-
-</div>
+#### `*PyLong_FromString`(*char \*, char \*\*, int*)
 
 ### Floating Point Objects
 
-<div class="ctypedesc">
+#### `PyFloatObject`
 
-PyFloatObject This subtype of `PyObject` represents a Python floating point object.
+This subtype of `PyObject` represents a Python floating point object.
 
-</div>
+#### `PyFloat_Type`
 
-<div class="cvardesc">
+This instance of `PyTypeObject` represents the Python floating point type.
 
-PyTypeObjectPyFloat_Type This instance of `PyTypeObject` represents the Python floating point type.
+#### `PyFloat_Check`(*PyObject \*p*)
 
-</div>
+returns true if it’s argument is a `PyFloatObject`
 
-<div class="cfuncdesc">
+#### `PyFloat_FromDouble`(*double*)
 
-intPyFloat_CheckPyObject \*p returns true if it’s argument is a `PyFloatObject`
+#### `PyFloat_AsDouble`(*PyObject \**)
 
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*PyFloat_FromDoubledouble
-
-</div>
-
-<div class="cfuncdesc">
-
-doublePyFloat_AsDoublePyObject \*
-
-</div>
-
-<div class="cfuncdesc">
-
-doublePyFloat_AS_DOUBLEPyFloatObject \*
-
-</div>
+#### `PyFloat_AS_DOUBLE`(*PyFloatObject \**)
 
 ### Complex Number Objects
 
-<div class="ctypedesc">
+#### `Py_complex`
 
-Py_complex typedef struct double real; double imag;
+typedef struct double real; double imag;
 
-</div>
+#### `PyComplexObject`
 
-<div class="ctypedesc">
+This subtype of `PyObject` represents a Python complex number object.
 
-PyComplexObject This subtype of `PyObject` represents a Python complex number object.
+#### `PyComplex_Type`
 
-</div>
+This instance of `PyTypeObject` represents the Python complex number type.
 
-<div class="cvardesc">
+#### `PyComplex_Check`(*PyObject \*p*)
 
-PyTypeObjectPyComplex_Type This instance of `PyTypeObject` represents the Python complex number type.
+returns true if it’s argument is a `PyComplexObject`
 
-</div>
+#### `_Py_c_sum`(*Py_complex, Py_complex*)
 
-<div class="cfuncdesc">
+#### `_Py_c_diff`(*Py_complex, Py_complex*)
 
-intPyComplex_CheckPyObject \*p returns true if it’s argument is a `PyComplexObject`
+#### `_Py_c_neg`(*Py_complex*)
 
-</div>
+#### `_Py_c_prod`(*Py_complex, Py_complex*)
 
-<div class="cfuncdesc">
+#### `_Py_c_quot`(*Py_complex, Py_complex*)
 
-Py_complex\_Py_c_sumPy_complex, Py_complex
+#### `_Py_c_pow`(*Py_complex, Py_complex*)
 
-</div>
+#### `PyComplex_FromCComplex`(*Py_complex*)
 
-<div class="cfuncdesc">
+#### `PyComplex_FromDoubles`(*double real, double imag*)
 
-Py_complex\_Py_c_diffPy_complex, Py_complex
+#### `PyComplex_RealAsDouble`(*PyObject \*op*)
 
-</div>
+#### `PyComplex_ImagAsDouble`(*PyObject \*op*)
 
-<div class="cfuncdesc">
-
-Py_complex\_Py_c_negPy_complex
-
-</div>
-
-<div class="cfuncdesc">
-
-Py_complex\_Py_c_prodPy_complex, Py_complex
-
-</div>
-
-<div class="cfuncdesc">
-
-Py_complex\_Py_c_quotPy_complex, Py_complex
-
-</div>
-
-<div class="cfuncdesc">
-
-Py_complex\_Py_c_powPy_complex, Py_complex
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*PyComplex_FromCComplexPy_complex
-
-</div>
-
-<div class="cfuncdesc">
-
-PyObject \*PyComplex_FromDoublesdouble real, double imag
-
-</div>
-
-<div class="cfuncdesc">
-
-doublePyComplex_RealAsDoublePyObject \*op
-
-</div>
-
-<div class="cfuncdesc">
-
-doublePyComplex_ImagAsDoublePyObject \*op
-
-</div>
-
-<div class="cfuncdesc">
-
-Py_complexPyComplex_AsCComplexPyObject \*op
-
-</div>
+#### `PyComplex_AsCComplex`(*PyObject \*op*)
 
 ## Other Objects
 
 ### File Objects
 
-<div class="ctypedesc">
+#### `PyFileObject`
 
-PyFileObject This subtype of `PyObject` represents a Python file object.
+This subtype of `PyObject` represents a Python file object.
 
-</div>
+#### `PyFile_Type`
 
-<div class="cvardesc">
+This instance of `PyTypeObject` represents the Python file type.
 
-PyTypeObjectPyFile_Type This instance of `PyTypeObject` represents the Python file type.
+#### `PyFile_Check`(*PyObject \*p*)
 
-</div>
+returns true if it’s argument is a `PyFileObject`
 
-<div class="cfuncdesc">
+#### `PyFile_FromString`(*char \*name, char \*mode*)
 
-intPyFile_CheckPyObject \*p returns true if it’s argument is a `PyFileObject`
+creates a new PyFileObject pointing to the file specified in `name` with the mode specified in `mode`
 
-</div>
+#### `PyFile_FromFile`(*FILE \*fp, char \*name, char \*mode, int (\*close*)
 
-<div class="cfuncdesc">
+) creates a new PyFileObject from the already-open `fp`. The function `close` will be called when the file should be closed.
 
-PyObject \*PyFile_FromStringchar \*name, char \*mode creates a new PyFileObject pointing to the file specified in `name` with the mode specified in `mode`
+#### `PyFile_AsFile`(*PyFileObject \*p*)
 
-</div>
+returns the file object associated with `p` as a `FILE *`
 
-<div class="cfuncdesc">
+#### `PyFile_GetLine`(*PyObject \*p, int n*)
 
-PyObject \*PyFile_FromFileFILE \*fp, char \*name, char \*mode, int (\*close) creates a new PyFileObject from the already-open `fp`. The function `close` will be called when the file should be closed.
+undocumented as yet
 
-</div>
+#### `PyFile_Name`(*PyObject \*p*)
 
-<div class="cfuncdesc">
+returns the name of the file specified by `p` as a PyStringObject
 
-FILE \*PyFile_AsFilePyFileObject \*p returns the file object associated with `p` as a `FILE *`
+#### `PyFile_SetBufSize`(*PyFileObject \*p, int n*)
 
-</div>
+on systems with `setvbuf` only
 
-<div class="cfuncdesc">
+#### `PyFile_SoftSpace`(*PyFileObject \*p, int newflag*)
 
-PyStringObject \*PyFile_GetLinePyObject \*p, int n undocumented as yet
+same as the file object method `softspace`
 
-</div>
+#### `PyFile_WriteObject`(*PyObject \*obj, PyFileObject \*p*)
 
-<div class="cfuncdesc">
+writes object `obj` to file object `p`
 
-PyStringObject \*PyFile_NamePyObject \*p returns the name of the file specified by `p` as a PyStringObject
+#### `PyFile_WriteString`(*char \*s, PyFileObject \*p*)
 
-</div>
-
-<div class="cfuncdesc">
-
-voidPyFile_SetBufSizePyFileObject \*p, int n on systems with `setvbuf` only
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyFile_SoftSpacePyFileObject \*p, int newflag same as the file object method `softspace`
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyFile_WriteObjectPyObject \*obj, PyFileObject \*p writes object `obj` to file object `p`
-
-</div>
-
-<div class="cfuncdesc">
-
-intPyFile_WriteStringchar \*s, PyFileObject \*p writes string `s` to file object `p`
-
-</div>
+writes string `s` to file object `p`
 
 ### CObjects
 

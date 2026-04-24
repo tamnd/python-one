@@ -849,7 +849,7 @@ The make file make file, `Makefile.pre.in` uses metadata provided in a file name
 
     EC=/projects/ExtensionClass
 
-and module description lines. It can also contain blank lines and comment lines that start with .
+and module description lines. It can also contain blank lines and comment lines that start with `#`.
 
 A module description line includes a module name, source files, options, variable references, and other input files, such as libraries or object files. Consider a simple example:
 

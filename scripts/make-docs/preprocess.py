@@ -157,6 +157,15 @@ def strip_doc_structure(text: str) -> str:
     body = re.sub(r'\\(?:raggedbottom|raggedright|raggedleft|sloppy'
                   r'|flushleft|flushright|centering)\b\s*', '', body)
 
+    # Strip in-body macro/environment definitions -- these conflict with
+    # the preamble macros we inject via macros.tex.
+    # Patterns: \newcommand{\foo}[n]{...}, \renewcommand, \def\foo, \let\foo\bar
+    body = re.sub(r'\\(?:newcommand|renewcommand|providecommand)\s*\*?\s*\{[^}]*\}[^\n]*\n?', '', body)
+    body = re.sub(r'\\(?:newcommand|renewcommand|providecommand)\s*\*?\s*\\[a-zA-Z]+[^\n]*\n?', '', body)
+    body = re.sub(r'\\(?:newenvironment|renewenvironment)\s*\{[^}]*\}[^\n]*\n?', '', body)
+    body = re.sub(r'\\(?:def|gdef|edef|xdef)\s*\\[a-zA-Z]+[^\n]*\n?', '', body)
+    body = re.sub(r'\\let\s*\\[a-zA-Z]+\s*[=]?\s*\\[a-zA-Z]+[^\n]*\n?', '', body)
+
     return body
 
 
@@ -317,6 +326,23 @@ def repl_table_generic(m: re.Match) -> str:
     return r'\begin{tabular}{' + cols.replace(' | ', '') + r'}' + '\n' + body.strip() + '\n' + r'\end{tabular}'
 
 
+def fix_math(text: str) -> str:
+    r"""Clean up math expressions.
+    - Replace \emph{x} with x inside $ ... $ (not a valid math command).
+    - Strip \catcode lines (TeX primitives pandoc can't handle).
+    """
+    # Strip \catcode`... lines anywhere
+    text = re.sub(r'\\catcode[^\n]*', '', text)
+
+    # Replace \emph{x} -> x inside inline math $...$
+    def clean_inline_math(m: re.Match) -> str:
+        content = re.sub(r'\\emph\{([^}]*)\}', r'\1', m.group(1))
+        return '$' + content + '$'
+    text = re.sub(r'\$([^$\n]{1,200})\$', clean_inline_math, text)
+
+    return text
+
+
 def fix_unmatched_braces(text: str) -> str:
     """Remove closing braces that have no matching open brace."""
     # First pass: collect positions of unmatched '}'
@@ -358,6 +384,7 @@ def process(path: str, base_dir: str) -> str:
     text = strip_index_cmds(text)
     text = strip_module_decls(text)
     text = fix_tables(text)
+    text = fix_math(text)
     text = fix_unmatched_braces(text)
     return text
 

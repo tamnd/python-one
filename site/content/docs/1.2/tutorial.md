@@ -780,7 +780,7 @@ Note that in Python, unlike C, assignment cannot occur inside expressions.
 
 ## Comparing Sequences and Other Types
 
-Sequence objects may be compared to other objects with the same sequence type. The comparison uses *lexicographical* ordering: first the first two items are compared, and if they differ this determines the outcome of the comparison; if they are equal, the next two items are compared, and so on, until either sequence is exhausted. If two items to be compared are themselves sequences of the same type, the lexicographical comparison is carried out recursively. If all items of two sequences compare equal, the sequences are considered equal. If one sequence is an initial subsequence of the other, the shorted sequence is the smaller one. Lexicographical ordering for strings uses the ordering for individual characters. Some examples of comparisons between sequences with the same types:
+Sequence objects may be compared to other objects with the same sequence type. The comparison uses *lexicographical* ordering: first the first two items are compared, and if they differ this determines the outcome of the comparison; if they are equal, the next two items are compared, and so on, until either sequence is exhausted. If two items to be compared are themselves sequences of the same type, the lexicographical comparison is carried out recursively. If all items of two sequences compare equal, the sequences are considered equal. If one sequence is an initial subsequence of the other, the shorted sequence is the smaller one. Lexicographical ordering for strings uses the ASCII ordering for individual characters. Some examples of comparisons between sequences with the same types:
 
     (1, 2, 3)              < (1, 2, 4)
     [1, 2, 3]              < [1, 2, 4]
@@ -1807,7 +1807,7 @@ The module `pickle` provides a general framework for objects to disassemble them
 
 The `pickle` module defines a simple protocol whereby user-defined classes can control how they are disassembled and assembled. The method `__getinitargs__()`, if defined, returns the argument list for the constructor to be used at assembly time (by default the constructor is called without arguments). The methods `__getstate__()` and `__setstate__()` are used to pass additional state from disassembly to assembly; by default the instance’s `__dict__` is passed and restored.
 
-Note that `pickle` does not open or close any files — it can be used equally well for moving objects around on a network or store them in a database. For ease of debugging, and the inevitable occasional manual patch-up, the constructed byte streams consist of printable characters only (though it’s not designed to be pretty).
+Note that `pickle` does not open or close any files — it can be used equally well for moving objects around on a network or store them in a database. For ease of debugging, and the inevitable occasional manual patch-up, the constructed byte streams consist of printable ASCII characters only (though it’s not designed to be pretty).
 
 The module `shelve` provides a simple model for storing objects on files. The operation `shelve.open(filename)` returns a “shelf”, which is a simple persistent database with a dictionary-like interface. Database keys are strings, objects stored in the database can be anything that `pickle` will handle.
 

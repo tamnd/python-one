@@ -713,9 +713,11 @@ Contrary to C, all comparison operations in Python have the same priority, which
 
 Comparisons yield integer values: 1 for true, 0 for false.
 
-Comparisons can be chained arbitrarily, e.g. $`x < y <= z`$ is equivalent to $`x < y`$ `and` $`y <= z`$, except that $`y`$ is evaluated only once (but in both cases $`z`$ is not evaluated at all when $`x < y`$ is found to be false). ‘\_=8 Formally, $`e_0 op_1 e_1 op_2 e_2 ...e_{n-1} op_n e_n`$ is equivalent to $`e_0 op_1 e_1`$ `and` $`e_1 op_2 e_2`$ `and` ... `and` $`e_{n-1} op_n e_n`$, except that each expression is evaluated at most once.
+Comparisons can be chained arbitrarily, e.g. $`x < y <= z`$ is equivalent to $`x < y`$ `and` $`y <= z`$, except that $`y`$ is evaluated only once (but in both cases $`z`$ is not evaluated at all when $`x < y`$ is found to be false).
 
-Note that $`e_0 op_1 e_1 op_2 e_2`$ does not imply any kind of comparison between $`e_0`$ and $`e_2`$, e.g. $`x < y > z`$ is perfectly legal. ‘\_=12
+Formally, $`e_0 op_1 e_1 op_2 e_2 ...e_{n-1} op_n e_n`$ is equivalent to $`e_0 op_1 e_1`$ `and` $`e_1 op_2 e_2`$ `and` ... `and` $`e_{n-1} op_n e_n`$, except that each expression is evaluated at most once.
+
+Note that $`e_0 op_1 e_1 op_2 e_2`$ does not imply any kind of comparison between $`e_0`$ and $`e_2`$, e.g. $`x < y > z`$ is perfectly legal.
 
 The forms `<>` and `!=` are equivalent; for consistency with C, `!=` is preferred; where `!=` is mentioned below `<>` is also implied.
 
@@ -735,7 +737,9 @@ Comparison of objects of the same type depends on the type:
 
 - Most other types compare unequal unless they are the same object; the choice whether one object is considered smaller or larger than another one is made arbitrarily but consistently within one execution of a program.
 
-The operators `in` and `not in` test for sequence membership: if $`y`$ is a sequence, $`x ~\verb|in|~ y`$ is true if and only if there exists an index $`i`$ such that $`x = y[i]`$. $`x ~\verb|not in|~ y`$ yields the inverse truth value. The exception `TypeError` is raised when $`y`$ is not a sequence, or when $`y`$ is a string and $`x`$ is not a string of length one. [^4] The operators `is` and `is not` test for object identity: $`x ~\verb|is|~ y`$ is true if and only if $`x`$ and $`y`$ are the same object. $`x ~\verb|is not|~ y`$ yields the inverse truth value.
+The operators `in` and `not in` test for sequence membership: if $`y`$ is a sequence, $`x ~\verb|in|~ y`$ is true if and only if there exists an index $`i`$ such that $`x = y[i]`$. $`x ~\verb|not in|~ y`$ yields the inverse truth value. The exception `TypeError` is raised when $`y`$ is not a sequence, or when $`y`$ is a string and $`x`$ is not a string of length one. [^4]
+
+The operators `is` and `is not` test for object identity: $`x ~\verb|is|~ y`$ is true if and only if $`x`$ and $`y`$ are the same object. $`x ~\verb|is not|~ y`$ yields the inverse truth value.
 
 ## Boolean operations
 

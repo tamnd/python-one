@@ -92,7 +92,7 @@ On BSD’ish Unix systems, Python scripts can be made directly executable, like 
 
     #! /usr/bin/env python
 
-(assuming that the interpreter is on the user’s ) at the beginning of the script and giving the file an executable mode. The `#!` must be the first two characters of the file. Note that the hash, or pound, character, , is used to start a comment in Python.
+(assuming that the interpreter is on the user’s ) at the beginning of the script and giving the file an executable mode. The `#!` must be the first two characters of the file. Note that the hash, or pound, character, `#`, is used to start a comment in Python.
 
 ### The Interactive Startup File <span id="startup" label="startup"></span>
 
@@ -113,7 +113,7 @@ In the following examples, input and output are distinguished by the presence or
 
 Note that a secondary prompt on a line by itself in an example means you must type a blank line; this is used to end a multi-line command.
 
-Many of the examples in this manual, even those entered at the interactive prompt, include comments. Comments in Python start with the hash character, , and extend to the end of the physical line. A comment may appear at the start of a line or following whitespace or code, but not within a string literal. A hash character within a string literal is just a hash character.
+Many of the examples in this manual, even those entered at the interactive prompt, include comments. Comments in Python start with the hash character, `#`, and extend to the end of the physical line. A comment may appear at the start of a line or following whitespace or code, but not within a string literal. A hash character within a string literal is just a hash character.
 
 Some examples:
 
@@ -145,7 +145,7 @@ The interpreter acts as a simple calculator: you can type an expression at it an
     >>> 7/-3
     -3
 
-Like in C, the equal sign () is used to assign a value to a variable. The value of an assignment is not written:
+Like in C, the equal sign (`=`) is used to assign a value to a variable. The value of an assignment is not written:
 
     >>> width = 20
     >>> height = 5*9
@@ -380,14 +380,14 @@ The built-in function `len()` returns the length of a string:
 
 Starting with Python 1.6 a new data type for storing text data is available to the programmer: the Unicode object. It can be used to store and manipulate Unicode data (see `http://www.unicode.org`) and intergrates well with the existing string objects providing auto-conversions where necessary.
 
-Unicode has the advantage of providing one ordinal for every character in every script used in modern and ancient texts. Previously, there were only 256 possible ordinals for script characters and texts were typically bound to a code page which mapped the ordinals to script characters. This lead to very much confusion especially with respect to internalization (usually written as `i18n` — + 18 characters + ) of software. Unicode solves these problems by defining one code page for all scripts.
+Unicode has the advantage of providing one ordinal for every character in every script used in modern and ancient texts. Previously, there were only 256 possible ordinals for script characters and texts were typically bound to a code page which mapped the ordinals to script characters. This lead to very much confusion especially with respect to internalization (usually written as `i18n` — `i` + 18 characters + `n`) of software. Unicode solves these problems by defining one code page for all scripts.
 
 Creating Unicode strings in Python is just as simple as creating normal strings:
 
     >>> u'Hello World !'
     u'Hello World !'
 
-The small in front of the quote indicates that an Unicode string is supposed to be created. If you want to include special characters in the string, you can do so by using the Python *Unicode-Escape* encoding. The following example shows how:
+The small `u` in front of the quote indicates that an Unicode string is supposed to be created. If you want to include special characters in the string, you can do so by using the Python *Unicode-Escape* encoding. The following example shows how:
 
     >>> u'Hello\\u0020World !'
     u'Hello World !'
@@ -1101,7 +1101,7 @@ Note that in Python, unlike C, assignment cannot occur inside expressions. C pro
 
 ## Comparing Sequences and Other Types <span id="comparing" label="comparing"></span>
 
-Sequence objects may be compared to other objects with the same sequence type. The comparison uses *lexicographical* ordering: first the first two items are compared, and if they differ this determines the outcome of the comparison; if they are equal, the next two items are compared, and so on, until either sequence is exhausted. If two items to be compared are themselves sequences of the same type, the lexicographical comparison is carried out recursively. If all items of two sequences compare equal, the sequences are considered equal. If one sequence is an initial subsequence of the other, the shorted sequence is the smaller one. Lexicographical ordering for strings uses the ordering for individual characters. Some examples of comparisons between sequences with the same types:
+Sequence objects may be compared to other objects with the same sequence type. The comparison uses *lexicographical* ordering: first the first two items are compared, and if they differ this determines the outcome of the comparison; if they are equal, the next two items are compared, and so on, until either sequence is exhausted. If two items to be compared are themselves sequences of the same type, the lexicographical comparison is carried out recursively. If all items of two sequences compare equal, the sequences are considered equal. If one sequence is an initial subsequence of the other, the shorted sequence is the smaller one. Lexicographical ordering for strings uses the ASCII ordering for individual characters. Some examples of comparisons between sequences with the same types:
 
     (1, 2, 3)              < (1, 2, 4)
     [1, 2, 3]              < [1, 2, 4]
@@ -1464,7 +1464,7 @@ This is particularly useful in combination with the new built-in `vars()` functi
 
 The first argument is a string containing the filename. The second argument is another string containing a few characters describing the way in which the file will be used. *mode* can be `’r’` when the file will only be read, `’w’` for only writing (an existing file with the same name will be erased), and `’a’` opens the file for appending; any data written to the file is automatically added to the end. `’r+’` opens the file for both reading and writing. The *mode* argument is optional; `’r’` will be assumed if it’s omitted.
 
-On Windows and the Macintosh, `’b’` appended to the mode opens the file in binary mode, so there are also modes like `’rb’`, `’wb’`, and `’r+b’`. Windows makes a distinction between text and binary files; the end-of-line characters in text files are automatically altered slightly when data is read or written. This behind-the-scenes modification to file data is fine for text files, but it’ll corrupt binary data like that in JPEGs or `.EXE` files. Be very careful to use binary mode when reading and writing such files. (Note that the precise semantics of text mode on the Macintosh depends on the underlying C library being used.)
+On Windows and the Macintosh, `’b’` appended to the mode opens the file in binary mode, so there are also modes like `’rb’`, `’wb’`, and `’r+b’`. Windows makes a distinction between text and binary files; the end-of-line characters in text files are automatically altered slightly when data is read or written. This behind-the-scenes modification to file data is fine for ASCII text files, but it’ll corrupt binary data like that in JPEGs or `.EXE` files. Be very careful to use binary mode when reading and writing such files. (Note that the precise semantics of text mode on the Macintosh depends on the underlying C library being used.)
 
 ### Methods of File Objects <span id="fileMethods" label="fileMethods"></span>
 
@@ -1548,7 +1548,7 @@ Syntax errors, also known as parsing errors, are perhaps the most common kind of
                     ^
     SyntaxError: invalid syntax
 
-The parser repeats the offending line and displays a little ‘arrow’ pointing at the earliest point in the line where the error was detected. The error is caused by (or at least detected at) the token *preceding* the arrow: in the example, the error is detected at the keyword , since a colon () is missing before it. File name and line number are printed so you know where to look in case the input came from a script.
+The parser repeats the offending line and displays a little ‘arrow’ pointing at the earliest point in the line where the error was detected. The error is caused by (or at least detected at) the token *preceding* the arrow: in the example, the error is detected at the keyword , since a colon (`:`) is missing before it. File name and line number are printed so you know where to look in case the input came from a script.
 
 ## Exceptions <span id="exceptions" label="exceptions"></span>
 
@@ -2014,7 +2014,7 @@ You should read, or at least page through, the Library Reference, which gives co
 
 The major Python Web site is `http://www.python.org`; it contains code, documentation, and pointers to Python-related pages around the Web. This web site is mirrored in various places around the world, such as Europe, Japan, and Australia; a mirror may be faster than the main site, depending on your geographical location. A more informal site is `http://starship.python.net/`, which contains a bunch of Python-related personal home pages; many people have downloadable software there.
 
-For Python-related questions and problem reports, you can post to the newsgroup , or send them to the mailing list at `python-list@cwi.nl`. The newsgroup and mailing list are gatewayed, so messages posted to one will automatically be forwarded to the other. There are around 35–45 postings a day,
+For Python-related questions and problem reports, you can post to the newsgroup `comp.lang.python`, or send them to the mailing list at `python-list@cwi.nl`. The newsgroup and mailing list are gatewayed, so messages posted to one will automatically be forwarded to the other. There are around 35–45 postings a day,
 
 asking (and answering) questions, suggesting new features, and announcing new modules. Before posting, be sure to check the list of Frequently Asked Questions (also called the FAQ), at `http://www.python.org/doc/FAQ.html`, or look for it in the `Misc/` directory of the Python source distribution. The FAQ answers many of the questions that come up again and again, and may already contain the solution for your problem.
 
@@ -2070,7 +2070,7 @@ Automatic completion of variable and module names is optionally available. To en
     import rlcompleter, readline
     readline.parse_and_bind('tab: complete')
 
-This binds the TAB key to the completion function, so hitting the TAB key twice suggests completions; it looks at Python statement names, the current local variables, and the available module names. For dotted expressions such as `string.a`, it will evaluate the the expression up to the final and then suggest completions from the attributes of the resulting object. Note that this may execute application-defined code if an object with a `__getattr__()` method is part of the expression.
+This binds the TAB key to the completion function, so hitting the TAB key twice suggests completions; it looks at Python statement names, the current local variables, and the available module names. For dotted expressions such as `string.a`, it will evaluate the the expression up to the final `.` and then suggest completions from the attributes of the resulting object. Note that this may execute application-defined code if an object with a `__getattr__()` method is part of the expression.
 
 ## Commentary <span id="commentary" label="commentary"></span>
 

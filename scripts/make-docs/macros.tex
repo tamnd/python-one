@@ -23,18 +23,28 @@
 \newcommand{\sectcode}[1]{\texttt{#1}}
 \newcommand{\programopt}[1]{\texttt{#1}}
 \newcommand{\longprogramopt}[1]{\texttt{-{}-#1}}
+\newcommand{\pep}[1]{PEP #1}
+\newcommand{\rfc}[1]{RFC #1}
+\newcommand{\newsgroup}[1]{\texttt{#1}}
+\newcommand{\character}[1]{\texttt{#1}}
+\newcommand{\regexp}[1]{\texttt{#1}}
+\newcommand{\token}[1]{\texttt{#1}}
+\newcommand{\production}[2]{\texttt{#1} ::= #2}
+\newcommand{\productioncont}[1]{\qquad #1}
+\newcommand{\grammartoken}[1]{\texttt{#1}}
+
+% Version notes
 \newcommand{\shortversion}{}
 \newcommand{\version}{}
 \newcommand{\release}[1]{}
-\newcommand{\seealso}[1]{#1}
-\newcommand{\seealsotext}[1]{#1}
-\newcommand{\seetext}[1]{#1}
-\newcommand{\seetitle}[3][]{#2}
-\newcommand{\seelink}[3]{#3}
+\newcommand{\versionadded}[2][]{\emph{New in version #2.}}
+\newcommand{\versionchanged}[2][]{\emph{Changed in version #2.}}
+\newcommand{\deprecated}[2]{\emph{Deprecated since version #1: #2}}
 
 % Text style macros
 \newcommand{\dfn}[1]{\emph{#1}}
 \newcommand{\strong}[1]{\textbf{#1}}
+\newcommand{\emptyline}{}
 
 % Named constants
 \newcommand{\UNIX}{Unix}
@@ -43,6 +53,8 @@
 \newcommand{\ABC}{ABC}
 \newcommand{\EOF}{EOF}
 \newcommand{\NULL}{NULL}
+\newcommand{\POSIX}{POSIX}
+\newcommand{\ASCII}{ASCII}
 \newcommand{\Python}{Python}
 \newcommand{\email}[1]{\texttt{#1}}
 \newcommand{\url}[1]{\texttt{#1}}
@@ -54,11 +66,8 @@
 
 % Module declaration - discard
 \newcommand{\declaremodule}[3][]{}
-\newcommand{\modulesynopsis}[1]{\emph{#1}\\}
+\newcommand{\modulesynopsis}[1]{\emph{#1}}
 \newcommand{\platform}[1]{}
-\newcommand{\versionadded}[1]{\emph{New in version #1.}}
-\newcommand{\versionchanged}[1]{\emph{Changed in version #1.}}
-\newcommand{\deprecated}[2]{\emph{Deprecated since version #1: #2}}
 
 % Index commands - discard (no index in web docs)
 \newcommand{\index}[1]{}
@@ -81,11 +90,158 @@
 \newcommand{\setindexsubitem}[1]{}
 \newcommand{\withsubitem}[2]{#2}
 \newcommand{\ttindex}[1]{}
+\newcommand{\opindex}[1]{}
 
-% Misc layout commands - discard
+% Misc layout / navigation commands - discard
 \newcommand{\linebreak}{}
-\newcommand{\noindent}{}
 \newcommand{\sectionauthor}[2]{}
 \newcommand{\moduleauthor}[2]{}
 \newcommand{\maintainer}[2]{}
 \newcommand{\makemodindex}{}
+\newcommand{\localmoduletable}{}
+\newcommand{\nodename}[1]{}
+\newcommand{\filenq}[1]{\texttt{#1}}
+
+% See-also commands
+\newcommand{\seetext}[1]{#1}
+\newcommand{\seealsotext}[1]{#1}
+\newcommand{\seetitle}[3][]{#2}
+\newcommand{\seelink}[3]{#3}
+\newcommand{\seemodule}[2][]{\texttt{#1} --- #2}
+\newcommand{\seeurl}[2]{\texttt{#1}: #2}
+
+% ---------------------------------------------------------------------------
+% Description environments for Python APIs
+% Each renders the signature as a level-4 heading (####)
+% ---------------------------------------------------------------------------
+
+% Python function: \begin{funcdesc}{name}{args}
+\newenvironment{funcdesc}[2]{%
+  \subsubsection*{\texttt{#1}(\textit{#2})}%
+}{}
+
+% Python function (no index): same structure
+\newenvironment{funcdescni}[2]{%
+  \subsubsection*{\texttt{#1}(\textit{#2})}%
+}{}
+
+% Python method: \begin{methoddesc}[class]{name}{args}
+\newenvironment{methoddesc}[3][]{%
+  \subsubsection*{\texttt{#2}(\textit{#3})}%
+}{}
+
+\newenvironment{methoddescni}[3][]{%
+  \subsubsection*{\texttt{#2}(\textit{#3})}%
+}{}
+
+% Python class: \begin{classdesc}{name}{args}
+\newenvironment{classdesc}[2]{%
+  \subsubsection*{class \texttt{#1}(\textit{#2})}%
+}{}
+
+\newenvironment{classdescni}[2]{%
+  \subsubsection*{class \texttt{#1}(\textit{#2})}%
+}{}
+
+% Python exception: \begin{excdesc}{name}
+\newenvironment{excdesc}[1]{%
+  \subsubsection*{exception \texttt{#1}}%
+}{}
+
+% Python exception class: \begin{excclassdesc}{name}{args}
+\newenvironment{excclassdesc}[2]{%
+  \subsubsection*{exception \texttt{#1}(\textit{#2})}%
+}{}
+
+% Python data/attribute: \begin{datadesc}{name}
+\newenvironment{datadesc}[1]{%
+  \subsubsection*{\texttt{#1}}%
+}{}
+
+\newenvironment{datadescni}[1]{%
+  \subsubsection*{\texttt{#1}}%
+}{}
+
+% Python member: \begin{memberdesc}[class]{name}
+\newenvironment{memberdesc}[2][]{%
+  \subsubsection*{\texttt{#2}}%
+}{}
+
+\newenvironment{memberdescni}[2][]{%
+  \subsubsection*{\texttt{#2}}%
+}{}
+
+% Python opcode: \begin{opcodedesc}{name}{args}
+\newenvironment{opcodedesc}[2]{%
+  \subsubsection*{\texttt{#1}\ \textit{#2}}%
+}{}
+
+% C function: \begin{cfuncdesc}{returntype}{name}{args}
+\newenvironment{cfuncdesc}[3]{%
+  \subsubsection*{\texttt{#2}(\textit{#3})}%
+}{}
+
+% C type: \begin{ctypedesc}{name}
+\newenvironment{ctypedesc}[1]{%
+  \subsubsection*{\texttt{#1}}%
+}{}
+
+% C variable: \begin{cvardesc}{type}{name}
+\newenvironment{cvardesc}[2]{%
+  \subsubsection*{\texttt{#2}}%
+}{}
+
+% C macro: \begin{csimplemacrodesc}{name}
+\newenvironment{csimplemacrodesc}[1]{%
+  \subsubsection*{\texttt{#1}}%
+}{}
+
+\newenvironment{csimplemacro}[1]{%
+  \subsubsection*{\texttt{#1}}%
+}{}
+
+% C macro with args: \begin{cmacrodesc}{name}{args}
+\newenvironment{cmacrodesc}[2]{%
+  \subsubsection*{\texttt{#1}(\textit{#2})}%
+}{}
+
+% Env var: \begin{envdesc}{name}
+\newenvironment{envdesc}[1]{%
+  \subsubsection*{\texttt{#1}}%
+}{}
+
+% Macro desc: \begin{macrodesc}{name}{args}
+\newenvironment{macrodesc}[2]{%
+  \subsubsection*{\texttt{#1}(\textit{#2})}%
+}{}
+
+% ---------------------------------------------------------------------------
+% Container environments
+% ---------------------------------------------------------------------------
+
+% See-also block
+\newenvironment{seealso}{%
+  \paragraph*{See also:}%
+}{}
+
+% definitions / fulllineitems act like description lists
+\newenvironment{definitions}{\begin{description}}{\end{description}}
+\newenvironment{fulllineitems}{\begin{description}}{\end{description}}
+
+% synopsistable -- module synopsis table, render as simple tabular
+\newenvironment{synopsistable}{\begin{tabular}{ll}}{\end{tabular}}
+
+% longtableii / longtableiii: Python 1.5+ long tables with headers
+% Args: {colspec}{headfmt}{col1head} etc. -- just render as tabular
+\newenvironment{longtableii}[3]{\begin{tabular}{#1}}{\end{tabular}}
+\newenvironment{longtableiii}[4]{\begin{tabular}{#1}}{\end{tabular}}
+\newenvironment{longtableiv}[5]{\begin{tabular}{#1}}{\end{tabular}}
+
+% lineheader inside longtableii (used as header row)
+\newcommand{\lineheader}[1]{\textbf{#1}}
+\newcommand{\lineitemi}[2]{#1 & #2 \\}
+\newcommand{\lineitemii}[3]{#1 & #2 & #3 \\}
+\newcommand{\lineitemiii}[4]{#1 & #2 & #3 & #4 \\}
+
+% sloppypar is standard LaTeX; define just in case
+\newenvironment{sloppypar}{}{}

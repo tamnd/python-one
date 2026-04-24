@@ -65,7 +65,7 @@ tex_to_md() {
             # cumulative brace-balance errors in the concatenated mega-file.
             # The master lib.tex may have intro content too.
             _run_pandoc "$src" "$base"
-            find "$lib_subdir" -maxdepth 1 -name 'lib*.tex' | sort | while read -r f; do
+            find "$lib_subdir" -maxdepth 1 -name 'lib*.tex' ! -name 'lib.tex' | sort | while read -r f; do
                 _run_pandoc "$f" "$lib_subdir"
             done
         else
@@ -140,8 +140,12 @@ HEREDOC
     fi
 
     # Library reference (process each lib*.tex individually for subdir layout)
+    # Also do per-file for flat versions that have individual lib*.tex files
+    # (avoids a single 20k+ line file causing brace-balance errors in pandoc)
     if [ "$layout" = "subdir" ] && [ -f "$src_doc/lib/lib.tex" ]; then
         tex_to_md "$src_doc/lib/lib.tex" "$out/library.md" "Library Reference" 20 "$src_doc/lib"
+    elif [ -f "$src_doc/lib.tex" ] && ls "$src_doc"/lib[a-z]*.tex >/dev/null 2>&1; then
+        tex_to_md "$src_doc/lib.tex" "$out/library.md" "Library Reference" 20 "$src_doc"
     elif [ -f "$src_doc/lib.tex" ]; then
         tex_to_md "$src_doc/lib.tex" "$out/library.md" "Library Reference" 20
     fi

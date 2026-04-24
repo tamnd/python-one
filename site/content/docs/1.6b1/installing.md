@@ -98,7 +98,7 @@ If you don’t choose an installation directory—i.e., if you just run `setup.p
 
 <div class="tableiv">
 
-l\|l\|l\|ctextrm PlatformStandard installation locationDefault valueNotes (1) (1) (2) :Mac:PlugIns
+l\|l\|l\|ctextrm PlatformStandard installation locationDefault valueNotes `/lib/python2.0/site-packages` `/usr/local/lib/python2.0/site-packages` (1) `/lib/python2.0/site-packages` `/usr/local/lib/python2.0/site-packages` (1) `C:\Python` (2) `:Lib` `Python:Lib` :Mac:PlugIns `Python:Mac:PlugIns`
 
 </div>
 
@@ -122,6 +122,14 @@ and stand for the directories that Python is installed to, and where it finds it
 
 If you don’t want to install to the standard location, or if you don’t have permission to write there, then you need to read about alternate installations in the next section.
 
+|  |  |  |
+|:---|:---|:---|
+| Type of file Installation Directory Override option pure module distribution |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+|  |  |  |
+
 # Alternate Installation
 
 Often, it is necessary or desirable to install modules to a location other than the standard location for third-party Python modules. For example, on a Unix system you might not have permission to write to the standard third-party module directory. Or you might wish to try out a module before making it a standard part of your local Python installation; this is especially true when upgrading a distribution already present: you want to make sure your existing base of scripts still works with the new version before actually upgrading.
@@ -140,15 +148,7 @@ where you can supply any directory you like for the `--home` option. Lazy typist
 
     python setup.py install --home=~
 
-The `--home` option defines the installation base directory. Files are installed to the following directories under the installation base as follows:
-
-|  |  |  |
-|:---|:---|:---|
-| Type of file Installation Directory Override option pure module distribution |  |  |
-| `--install-purelib` non-pure module distribution |  |  |
-| `--install-platlib` scripts |  |  |
-| `--install-scripts` data |  |  |
-| `--install-data` |  |  |
+The `--home` option defines the installation base directory. Files are installed to the following directories under the installation base as follows: home/lib/python home/bin home/share
 
 ## Alternate installation: Unix (the prefix scheme)
 
@@ -164,13 +164,7 @@ Another possibility is a network filesystem where the name used to write to a re
 
 In either case, the `--prefix` option defines the installation base, and the `--exec-prefix` option defines the platform-specific installation base, which is used for platform-specific files. (Currently, this just means non-pure module distributions, but could be expanded to C libraries, binary executables, etc.) If `--exec-prefix` is not supplied, it defaults to `--prefix`. Files are installed as follows:
 
-|  |  |  |
-|:---|:---|:---|
-| Type of file Installation Directory Override option pure module distribution |  |  |
-| `--install-purelib` non-pure module distribution |  |  |
-| `--install-platlib` scripts |  |  |
-| `--install-scripts` data |  |  |
-| `--install-data` |  |  |
+exec-prefix/lib/python1./site-packages prefix/bin prefix/share
 
 There is no requirement that `--prefix` or `--exec-prefix` actually point to an alternate Python installation; if the directories listed above do not already exist, they are created at installation time.
 
@@ -186,27 +180,13 @@ Since Windows has no conception of a user’s home directory, and since the stan
 
 to install modules to the `\Temp` directory on the current drive.
 
-The installation base is defined by the `--prefix` option; the `--exec-prefix` option is not supported under Windows. Files are installed as follows:
-
-|  |  |  |
-|:---|:---|:---|
-| Type of file Installation Directory Override option pure module distribution |  |  |
-| `--install-purelib` non-pure module distribution |  |  |
-| `--install-platlib` scripts |  |  |
-| `--install-scripts` data |  |  |
-| `--install-data` |  |  |
+The installation base is defined by the `--prefix` option; the `--exec-prefix` option is not supported under Windows. Files are installed as follows: prefix prefix\Scripts prefix\Data
 
 ## Alternate installation: Mac OS
 
 Like Windows, Mac OS has no notion of home directories (or even of users), and a fairly simple standard Python installation. Thus, only a `--prefix` option is needed. It defines the installation base, and files are installed under it as follows:
 
-|  |  |  |
-|:---|:---|:---|
-| Type of file Installation Directory Override option pure module distribution |  |  |
-| `--install-purelib` non-pure module distribution |  |  |
-| `--install-platlib` scripts |  |  |
-| `--install-scripts` data |  |  |
-| `--install-data` |  |  |
+prefix:Mac:PlugIns prefix:Scripts prefix:Data
 
 # Custom Installation
 
