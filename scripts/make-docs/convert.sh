@@ -46,10 +46,15 @@ _run_pandoc() {
         -e 's/\\_/_/g' \
         -e 's/\\\[/[/g' \
         -e 's/\\\]/]/g' \
+        -e 's/\\</</g' \
+        -e 's/\\>/>/g' \
         -e 's/<span class="roman">//g' \
         -e 's|</span>||g' \
         -e 's/ data-reference-type="[^"]*"//g' \
         -e 's/ data-reference="[^"]*"//g' \
+        -e 's/\([a-zA-Z0-9_)]\)`\([a-zA-Z]\)/\1` \2/g' \
+        -e 's/\([^`]\)``\([^`]\)/\1\2/g' \
+        -e 's/\([^`]\)``\([^`]\)/\1\2/g' \
         -e 's/<div class="[a-z]*">//g' \
         -e 's|</div>||g' \
     || true

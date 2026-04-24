@@ -2103,7 +2103,7 @@ Threads belonging to different interpreters initially share nothing, except proc
 
 #### `PyThreadState`
 
-This data structure represents the state of a single thread. The only public data member is `PyInterpreterState *``interp`, which points to this thread’s interpreter state.
+This data structure represents the state of a single thread. The only public data member is `PyInterpreterState *interp`, which points to this thread’s interpreter state.
 
 #### `PyEval_InitThreads`()
 

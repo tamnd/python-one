@@ -20,7 +20,7 @@ The descriptions of lexical analysis and syntax use a modified BNF grammar notat
     name:           lc_letter (lc_letter | "_")*
     lc_letter:      "a"..."z"
 
-The first line says that a `name` is an `lc_letter` followed by a sequence of zero or more `lc_letter`s and underscores. An `lc_letter` in turn is any of the single characters ‘a’ through ‘z’. (This rule is actually adhered to for the names defined in lexical and grammar rules in this document.)
+The first line says that a `name` is an `lc_letter` followed by a sequence of zero or more `lc_letter` s and underscores. An `lc_letter` in turn is any of the single characters ‘a’ through ‘z’. (This rule is actually adhered to for the names defined in lexical and grammar rules in this document.)
 
 Each rule begins with a name (which is the name defined by the rule) and a colon. A vertical bar (` `) is used to separate alternatives; it is the least binding operator in this notation. A star (`*`) means zero or more repetitions of the preceding item; likewise, a plus (`+`) means one or more repetitions, and a phrase enclosed in square brackets (`[ ]`) means zero or one occurrences (in other words, the enclosed phrase is optional). The `*` and `+` operators bind as tightly as possible; parentheses are used for grouping. Literal strings are enclosed in quotes. White space is only meaningful to separate tokens. Rules are normally contained on a single line; rules with many alternatives may be formatted alternatively with each line after the first beginning with a vertical bar.
 

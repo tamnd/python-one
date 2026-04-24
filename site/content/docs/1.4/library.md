@@ -7,7 +7,7 @@ weight: 20
 
 This module provides support for reading and writing AIFF and AIFF-C files. AIFF is Audio Interchange File Format, a format for storing digital audio samples in a file. AIFF-C is a newer version of the format that includes the ability to compress the audio data.
 
-Audio files have a number of parameters that describe the audio data. The sampling rate or frame rate is the number of times per second the sound is sampled. The number of channels indicate if the audio is mono, stereo, or quadro. Each frame consists of one sample per channel. The sample size is the size in bytes of each sample. Thus a frame consists of *nchannels***samplesize* bytes, and a second’s worth of audio consists of *nchannels***samplesize***framerate* bytes.
+Audio files have a number of parameters that describe the audio data. The sampling rate or frame rate is the number of times per second the sound is sampled. The number of channels indicate if the audio is mono, stereo, or quadro. Each frame consists of one sample per channel. The sample size is the size in bytes of each sample. Thus a frame consists of *nchannels* × *samplesize* bytes, and a second’s worth of audio consists of *nchannels* × *samplesize* × *framerate* bytes.
 
 For example, CD quality audio has a sample size of two bytes (16 bits), uses two channels (stereo) and has a frame rate of 44,100 frames/second. This gives a frame size of 4 bytes (2*2), and a second’s worth occupies 2*2*44100 bytes, i.e. 176,400 bytes.
 
@@ -430,7 +430,7 @@ This module provides rudimentary access to the audio I/O device `/dev/audio` on 
 
 ### `setoutgain`(n)
 
-Sets the output gain. `0 <= `*`n`*` < 256`. ≤ n \< 256.
+Sets the output gain. `0 <= `*`n`*` < 256`. ≤ n < 256.
 
 ### `getoutgain`()
 
@@ -1868,7 +1868,7 @@ Raised when an I/O operation (such as a `print` statement, the built-in `open()`
 
 ### exception `ImportError`
 
-Raised when an `import` statement fails to find the module definition or when a `from ``…`` import` fails to find a name that is to be imported.
+Raised when an `import` statement fails to find the module definition or when a `from … import` fails to find a name that is to be imported.
 
 ### exception `IndexError`
 
@@ -2040,7 +2040,7 @@ See the description in the FORMS documentation of `fl_color`, `fl_mapcolor` and 
 
 Form objects (returned by `fl.make_form()` above) have the following methods. Each method corresponds to a C function whose name is prefixed with `fl_`; and whose first argument is a form pointer; please refer to the official FORMS documentation for descriptions.
 
-All the `add_``…` functions return a Python object representing the FORMS object. Methods of FORMS objects are described below. Most kinds of FORMS object also have some methods specific to that kind; these methods are listed here.
+All the `add_…` functions return a Python object representing the FORMS object. Methods of FORMS objects are described below. Most kinds of FORMS object also have some methods specific to that kind; these methods are listed here.
 
 
 
@@ -2569,7 +2569,7 @@ Retrieve a file in binary transfer mode. *command* should be an appropriate `RET
 
 ### `retrlines`(command)
 
-Retrieve a file or directory listing in ASCII transfer mode. varcommand should be an appropriate `RETR` command (see `retrbinary()` or a `LIST` command (usually just the string `"LIST"`). The *callback* function is called for each line, with the trailing CRLF stripped. The default *callback* prints the line to `sys.stdout`.
+Retrieve a file or directory listing in ASCII transfer mode. *command* should be an appropriate `RETR` command (see `retrbinary()` or a `LIST` command (usually just the string `"LIST"`). The *callback* function is called for each line, with the trailing CRLF stripped. The default *callback* prints the line to `sys.stdout`.
 
 ### `storbinary`(command  file  blocksize)
 
@@ -2581,11 +2581,11 @@ Store a file in ASCII transfer mode. *command* should be an appropriate `STOR` c
 
 ### `nlst`(argument)
 
-Return a list of files as returned by the `NLST` command. The optional varargument is a directory to list (default is the current server directory). Multiple arguments can be used to pass non-standard options to the `NLST` command.
+Return a list of files as returned by the `NLST` command. The optional *argument* is a directory to list (default is the current server directory). Multiple arguments can be used to pass non-standard options to the `NLST` command.
 
 ### `dir`(argument)
 
-Return a directory listing as returned by the `LIST` command, as a list of lines. The optional varargument is a directory to list (default is the current server directory). Multiple arguments can be used to pass non-standard options to the `LIST` command. If the last argument is a function, it is used as a *callback* function as for `retrlines()`.
+Return a directory listing as returned by the `LIST` command, as a list of lines. The optional *argument* is a directory to list (default is the current server directory). Multiple arguments can be used to pass non-standard options to the `LIST` command. If the last argument is a function, it is used as a *callback* function as for `retrlines()`.
 
 ### `rename`(fromname  toname)
 
@@ -4417,7 +4417,7 @@ Return the parameter list of the `Content-type` header. This is a list if string
 
 ### `getparam`(name)
 
-Return the *value* of the first parameter (as returned by `getplist()` of the form *`name`*`=`*`value`* for the given *name*. If *value* is surrounded by quotes of the form *\<...\>* or *"..."*, these are removed.
+Return the *value* of the first parameter (as returned by `getplist()` of the form *`name`*`=`*`value`* for the given *name*. If *value* is surrounded by quotes of the form *<...>* or *"..."*, these are removed.
 
 ### `getencoding`()
 
@@ -4425,7 +4425,7 @@ Return the encoding specified in the `Content-transfer-encoding` message header.
 
 ### `gettype`()
 
-Return the message type (of the form *`type`*`/var``subtype`) as specified in the `Content-type` header. If no such header exists, return `"text/plain"`. The type is converted to lower case.
+Return the message type (of the form *`type`*`/`*`subtype`*) as specified in the `Content-type` header. If no such header exists, return `"text/plain"`. The type is converted to lower case.
 
 ### `getmaintype`()
 
@@ -4471,7 +4471,7 @@ rgbimg
 
 This is an optional module. It is only available when Python is configured to include it, which requires that the GNU MP software is installed.
 
-This module implements the interface to part of the GNU MP library, which defines arbitrary precision integer and rational number arithmetic routines. Only the interfaces to the *integer* (`mpz_``…`) routines are provided. If not stated otherwise, the description in the GNU MP documentation can be applied.
+This module implements the interface to part of the GNU MP library, which defines arbitrary precision integer and rational number arithmetic routines. Only the interfaces to the *integer* (`mpz_…`) routines are provided. If not stated otherwise, the description in the GNU MP documentation can be applied.
 
 In general, *mpz*-numbers can be used just like other standard Python numbers, e.g. you can use the built-in operators like `+`, `*`, etc., as well as the standard built-in functions like `abs`, `int`, …, `divmod`, `pow`. **Please note:** the *bitwise-xor* operation has been implemented as a bunch of *and*s, *invert*s and *or*s, because the library lacks an `mpz_xor` function, and I didn’t need one.
 
@@ -4493,7 +4493,7 @@ Return the greatest common divisor of *op1* and *op2*.
 
 ### `gcdext`(a  b)
 
-Return a tuple `(`*`g`*`, `*`s`*`, `*`t`*`)`, such that *`a`*`*`*`s`*` + `*`b`*`*`*`t`*` == `*`g`*` == gcd(`*`a`*`, `*`b`*`)`.
+Return a tuple `(`*`g`*`, `*`s`*`, `*`t`*`)`, such that *`a`*` × `*`s`*` + `*`b`*` × `*`t`*` == `*`g`*` == gcd(`*`a`*`, `*`b`*`)`.
 
 ### `sqrt`(op)
 
@@ -4501,7 +4501,7 @@ Return the square root of *op*. The result is rounded towards zero.
 
 ### `sqrtrem`(op)
 
-Return a tuple `(`*`root`*`, `*`remainder`*`)`, such that *`root`*`*`*`root`*` + `*`remainder`*` == `*`op`*.
+Return a tuple `(`*`root`*`, `*`remainder`*`)`, such that *`root`*` × `*`root`*` + `*`remainder`*` == `*`op`*.
 
 ### `divm`(numerator  denominator  modulus)
 
@@ -4607,7 +4607,7 @@ Send a `HELP` command. Return a pair `(`*`response`*`, `*`list`*`)` where *list*
 
 ### `stat`(id)
 
-Send a `STAT` command, where *id* is the message id (enclosed in `<` and `>`) or an article number (as a string). Return a triple `(var``response``, `*`number`*`, `*`id`*`)` where *number* is the article number (as a string) and *id* is the article id (enclosed in `<` and `>`).
+Send a `STAT` command, where *id* is the message id (enclosed in `<` and `>`) or an article number (as a string). Return a triple `(`*`response`*`, `*`number`*`, `*`id`*`)` where *number* is the article number (as a string) and *id* is the article id (enclosed in `<` and `>`).
 
 ### `next`()
 
@@ -6188,7 +6188,7 @@ There exists a class of applications for which this “openness” is inappropri
 
 *Restricted execution* is the basic framework in Python that allows for the segregation of trusted and untrusted code. It is based on the notion that trusted Python code (a *supervisor*) can create a “padded cell’ (or environment) with limited permissions, and run the untrusted code within this cell. The untrusted code cannot break out of its cell, and can only interact with sensitive system resources through interfaces defined and managed by the trusted code. The term “restricted execution” is favored over “safe-Python” since true safety is hard to define, and is determined by the way the restricted environment is created. Note that the restricted environments can be nested, with inner cells creating subcells of lesser, but never greater, privilege.
 
-An interesting aspect of Python’s restricted execution model is that the interfaces presented to untrusted code usually have the same names as those presented to trusted code. Therefore no special interfaces need to be learned to write code designed to run in a restricted environment. And because the exact nature of the padded cell is determined by the supervisor, different restrictions can be imposed, depending on the application. For example, it might be deemed “safe” for untrusted code to read any file within a specified directory, but never to write a file. In this case, the supervisor may redefine the built-in `open()` function so that it raises an exception whenever the *mode* parameter is `’w’`. It might also perform a `chroot()`-like operation on the *filename* parameter, such that root is always relative to some safe “sandbox” area of the filesystem. In this case, the untrusted code would still see an built-in `open()` function in its environment, with the same calling interface. The semantics would be identical too, with `IOError`s being raised when the supervisor determined that an unallowable parameter is being used.
+An interesting aspect of Python’s restricted execution model is that the interfaces presented to untrusted code usually have the same names as those presented to trusted code. Therefore no special interfaces need to be learned to write code designed to run in a restricted environment. And because the exact nature of the padded cell is determined by the supervisor, different restrictions can be imposed, depending on the application. For example, it might be deemed “safe” for untrusted code to read any file within a specified directory, but never to write a file. In this case, the supervisor may redefine the built-in `open()` function so that it raises an exception whenever the *mode* parameter is `’w’`. It might also perform a `chroot()`-like operation on the *filename* parameter, such that root is always relative to some safe “sandbox” area of the filesystem. In this case, the untrusted code would still see an built-in `open()` function in its environment, with the same calling interface. The semantics would be identical too, with `IOError` s being raised when the supervisor determined that an unallowable parameter is being used.
 
 The Python run-time determines whether a particular code block is executing in restricted execution mode based on the identity of the `__builtins__` object in its global variables: if this is (the dictionary of) the standard `__builtin__` module, the code is deemed to be unrestricted, else it is deemed to be restricted.
 
@@ -6756,7 +6756,7 @@ Listen for connections made to the socket. The *backlog* argument specifies the 
 
 ### `makefile`()
 
-Return a *file object* associated with the socket. (File objects were described earlier under Built-in Types.) The file object references a `dup()`ped version of the socket file descriptor, so the file object and socket object may be closed or garbage-collected independently. The optional *mode* and *bufsize* arguments are interpreted the same way as by the built-in `open()` function.
+Return a *file object* associated with the socket. (File objects were described earlier under Built-in Types.) The file object references a `dup()` ped version of the socket file descriptor, so the file object and socket object may be closed or garbage-collected independently. The optional *mode* and *bufsize* arguments are interpreted the same way as by the built-in `open()` function.
 
 ### `recv`(bufsize)
 
@@ -7347,7 +7347,7 @@ Returns the smallest rectangle that contains all non-empty rectangles in the lis
 
 #### `pointinrect`(point  rect)
 
-Returns true if the point is inside the rectangle. By definition, a point `(`*`h`*`, `*`v`*`)` is inside a rectangle `(`*`left`*`, `*`top`*`), (`*`right`*`, `*`bottom`*`)` if *`left`*` <= `*`h`*` < `*`right`* and *`top`*` <= `*`v`*` < `*`bottom`*. left ≤ h \< right and top ≤ v \< bottom.
+Returns true if the point is inside the rectangle. By definition, a point `(`*`h`*`, `*`v`*`)` is inside a rectangle `(`*`left`*`, `*`top`*`), (`*`right`*`, `*`bottom`*`)` if *`left`*` <= `*`h`*` < `*`right`* and *`top`*` <= `*`v`*` < `*`bottom`*. left ≤ h < right and top ≤ v < bottom.
 
 #### `inset`(rect  dh, dv)
 
@@ -7528,11 +7528,11 @@ Exception raised on various occasions; argument is a string describing what is w
 
 ### `pack`(fmt  v1  v2  …)
 
-Return a string containing the values *`v1`*`, `*`v2`*`, ``…` packed according to the given format. The arguments must match the values required by the format exactly.
+Return a string containing the values *`v1`*`, `*`v2`*`, …` packed according to the given format. The arguments must match the values required by the format exactly.
 
 ### `unpack`(fmt  string)
 
-Unpack the string (presumably packed by `pack(`*`fmt`*`, ``…``)`) according to the given format. The result is a tuple even if it contains exactly one item. The string must contain exactly the amount of data required by the format (i.e. `len(`*`string`*`)` must equal `calcsize(`*`fmt`*`)`).
+Unpack the string (presumably packed by `pack(`*`fmt`*`, …)`) according to the given format. The result is a tuple even if it contains exactly one item. The string must contain exactly the amount of data required by the format (i.e. `len(`*`string`*`)` must equal `calcsize(`*`fmt`*`)`).
 
 ### `calcsize`(fmt)
 
@@ -7815,7 +7815,7 @@ Suspend or resume input or output on file descriptor *fd*. The *action* argument
 
 ## Example
 
-Here’s a function that prompts for a password with echoing turned off. Note the technique using a separate `termios.tcgetattr()` call and a `try ``…`` finally` statement to ensure that the old tty attributes are restored exactly no matter what happens:
+Here’s a function that prompts for a password with echoing turned off. Note the technique using a separate `termios.tcgetattr()` call and a `try … finally` statement to ensure that the old tty attributes are restored exactly no matter what happens:
 
     def getpass(prompt = "Password: "):
         import termios, TERMIOS, sys
@@ -7902,7 +7902,7 @@ An explanation of some terminology and conventions is in order.
 
 - The precision of the various real-time functions may be less than suggested by the units in which their value or argument is expressed. E.g. on most UNIX systems, the clock “ticks” only 50 or 100 times a second, and on the Mac, times are only accurate to whole seconds.
 
-- The time tuple as returned by `gmtime()` and `localtime()`, or as accpted by `mktime()` is a tuple of 9 integers: year (e.g. 1993), month (1–12), day (1–31), hour (0–23), minute (0–59), second (0–59), weekday (0–6, monday is 0), Julian day (1–366) and daylight savings flag (-1, 0 or 1). Note that unlike the C structure, the month value is a range of 1-12, not 0-11. A year value of \< 100 will typically be silently converted to 1900 + year value. A -1 argument as daylight savings flag, passed to `mktime()` will usually result in the correct daylight savings state to be filled in.
+- The time tuple as returned by `gmtime()` and `localtime()`, or as accpted by `mktime()` is a tuple of 9 integers: year (e.g. 1993), month (1–12), day (1–31), hour (0–23), minute (0–59), second (0–59), weekday (0–6, monday is 0), Julian day (1–366) and daylight savings flag (-1, 0 or 1). Note that unlike the C structure, the month value is a range of 1-12, not 0-11. A year value of < 100 will typically be silently converted to 1900 + year value. A -1 argument as daylight savings flag, passed to `mktime()` will usually result in the correct daylight savings state to be filled in.
 
 The module defines the following functions and data items:
 
@@ -8029,7 +8029,7 @@ This is a shorthand for `print_exception(sys.last_type,` `sys.last_value,` `sys.
 
 The following sections describe the standard types that are built into the interpreter. These are the numeric types, sequence types, and several others, including types themselves. There is no explicit Boolean type; use integers instead.
 
-Some operations are supported by several object types; in particular, all objects can be compared, tested for truth value, and converted to a string (with the `‘``…``‘` notation). The latter conversion is implicitly used when an object is written by the `print` statement.
+Some operations are supported by several object types; in particular, all objects can be compared, tested for truth value, and converted to a string (with the `‘…‘` notation). The latter conversion is implicitly used when an object is written by the `print` statement.
 
 ## Truth Value Testing
 
@@ -8074,12 +8074,12 @@ This table summarizes the comparison operations:
 
 |        |                         |       |
 |:-------|:------------------------|:------|
-| \<     | strictly less than      |       |
-| \<=    | less than or equal      |       |
-| \>     | strictly greater than   |       |
-| \>=    | greater than or equal   |       |
+| <     | strictly less than      |       |
+| <=    | less than or equal      |       |
+| >     | strictly greater than   |       |
+| >=    | greater than or equal   |       |
 | ==     | equal                   |       |
-| \<\>   | not equal               | \(1\) |
+| <>   | not equal               | \(1\) |
 | !=     | not equal               | \(1\) |
 | is     | object identity         |       |
 | is not | negated object identity |       |
@@ -8144,8 +8144,8 @@ This table lists the bit-string operations sorted in ascending priority (operati
 |:-------------|:--------------------------------------|:---------|
 | *x* ^ *y*    | bitwise *exclusive or* of *x* and *y* |          |
 | *x* & *y*    | bitwise *and* of *x* and *y*          |          |
-| *x* \<\< *n* | *x* shifted left by *n* bits          | (1), (2) |
-| *x* \>\> *n* | *x* shifted right by *n* bits         | (1), (3) |
+| *x* << *n* | *x* shifted left by *n* bits          | (1), (2) |
+| *x* >> *n* | *x* shifted right by *n* bits         | (1), (3) |
 | *x*          | the bits of *x* inverted              |          |
 
 Notes:
@@ -8289,7 +8289,7 @@ The implementation adds two special read-only attributes: *`f`*`.func_code` is a
 
 Methods are functions that are called using the attribute notation. There are two flavors: built-in methods (such as `append()` on lists) and class instance methods. Built-in methods are described with the types that support them.
 
-The implementation adds two special read-only attributes to class instance methods: *`m`*`.im_self` is the object whose method this is, and *`m`*`.im_func` is the function implementing the method. Calling *`m`*`(`*`arg-1`*`, `*`arg-2`*`, ``…``, `*`arg-n`*`)` is completely equivalent to calling *`m`*`.im_func(`*`m`*`.im_self, `*`arg-1`*`, `*`arg-2`*`, `` …``, `*`arg-n`*`)`.
+The implementation adds two special read-only attributes to class instance methods: *`m`*`.im_self` is the object whose method this is, and *`m`*`.im_func` is the function implementing the method. Calling *`m`*`(`*`arg-1`*`, `*`arg-2`*`, …, `*`arg-n`*`)` is completely equivalent to calling *`m`*`.im_func(`*`m`*`.im_self, `*`arg-1`*`, `*`arg-2`*`,  …, `*`arg-n`*`)`.
 
 (See the Python Reference Manual for more info.)
 

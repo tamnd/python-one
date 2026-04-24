@@ -20,7 +20,7 @@ The descriptions of lexical analysis and syntax use a modified BNF grammar notat
     name:           lc_letter (lc_letter | "_")*
     lc_letter:      "a"..."z"
 
-The first line says that a `name` is an `lc_letter` followed by a sequence of zero or more `lc_letter`s and underscores. An `lc_letter` in turn is any of the single characters `a` through `z`. (This rule is actually adhered to for the names defined in lexical and grammar rules in this document.)
+The first line says that a `name` is an `lc_letter` followed by a sequence of zero or more `lc_letter` s and underscores. An `lc_letter` in turn is any of the single characters `a` through `z`. (This rule is actually adhered to for the names defined in lexical and grammar rules in this document.)
 
 Each rule begins with a name (which is the name defined by the rule) and a colon. A vertical bar (`|`) is used to separate alternatives; it is the least binding operator in this notation. A star (`*`) means zero or more repetitions of the preceding item; likewise, a plus (`+`) means one or more repetitions, and a phrase enclosed in square brackets (`[ ]`) means zero or one occurrences (in other words, the enclosed phrase is optional). The `*` and `+` operators bind as tightly as possible; parentheses are used for grouping. Literal strings are enclosed in quotes. White space is only meaningful to separate tokens. Rules are normally contained on a single line; rules with many alternatives may be formatted alternatively with each line after the first beginning with a vertical bar.
 
@@ -662,7 +662,7 @@ Called to implement the built-in functions `oct()` and `hex()`. Should return a 
 
 Called to implement “mixed-mode” numeric arithmetic. Should either return a 2-tuple containing *self* and *other* converted to a common numeric type, or `None` if conversion is impossible. When the common type would be the type of `other`, it is sufficient to return `None`, since the interpreter will also ask the other object to attempt a coercion (but sometimes, if the implementation of the other type cannot be changed, it is useful to do the conversion to the other type here).
 
-**Coercion rules**: to evaluate *x* *op* *y*, the following steps are taken (where `__op__()` and `__rop__()` are the method names corresponding to *op*, e.g., if varop is ‘`+`’, `__add__()` and `__radd__()` are used). If an exception occurs at any point, the evaluation is abandoned and exception handling takes over.
+**Coercion rules**: to evaluate *x* *op* *y*, the following steps are taken (where `__op__()` and `__rop__()` are the method names corresponding to *op*, e.g., if *op* is ‘`+`’, `__add__()` and `__radd__()` are used). If an exception occurs at any point, the evaluation is abandoned and exception handling takes over.
 
 - If *x* is a string object and op is the modulo operator (%), the string formatting operation is invoked and the remaining steps are skipped.
 
@@ -1059,7 +1059,7 @@ Comparison of objects of the same type depends on the type:
 
 The operators and test for set membership: every type can define membership in whatever way is appropriate. Traditionally, this interface has been tightly bound the sequence interface, which is related in that presence in a sequence can be usefully interpreted as membership in a set.
 
-For the list, tuple types, *`x`*` in `*`y`* is true if and only if there exists such an index *i* such that `var``x`` == `*`y`*`[`*`i`*`]` is true.
+For the list, tuple types, *`x`*` in `*`y`* is true if and only if there exists such an index *i* such that *`x`*` == `*`y`*`[`*`i`*`]` is true.
 
 For the Unicode and string types, *`x`*` in `*`y`* is true if and only if there exists an index *i* such that *`x`*` == `*`y`*`[`*`i`*`]` is true. If *`x`* is not a string or Unicode object of length `1`, a `TypeError` exception is raised.
 

@@ -51,7 +51,7 @@ The interpreter’s line-editing features usually aren’t very sophisticated. O
 
 The interpreter operates somewhat like the Unix shell: when called with standard input connected to a tty device, it reads and executes commands interactively; when called with a file name argument or with a file as standard input, it reads and executes a *script* from that file.
 
-A third way of starting the interpreter is **`python`**` ``-c`` `*`command`*` [arg] ...`, which executes the statement(s) in *command*, analogous to the shell’s `-c` option. Since Python statements often contain spaces or other characters that are special to the shell, it is best to quote *command* in its entirety with double quotes.
+A third way of starting the interpreter is **`python`**` -c `*`command`*` [arg] ...`, which executes the statement(s) in *command*, analogous to the shell’s `-c` option. Since Python statements often contain spaces or other characters that are special to the shell, it is best to quote *command* in its entirety with double quotes.
 
 Note that there is a difference between `python file` and `python <file`. In the latter case, input requests from the program, such as calls to `input()` and `raw_input()`, are satisfied from *file*. Since this file has already been read until the end by the parser before the program starts executing, the program will encounter EOF immediately. In the former case (which is usually what you want) they are satisfied from whatever file or device is connected to standard input of the Python interpreter.
 
@@ -63,7 +63,7 @@ When known to the interpreter, the script name and additional arguments thereaft
 
 ### Interactive Mode 
 
-When commands are read from a tty, the interpreter is said to be in *interactive mode*. In this mode it prompts for the next command with the *primary prompt*, usually three greater-than signs (`>``>``> `); for continuation lines it prompts with the *secondary prompt*, by default three dots (`... `). The interpreter prints a welcome message stating its version number and a copyright notice before printing the first prompt, e.g.:
+When commands are read from a tty, the interpreter is said to be in *interactive mode*. In this mode it prompts for the next command with the *primary prompt*, usually three greater-than signs (`>>> `); for continuation lines it prompts with the *secondary prompt*, by default three dots (`... `). The interpreter prints a welcome message stating its version number and a copyright notice before printing the first prompt, e.g.:
 
     python
     Python 1.5.2b2 (#1, Feb 28 1999, 00:02:06)  [GCC 2.8.1] on sunos5
@@ -109,7 +109,7 @@ If you want to read an additional start-up file from the current directory, you 
 
 # An Informal Introduction to Python 
 
-In the following examples, input and output are distinguished by the presence or absence of prompts (`>``>``> ` and `... `): to repeat the example, you must type everything after the prompt, when the prompt appears; lines that do not begin with a prompt are output from the interpreter.
+In the following examples, input and output are distinguished by the presence or absence of prompts (`>>> ` and `... `): to repeat the example, you must type everything after the prompt, when the prompt appears; lines that do not begin with a prompt are output from the interpreter.
 
 Note that a secondary prompt on a line by itself in an example means you must type a blank line; this is used to end a multi-line command.
 
@@ -124,7 +124,7 @@ Some examples:
 
 ## Using Python as a Calculator 
 
-Let’s try some simple Python commands. Start the interpreter and wait for the primary prompt, `>``>``> `. (It shouldn’t take long.)
+Let’s try some simple Python commands. Start the interpreter and wait for the primary prompt, `>>> `. (It shouldn’t take long.)
 
 ### Numbers 
 

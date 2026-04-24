@@ -282,7 +282,7 @@ This module provides rudimentary access to the audio I/O device `/dev/audio` on 
 
 ### `setoutgain`(n)
 
-Sets the output gain. `0 <= `*`n`*` < 256`. ≤ n \< 256.
+Sets the output gain. `0 <= `*`n`*` < 256`. ≤ n < 256.
 
 ### `getoutgain`()
 
@@ -539,7 +539,7 @@ Raised when an I/O operation (such as a `print` statement, the built-in `open()`
 
 ### exception `ImportError`
 
-Raised when an `import` statement fails to find the module definition or when a `from ``…`` import` fails to find a name that is to be imported.
+Raised when an `import` statement fails to find the module definition or when a `from … import` fails to find a name that is to be imported.
 
 ### exception `IndexError`
 
@@ -676,7 +676,7 @@ See the description in the FORMS documentation of `fl_color`, `fl_mapcolor` and 
 
 Form objects (returned by `fl.make_form()` above) have the following methods. Each method corresponds to a C function whose name is prefixed with `fl_`; and whose first argument is a form pointer; please refer to the official FORMS documentation for descriptions.
 
-All the `add_``…` functions return a Python object representing the FORMS object. Methods of FORMS objects are described below. Most kinds of FORMS object also have some methods specific to that kind; these methods are listed here.
+All the `add_…` functions return a Python object representing the FORMS object. Methods of FORMS objects are described below. Most kinds of FORMS object also have some methods specific to that kind; these methods are listed here.
 
 
 
@@ -1496,7 +1496,7 @@ The modules described in this chapter are built into the interpreter and conside
 [^1]: at least in theory — it is possible to specify at build time that one or more of these modules should be excluded, but it would be antisocial to do so.
 # Built-in module `mpz`
 
-This module implements the interface to part of the GNU MP library. This library contains arbitrary precision integer and rational number arithmetic routines. Only the interfaces to the *integer* (`mpz_``…`) routines are provided. If not stated otherwise, the description in the GNU MP documentation can be applied.
+This module implements the interface to part of the GNU MP library. This library contains arbitrary precision integer and rational number arithmetic routines. Only the interfaces to the *integer* (`mpz_…`) routines are provided. If not stated otherwise, the description in the GNU MP documentation can be applied.
 
 In general, *mpz*-numbers can be used just like other standard Python numbers, e.g. you can use the built-in operators like `+`, `*`, etc., as well as the standard built-in functions like `abs`, `int`, …, `divmod`, `pow`. **Please note:** the *bitwise-xor* operation has been implemented as a bunch of *and*s, *invert*s and *or*s, because the library lacks an `mpz_xor` function, and I didn’t need one.
 
@@ -1518,7 +1518,7 @@ Return the greatest common divisor of *op1* and *op2*.
 
 ### `gcdext`(a  b)
 
-Return a tuple `(`*`g`*`, `*`s`*`, `*`t`*`)`, such that *`a`*`*`*`s`*` + `*`b`*`*`*`t`*` == `*`g`*` == gcd(`*`a`*`, `*`b`*`)`.
+Return a tuple `(`*`g`*`, `*`s`*`, `*`t`*`)`, such that *`a`*` × `*`s`*` + `*`b`*` × `*`t`*` == `*`g`*` == gcd(`*`a`*`, `*`b`*`)`.
 
 ### `sqrt`(op)
 
@@ -1526,7 +1526,7 @@ Return the square root of *op*. The result is rounded towards zero.
 
 ### `sqrtrem`(op)
 
-Return a tuple `(`*`root`*`, `*`remainder`*`)`, such that *`root`*`*`*`root`*` + `*`remainder`*` == `*`op`*.
+Return a tuple `(`*`root`*`, `*`remainder`*`)`, such that *`root`*` × `*`root`*` + `*`remainder`*` == `*`op`*.
 
 ### `divm`(numerator  denominator  modulus)
 
@@ -2061,7 +2061,7 @@ Listen for connections made to the socket. The argument (in the range 0-5) speci
 
 ### `makefile`(mode)
 
-Return a *file object* associated with the socket. (File objects were described earlier under Built-in Types.) The file object references a `dup`ped version of the socket file descriptor, so the file object and socket object may be closed or garbage-collected independently.
+Return a *file object* associated with the socket. (File objects were described earlier under Built-in Types.) The file object references a `dup` ped version of the socket file descriptor, so the file object and socket object may be closed or garbage-collected independently.
 
 ### `recv`(bufsize  flags)
 
@@ -2630,7 +2630,7 @@ Returns the smallest rectangle that contains all non-empty rectangles in the lis
 
 #### `pointinrect`(point  rect)
 
-Returns true if the point is inside the rectangle. By definition, a point `(`*`h`*`, `*`v`*`)` is inside a rectangle `(`*`left`*`, `*`top`*`), (`*`right`*`, `*`bottom`*`)` if *`left`*` <= `*`h`*` < `*`right`* and *`top`*` <= `*`v`*` < `*`bottom`*. left ≤ h \< right and top ≤ v \< bottom.
+Returns true if the point is inside the rectangle. By definition, a point `(`*`h`*`, `*`v`*`)` is inside a rectangle `(`*`left`*`, `*`top`*`), (`*`right`*`, `*`bottom`*`)` if *`left`*` <= `*`h`*` < `*`right`* and *`top`*` <= `*`v`*` < `*`bottom`*. left ≤ h < right and top ≤ v < bottom.
 
 #### `inset`(rect  dh, dv)
 
@@ -2780,11 +2780,11 @@ Exception raised on various occasions; argument is a string describing what is w
 
 ### `pack`(fmt  v1  v2  …)
 
-Return a string containing the values *`v1`*`, `*`v2`*`, ``…` packed according to the given format. The arguments must match the values required by the format exactly.
+Return a string containing the values *`v1`*`, `*`v2`*`, …` packed according to the given format. The arguments must match the values required by the format exactly.
 
 ### `unpack`(fmt  string)
 
-Unpack the string (presumably packed by `pack(`*`fmt`*`, ``…``)`) according to the given format. The result is a tuple even if it contains exactly one item. The string must contain exactly the amount of data required by the format (i.e. `len(`*`string`*`)` must equal `calcsize(`*`fmt`*`)`).
+Unpack the string (presumably packed by `pack(`*`fmt`*`, …)`) according to the given format. The result is a tuple even if it contains exactly one item. The string must contain exactly the amount of data required by the format (i.e. `len(`*`string`*`)` must equal `calcsize(`*`fmt`*`)`).
 
 ### `calcsize`(fmt)
 
@@ -3071,7 +3071,7 @@ A tuple of two strings: the first is the name of the local non-DST timezone, the
 
 The following sections describe the standard types that are built into the interpreter. These are the numeric types, sequence types, and several others, including types themselves. There is no explicit Boolean type; use integers instead.
 
-Some operations are supported by several object types; in particular, all objects can be compared, tested for truth value, and converted to a string (with the `‘``…``‘` notation). The latter conversion is implicitly used when an object is written by the `print` statement.
+Some operations are supported by several object types; in particular, all objects can be compared, tested for truth value, and converted to a string (with the `‘…‘` notation). The latter conversion is implicitly used when an object is written by the `print` statement.
 
 ## Truth Value Testing
 
@@ -3108,12 +3108,12 @@ Comparison operations are supported by all objects:
 
 |        |                         |       |
 |:-------|:------------------------|:------|
-| \<     | strictly less than      |       |
-| \<=    | less than or equal      |       |
-| \>     | strictly greater than   |       |
-| \>=    | greater than or equal   |       |
+| <     | strictly less than      |       |
+| <=    | less than or equal      |       |
+| >     | strictly greater than   |       |
+| >=    | greater than or equal   |       |
 | ==     | equal                   |       |
-| \<\>   | not equal               | \(1\) |
+| <>   | not equal               | \(1\) |
 | !=     | not equal               | \(1\) |
 | is     | object identity         |       |
 | is not | negated object identity |       |
@@ -3178,8 +3178,8 @@ Plain and long integer types support additional operations that make sense only 
 | *x* ^ *y*    | bitwise *exclusive or* of *x* and *y* |     |
 | *x* & *y*    | bitwise *and* of *x* and *y*          |     |
 | *x* \| *y*   | bitwise *or* of *x* and *y*           |     |
-| *x* \<\< *n* | *x* shifted left by *n* bits          |     |
-| *x* \>\> *n* | *x* shifted right by *n* bits         |     |
+| *x* << *n* | *x* shifted left by *n* bits          |     |
+| *x* >> *n* | *x* shifted right by *n* bits         |     |
 
 ## Sequence Types
 
@@ -3298,7 +3298,7 @@ The implementation adds two special read-only attributes: *`f`*`.func_code` is a
 
 Methods are functions that are called using the attribute notation. There are two flavors: built-in methods (such as `append()` on lists) and class instance methods. Built-in methods are described with the types that support them.
 
-The implementation adds two special read-only attributes to class instance methods: *`m`*`.im_self` is the object whose method this is, and *`m`*`.im_func` is the function implementing the method. Calling *`m`*`(`*`arg-1`*`, `*`arg-2`*`, ``…``, `*`arg-n`*`)` is completely equivalent to calling *`m`*`.im_func(`*`m`*`.im_self, `*`arg-1`*`, `*`arg-2`*`, `` …``, `*`arg-n`*`)`.
+The implementation adds two special read-only attributes to class instance methods: *`m`*`.im_self` is the object whose method this is, and *`m`*`.im_func` is the function implementing the method. Calling *`m`*`(`*`arg-1`*`, `*`arg-2`*`, …, `*`arg-n`*`)` is completely equivalent to calling *`m`*`.im_func(`*`m`*`.im_self, `*`arg-1`*`, `*`arg-2`*`,  …, `*`arg-n`*`)`.
 
 (See the Python Reference Manual for more info.)
 

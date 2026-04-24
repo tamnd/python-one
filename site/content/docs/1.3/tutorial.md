@@ -931,7 +931,7 @@ So far we’ve encountered two ways of writing values: *expression statements* a
 
 Often you’ll want more control over the formatting of your output than simply printing space-separated values. The key to nice formatting in Python is to do all the string handling yourself; using string slicing and concatenation operations you can create any lay-out you can imagine. The standard module `string` contains some useful operations for padding strings to a given column width; these will be discussed shortly. Finally, the `%` operator (modulo) with a string left argument interprets this string as a C sprintf format string to be applied to the right argument, and returns the string resulting from this formatting operation.
 
-One question remains, of course: how do you convert values to strings? Luckily, Python has a way to convert any value to a string: just write the value between reverse quotes (``` `` ```). Some examples:
+One question remains, of course: how do you convert values to strings? Luckily, Python has a way to convert any value to a string: just write the value between reverse quotes (```  ```). Some examples:
 
     >>> x = 10 * 3.14
     >>> y = 200*200
@@ -2015,7 +2015,7 @@ Consequences of this change include:
 
 - A new module `formatter` has been added, for use with the new `htmllib` module.
 
-- The `urllib`and `httplib` modules have been changed somewhat to allow overriding unknown URL types and to support authentication. They now use `mimetools.Message` instead of `rfc822.Message` to parse headers. The `endrequest()` method has been removed from the HTTP class since it breaks the interaction with some servers.
+- The `urllib` and `httplib` modules have been changed somewhat to allow overriding unknown URL types and to support authentication. They now use `mimetools.Message` instead of `rfc822.Message` to parse headers. The `endrequest()` method has been removed from the HTTP class since it breaks the interaction with some servers.
 
 - The `rfc822.Message` class has been changed to allow a flag to be passed in that says that the file is unseekable.
 

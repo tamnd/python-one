@@ -20,7 +20,7 @@ The descriptions of lexical analysis and syntax use a modified BNF grammar notat
     name:           lc_letter (lc_letter | "_")*
     lc_letter:      "a"..."z"
 
-The first line says that a `name` is an `lc_letter` followed by a sequence of zero or more `lc_letter`s and underscores. An `lc_letter` in turn is any of the single characters ‘a’ through ‘z’. (This rule is actually adhered to for the names defined in lexical and grammar rules in this document.)
+The first line says that a `name` is an `lc_letter` followed by a sequence of zero or more `lc_letter` s and underscores. An `lc_letter` in turn is any of the single characters ‘a’ through ‘z’. (This rule is actually adhered to for the names defined in lexical and grammar rules in this document.)
 
 Each rule begins with a name (which is the name defined by the rule) and a colon. A vertical bar (` `) is used to separate alternatives; it is the least binding operator in this notation. A star (`*`) means zero or more repetitions of the preceding item; likewise, a plus (`+`) means one or more repetitions, and a phrase enclosed in square brackets (`[ ]`) means zero or one occurrences (in other words, the enclosed phrase is optional). The `*` and `+` operators bind as tightly as possible; parentheses are used for grouping. Literal strings are enclosed in double quotes. White space is only meaningful to separate tokens. Rules are normally contained on a single line; rules with many alternatives may be formatted alternatively with each line after the first beginning with a vertical bar.
 
@@ -273,7 +273,7 @@ These represent machine-level double precision floating point numbers. You are a
 Sequences  
 These represent finite ordered sets indexed by natural numbers. The built-in function `len()` returns the number of elements of a sequence. When this number is n, the index set contains the numbers 0, 1, …, n-1. Element `i` of sequence `a` is selected by `a[i]`.
 
-Sequences also support slicing: `a[i:j]` selects all elements with index k such that i \<= k \< j. When used as an expression, a slice is a sequence of the same type — this implies that the index set is renumbered so that it starts at 0 again.
+Sequences also support slicing: `a[i:j]` selects all elements with index k such that i <= k < j. When used as an expression, a slice is a sequence of the same type — this implies that the index set is renumbered so that it starts at 0 again.
 
 Sequences are distinguished according to their mutability:
 
@@ -675,7 +675,7 @@ A slicing (or slice) selects a range of items in a sequence (string, tuple or li
 
     slicing:        primary "[" [condition] ":" [condition] "]"
 
-The primary must evaluate to a sequence object. The lower and upper bound expressions, if present, must evaluate to plain integers; defaults are zero and the sequence’s length, respectively. If either bound is negative, the sequence’s length is added to it. The slicing now selects all items with index k such that i \<= k \< j where i and j are the specified lower and upper bounds. This may be an empty sequence. It is not an error if i or j lie outside the range of valid indexes (such items don’t exist so they aren’t selected).
+The primary must evaluate to a sequence object. The lower and upper bound expressions, if present, must evaluate to plain integers; defaults are zero and the sequence’s length, respectively. If either bound is negative, the sequence’s length is added to it. The slicing now selects all items with index k such that i <= k < j where i and j are the specified lower and upper bounds. This may be an empty sequence. It is not an error if i or j lie outside the range of valid indexes (such items don’t exist so they aren’t selected).
 
 ### Calls
 
@@ -768,11 +768,11 @@ Contrary to C, all comparison operations in Python have the same priority, which
 
 Comparisons yield integer values: 1 for true, 0 for false.
 
-Comparisons can be chained arbitrarily, e.g. x \< y \<= z is equivalent to x \< y `and` y \<= z, except that y is evaluated only once (but in both cases z is not evaluated at all when x \< y is found to be false).
+Comparisons can be chained arbitrarily, e.g. x < y <= z is equivalent to x < y `and` y <= z, except that y is evaluated only once (but in both cases z is not evaluated at all when x < y is found to be false).
 
 Formally, e_0 op_1 e_1 op_2 e_2 ...e_n-1 op_n e_n is equivalent to e_0 op_1 e_1 `and` e_1 op_2 e_2 `and` ... `and` e_n-1 op_n e_n, except that each expression is evaluated at most once.
 
-Note that e_0 op_1 e_1 op_2 e_2 does not imply any kind of comparison between e_0 and e_2, e.g. x \< y \> z is perfectly legal.
+Note that e_0 op_1 e_1 op_2 e_2 does not imply any kind of comparison between e_0 and e_2, e.g. x < y > z is perfectly legal.
 
 The forms `<>` and `!=` are equivalent; for consistency with C, `!=` is preferred; where `!=` is mentioned below `<>` is also implied.
 

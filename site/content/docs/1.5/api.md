@@ -667,11 +667,11 @@ Return the slice of sequence object `o` between `i1` and `i2`, or NULL on failur
 
 #### `PySequence_SetItem`(PyObject *o, int i, PyObject *v)
 
-Assign object `v` to the `i`th element of `o`. Returns -1 on failure. This is the equivalent of the Python statement, `o[i]=v`.
+Assign object `v` to the `i` th element of `o`. Returns -1 on failure. This is the equivalent of the Python statement, `o[i]=v`.
 
 #### `PySequence_DelItem`(PyObject *o, int i)
 
-Delete the `i`th element of object `v`. Returns -1 on failure. This is the equivalent of the Python statement: `del o[i]`.
+Delete the `i` th element of object `v`. Returns -1 on failure. This is the equivalent of the Python statement: `del o[i]`.
 
 #### `PySequence_SetSlice`(PyObject *o, int i1, int i2, PyObject *v)
 
@@ -1276,7 +1276,7 @@ removes the entry in dictionary `p` with key `key`. `key` is a PyObject.
 
 #### `PyDict_DelItemString`(PyDictObject *p, char *key)
 
-removes the entry in dictionary `p` which has a key specified by the `char *``key`.
+removes the entry in dictionary `p` which has a key specified by the `char *key`.
 
 #### `PyDict_GetItem`(PyDictObject *p, PyObject *key)
 

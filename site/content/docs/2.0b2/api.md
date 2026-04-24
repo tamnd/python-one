@@ -800,7 +800,7 @@ Returns the remainder of dividing *o1* by *o2*, or NULL on failure. The operatio
 
 #### `PyNumber_InPlacePower`(PyObject *o1, PyObject *o2, PyObject *o3)
 
-See the built-in function `pow()`. Returns NULL on failure. The operation is done *in-place* when *o1* supports it. This is the equivalent of the Python expression *`o1`*` **= `*`o2`* when o3 is , or an in-place variant of `pow(`*`o1`*`, `*`o2`*`, var``o3``)` otherwise. If *o3* is to be ignored, pass in its place (passing NULL for *o3* would cause an illegal memory access).
+See the built-in function `pow()`. Returns NULL on failure. The operation is done *in-place* when *o1* supports it. This is the equivalent of the Python expression *`o1`*` **= `*`o2`* when o3 is , or an in-place variant of `pow(`*`o1`*`, `*`o2`*`, `*`o3`*`)` otherwise. If *o3* is to be ignored, pass in its place (passing NULL for *o3* would cause an illegal memory access).
 
 #### `PyNumber_InPlaceLshift`(PyObject *o1, PyObject *o2)
 
@@ -2191,7 +2191,7 @@ Threads belonging to different interpreters initially share nothing, except proc
 
 #### `PyThreadState`
 
-This data structure represents the state of a single thread. The only public data member is `PyInterpreterState *``interp`, which points to this thread’s interpreter state.
+This data structure represents the state of a single thread. The only public data member is `PyInterpreterState *interp`, which points to this thread’s interpreter state.
 
 #### `PyEval_InitThreads`()
 

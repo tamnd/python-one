@@ -11,7 +11,7 @@ This module provides support for reading and writing AIFF and AIFF-C files. AIFF
 
 **Caveat:** Some operations may only work under IRIX; these will raise `ImportError` when attempting to import the `cl` module, which is only available on IRIX.
 
-Audio files have a number of parameters that describe the audio data. The sampling rate or frame rate is the number of times per second the sound is sampled. The number of channels indicate if the audio is mono, stereo, or quadro. Each frame consists of one sample per channel. The sample size is the size in bytes of each sample. Thus a frame consists of *nchannels***samplesize* bytes, and a second’s worth of audio consists of *nchannels***samplesize***framerate* bytes.
+Audio files have a number of parameters that describe the audio data. The sampling rate or frame rate is the number of times per second the sound is sampled. The number of channels indicate if the audio is mono, stereo, or quadro. Each frame consists of one sample per channel. The sample size is the size in bytes of each sample. Thus a frame consists of *nchannels* × *samplesize* bytes, and a second’s worth of audio consists of *nchannels* × *samplesize* × *framerate* bytes.
 
 For example, CD quality audio has a sample size of two bytes (16 bits), uses two channels (stereo) and has a frame rate of 44,100 frames/second. This gives a frame size of 4 bytes (2*2), and a second’s worth occupies 2*2*44100 bytes, i.e. 176,400 bytes.
 
@@ -2554,7 +2554,7 @@ Exception failing because of RFC 2109 invalidity: incorrect attributes, incorrec
 
 ### class `BaseCookie`()
 
-This class is a dictionary-like object whose keys are strings and whose values are `Morsel`s. Note that upon setting a key to a value, the value is first converted to a `Morsel` containing the key and the value.
+This class is a dictionary-like object whose keys are strings and whose values are `Morsel` s. Note that upon setting a key to a value, the value is first converted to a `Morsel` containing the key and the value.
 
 If *input* is given, it is passed to the `load` method.
 
@@ -2600,7 +2600,7 @@ The meaning for *attrs* is the same as in `output()`.
 
 ### `load`(rawdata)
 
-If *rawdata* is a string, parse it as an `HTTP_COOKIE` and add the values found there as `Morsel`s. If it is a dictionary, it is equivalent to:
+If *rawdata* is a string, parse it as an `HTTP_COOKIE` and add the values found there as `Morsel` s. If it is a dictionary, it is equivalent to:
 
     for k, v in rawdata.items():
         cookie[k] = v
@@ -3593,7 +3593,7 @@ This method forces any unwritten data to be written to the disk.
 
 *The standard “database” interface, based on ndbm.*
 
-The `dbm` module provides an interface to the Unix (`n`)`dbm` library. Dbm objects behave like mappings (dictionaries), except that keys and values are always strings. Printing a dbm object doesn’t print the keys and values, and the `items()` and `values()` methods are not supported.
+The `dbm` module provides an interface to the Unix (`n`)` dbm` library. Dbm objects behave like mappings (dictionaries), except that keys and values are always strings. Printing a dbm object doesn’t print the keys and values, and the `items()` and `values()` methods are not supported.
 
 This module can be used with the “classic” ndbm interface, the BSD DB compatibility interface, or the GNU GDBM compatibility interface. On Unix, the **configure** script will attempt to locate the appropriate header file to simplify building this module.
 
@@ -4795,7 +4795,7 @@ This class is derived from `EnvironmentError`. See the discussion above for more
 
 ### exception `ImportError`
 
-Raised when an statement fails to find the module definition or when a `from ``…`` import` fails to find a name that is to be imported.
+Raised when an statement fails to find the module definition or when a `from … import` fails to find a name that is to be imported.
 
 ### exception `IndexError`
 
@@ -6287,7 +6287,7 @@ When the database has been opened in fast mode, this method forces any unwritten
 
 *Parser for command line options.*
 
-This module helps scripts to parse the command line arguments in `sys.argv`. It supports the same conventions as the Unix function (including the special meanings of arguments of the form ‘`-`’ and ‘`-``-`’).
+This module helps scripts to parse the command line arguments in `sys.argv`. It supports the same conventions as the Unix function (including the special meanings of arguments of the form ‘`-`’ and ‘`--`’).
 
 Long options similar to those supported by GNU software may be used as well via an optional third argument. This module provides a single function and an exception:
 
@@ -6295,9 +6295,9 @@ Long options similar to those supported by GNU software may be used as well via 
 
 Parses command line options and parameter list. *args* is the argument list to be parsed, without the leading reference to the running program. Typically, this means `sys.argv[1:]`. *options* is the string of option letters that the script wants to recognize, with options that require an argument followed by a colon (`:`; i.e., the same format that Unix uses).
 
-*long_options*, if specified, must be a list of strings with the names of the long options which should be supported. The leading `’-``-’` characters should not be included in the option name. Long options which require an argument should be followed by an equal sign (`=`).
+*long_options*, if specified, must be a list of strings with the names of the long options which should be supported. The leading `’--’` characters should not be included in the option name. Long options which require an argument should be followed by an equal sign (`=`).
 
-The return value consists of two elements: the first is a list of `(`*`option`*`, `*`value`*`)` pairs; the second is the list of program arguments left after the option list was stripped (this is a trailing slice of *args*). Each option-and-value pair returned has the option as its first element, prefixed with a hyphen for short options (e.g., `’-x’`) or two hyphens for long options (e.g., `’-``-long-option’`), and the option argument as its second element, or an empty string if the option has no argument. The options occur in the list in the same order in which they were found, thus allowing multiple occurrences. Long and short options may be mixed.
+The return value consists of two elements: the first is a list of `(`*`option`*`, `*`value`*`)` pairs; the second is the list of program arguments left after the option list was stripped (this is a trailing slice of *args*). Each option-and-value pair returned has the option as its first element, prefixed with a hyphen for short options (e.g., `’-x’`) or two hyphens for long options (e.g., `’--long-option’`), and the option argument as its second element, or an empty string if the option has no argument. The options occur in the list in the same order in which they were found, thus allowing multiple occurrences. Long and short options may be mixed.
 
 ### exception `GetoptError`
 
@@ -6655,7 +6655,7 @@ The following people contributed code, feedback, design suggestions, previous im
 
 - Barry Warsaw
 
-[^1]: The default locale directory is system dependent; e.g. on RedHat Linux it is `/usr/share/locale`, but on Solaris it is `/usr/lib/locale`. The `gettext` module does not try to support these system dependent defaults; instead its default is `sys.prefix``/share/locale`. For this reason, it is always best to call `bindtextdomain()` with an explicit absolute path at the start of your application.
+[^1]: The default locale directory is system dependent; e.g. on RedHat Linux it is `/usr/share/locale`, but on Solaris it is `/usr/lib/locale`. The `gettext` module does not try to support these system dependent defaults; instead its default is `sys.prefix/share/locale`. For this reason, it is always best to call `bindtextdomain()` with an explicit absolute path at the start of your application.
 
 [^2]: See the footnote for `bindtextdomain()` above.
 
@@ -7915,7 +7915,7 @@ Return the mantissa and exponent of *x* as the pair `(`*`m`*`, `*`e`*`)`. *m* is
 
 ### `hypot`(x, y)
 
-Return the Euclidean distance, `sqrt(`*`x`*`*`*`x`*` + `*`y`*`*`*`y`*`)`.
+Return the Euclidean distance, `sqrt(`*`x`*` × `*`x`*` + `*`y`*` × `*`y`*`)`.
 
 ### `ldexp`(x, i)
 
@@ -8479,7 +8479,7 @@ Return the greatest common divisor of *op1* and *op2*.
 
 ### `gcdext`(a, b)
 
-Return a tuple `(`*`g`*`, `*`s`*`, `*`t`*`)`, such that *`a`*`*`*`s`*` + `*`b`*`*`*`t`*` == `*`g`*` == gcd(`*`a`*`, `*`b`*`)`.
+Return a tuple `(`*`g`*`, `*`s`*`, `*`t`*`)`, such that *`a`*` × `*`s`*` + `*`b`*` × `*`t`*` == `*`g`*` == gcd(`*`a`*`, `*`b`*`)`.
 
 ### `sqrt`(op)
 
@@ -8487,7 +8487,7 @@ Return the square root of *op*. The result is rounded towards zero.
 
 ### `sqrtrem`(op)
 
-Return a tuple `(`*`root`*`, `*`remainder`*`)`, such that *`root`*`*`*`root`*` + `*`remainder`*` == `*`op`*.
+Return a tuple `(`*`root`*`, `*`remainder`*`)`, such that *`root`*` × `*`root`*` + `*`remainder`*` == `*`op`*.
 
 ### `divm`(numerator, denominator, modulus)
 
@@ -8607,17 +8607,17 @@ Return the file position relative to the start of the current section.
 
 ### `is_data`(str)
 
-Return true if *str* is data and false if it might be a section boundary. As written, it tests for a prefix other than `’-``-’` at start of line (which all MIME boundaries have) but it is declared so it can be overridden in derived classes.
+Return true if *str* is data and false if it might be a section boundary. As written, it tests for a prefix other than `’--’` at start of line (which all MIME boundaries have) but it is declared so it can be overridden in derived classes.
 
 Note that this test is used intended as a fast guard for the real boundary tests; if it always returns false it will merely slow processing, not cause it to fail.
 
 ### `section_divider`(str)
 
-Turn a boundary into a section-divider line. By default, this method prepends `’-``-’` (which MIME section boundaries have) but it is declared so it can be overridden in derived classes. This method need not append LF or CR-LF, as comparison with the result ignores trailing whitespace.
+Turn a boundary into a section-divider line. By default, this method prepends `’--’` (which MIME section boundaries have) but it is declared so it can be overridden in derived classes. This method need not append LF or CR-LF, as comparison with the result ignores trailing whitespace.
 
 ### `end_marker`(str)
 
-Turn a boundary string into an end-marker line. By default, this method prepends `’-``-’` and appends `’-``-’` (like a MIME-multipart end-of-message marker) but it is declared so it can be be overridden in derived classes. This method need not append LF or CR-LF, as comparison with the result ignores trailing whitespace.
+Turn a boundary string into an end-marker line. By default, this method prepends `’--’` and appends `’--’` (like a MIME-multipart end-of-message marker) but it is declared so it can be be overridden in derived classes. This method need not append LF or CR-LF, as comparison with the result ignores trailing whitespace.
 
 Finally, `MultiFile` instances have two public instance variables:
 
@@ -8856,7 +8856,7 @@ The module itself defines the following items:
 
 ### class `NNTP`(host)
 
-Return a new instance of the `NNTP` class, representing a connection to the NNTP server running on host *host*, listening at port *port*. The default *port* is 119. If the optional *user* and *password* are provided, the `AUTHINFO USER` and `AUTHINFO PASS` commands are used to identify and authenticate the user to the server. If the optional flag *readermode* is true, then a `mode reader` command is sent before authentication is performed. Reader mode is sometimes necessary if you are connecting to an NNTP server on the local machine and intend to call reader-specific commands, such as `group`. If you get unexpected `NNTPPermanentError`s, you might need to set *readermode*. *readermode* defaults to `None`.
+Return a new instance of the `NNTP` class, representing a connection to the NNTP server running on host *host*, listening at port *port*. The default *port* is 119. If the optional *user* and *password* are provided, the `AUTHINFO USER` and `AUTHINFO PASS` commands are used to identify and authenticate the user to the server. If the optional flag *readermode* is true, then a `mode reader` command is sent before authentication is performed. Reader mode is sometimes necessary if you are connecting to an NNTP server on the local machine and intend to call reader-specific commands, such as `group`. If you get unexpected `NNTPPermanentError` s, you might need to set *readermode*. *readermode* defaults to `None`.
 
 ### class `NNTPError`()
 
@@ -12119,7 +12119,7 @@ There exists a class of applications for which this “openness” is inappropri
 
 *Restricted execution* is the basic framework in Python that allows for the segregation of trusted and untrusted code. It is based on the notion that trusted Python code (a *supervisor*) can create a “padded cell’ (or environment) with limited permissions, and run the untrusted code within this cell. The untrusted code cannot break out of its cell, and can only interact with sensitive system resources through interfaces defined and managed by the trusted code. The term “restricted execution” is favored over “safe-Python” since true safety is hard to define, and is determined by the way the restricted environment is created. Note that the restricted environments can be nested, with inner cells creating subcells of lesser, but never greater, privilege.
 
-An interesting aspect of Python’s restricted execution model is that the interfaces presented to untrusted code usually have the same names as those presented to trusted code. Therefore no special interfaces need to be learned to write code designed to run in a restricted environment. And because the exact nature of the padded cell is determined by the supervisor, different restrictions can be imposed, depending on the application. For example, it might be deemed “safe” for untrusted code to read any file within a specified directory, but never to write a file. In this case, the supervisor may redefine the built-in `open()` function so that it raises an exception whenever the *mode* parameter is `’w’`. It might also perform a -like operation on the *filename* parameter, such that root is always relative to some safe “sandbox” area of the filesystem. In this case, the untrusted code would still see an built-in `open()` function in its environment, with the same calling interface. The semantics would be identical too, with `IOError`s being raised when the supervisor determined that an unallowable parameter is being used.
+An interesting aspect of Python’s restricted execution model is that the interfaces presented to untrusted code usually have the same names as those presented to trusted code. Therefore no special interfaces need to be learned to write code designed to run in a restricted environment. And because the exact nature of the padded cell is determined by the supervisor, different restrictions can be imposed, depending on the application. For example, it might be deemed “safe” for untrusted code to read any file within a specified directory, but never to write a file. In this case, the supervisor may redefine the built-in `open()` function so that it raises an exception whenever the *mode* parameter is `’w’`. It might also perform a -like operation on the *filename* parameter, such that root is always relative to some safe “sandbox” area of the filesystem. In this case, the untrusted code would still see an built-in `open()` function in its environment, with the same calling interface. The semantics would be identical too, with `IOError` s being raised when the supervisor determined that an unallowable parameter is being used.
 
 The Python run-time determines whether a particular code block is executing in restricted execution mode based on the identity of the `__builtins__` object in its global variables: if this is (the dictionary of) the standard `__builtin__` module, the code is deemed to be unrestricted, else it is deemed to be restricted.
 
@@ -12375,7 +12375,7 @@ Return the number of addresses in the address list.
 
 ### `__str__`(name)
 
-Return a canonicalized string representation of the address list. Addresses are rendered in "name" \<host@domain\> form, comma-separated.
+Return a canonicalized string representation of the address list. Addresses are rendered in "name" <host@domain> form, comma-separated.
 
 ### `__add__`(name)
 
@@ -13889,7 +13889,7 @@ Maximum file name length.
 
 The following sections describe the standard types that are built into the interpreter. These are the numeric types, sequence types, and several others, including types themselves. There is no explicit Boolean type; use integers instead.
 
-Some operations are supported by several object types; in particular, all objects can be compared, tested for truth value, and converted to a string (with the `‘``…``‘` notation). The latter conversion is implicitly used when an object is written by the statement.
+Some operations are supported by several object types; in particular, all objects can be compared, tested for truth value, and converted to a string (with the `‘…‘` notation). The latter conversion is implicitly used when an object is written by the statement.
 
 ## Truth Value Testing 
 
@@ -13935,13 +13935,13 @@ This table summarizes the comparison operations:
 
 |        |                         |       |
 |:-------|:------------------------|:------|
-| \<     | strictly less than      |       |
-| \<=    | less than or equal      |       |
-| \>     | strictly greater than   |       |
-| \>=    | greater than or equal   |       |
+| <     | strictly less than      |       |
+| <=    | less than or equal      |       |
+| >     | strictly greater than   |       |
+| >=    | greater than or equal   |       |
 | ==     | equal                   |       |
 | !=     | not equal               | \(1\) |
-| \<\>   | not equal               | \(1\) |
+| <>   | not equal               | \(1\) |
 | is     | object identity         |       |
 | is not | negated object identity |       |
 
@@ -14017,8 +14017,8 @@ This table lists the bit-string operations sorted in ascending priority (operati
 | *x* \| *y*   | bitwise *or* of *x* and *y*           |          |
 | *x* ^ *y*    | bitwise *exclusive or* of *x* and *y* |          |
 | *x* & *y*    | bitwise *and* of *x* and *y*          |          |
-| *x* \<\< *n* | *x* shifted left by *n* bits          | (1), (2) |
-| *x* \>\> *n* | *x* shifted right by *n* bits         | (1), (3) |
+| *x* << *n* | *x* shifted left by *n* bits          | (1), (2) |
+| *x* >> *n* | *x* shifted right by *n* bits         | (1), (3) |
 | *x*          | the bits of *x* inverted              |          |
 
 Notes:
@@ -14334,7 +14334,7 @@ The implementation adds two special read-only attributes: *`f`*`.func_code` is a
 
 Methods are functions that are called using the attribute notation. There are two flavors: built-in methods (such as `append()` on lists) and class instance methods. Built-in methods are described with the types that support them.
 
-The implementation adds two special read-only attributes to class instance methods: *`m`*`.im_self` is the object on which the method operates, and *`m`*`.im_func` is the function implementing the method. Calling *`m`*`(`*`arg-1`*`, `*`arg-2`*`, ``…``, `*`arg-n`*`)` is completely equivalent to calling *`m`*`.im_func(`*`m`*`.im_self, `*`arg-1`*`, `*`arg-2`*`, ``…``, `*`arg-n`*`)`.
+The implementation adds two special read-only attributes to class instance methods: *`m`*`.im_self` is the object on which the method operates, and *`m`*`.im_func` is the function implementing the method. Calling *`m`*`(`*`arg-1`*`, `*`arg-2`*`, …, `*`arg-n`*`)` is completely equivalent to calling *`m`*`.im_func(`*`m`*`.im_self, `*`arg-1`*`, `*`arg-2`*`, …, `*`arg-n`*`)`.
 
 See the Python Reference Manual for more information.
 
@@ -14998,7 +14998,7 @@ Returns the smallest rectangle that contains all non-empty rectangles in the lis
 
 #### `pointinrect`(point, rect)
 
-Returns true if the point is inside the rectangle. By definition, a point `(`*`h`*`, `*`v`*`)` is inside a rectangle `(`*`left`*`, `*`top`*`), (`*`right`*`, `*`bottom`*`)` if left ≤ h \< right and top ≤ v \< bottom.
+Returns true if the point is inside the rectangle. By definition, a point `(`*`h`*`, `*`v`*`)` is inside a rectangle `(`*`left`*`, `*`top`*`), (`*`right`*`, `*`bottom`*`)` if left ≤ h < right and top ≤ v < bottom.
 
 #### `inset`(rect, (dh, dv))
 
@@ -15224,11 +15224,11 @@ Exception raised on various occasions; argument is a string describing what is w
 
 ### `pack`(fmt, v1, v2, …)
 
-Return a string containing the values *`v1`*`, `*`v2`*`, ``…` packed according to the given format. The arguments must match the values required by the format exactly.
+Return a string containing the values *`v1`*`, `*`v2`*`, …` packed according to the given format. The arguments must match the values required by the format exactly.
 
 ### `unpack`(fmt, string)
 
-Unpack the string (presumably packed by `pack(`*`fmt`*`, ``…``)`) according to the given format. The result is a tuple even if it contains exactly one item. The string must contain exactly the amount of data required by the format (i.e. `len(`*`string`*`)` must equal `calcsize(`*`fmt`*`)`).
+Unpack the string (presumably packed by `pack(`*`fmt`*`, …)`) according to the given format. The result is a tuple even if it contains exactly one item. The string must contain exactly the amount of data required by the format (i.e. `len(`*`string`*`)` must equal `calcsize(`*`fmt`*`)`).
 
 ### `calcsize`(fmt)
 
@@ -15279,8 +15279,8 @@ Alternatively, the first character of the format string can be used to indicate 
 |:----|:-----------------------|:---------|
 | @   | native                 | native   |
 | =   | native                 | standard |
-| \<  | little-endian          | standard |
-| \>  | big-endian             | standard |
+| <  | little-endian          | standard |
+| >  | big-endian             | standard |
 | !   | network (= big-endian) | standard |
 
 If the first character is not one of these, `@` is assumed.
@@ -16306,7 +16306,7 @@ A thread can be flagged as a “daemon thread”. The significance of this flag 
 
 There is a “main thread” object; this corresponds to the initial thread of control in the Python program. It is not a daemon thread.
 
-There is the possibility that “dummy thread objects” are created. These are thread objects corresponding to “alien threads”. These are threads of control started outside the threading module, e.g. directly from C code. Dummy thread objects have limited functionality; they are always considered alive, active, and daemonic, and cannot be `join()`ed. They are never deleted, since it is impossible to detect the termination of alien threads.
+There is the possibility that “dummy thread objects” are created. These are thread objects corresponding to “alien threads”. These are threads of control started outside the threading module, e.g. directly from C code. Dummy thread objects have limited functionality; they are always considered alive, active, and daemonic, and cannot be `join()` ed. They are never deleted, since it is impossible to detect the termination of alien threads.
 
 ### class `Thread`(group=None, target=None, name=None, args=(), kwargs={})
 
@@ -16342,7 +16342,7 @@ Wait until the thread terminates. This blocks the calling thread until the threa
 
 When the *timeout* argument is present and not `None`, it should be a floating point number specifying a timeout for the operation in seconds (or fractions thereof).
 
-A thread can be `join()`ed many times.
+A thread can be `join()` ed many times.
 
 A thread cannot join itself because this would cause a deadlock.
 

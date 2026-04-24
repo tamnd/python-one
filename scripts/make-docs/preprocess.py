@@ -181,6 +181,15 @@ def strip_doc_structure(text: str) -> str:
     # Strip \protect (fragile-command guard, meaningless outside real LaTeX)
     body = re.sub(r'\\protect\b\s*', '', body)
 
+    # Fix source typos: bare `var{...}` missing the backslash → `\var{...}`
+    # Appears in e.g. `\code{var{x} == \var{y}[\var{i}]}` in early Python docs.
+    body = re.sub(r'(?<![\\a-zA-Z0-9])var\{', r'\\var{', body)
+
+    # Fix bare `*` multiplication between inline command spans (e.g. \var{a}*\var{b}).
+    # A literal `*` between two LaTeX inline commands would render as GFM bold/italic
+    # markers. Replace with Unicode × so the math reads correctly.
+    body = re.sub(r'\}\*(?=\\(?:var|emph|code|samp|kbd)\{)', '} × ', body)
+
     return body
 
 
