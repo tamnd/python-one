@@ -99,7 +99,7 @@ and initialize it in your module’s initialization function () with an exceptio
         PyDict_SetItemString(d, "error", SpamError);
     }
 
-Note that the Python name for the exception object is `spam.error`. The function may create either a string or class, depending on whether the flag was passed to the interpreter. If was used, will be a string object, otherwise it will be a class object with the base class being `Exception`, described in the Python Library Reference under “Built-in Exceptions.”
+Note that the Python name for the exception object is `spam.error`. The function may create either a string or class, depending on whether the `-X` flag was passed to the interpreter. If `-X` was used, will be a string object, otherwise it will be a class object with the base class being `Exception`, described in the Python Library Reference under “Built-in Exceptions.”
 
 ## Back to the Example <span id="backToExample" label="backToExample"></span>
 
@@ -193,7 +193,7 @@ If your module requires additional libraries to link with, these can be listed o
 
 So far we have concentrated on making C functions callable from Python. The reverse is also useful: calling Python functions from C. This is especially the case for libraries that support so-called “callback” functions. If a C interface makes use of callbacks, the equivalent Python often needs to provide a callback mechanism to the Python programmer; the implementation will require calling the Python callback functions from a C callback. Other uses are also imaginable.
 
-Fortunately, the Python interpreter is easily called recursively, and there is a standard interface to call a Python function. (I won’t dwell on how to call the Python parser with a particular string as input — if you’re interested, have a look at the implementation of the command line option in `Python/pythonmain.c` from the Python source code.)
+Fortunately, the Python interpreter is easily called recursively, and there is a standard interface to call a Python function. (I won’t dwell on how to call the Python parser with a particular string as input — if you’re interested, have a look at the implementation of the `-c` command line option in `Python/pythonmain.c` from the Python source code.)
 
 Calling a Python function is easy. First, the Python program must somehow pass you the Python function object. You should provide a function (or some other interface) to do this. When this function is called, save a pointer to the Python function object (be careful to it!) in a global variable — or wherever you see fit. For example, the following function might be part of a module definition:
 
@@ -469,9 +469,9 @@ Here is an example module which uses keywords, based on an example by Geoff Phil
                                          &voltage, &state, &action, &type))
             return NULL; 
       
-        printf("-- This parrot wouldn't 
+        printf("-- This parrot wouldn't %s if you put %i Volts through it.\n", 
                action, voltage);
-        printf("-- Lovely plumage, the 
+        printf("-- Lovely plumage, the %s -- It's %s!\n", type, state);
 
         Py_INCREF(Py_None);
 

@@ -285,7 +285,7 @@ The basic syntax of the configuration file is simple:
 
 where *command* is one of the Distutils commands (e.g. , ), and *option* is one of the options that command supports. Any number of options can be supplied for each command, and any number of command sections can be included in the file. Blank lines are ignored, as are comments (from a `#` character to end-of-line). Long option values can be split across multiple lines simply by indenting the continuation lines.
 
-You can find out the list of options supported by a particular command with the universal option, e.g.
+You can find out the list of options supported by a particular command with the universal `--help` option, e.g.
 
     > python setup.py --help build_ext
     [...]
@@ -301,13 +301,13 @@ You can find out the list of options supported by a particular command with the 
 
 Or consult section <a href="#reference" data-reference-type="ref" data-reference="reference">9</a> of this document (the command reference).
 
-Note that an option spelled on the command-line is spelled in configuration files.
+Note that an option spelled `--foo-bar` on the command-line is spelled in configuration files.
 
-For example, say you want your extensions to be built “in-place”—that is, you have an extension `pkg.ext`, and you want the compiled extension file (`ext.so` on Unix, say) to be put in the same source directory as your pure Python modules `pkg.mod1` and `pkg.mod2`. You can always use the option on the command-line to ensure this:
+For example, say you want your extensions to be built “in-place”—that is, you have an extension `pkg.ext`, and you want the compiled extension file (`ext.so` on Unix, say) to be put in the same source directory as your pure Python modules `pkg.mod1` and `pkg.mod2`. You can always use the `--inplace` option on the command-line to ensure this:
 
     python setup.py build_ext --inplace
 
-But this requires that you always specify the command explicitly, and remember to provide . An easier way is to “set and forget” this option, by encoding it in `setup.cfg`, the configuration file for this distribution:
+But this requires that you always specify the command explicitly, and remember to provide `--inplace`. An easier way is to “set and forget” this option, by encoding it in `setup.cfg`, the configuration file for this distribution:
 
     [build_ext]
     inplace=1
@@ -341,7 +341,7 @@ As shown in section <a href="#simple-example" data-reference-type="ref" data-re
 | ) | zip file |
 |  |  |
 
-You can specify as many formats as you like using the option, for example:
+You can specify as many formats as you like using the `--formats` option, for example:
 
     python setup.py sdist --formats=gztar,zip
 
@@ -432,9 +432,9 @@ Or, you might just want to (re)generate the manifest, but not create a source di
 
     python setup.py sdist --manifest-only
 
-( implies .)
+(`--manifest-only` implies `--force-manifest`.)
 
-If you don’t want to use the default file set, you can supply the option. If you use and don’t supply a manifest template (or it’s empty, or nothing matches the patterns in it), then your source distribution will be empty.
+If you don’t want to use the default file set, you can supply the `--no-defaults` option. If you use `--no-defaults` and don’t supply a manifest template (or it’s empty, or nothing matches the patterns in it), then your source distribution will be empty.
 
 # Creating Built Distributions
 
@@ -452,7 +452,7 @@ then the Distutils builds my module distribution (the Distutils itself in this c
 
 Thus, the above command on a Unix system creates `Distutils-0.9.1..tar.gz`; unpacking this tarball from the root of the filesystemq installs the Distutils just as though you had downloaded the source distribution and run `python setup.py install`. (Assuming that the target system has their Python installation laid out the same as you do—another reason these are called “dumb” distributions.) Obviously, for pure Python distributions, this isn’t a huge win—but for non-pure distributions, which include extensions that would need to be compiled, it can mean the difference between someone being able to use your extensions or not.
 
-The command has a option, similar to the command, which you can use to select the types of built distribution to generate: for example,
+The command has a `--format` option, similar to the command, which you can use to select the types of built distribution to generate: for example,
 
     python setup.py bdist --format=zip
 
@@ -479,7 +479,7 @@ default on Unix
 \(2\)  
 default on Windows
 
-You don’t have to use the command with the option; you can also use the command that directly implements the format you’re interested in. Some of these “sub-commands” actually generate several similar formats; for instance, the command generates all the “dumb” archive formats (`tar`, `ztar`, `gztar`, and `zip`), and generates both binary and source RPMs. The sub-commands, and the formats generated by each, are:
+You don’t have to use the command with the `--formats` option; you can also use the command that directly implements the format you’re interested in. Some of these “sub-commands” actually generate several similar formats; for instance, the command generates all the “dumb” archive formats (`tar`, `ztar`, `gztar`, and `zip`), and generates both binary and source RPMs. The sub-commands, and the formats generated by each, are:
 
 |                           |                       |
 |:--------------------------|:----------------------|

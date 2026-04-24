@@ -285,7 +285,7 @@ The basic syntax of the configuration file is simple:
 
 where *command* is one of the Distutils commands (e.g. , ), and *option* is one of the options that command supports. Any number of options can be supplied for each command, and any number of command sections can be included in the file. Blank lines are ignored, as are comments (from a `#` character to end-of-line). Long option values can be split across multiple lines simply by indenting the continuation lines.
 
-You can find out the list of options supported by a particular command with the universal option, e.g.
+You can find out the list of options supported by a particular command with the universal `--help` option, e.g.
 
     > python setup.py --help build_ext
     [...]
@@ -301,13 +301,13 @@ You can find out the list of options supported by a particular command with the 
 
 Or consult section <a href="#reference" data-reference-type="ref" data-reference="reference">9</a> of this document (the command reference).
 
-Note that an option spelled on the command-line is spelled in configuration files.
+Note that an option spelled `--foo-bar` on the command-line is spelled in configuration files.
 
-For example, say you want your extensions to be built “in-place”—that is, you have an extension `pkg.ext`, and you want the compiled extension file (`ext.so` on Unix, say) to be put in the same source directory as your pure Python modules `pkg.mod1` and `pkg.mod2`. You can always use the option on the command-line to ensure this:
+For example, say you want your extensions to be built “in-place”—that is, you have an extension `pkg.ext`, and you want the compiled extension file (`ext.so` on Unix, say) to be put in the same source directory as your pure Python modules `pkg.mod1` and `pkg.mod2`. You can always use the `--inplace` option on the command-line to ensure this:
 
     python setup.py build_ext --inplace
 
-But this requires that you always specify the command explicitly, and remember to provide . An easier way is to “set and forget” this option, by encoding it in `setup.cfg`, the configuration file for this distribution:
+But this requires that you always specify the command explicitly, and remember to provide `--inplace`. An easier way is to “set and forget” this option, by encoding it in `setup.cfg`, the configuration file for this distribution:
 
     [build_ext]
     inplace=1
@@ -335,7 +335,7 @@ As shown in section <a href="#simple-example" data-reference-type="ref" data-re
 
 (assuming you haven’t specified any options in the setup script or config file), creates the archive of the default format for the current platform. The default format is gzip’ed tar file (`.tar.gz`) on Unix, and ZIP file on Windows.
 
-You can specify as many formats as you like using the option, for example:
+You can specify as many formats as you like using the `--formats` option, for example:
 
     python setup.py sdist --formats=gztar,zip
 
@@ -386,7 +386,7 @@ The manifest template has one command per line, where each command specifies a s
     recursive-include examples *.txt *.py
     prune examples/sample?/build
 
-The meanings should be fairly clear: include all files in the distribution root matching `*.txt`, all files anywhere under the `examples` directory matching `*.txt` or `*.py`, and exclude all directories matching `examples/sample?/build`. All of this is done *after* the standard include set, so you can exclude files from the standard set with explicit instructions in the manifest template. (Or, you can use the option to disable the standard set entirely.) There are several other commands available in the manifest template mini-language; see section <a href="#sdist-cmd" data-reference-type="ref" data-reference="sdist-cmd">9.4</a>.
+The meanings should be fairly clear: include all files in the distribution root matching `*.txt`, all files anywhere under the `examples` directory matching `*.txt` or `*.py`, and exclude all directories matching `examples/sample?/build`. All of this is done *after* the standard include set, so you can exclude files from the standard set with explicit instructions in the manifest template. (Or, you can use the `--no-defaults` option to disable the standard set entirely.) There are several other commands available in the manifest template mini-language; see section <a href="#sdist-cmd" data-reference-type="ref" data-reference="sdist-cmd">9.4</a>.
 
 The order of commands in the manifest template matters: initially, we have the list of default files as described above, and each command in the template adds to or removes from that list of files. Once we have fully processed the manifest template, we remove files that should not be included in the source distribution:
 
@@ -396,7 +396,7 @@ The order of commands in the manifest template matters: initially, we have the l
 
 Now we have our complete list of files, which is written to the manifest for future reference, and then used to build the source distribution archive(s).
 
-You can disable the default set of included files with the option, and you can disable the standard exclude set with .
+You can disable the default set of included files with the `--no-defaults` option, and you can disable the standard exclude set with `--no-prune`.
 
 Following the Distutils’ own manifest template, let’s trace how the command builds the list of files to include in the Distutils source distribution:
 
@@ -428,7 +428,7 @@ The normal course of operations for the command is as follows:
 
 - use the list of files now in `MANIFEST` (either just generated or read in) to create the source distribution archive(s)
 
-There are a couple of options that modify this behaviour. First, use the and to disable the standard “include” and “exclude” sets.[^4]
+There are a couple of options that modify this behaviour. First, use the `--no-defaults` and `--no-prune` to disable the standard “include” and “exclude” sets.[^4]
 
 Second, you might want to force the manifest to be regenerated—for example, if you have added or removed files or directories that match an existing pattern in the manifest template, you should regenerate the manifest:
 
@@ -438,7 +438,7 @@ Or, you might just want to (re)generate the manifest, but not create a source di
 
     python setup.py sdist --manifest-only
 
-implies . is a shortcut for , and for .
+`--manifest-only` implies `--force-manifest`. `-o` is a shortcut for `--manifest-only`, and `-f` for `--force-manifest`.
 
 # Creating Built Distributions
 
@@ -458,7 +458,7 @@ Thus, the above command on a Unix system creates `Distutils-0.9.1..tar.gz`; unpa
 
 Obviously, for pure Python distributions, this isn’t a huge win—but for non-pure distributions, which include extensions that would need to be compiled, it can mean the difference between someone being able to use your extensions or not. And creating “smart” built distributions, such as an RPM package or an executable installer for Windows, is a big win for users even if your distribution doesn’t include any extensions.
 
-The command has a option, similar to the command, which you can use to select the types of built distribution to generate: for example,
+The command has a `--formats` option, similar to the command, which you can use to select the types of built distribution to generate: for example,
 
     python setup.py bdist --format=zip
 
@@ -496,7 +496,7 @@ requires external utility, version 3.0.4 or better (use `rpm --version` to find 
 
 \(6\)  
 
-You don’t have to use the command with the option; you can also use the command that directly implements the format you’re interested in. Some of these “sub-commands” actually generate several similar formats; for instance, the command generates all the “dumb” archive formats (`tar`, `ztar`, `gztar`, and `zip`), and generates both binary and source RPMs. The sub-commands, and the formats generated by each, are:
+You don’t have to use the command with the `--formats` option; you can also use the command that directly implements the format you’re interested in. Some of these “sub-commands” actually generate several similar formats; for instance, the command generates all the “dumb” archive formats (`tar`, `ztar`, `gztar`, and `zip`), and generates both binary and source RPMs. The sub-commands, and the formats generated by each, are:
 
 |                           |                       |
 |:--------------------------|:----------------------|
@@ -517,7 +517,7 @@ The usual way to create an RPM of your module distribution is to run the command
 
     python setup.py bdist_rpm
 
-or the command with the option:
+or the command with the `--format` option:
 
     python setup.py bdist --formats=rpm
 
@@ -557,9 +557,9 @@ There are three steps to building a binary RPM package, all of which are handled
 
 Normally, RPM bundles the last two steps together; when you use the Distutils, all three steps are typically bundled together.
 
-If you wish, you can separate these three steps. You can use the option to make just create the `.spec` file and exit; in this case, the `.spec` file will be written to the “distribution directory”—normally `dist/`, but customizable with the option. (Normally, the `.spec` file winds up deep in the “build tree,” in a temporary directory created by .)
+If you wish, you can separate these three steps. You can use the `--spec-only` option to make just create the `.spec` file and exit; in this case, the `.spec` file will be written to the “distribution directory”—normally `dist/`, but customizable with the `--dist-dir` option. (Normally, the `.spec` file winds up deep in the “build tree,” in a temporary directory created by .)
 
-You can also specify a custom `.spec` file with the option; used in conjunctin with , this gives you an opportunity to customize the `.spec` file manually:
+You can also specify a custom `.spec` file with the `--spec-file` option; used in conjunctin with `--spec-only`, this gives you an opportunity to customize the `.spec` file manually:
 
     > python setup.py bdist_rpm --spec-only
     # ...edit dist/FooBar-1.0.spec
@@ -649,9 +649,9 @@ The patterns here are Unix-style “glob” patterns: `*` matches any sequence o
 
 [^2]: This ideal probably won’t be achieved until auto-configuration is fully supported by the Distutils.
 
-[^3]: In versions of the Distutils up to and including 0.9.2 (Python 2.0b1), this feature was broken; use the () option to work around the bug.
+[^3]: In versions of the Distutils up to and including 0.9.2 (Python 2.0b1), this feature was broken; use the `-f` (`--force-manifest`) option to work around the bug.
 
-[^4]: Note that if you have no manifest template, no manifest, and use the , you will get an empty manifest. Another bug in Distutils 0.9.2 and earlier causes an uncaught exception in this case. The workaround is: Don’t Do That.
+[^4]: Note that if you have no manifest template, no manifest, and use the `--no-defaults`, you will get an empty manifest. Another bug in Distutils 0.9.2 and earlier causes an uncaught exception in this case. The workaround is: Don’t Do That.
 
 
 {{< python-copyright version="2.0b2" >}}

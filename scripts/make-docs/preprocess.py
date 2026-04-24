@@ -32,7 +32,6 @@ STRIP_ONE_ARG = {
     r'\setcounter', r'\addtolength', r'\setlength',
     r'\vspace', r'\hspace', r'\vskip', r'\hskip',
     r'\enlargethispage',
-    r'\include',   # \include{} is different from \input{}, skip
 }
 
 _expanded: set = set()
@@ -53,10 +52,15 @@ def expand_inputs(text: str, base_dir: str, depth: int = 0) -> str:
     if depth > 10:
         return text
 
+    # Files that produce noise (copyright notices, index files) -- skip them
+    SKIP_FILES = {'copyright', 'copyright.tex', 'ref.ind', 'ref.ind.tex'}
+
     def replace_input(m: re.Match) -> str:
         fname = m.group(1).strip()
         if not fname.endswith('.tex'):
             fname += '.tex'
+        if os.path.basename(fname) in SKIP_FILES:
+            return ''
         full = os.path.join(base_dir, fname)
         if not os.path.exists(full):
             # try just the basename
@@ -66,7 +70,7 @@ def expand_inputs(text: str, base_dir: str, depth: int = 0) -> str:
         sub = read_file(full)
         return expand_inputs(sub, os.path.dirname(full), depth + 1)
 
-    return re.sub(r'\\input\{([^}]+)\}', replace_input, text)
+    return re.sub(r'\\(?:input|include)\{([^}]+)\}', replace_input, text)
 
 
 def fix_verb(text: str) -> str:
@@ -157,10 +161,34 @@ def strip_doc_structure(text: str) -> str:
 
 
 def strip_comments(text: str) -> str:
-    r"""Remove LaTeX line comments (% to end of line), but NOT \%."""
-    # Replace % (not preceded by \) with nothing through end-of-line
-    # Use a negative lookbehind to keep \%
-    return re.sub(r'(?<!\\)%[^\n]*', '', text)
+    r"""Remove LaTeX line comments (% to end of line), skipping \verb content."""
+    result = []
+    i = 0
+    n = len(text)
+    while i < n:
+        # Skip \verb|...| or \verb+...+ content (fix_verb runs first)
+        if text[i:i+5] == r'\verb' and i + 5 < n and text[i + 5] in '|+':
+            delim = text[i + 5]
+            end = text.find(delim, i + 6)
+            if end != -1:
+                result.append(text[i:end + 1])
+                i = end + 1
+                continue
+        # Skip \begin{verbatim}...\end{verbatim}
+        if text[i:i+16] == r'\begin{verbatim}':
+            end = text.find(r'\end{verbatim}', i + 16)
+            if end != -1:
+                result.append(text[i:end + 14])
+                i = end + 14
+                continue
+        # Strip % comment (not preceded by \)
+        if text[i] == '%' and (i == 0 or text[i - 1] != '\\'):
+            while i < n and text[i] != '\n':
+                i += 1
+            continue
+        result.append(text[i])
+        i += 1
+    return ''.join(result)
 
 
 def strip_ifhtml(text: str) -> str:
@@ -323,8 +351,8 @@ def fix_unmatched_braces(text: str) -> str:
 def process(path: str, base_dir: str) -> str:
     text = read_file(path)
     text = expand_inputs(text, base_dir)
-    text = strip_comments(text)
     text = fix_verb(text)
+    text = strip_comments(text)
     text = strip_doc_structure(text)
     text = strip_ifhtml(text)
     text = strip_index_cmds(text)

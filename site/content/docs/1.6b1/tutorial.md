@@ -51,15 +51,15 @@ The interpreter’s line-editing features usually aren’t very sophisticated. O
 
 The interpreter operates somewhat like the Unix shell: when called with standard input connected to a tty device, it reads and executes commands interactively; when called with a file name argument or with a file as standard input, it reads and executes a *script* from that file.
 
-A third way of starting the interpreter is ` `*`command`*` [arg] ...`, which executes the statement(s) in *command*, analogous to the shell’s option. Since Python statements often contain spaces or other characters that are special to the shell, it is best to quote *command* in its entirety with double quotes.
+A third way of starting the interpreter is ` ``-c`` `*`command`*` [arg] ...`, which executes the statement(s) in *command*, analogous to the shell’s `-c` option. Since Python statements often contain spaces or other characters that are special to the shell, it is best to quote *command* in its entirety with double quotes.
 
 Note that there is a difference between `python file` and `python <file`. In the latter case, input requests from the program, such as calls to `input()` and `raw_input()`, are satisfied from *file*. Since this file has already been read until the end by the parser before the program starts executing, the program will encounter EOF immediately. In the former case (which is usually what you want) they are satisfied from whatever file or device is connected to standard input of the Python interpreter.
 
-When a script file is used, it is sometimes useful to be able to run the script and enter interactive mode afterwards. This can be done by passing before the script. (This does not work if the script is read from standard input, for the same reason as explained in the previous paragraph.)
+When a script file is used, it is sometimes useful to be able to run the script and enter interactive mode afterwards. This can be done by passing `-i` before the script. (This does not work if the script is read from standard input, for the same reason as explained in the previous paragraph.)
 
 ### Argument Passing <span id="argPassing" label="argPassing"></span>
 
-When known to the interpreter, the script name and additional arguments thereafter are passed to the script in the variable `sys.argv`, which is a list of strings. Its length is at least one; when no script and no arguments are given, `sys.argv[0]` is an empty string. When the script name is given as `’-’` (meaning standard input), `sys.argv[0]` is set to `’-’`. When *command* is used, `sys.argv[0]` is set to `’-c’`. Options found after *command* are not consumed by the Python interpreter’s option processing but left in `sys.argv` for the command to handle.
+When known to the interpreter, the script name and additional arguments thereafter are passed to the script in the variable `sys.argv`, which is a list of strings. Its length is at least one; when no script and no arguments are given, `sys.argv[0]` is an empty string. When the script name is given as `’-’` (meaning standard input), `sys.argv[0]` is set to `’-’`. When `-c` *command* is used, `sys.argv[0]` is set to `’-c’`. Options found after `-c` *command* are not consumed by the Python interpreter’s option processing but left in `sys.argv` for the command to handle.
 
 ### Interactive Mode <span id="interactive" label="interactive"></span>
 
@@ -624,7 +624,7 @@ Loop statements may have an `else` clause; it is executed when the loop terminat
 
     >>> for n in range(2, 10):
     ...     for x in range(2, n):
-    ...         if n 
+    ...         if n % x == 0:
     ...            print n, 'equals', x, '*', n/x
     ...            break
     ...     else:
@@ -820,7 +820,7 @@ and of course it would print:
 Finally, the least frequently used option is to specify that a function can be called with an arbitrary number of arguments. These arguments will be wrapped up in a tuple. Before the variable number of arguments, zero or more normal arguments may occur.
 
     def fprintf(file, format, *args):
-        file.write(format 
+        file.write(format % args)
 
 ### Lambda Forms <span id="lambda" label="lambda"></span>
 
@@ -948,7 +948,7 @@ There are three built-in functions that are very useful when used with lists: `f
 
 `filter(`*`function`*`, `*`sequence`*`)` returns a sequence (of the same type, if possible) consisting of those items from the sequence for which *`function`*`(`*`item`*`)` is true. For example, to compute some primes:
 
-    >>> def f(x): return x 
+    >>> def f(x): return x % 2 != 0 and x % 3 != 0
     ...
     >>> filter(f, range(2, 25))
     [5, 7, 11, 13, 17, 19, 23]
@@ -1194,17 +1194,17 @@ Normally, you don’t need to do anything to create the `spam.pyc` file. Wheneve
 
 Some tips for experts:
 
-- When the Python interpreter is invoked with the flag, optimized code is generated and stored in `.pyo` files. The optimizer currently doesn’t help much; it only removes statements and `SET_LINENO` instructions. When is used, *all* bytecode is optimized; `.pyc` files are ignored and `.py` files are compiled to optimized bytecode.
+- When the Python interpreter is invoked with the `-O` flag, optimized code is generated and stored in `.pyo` files. The optimizer currently doesn’t help much; it only removes statements and `SET_LINENO` instructions. When `-O` is used, *all* bytecode is optimized; `.pyc` files are ignored and `.py` files are compiled to optimized bytecode.
 
-- Passing two flags to the Python interpreter () will cause the bytecode compiler to perform optimizations that could in some rare cases result in malfunctioning programs. Currently only `__doc__` strings are removed from the bytecode, resulting in more compact `.pyo` files. Since some programs may rely on having these available, you should only use this option if you know what you’re doing.
+- Passing two `-O` flags to the Python interpreter (`-OO`) will cause the bytecode compiler to perform optimizations that could in some rare cases result in malfunctioning programs. Currently only `__doc__` strings are removed from the bytecode, resulting in more compact `.pyo` files. Since some programs may rely on having these available, you should only use this option if you know what you’re doing.
 
 - A program doesn’t run any faster when it is read from a `.pyc` or `.pyo` file than when it is read from a `.py` file; the only thing that’s faster about `.pyc` or `.pyo` files is the speed with which they are loaded.
 
 - When a script is run by giving its name on the command line, the bytecode for the script is never written to a `.pyc` or `.pyo` file. Thus, the startup time of a script may be reduced by moving most of its code to a module and having a small bootstrap script that imports that module.
 
-- It is possible to have a file called `spam.pyc` (or `spam.pyo` when is used) without a module `spam.py` in the same module. This can be used to distribute a library of Python code in a form that is moderately hard to reverse engineer.
+- It is possible to have a file called `spam.pyc` (or `spam.pyo` when `-O` is used) without a module `spam.py` in the same module. This can be used to distribute a library of Python code in a form that is moderately hard to reverse engineer.
 
-- The module `compileall`can create `.pyc` files (or `.pyo` files when is used) for all modules in a directory.
+- The module `compileall`can create `.pyc` files (or `.pyo` files when `-O` is used) for all modules in a directory.
 
 ## Standard Modules <span id="standardModules" label="standardModules"></span>
 
@@ -1401,7 +1401,7 @@ Here are two ways to write a table of squares and cubes:
      9  81  729
     10 100 1000
     >>> for x in range(1,11):
-    ...     print '
+    ...     print '%2d %3d %4d' % (x, x*x, x*x*x)
     ... 
      1   1    1
      2   4    8
@@ -1431,14 +1431,14 @@ There is another function, `string.zfill()`, which pads a numeric string on the 
 Using the `%` operator looks like this:
 
     >>> import math
-    >>> print 'The value of PI is approximately 
+    >>> print 'The value of PI is approximately %5.3f.' % math.pi
     The value of PI is approximately 3.142.
 
 If there is more than one format in the string you pass a tuple as right operand, e.g.
 
     >>> table = {'Sjoerd': 4127, 'Jack': 4098, 'Dcab': 7678}
     >>> for name, phone in table.items():
-    ...     print '
+    ...     print '%-10s ==> %10d' % (name, phone)
     ... 
     Jack       ==>       4098
     Dcab       ==>       7678
@@ -1449,7 +1449,7 @@ Most formats work exactly as in C and require that you pass the proper type; how
 If you have a really long format string that you don’t want to split up, it would be nice if you could reference the variables to be formatted by name instead of by position. This can be done by using an extension of C formats using the form `%(name)format`, e.g.
 
     >>> table = {'Sjoerd': 4127, 'Jack': 4098, 'Dcab': 8637678}
-    >>> print 'Jack: 
+    >>> print 'Jack: %(Jack)d; Sjoerd: %(Sjoerd)d; Dcab: %(Dcab)d' % table
     Jack: 4098; Sjoerd: 4127; Dcab: 8637678
 
 This is particularly useful in combination with the new built-in `vars()` function, which returns a dictionary containing all local variables.
@@ -1611,7 +1611,7 @@ The last except clause may omit the exception name(s), to serve as a wildcard. U
         s = f.readline()
         i = int(string.strip(s))
     except IOError, (errno, strerror):
-        print "I/O error(
+        print "I/O error(%s): %s" % (errno, strerror)
     except ValueError:
         print "Could not convert data to an integer."
     except:

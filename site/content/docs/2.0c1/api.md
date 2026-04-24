@@ -2805,13 +2805,13 @@ char\*Py_GetProgramName Return the program name set with , or the default. The r
 
 <div class="cfuncdesc">
 
-char\*Py_GetPrefix Return the *prefix* for installed platform-independent files. This is derived through a number of complicated rules from the program name set with and some environment variables; for example, if the program name is `’/usr/local/bin/python’`, the prefix is `’/usr/local’`. The returned string points into static storage; the caller should not modify its value. This corresponds to the variable in the top-level `Makefile` and the argument to the script at build time. The value is available to Python code as `sys.prefix`. It is only useful on Unix. See also the next function.
+char\*Py_GetPrefix Return the *prefix* for installed platform-independent files. This is derived through a number of complicated rules from the program name set with and some environment variables; for example, if the program name is `’/usr/local/bin/python’`, the prefix is `’/usr/local’`. The returned string points into static storage; the caller should not modify its value. This corresponds to the variable in the top-level `Makefile` and the `--prefix` argument to the script at build time. The value is available to Python code as `sys.prefix`. It is only useful on Unix. See also the next function.
 
 </div>
 
 <div class="cfuncdesc">
 
-char\*Py_GetExecPrefix Return the *exec-prefix* for installed platform-*de*pendent files. This is derived through a number of complicated rules from the program name set with and some environment variables; for example, if the program name is `’/usr/local/bin/python’`, the exec-prefix is `’/usr/local’`. The returned string points into static storage; the caller should not modify its value. This corresponds to the variable in the top-level `Makefile` and the argument to the script at build time. The value is available to Python code as `sys.exec_prefix`. It is only useful on Unix.
+char\*Py_GetExecPrefix Return the *exec-prefix* for installed platform-*de*pendent files. This is derived through a number of complicated rules from the program name set with and some environment variables; for example, if the program name is `’/usr/local/bin/python’`, the exec-prefix is `’/usr/local’`. The returned string points into static storage; the caller should not modify its value. This corresponds to the variable in the top-level `Makefile` and the `--exec-prefix` argument to the script at build time. The value is available to Python code as `sys.exec_prefix`. It is only useful on Unix.
 
 Background: The exec-prefix differs from the prefix when platform dependent files (such as executables and shared libraries) are installed in a different directory tree. In a typical installation, platform dependent files may be installed in the `/usr/local/plat` subtree while platform independent may be installed in `/usr/local`.
 

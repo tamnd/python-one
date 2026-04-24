@@ -3,20 +3,6 @@ title: "Tutorial"
 weight: 10
 ---
 
-Copyright © 1991-1995 by Stichting Mathematisch Centrum, Amsterdam, The Netherlands.
-
-<div class="center">
-
-All Rights Reserved
-
-</div>
-
-Permission to use, copy, modify, and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appear in all copies and that both that copyright notice and this permission notice appear in supporting documentation, and that the names of Stichting Mathematisch Centrum or CWI or Corporation for National Research Initiatives or CNRI not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission.
-
-While CWI is the initial source for this software, a modified version is made available by the Corporation for National Research Initiatives (CNRI) at the Internet address ftp://ftp.python.org.
-
-STICHTING MATHEMATISCH CENTRUM AND CNRI DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM OR CNRI BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
 # Whetting Your Appetite
 
 ## Disclaimer
@@ -553,7 +539,7 @@ Loop statements may have an `else` clause; it is executed when the loop terminat
 
     >>> for n in range(2, 10):
     ...     for x in range(2, n):
-    ...         if n 
+    ...         if n % x == 0:
     ...            print n, 'equals', x, '*', n/x
     ...            break
     ...     else:
@@ -994,7 +980,7 @@ Here are two ways to write a table of squares and cubes:
      9  81  729
     10 100 1000
     >>> for x in range(1,11):
-    ...     print '
+    ...     print '%2d %3d %4d' % (x, x*x, x*x*x)
     ... 
      1   1    1
      2   4    8
@@ -1485,7 +1471,7 @@ One final twist: you can juxtapose multiple string literals. Two or more adjacen
 The chapter on output formatting is really out of date: there is now an almost complete interface to C-style printf formats. This is done by overloading the modulo operator (`%`) for a left operand which is a string, e.g.
 
             >>> import math
-            >>> print 'The value of PI is approximately 
+            >>> print 'The value of PI is approximately %5.3f.' % math.pi
             The value of PI is approximately 3.142.
             >>> 
 
@@ -1493,7 +1479,7 @@ If there is more than one format in the string you pass a tuple as right operand
 
             >>> table = {'Sjoerd': 4127, 'Jack': 4098, 'Dcab': 8637678}
             >>> for name, phone in table.items():
-            ...     print '
+            ...     print '%-10s ==> %10d' % (name, phone)
             ... 
             Jack       ==>       4098
             Dcab       ==>    8637678
@@ -1507,7 +1493,7 @@ Most formats work exactly as in C and require that you pass the proper type (how
 If you have a really long format string that you don’t want to split up, it would be nice if you could reference the variables to be formatted by name instead of by position. This can be done by using an extension of C formats using the form `%(name)format`, e.g.
 
             >>> table = {'Sjoerd': 4127, 'Jack': 4098, 'Dcab': 8637678}
-            >>> print 'Jack: 
+            >>> print 'Jack: %(Jack)d; Sjoerd: %(Sjoerd)d; Dcab: %(Dcab)d' % table
             Jack: 4098; Sjoerd: 4127; Dcab: 8637678
             >>> 
 
@@ -1546,7 +1532,7 @@ will print `5`.
 It is also possible to specify that a function can be called with an arbitrary number of arguments. These arguments will be wrapped up in a tuple. Before the variable number of arguments, zero or more normal arguments may occur, e.g.
 
             def fprintf(file, format, *args):
-                    file.write(format 
+                    file.write(format % args)
 
 This feature may be combined with the previous, e.g.
 
@@ -1587,7 +1573,7 @@ Combining these two special cases, we see that `map(None, list1, list2)` is a co
 
 `filter(function, sequence)` returns a sequence (of the same type, if possible) consisting of those items from the sequence for which `function(item)` is true. For example, to compute some primes:
 
-            >>> filter(lambda x: x
+            >>> filter(lambda x: x%2 != 0 and x%3 != 0, range(2, 25))
             [5, 7, 11, 13, 17, 19, 23]
             >>>
 

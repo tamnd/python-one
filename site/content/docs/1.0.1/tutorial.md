@@ -531,7 +531,7 @@ Loop statements may have an `else` clause; it is executed when the loop terminat
 
     >>> for n in range(2, 10):
     ...     for x in range(2, n):
-    ...         if n 
+    ...         if n % x == 0:
     ...            print n, 'equals', x, '*', n/x
     ...            break
     ...     else:
@@ -972,7 +972,7 @@ Here are two ways to write a table of squares and cubes:
      9  81  729
     10 100 1000
     >>> for x in range(1,11):
-    ...     print '
+    ...     print '%2d %3d %4d' % (x, x*x, x*x*x)
     ... 
      1   1    1
      2   4    8

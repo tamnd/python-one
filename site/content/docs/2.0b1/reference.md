@@ -270,7 +270,7 @@ An imaginary literal yields a complex number with a real part of 0.0. Complex nu
 
 The following tokens are operators:
 
-    +       -       *       **      /       
+    +       -       *       **      /       %
     <<      >>      &       |       ^       ~
     <       >       <=      >=      ==      !=      <>
 
@@ -282,7 +282,7 @@ The following tokens serve as delimiters in the grammar:
 
     (       )       [       ]       {       }
     ,       :       .       `       =       ;
-    +=      -=      *=      /=      
+    +=      -=      *=      /=      %=      **=
     &=      |=      ^=      >>=     <<=
 
 The period can also occur in floating-point and imaginary literals. A sequence of three periods has a special meaning as an ellipsis in slices. The second half of the list, the augmented assignment operators, serve lexically as delimiters, but also perform an operation.
@@ -899,7 +899,7 @@ The unary `-` (minus) operator yields the negation of its numeric argument. The 
 The binary arithmetic operations have the conventional priority levels. Note that some of these operations also apply to certain non-numeric types. Apart from the power operator, there are only two levels, one for multiplicative operators and one for additive operators:
 
     m_expr:         u_expr | m_expr "*" u_expr
-                  | m_expr "/" u_expr | m_expr "
+                  | m_expr "/" u_expr | m_expr "%" u_expr
     a_expr:         m_expr | aexpr "+" m_expr | aexpr "-" m_expr
 
 The `*` (multiplication) operator yields the product of its arguments. The arguments must either both be numbers, or one argument must be a plain integer and the other must be a sequence. In the former case, the numbers are converted to a common type and then multiplied together. In the latter case, sequence repetition is performed; a negative repetition factor yields an empty sequence. The `/` (division) operator yields the quotient of its arguments. The numeric arguments are first converted to a common type. Plain or long integer division yields an integer of the same type; the result is that of mathematical division with the ‘floor’ function applied to the result. Division by zero raises the `ZeroDivisionError` exception. The `%` (modulo) operator yields the remainder from the division of the first argument by the second. The numeric arguments are first converted to a common type. A zero right argument raises the `ZeroDivisionError` exception. The arguments may be floating point numbers, e.g., `3.14%0.7` equals `0.34` (since `3.14` equals `4*0.7 + 0.34`.) The modulo operator always yields a result with the same sign as its second operand (or zero); the absolute value of the result is strictly smaller than the second operand. The integer division and modulo operators are connected by the following identity: `x == (x/y)*y + (x%y)`. Integer division and modulo are also connected with the built-in function `divmod()`: `divmod(x, y) == (x/y, x%y)`. These identities don’t hold for floating point and complex numbers; there similar identities hold approximately where `x/y` is replaced by `floor(x/y)`) or `floor(x/y) - 1` (for floats),[^3] or `floor((x/y).real)` (for complex).
@@ -1355,7 +1355,7 @@ The Python interpreter can get its input from a number of sources: from a script
 
 While a language specification need not prescribe how the language interpreter is invoked, it is useful to have a notion of a complete Python program. A complete Python program is executed in a minimally initialized environment: all built-in and standard modules are available, but none have been initialized, except for `sys` (various system services), `__builtin__` (built-in functions, exceptions and `None`) and `__main__`. The latter is used to provide the local and global namespace for execution of the complete program. The syntax for a complete Python program is that for file input, described in the next section.
 
-The interpreter may also be invoked in interactive mode; in this case, it does not read and execute a complete program but reads and executes one statement (possibly compound) at a time. The initial environment is identical to that of a coplete program; each statement is executed in the namespace of `__main__`. Under Unix, a complete program can be passed to the interpreter in three forms: with the *string* command line option, as a file passed as the first command line argument, or as standard input. If the file or standard input is a tty device, the interpreter enters interactive mode; otherwise, it executes the file as a complete program.
+The interpreter may also be invoked in interactive mode; in this case, it does not read and execute a complete program but reads and executes one statement (possibly compound) at a time. The initial environment is identical to that of a coplete program; each statement is executed in the namespace of `__main__`. Under Unix, a complete program can be passed to the interpreter in three forms: with the `-c` *string* command line option, as a file passed as the first command line argument, or as standard input. If the file or standard input is a tty device, the interpreter enters interactive mode; otherwise, it executes the file as a complete program.
 
 ## File input<span id="file-input" label="file-input"></span>
 

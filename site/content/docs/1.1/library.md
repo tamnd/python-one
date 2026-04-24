@@ -3,18 +3,6 @@ title: "Library Reference"
 weight: 20
 ---
 
-Copyright 1991, 1992, 1993, 1994 by Stichting Mathematisch Centrum, Amsterdam, The Netherlands.
-
-<div class="center">
-
-All Rights Reserved
-
-</div>
-
-Permission to use, copy, modify, and distribute this software and its documentation for any purpose and without fee is hereby granted, provided that the above copyright notice appear in all copies and that both that copyright notice and this permission notice appear in supporting documentation, and that the names of Stichting Mathematisch Centrum or CWI not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission.
-
-STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
 # Introduction
 
 The Python library consists of three parts, with different levels of integration with the interpreter. Closest to the interpreter are built-in types, exceptions and functions. Next are built-in modules, which are written in C and linked statically with the interpreter. Finally there are standard modules that are implemented entirely in Python, but are always available. For efficiency, some standard modules may become built-in modules in future versions of the interpreter.
@@ -169,7 +157,7 @@ If the right argument is a dictionary (or any kind of mapping), then the formats
 
         >>> count = 2
         >>> language = 'Python'
-        >>> print '
+        >>> print '%(language)s has %(count)03d quote types.' % vars()
         Python has 002 quote types.
         >>> 
 
@@ -793,7 +781,7 @@ xrange end This function is very similar to `range()`, but returns an “xrange 
 
 The modules described in this chapter are built into the interpreter and considered part of Python’s standard environment: they are always available.[^7]
 
-## Built-in Module 
+## Built-in Module `sys`
 
 This module provides access to some variables used or maintained by the interpreter and to functions that interact strongly with the interpreter. It is always available.
 
@@ -881,15 +869,15 @@ tracebacklimit When this variable is set to an integer value, it determines the 
 
 </div>
 
-## Built-in Module 
+## Built-in Module `__builtin__`
 
 This module provides direct access to all ‘built-in’ identifier of Python; e.g. `__builtin__.open` is the full name for the built-in function `open`.
 
-## Built-in Module 
+## Built-in Module `__main__`
 
 This module represents the (otherwise anonymous) scope in which the interpreter’s main program executes — commands read either from standard input or from a script file.
 
-## Built-in module 
+## Built-in module `array`
 
 This module defines a new object type which can efficiently represent an array of basic values: characters, integers, floating point numbers. Arrays are sequence types and behave very much like lists, except that the type of objects stored in them is constrained. The type is specified at object creation time by using a *type code*, which is a single character. The following type codes are defined:
 
@@ -989,7 +977,7 @@ When an array object is printed or converted to a string, it is represented as `
     array('l', [1, 2, 3, 4, 5])
     array('d', [1.0, 2.0, 3.14])
 
-## Built-in Module 
+## Built-in Module `math`
 
 This module is always available. It provides access to the mathematical functions defined by the C standard. They are:
 
@@ -1013,7 +1001,7 @@ pi
 
 `pi` and `e`.
 
-## Built-in Module 
+## Built-in Module `time`
 
 This module provides various time-related functions. It is always available.
 
@@ -1101,7 +1089,7 @@ tzname A tuple of two strings: the first is the name of the local non-DST timezo
 
 </div>
 
-## Built-in Module 
+## Built-in Module `regex`
 
 This module provides regular expression matching operations similar to those found in Emacs. It is always available.
 
@@ -1232,7 +1220,7 @@ groupindex A dictionary giving the mapping from symbolic group names to numerica
 
 </div>
 
-## Built-in Module 
+## Built-in Module `marshal`
 
 This module contains functions that can read and write Python values in a binary format. The format is specific to Python, but independent of machine architecture issues (e.g., you can write a Python value to a file on a VAX, transport the file to a Mac, and read it back there). Details of the format not explained here; read the source if you’re interested. [^8]
 
@@ -1268,7 +1256,7 @@ loadsstring Convert the string to a value. If no valid value is found, raise `EO
 
 </div>
 
-## Built-in module 
+## Built-in module `struct`
 
 This module performs conversions between Python values and C structs represented as Python strings. It uses *format strings* (explained below) as compact descriptions of the lay-out of the C structs and the intended conversion to/from Python values.
 
@@ -1330,7 +1318,7 @@ Hint: to align the end of a structure to the alignment requirement of a particul
 
 The modules described in this chapter are implemented in Python, but are considered to be a part of Python’s standard environment: they are always available.[^9]
 
-## Standard Module 
+## Standard Module `getopt`
 
 This module helps scripts to parse the command line arguments in `sys.argv`. It uses the same conventions as the Unix `getopt()` function. It defines the function `getopt.getopt(args, options)` and the exception `getopt.error`.
 
@@ -1349,7 +1337,7 @@ The first argument to `getopt()` is the argument list passed to the script with 
 
 The exception `getopt.error = ’getopt error’` is raised when an unrecognized option is found in the argument list or when an option requiring an argument is given none. The argument to the exception is a string indicating the cause of the error.
 
-## Standard Module 
+## Standard Module `os`
 
 This module provides a more portable way of using operating system (OS) dependent functionality than importing an OS dependent built-in module like `posix`.
 
@@ -1415,7 +1403,7 @@ execvppath  arg0  arg1  ... `execvp` is for `execv` what `execlp` is for `
 
 </div>
 
-## Standard Module 
+## Standard Module `rand`
 
 This module implements a pseudo-random number generator with an interface similar to `rand()` in C. It defines the following functions:
 
@@ -1437,7 +1425,7 @@ srandseed Initializes the random number generator with the given integral seed. 
 
 </div>
 
-## Standard Module 
+## Standard Module `regsub`
 
 This module defines a number of functions useful for working with regular expressions (see built-in module `regex`).
 
@@ -1459,7 +1447,7 @@ splitstr  pat Split the string *str* in fields separated by delimiters matchin
 
 </div>
 
-## Standard Module 
+## Standard Module `string`
 
 This module defines some constants useful for checking character classes, some exceptions, and some useful string functions. The constants are:
 
@@ -1623,7 +1611,7 @@ zfills  width Pad a numeric string on the left with zero digits until the give
 
 </div>
 
-## Standard Module 
+## Standard Module `whrandom`
 
 This module implements a Wichmann-Hill pseudo-random number generator. It defines the following functions:
 
@@ -1639,7 +1627,7 @@ seedx  y  z Initializes the random number generator from the integers *x*, *
 
 </div>
 
-## Standard Module 
+## Standard Module `aifc`
 
 This module provides support for reading and writing AIFF and AIFF-C files. AIFF is Audio Interchange File Format, a format for storing digital audio samples in a file. AIFF-C is a newer version of the format that includes the ability to compress the audio data.
 
@@ -1823,7 +1811,7 @@ close Close the AIFF file. The header of the file is updated to reflect the actu
 
 The modules described in this chapter provide interfaces to features that are unique to the UNIX operating system, or in some cases to some or many variants of it.
 
-## Built-in Module 
+## Built-in Module `dbm`
 
 Dbm provides python programs with an interface to the unix `ndbm` database library. Dbm objects are of the mapping type, so they can be handled just like objects of the built-in *dictionary* type, except that keys and values are always strings, and printing a dbm object doesn’t print the keys and values.
 
@@ -1841,7 +1829,7 @@ openfilename  rwmode  filemode Open a dbm database and return a mapping obje
 
 </div>
 
-## Built-in module 
+## Built-in module `fcntl`
 
 This module performs file control and IO control on file descriptors. It is an interface to the *fcntl()* and *ioctl()* Unixroutines. File descriptors can be obtained with the *fileno()* method of a file or socket object.
 
@@ -1873,7 +1861,7 @@ Examples (all on a SVR4 compliant system):
 
 Note that in the first example the return value variable `rv` will hold an integer value; in the second example it will hold a string value.
 
-## Built-in Module 
+## Built-in Module `gdbm`
 
 Gdbm provides python programs with an interface to the GNU `gdbm` database library. Gdbm objects are of the mapping type, so they can be handled just like objects of the built-in *dictionary* type, except that keys and values are always strings, and printing a gdbm object doesn’t print the keys and values.
 
@@ -1893,7 +1881,7 @@ openfilename  rwmode  filemode Open a gdbm database and return a mapping obj
 
 </div>
 
-## Built-in Module 
+## Built-in Module `grp`
 
 This module provides access to the Unix group database. It is available on all Unix versions.
 
@@ -1919,7 +1907,7 @@ getgrall Return a list of all available group entries entries, in arbitrary orde
 
 </div>
 
-## Built-in Module 
+## Built-in Module `posix`
 
 This module provides access to operating system functionality that is standardized by the C Standard and the POSIX standard (a thinly diguised Unix interface). It is available in all Python versions except on the Macintosh; the MS-DOS version does not support certain functions. The descriptions below are very terse; refer to the corresponding Unix manual entry for more information.
 
@@ -2215,7 +2203,7 @@ writefd  str Write the string *str* to file descriptor *fd*. Return the number
 
 </div>
 
-## Standard Module 
+## Standard Module `posixfile`
 
 This module implements some additional functionality over the built-in file objects. In particular, it implements file locking, control over the file flags, and an easy interface to duplicate the file object. The module defines a new file object, the posixfile object. It inherits all the standard file object methods and adds the methods described below.
 
@@ -2346,7 +2334,7 @@ Examples:
     file.lock('u')
     file.close()
 
-## Standard Module 
+## Standard Module `posixpath`
 
 This module implements some useful functions on POSIX pathnames.
 
@@ -2446,7 +2434,7 @@ walkp  visit  arg Calls the function *visit* with arguments `(`*`arg`*`, `*`
 
 </div>
 
-## Built-in Module 
+## Built-in Module `pwd`
 
 This module provides access to the Unix password database. It is available on all Unix versions.
 
@@ -2472,7 +2460,7 @@ getpwall Return a list of all available password database entries, in arbitrary 
 
 </div>
 
-## Built-in module 
+## Built-in module `select`
 
 This module provides access to the function `select` available in most Unix versions. It defines the following:
 
@@ -2492,7 +2480,7 @@ Amongst the acceptable object types in the lists are Python file objects (e.g. `
 
 </div>
 
-## Built-in Module 
+## Built-in Module `socket`
 
 This module provides access to the BSD *socket* interface. It is available on Unix systems that support this interface.
 
@@ -2694,7 +2682,7 @@ Here are two minimal example programs using the TCP/IP protocol: a server that e
     s.close()
     print 'Received', `data`
 
-## Built-in Module 
+## Built-in Module `thread`
 
 This module provides low-level primitives for working with multiple threads (a.k.a. *light-weight processes* or *tasks*) — multiple threads of control sharing their global data space. For synchronization, simple locks (a.k.a. *mutexes* or *binary semaphores*) are provided.
 
@@ -2770,7 +2758,7 @@ locked Return the status of the lock: 1 if it has been acquired by some thread, 
 
 The modules described in this chapter implement various algorithms that are mainly useful for multimedia applications. They are available at the discretion of the installation.
 
-## Built-in module 
+## Built-in module `audioop`
 
 The audioop module contains some useful operations on sound fragments. It operates on sound fragments consisting of signed integer samples of 8, 16 or 32 bits wide, stored in Python strings. This is the same format as used by the `al` and `sunaudiodev` modules. All scalar items are integers, unless specified otherwise.
 
@@ -2976,7 +2964,7 @@ The `find...` routines might look a bit funny at first sight. They are primarily
         outputdata = prefill + audioop.mul(outputdata,2,-factor) + postfill
         return audioop.add(inputdata, outputdata, 2)
 
-## Built-in module 
+## Built-in module `imageop`
 
 The imageop module contains some useful operations on images. It operates on images consisting of 8 or 32 bit pixels stored in python strings. This is the same format as used by `gl.lrectwrite` and the `imgfile` module.
 
@@ -3054,7 +3042,7 @@ grey22greyimage  width  height Convert a 2-bit greyscale image to an 8-bit g
 
 </div>
 
-## Built-in Module 
+## Built-in Module `jpeg`
 
 The module jpeg provides access to the jpeg compressor and decompressor written by the Independent JPEG Group. JPEG is a (draft?) standard for compressing pictures. For details on jpeg or the Independent JPEG Group software refer to the JPEG standard or the documentation provided with the software.
 
@@ -3092,7 +3080,7 @@ Perform inter-block smoothing on uncompressed image. Only useful for low-quality
 
 Compress and uncompress raise the error jpeg.error in case of errors.
 
-## Built-in module 
+## Built-in module `rgbimg`
 
 The rgbimg module allows python programs to access SGI imglib image files (also known as `.rgb` files). The module is far from complete, but is provided anyway since the functionality that there is is enough in some cases. Currently, colormap files are not supported.
 
@@ -3132,7 +3120,7 @@ ttobflag This function sets a global flag which defines whether the scan lines o
 
 The modules described in this chapter implement various algorithms of a cryptographic nature. They are available at the discretion of the installation.
 
-## Built-in module 
+## Built-in module `md5`
 
 This module implements the interface to RSA’s MD5 message digest algorithm (see also the file `md5.doc`). Its use is quite straightforward: use the function `md5` to create an *md5*-object. You can now “feed” this object with arbitrary strings.
 
@@ -3177,7 +3165,7 @@ copy Return a separate copy of this md5-object. An `update` to this copy won’t
 
 </div>
 
-## Built-in module 
+## Built-in module `mpz`
 
 This module implements the interface to part of the GNU MP library. This library contains arbitrary precision integer and rational number arithmetic routines. Only the interfaces to the *integer* (`mpz_``…`) routines are provided. If not stated otherwise, the description in the GNU MP documentation can be applied.
 
@@ -3239,7 +3227,7 @@ The mpz-number must have a value greater than- or equal to zero, otherwise a `Va
 
 </div>
 
-## Built-in module 
+## Built-in module `rotor`
 
 This module implements a rotor-based encryption algorithm, contributed by Lance Ellinghouse. The design is derived from the Enigma device, a machine used during World War II to encipher messages. A rotor is simply a permutation. For example, if the character ‘A’ is the origin of the rotor, then a given rotor might map ‘A’ to ‘L’, ‘B’ to ‘Z’, ‘C’ to ‘G’, and so on. To encrypt, we choose several different rotors, and set the origins of the rotors to known positions; their initial position is the ciphering key. To encipher a character, we permute the original character by the first rotor, and then apply the second rotor’s permutation to the result. We continue until we’ve applied all the rotors; the resulting character is our ciphertext. We then change the origin of the final rotor by one position, from ‘A’ to ‘B’; if the final rotor has made a complete revolution, then we rotate the next-to-last rotor by one position, and apply the same procedure recursively. In other words, after enciphering one character, we advance the rotors in the same fashion as a car’s odometer. Decoding works in the same way, except we reverse the permutations and apply them in the opposite order. The available functions in this module are:
 
@@ -3303,7 +3291,7 @@ The module’s code is not an exact simulation of the original Enigma device; it
 
 The original Enigma cipher was broken in 1944. The version implemented here is probably a good deal more difficult to crack (especially if you use many rotors), but it won’t be impossible for a truly skilful and determined attacker to break the cipher. So if you want to keep the NSA out of your files, this rotor cipher may well be unsafe, but for discouraging casual snooping through your files, it will probably be just fine, and may be somewhat safer than using the Unix `crypt` command.
 
-## Built-in Module 
+## Built-in Module `amoeba`
 
 This module provides some object types and operations useful for Amoeba applications. It is only available on systems that support Amoeba operations. RPC errors and other Amoeba errors are reported as the exception `amoeba.error = ’amoeba.error’`.
 
@@ -3405,13 +3393,13 @@ tod_settimet Sets the time kept by a time server.
 
 The following modules are available on the Apple Macintosh only.
 
-## Built-in module 
+## Built-in module `mac`
 
 This module provides a subset of the operating system dependent functionality provided by the optional built-in module `posix`. It is best accessed through the more portable standard module `os`.
 
 The following functions are available in this module: `chdir`, `getcwd`, `listdir`, `mkdir`, `rename`, `rmdir`, `stat`, `sync`, `unlink`, as well as the exception `error`.
 
-## Standard module 
+## Standard module `macpath`
 
 This module provides a subset of the pathname manipulation functions available from the optional standard module `posixpath`. It is best accessed through the more portable standard module `os`, as `os.path`.
 
@@ -3419,13 +3407,13 @@ The following functions are available in this module: `normcase`, `isabs`, `join
 
 # STDWIN ONLY
 
-## Built-in Module 
+## Built-in Module `stdwin`
 
 This module defines several new object types and functions that provide access to the functionality of the Standard Window System Interface, STDWIN \[CWI report CR-R8817\]. It is available on systems to which STDWIN has been ported (which is most systems). It is only available if the `DISPLAY` environment variable is set or an explicit `-display `*`displayname`* argument is passed to the interpreter.
 
 Functions have names that usually resemble their C STDWIN counterparts with the initial ‘w’ dropped. Points are represented by pairs of integers; rectangles by pairs of points. For a complete description of STDWIN please refer to the documentation of STDWIN for C programmers (aforementioned CWI report).
 
-### Functions Defined in Module 
+### Functions Defined in Module `stdwin`
 
 The following functions are defined in the `stdwin` module:
 
@@ -4081,14 +4069,14 @@ Here is a minimal example of using STDWIN in Python. It creates a window and dra
 
     main()
 
-## Standard Module 
+## Standard Module `stdwinevents`
 
 This module defines constants used by STDWIN for event types (`WE_ACTIVATE` etc.), command codes (`WC_LEFT` etc.) and selection types (`WS_PRIMARY` etc.). Read the file for details. Suggested usage is
 
     >>> from stdwinevents import *
     >>> 
 
-## Standard Module 
+## Standard Module `rect`
 
 This module contains useful operations on rectangles. A rectangle is defined as in module `stdwin`: a pair of points, where a point is a pair of integers. For example, the rectangle
 
@@ -4164,7 +4152,7 @@ geom2rectgeom Converts a rectangle given in geometry representation back to the 
 
 The modules described in this chapter provide interfaces to features that are unique to SGI’s IRIX operating system (versions 4 and 5).
 
-## Built-in Module 
+## Built-in Module `al`
 
 This module provides access to the audio facilities of the Indigo and 4D/35 workstations, described in section 3A of the IRIX 4.0 man pages (and also available as an option in IRIX 3.3). You’ll need to read those man pages to understand what these functions do! Some of the functions are not available in releases below 4.0.5. Again, see the manual to check whether a specific function is available on your platform.
 
@@ -4334,7 +4322,7 @@ getstatuslist Get status information on last error equivalent to C function ALge
 
 </div>
 
-## Standard Module 
+## Standard Module `AL`
 
 This module defines symbolic constants needed to use the built-in module `al` (see above); they are equivalent to those defined in the C header file `<audio.h>` except that the name prefix `AL_` is omitted. Read the module source for a complete list of the defined names. Suggested use:
 
@@ -4449,7 +4437,7 @@ Converts a list as returned by `chr2num()` back to a buffer acceptable by `write
 
 </div>
 
-## Built-in Module 
+## Built-in Module `fl`
 
 This module provides an interface to the FORMS Library by Mark Overmars, version 2.0b. For more info about FORMS, write to `markov@cs.ruu.nl`.
 
@@ -4463,7 +4451,7 @@ There are no ‘free objects’ in the Python interface to FORMS, nor is there a
 
 **Please note:** importing `fl` implies a call to the GL function `foreground()` and to the FORMS routine `fl_init()`.
 
-### Functions defined in module 
+### Functions defined in module `fl`
 
 Module `fl` defines the following functions. For more information about what they do, see the description of the equivalent C function in the FORMS documentation:
 
@@ -4835,14 +4823,14 @@ FORMS objects have these data attributes; see the FORMS documentation:
 | automatic                | int (read-only) | (see FORMS docs) |
 |                          |                 |                  |
 
-## Standard Module 
+## Standard Module `FL`
 
 This module defines symbolic constants needed to use the built-in module `fl` (see above); they are equivalent to those defined in the C header file `<forms.h>` except that the name prefix `FL_` is omitted. Read the module source for a complete list of the defined names. Suggested use:
 
     import fl
     from FL import *
 
-## Standard Module 
+## Standard Module `flp`
 
 This module defines functions that can read form definitions created by the ‘form designer’ (`fdesign`) program that comes with the FORMS library (see module `fl` above).
 
@@ -4850,7 +4838,7 @@ For now, see the file `flp.doc` in the Python library source directory for a des
 
 XXX A complete description should be inserted here!
 
-## Built-in Module 
+## Built-in Module `fm`
 
 This module provides access to the IRIS *Font Manager* library. It is available only on Silicon Graphics machines. See also: 4Sight User’s Guide, Section 1, Chapter 5: Using the IRIS Font Manager.
 
@@ -4932,7 +4920,7 @@ getstrwidthstring Returns the width, in pixels, of the string when drawn in this
 
 </div>
 
-## Built-in Module 
+## Built-in Module `gl`
 
 This module provides access to the Silicon Graphics *Graphics Library*. It is available only on Silicon Graphics machines.
 
@@ -5042,11 +5030,11 @@ Here is a tiny but complete example GL program in Python:
 
     main()
 
-## Standard Modules and 
+## Standard Modules `GL` and `DEVICE`
 
 These modules define the constants used by the Silicon Graphics *Graphics Library* that C programmers find in the header files `<gl/gl.h>` and `<gl/device.h>`. Read the module source files for details.
 
-## Built-in module 
+## Built-in module `imgfile`
 
 The imgfile module allows python programs to access SGI imglib image files (also known as `.rgb` files). The module is far from complete, but is provided anyway since the functionality that there is is enough in some cases. Currently, colormap files are not supported.
 
@@ -5106,11 +5094,11 @@ defpanellistfilename Parses a panel description file containing S-expressions wr
 
 **Warning:** the Python interpreter will dump core if you don’t create a GL window before calling `panel.mkpanel()` or `panel.defpanellist()`.
 
-## Standard Module 
+## Standard Module `panelparser`
 
 This module defines a self-contained parser for S-expressions as output by the Panel Editor (which is written in Scheme so it can’t help writing S-expressions). The relevant function is `panelparser.parse_file(`*`file`*`)` which has a file object (not a filename!) as argument and returns a list of parsed S-expressions. Each S-expression is converted into a Python list, with atoms converted to Python strings and sub-expressions (recursively) to Python lists. For more details, read the module file.
 
-## Built-in Module 
+## Built-in Module `pnl`
 
 This module provides access to the *Panel Library* built by NASA Ames (to get it, send e-mail to `panel-request@nas.nasa.gov`). All access to it should be done through the standard module `panel`, which transparantly exports most functions from `pnl` but redefines `pnl.dopanel()`.
 
@@ -5122,7 +5110,7 @@ The module is too large to document here in its entirety.
 
 The modules described in this chapter provide interfaces to features that are unique to the SunOS operating system (versions 4 and 5; the latter is also known as SOLARIS version 2).
 
-## Built-in module 
+## Built-in module `sunaudiodev`
 
 This module allows you to access the sun audio interface. The sun audio hardware is capable of recording and playing back audio data in U-LAW format with a sample rate of 8K per second. A full description can be gotten with `man audio`.
 

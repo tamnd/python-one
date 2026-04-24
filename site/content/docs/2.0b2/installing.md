@@ -83,7 +83,7 @@ You may not need this ability to break things down often if all you do is instal
 
 ## How building works
 
-As implied above, the command is responsible for putting the files to install into a *build directory*. By default, this is `build` under the distribution root; if you’re excessively concerned with speed, or want to keep the source tree pristine, you can change the build directory with the option. For example:
+As implied above, the command is responsible for putting the files to install into a *build directory*. By default, this is `build` under the distribution root; if you’re excessively concerned with speed, or want to keep the source tree pristine, you can change the build directory with the `--build-base` option. For example:
 
     python setup.py build --build-base=/tmp/pybuild/foo-1.0
 
@@ -146,19 +146,19 @@ The idea behind the “home scheme” is that you build and maintain a personal 
 
     python setup.py install --home=<dir>
 
-where you can supply any directory you like for the option. Lazy typists can just type a tilde (`~`); the command will expand this to your home directory:
+where you can supply any directory you like for the `--home` option. Lazy typists can just type a tilde (`~`); the command will expand this to your home directory:
 
     python setup.py install --home=~
 
-The option defines the installation base directory. Files are installed to the following directories under the installation base as follows:
+The `--home` option defines the installation base directory. Files are installed to the following directories under the installation base as follows:
 
 |  |  |  |
 |:---|:---|:---|
 | Type of file Installation Directory Override option pure module distribution |  |  |
-| non-pure module distribution |  |  |
-| scripts |  |  |
-| data |  |  |
-|  |  |  |
+| `--install-purelib` non-pure module distribution |  |  |
+| `--install-platlib` scripts |  |  |
+| `--install-scripts` data |  |  |
+| `--install-data` |  |  |
 
 ## Alternate installation: Unix (the prefix scheme)
 
@@ -172,51 +172,51 @@ Another possibility is a network filesystem where the name used to write to a re
 
     /usr/local/bin/python setup.py install --prefix=/mnt/@server/export
 
-In either case, the option defines the installation base, and the option defines the platform-specific installation base, which is used for platform-specific files. (Currently, this just means non-pure module distributions, but could be expanded to C libraries, binary executables, etc.) If is not supplied, it defaults to . Files are installed as follows:
+In either case, the `--prefix` option defines the installation base, and the `--exec-prefix` option defines the platform-specific installation base, which is used for platform-specific files. (Currently, this just means non-pure module distributions, but could be expanded to C libraries, binary executables, etc.) If `--exec-prefix` is not supplied, it defaults to `--prefix`. Files are installed as follows:
 
 |  |  |  |
 |:---|:---|:---|
 | Type of file Installation Directory Override option pure module distribution |  |  |
-| non-pure module distribution |  |  |
-| scripts |  |  |
-| data |  |  |
-|  |  |  |
+| `--install-purelib` non-pure module distribution |  |  |
+| `--install-platlib` scripts |  |  |
+| `--install-scripts` data |  |  |
+| `--install-data` |  |  |
 
-There is no requirement that or actually point to an alternate Python installation; if the directories listed above do not already exist, they are created at installation time.
+There is no requirement that `--prefix` or `--exec-prefix` actually point to an alternate Python installation; if the directories listed above do not already exist, they are created at installation time.
 
-Incidentally, the real reason the prefix scheme is important is simply that a standard Unix installation uses the prefix scheme, but with and supplied by Python itself (as `sys.prefix` and `sys.exec_prefix`). Thus, you might think you’ll never use the prefix scheme, but every time you run `python setup.py install` without any other options, you’re using it.
+Incidentally, the real reason the prefix scheme is important is simply that a standard Unix installation uses the prefix scheme, but with `--prefix` and `--exec-prefix` supplied by Python itself (as `sys.prefix` and `sys.exec_prefix`). Thus, you might think you’ll never use the prefix scheme, but every time you run `python setup.py install` without any other options, you’re using it.
 
-Note that installing extensions to an alternate Python installation has no effect on how those extensions are built: in particular, the Python header files (`Python.h` and friends) installed with the Python interpreter used to run the setup script will be used in compiling extensions. It is your responsibility to ensure that the interpreter used to run extensions installed in this way is compatibile with the interpreter used to build them. The best way to do this is to ensure that the two interpreters are the same version of Python (possibly different builds, or possibly copies of the same build). (Of course, if your and don’t even point to an alternate Python installation, this is immaterial.)
+Note that installing extensions to an alternate Python installation has no effect on how those extensions are built: in particular, the Python header files (`Python.h` and friends) installed with the Python interpreter used to run the setup script will be used in compiling extensions. It is your responsibility to ensure that the interpreter used to run extensions installed in this way is compatibile with the interpreter used to build them. The best way to do this is to ensure that the two interpreters are the same version of Python (possibly different builds, or possibly copies of the same build). (Of course, if your `--prefix` and `--exec-prefix` don’t even point to an alternate Python installation, this is immaterial.)
 
 ## Alternate installation: Windows
 
-Since Windows has no conception of a user’s home directory, and since the standard Python installation under Windows is simpler than that under Unix, there’s no point in having separate and options. Just use the option to specify a base directory, e.g.
+Since Windows has no conception of a user’s home directory, and since the standard Python installation under Windows is simpler than that under Unix, there’s no point in having separate `--prefix` and `--home` options. Just use the `--prefix` option to specify a base directory, e.g.
 
     python setup.py install --prefix="\Temp\Python"
 
 to install modules to the `\Temp` directory on the current drive.
 
-The installation base is defined by the option; the option is not supported under Windows. Files are installed as follows:
+The installation base is defined by the `--prefix` option; the `--exec-prefix` option is not supported under Windows. Files are installed as follows:
 
 |  |  |  |
 |:---|:---|:---|
 | Type of file Installation Directory Override option pure module distribution |  |  |
-| non-pure module distribution |  |  |
-| scripts |  |  |
-| data |  |  |
-|  |  |  |
+| `--install-purelib` non-pure module distribution |  |  |
+| `--install-platlib` scripts |  |  |
+| `--install-scripts` data |  |  |
+| `--install-data` |  |  |
 
 ## Alternate installation: Mac OS
 
-Like Windows, Mac OS has no notion of home directories (or even of users), and a fairly simple standard Python installation. Thus, only a option is needed. It defines the installation base, and files are installed under it as follows:
+Like Windows, Mac OS has no notion of home directories (or even of users), and a fairly simple standard Python installation. Thus, only a `--prefix` option is needed. It defines the installation base, and files are installed under it as follows:
 
 |  |  |  |
 |:---|:---|:---|
 | Type of file Installation Directory Override option pure module distribution |  |  |
-| non-pure module distribution |  |  |
-| scripts |  |  |
-| data |  |  |
-|  |  |  |
+| `--install-purelib` non-pure module distribution |  |  |
+| `--install-platlib` scripts |  |  |
+| `--install-scripts` data |  |  |
+| `--install-data` |  |  |
 
 See section <a href="#platform-variations" data-reference-type="ref" data-reference="platform-variations">2.1</a> for information on supplying command-line arguments to the setup script with MacPython.
 
@@ -224,13 +224,13 @@ See section <a href="#platform-variations" data-reference-type="ref" data-refer
 
 Sometimes, the alternate installation schemes described in section <a href="#alt-install" data-reference-type="ref" data-reference="alt-install">3</a> just don’t do what you want. You might want to tweak just one or two directories while keeping everything under the same base directory, or you might want to completely redefine the installation scheme. In either case, you’re creating a *custom installation scheme*.
 
-You probably noticed the column of “override options” in the tables describing the alternate installation schemes above. Those options are how you define a custom installation scheme. These override options can be relative, absolute, or explicitly defined in terms of one of the installation base directories. (There are two installation base directories, and they are normally the same—they only differ when you use the Unix “prefix scheme” and supply different and options.)
+You probably noticed the column of “override options” in the tables describing the alternate installation schemes above. Those options are how you define a custom installation scheme. These override options can be relative, absolute, or explicitly defined in terms of one of the installation base directories. (There are two installation base directories, and they are normally the same—they only differ when you use the Unix “prefix scheme” and supply different `--prefix` and `--exec-prefix` options.)
 
-For example, say you’re installing a module distribution to your home directory under Unix—but you want scripts to go in `~/scripts` rather than `~/bin`. As you might expect, you can override this directory with the option; in this case, it makes most sense to supply a relative path, which will be interpreted relative to the installation base directory (your home directory, in this case):
+For example, say you’re installing a module distribution to your home directory under Unix—but you want scripts to go in `~/scripts` rather than `~/bin`. As you might expect, you can override this directory with the `--install-scripts` option; in this case, it makes most sense to supply a relative path, which will be interpreted relative to the installation base directory (your home directory, in this case):
 
     python setup.py install --home=~ --install-scripts=scripts
 
-Another Unix example: suppose your Python installation was built and installed with a prefix of `/usr/local/python`, so under a standard installation scripts will wind up in `/usr/local/python/bin`. If you want them in `/usr/local/bin` instead, you would supply this absolute directory for the option:
+Another Unix example: suppose your Python installation was built and installed with a prefix of `/usr/local/python`, so under a standard installation scripts will wind up in `/usr/local/python/bin`. If you want them in `/usr/local/bin` instead, you would supply this absolute directory for the `--install-scripts` option:
 
     python setup.py install --install-scripts=/usr/local/bin
 
