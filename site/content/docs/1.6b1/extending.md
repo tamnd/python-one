@@ -177,7 +177,7 @@ A more substantial example module is included in the Python source distribution 
 
 ## Compilation and Linkage 
 
-There are two more things to do before you can use your new extension: compiling and linking it with the Python system. If you use dynamic loading, the details depend on the style of dynamic loading your system uses; see the chapters about building extension modules on Unix (chapter <a href="#building-on-unix" data-reference-type="ref" data-reference="building-on-unix">[building-on-unix]</a>) and Windows (chapter <a href="#building-on-windows" data-reference-type="ref" data-reference="building-on-windows">[building-on-windows]</a>) for more information about this.
+There are two more things to do before you can use your new extension: compiling and linking it with the Python system. If you use dynamic loading, the details depend on the style of dynamic loading your system uses; see the chapters about building extension modules on Unix (chapter ) and Windows (chapter ) for more information about this.
 
 If you can’t use dynamic loading, or if you want to make your module a permanent part of the Python interpreter, you will have to change the configuration setup and rebuild the interpreter. Luckily, this is very simple: just place your file (`spammodule.c` for example) in the `Modules/` directory of an unpacked source distribution, add a line to the file `Modules/Setup.local` describing your file:
 
@@ -221,9 +221,9 @@ Calling a Python function is easy. First, the Python program must somehow pass y
         return result;
     }
 
-This function must be registered with the interpreter using the flag; this is described in section <a href="#methodTable" data-reference-type="ref" data-reference="methodTable">[methodTable]</a>, “The Module’s Method Table and Initialization Function.” The function and its arguments are documented in section <a href="#parseTuple" data-reference-type="ref" data-reference="parseTuple">[parseTuple]</a>, “Format Strings for .”
+This function must be registered with the interpreter using the flag; this is described in section , “The Module’s Method Table and Initialization Function.” The function and its arguments are documented in section , “Format Strings for .”
 
-The macros and increment/decrement the reference count of an object and are safe in the presence of NULL pointers (but note that *temp* will not be NULL in this context). More info on them in section <a href="#refcounts" data-reference-type="ref" data-reference="refcounts">[refcounts]</a>, “Reference Counts.”
+The macros and increment/decrement the reference count of an object and are safe in the presence of NULL pointers (but note that *temp* will not be NULL in this context). More info on them in section , “Reference Counts.”
 
 Later, when it is time to call the function, you call the C function . This function has two arguments, both pointers to arbitrary Python objects: the Python function, and the argument list. The argument list must always be a tuple object, whose length is the number of arguments. To call the Python function with no arguments, pass an empty tuple; to call it with one argument, pass a singleton tuple. returns a tuple when its format string consists of zero or more format codes between parentheses. For example:
 
@@ -681,7 +681,7 @@ Many extension modules just provide new functions and types to be used from Pyth
 
 At first sight this seems easy: just write the functions (without declaring them , of course), provide an appropriate header file, and document the C API. And in fact this would work if all extension modules were always linked statically with the Python interpreter. When modules are used as shared libraries, however, the symbols defined in one module may not be visible to another module. The details of visibility depend on the operating system; some systems use one global namespace for the Python interpreter and all extension modules (e.g. Windows), whereas others require an explicit list of imported symbols at module link time (e.g. AIX), or offer a choice of different strategies (most Unices). And even if symbols are globally visible, the module whose functions one wishes to call might not have been loaded yet!
 
-Portability therefore requires not to make any assumptions about symbol visibility. This means that all symbols in extension modules should be declared , except for the module’s initialization function, in order to avoid name clashes with other extension modules (as discussed in section <a href="#methodTable" data-reference-type="ref" data-reference="methodTable">[methodTable]</a>). And it means that symbols that *should* be accessible from other extension modules must be exported in a different way.
+Portability therefore requires not to make any assumptions about symbol visibility. This means that all symbols in extension modules should be declared , except for the module’s initialization function, in order to avoid name clashes with other extension modules (as discussed in section ). And it means that symbols that *should* be accessible from other extension modules must be exported in a different way.
 
 Python provides a special mechanism to pass C-level information (i.e. pointers) from one extension module to another one: CObjects. A CObject is a Python data type which stores a pointer (`void *`). CObjects can only be created and accessed via their C API, but they can be passed around like any other Python object. In particular, they can be assigned to a name in an extension module’s namespace. Other extension modules can then import this module, retrieve the value of this name, and then retrieve the pointer from the CObject.
 
@@ -689,7 +689,7 @@ There are many ways in which CObjects can be used to export the C API of an exte
 
 The following example demonstrates an approach that puts most of the burden on the writer of the exporting module, which is appropriate for commonly used library modules. It stores all C API pointers (just one in the example!) in an array of `void` pointers which becomes the value of a CObject. The header file corresponding to the module provides a macro that takes care of importing the module and retrieving its C API pointers; client modules only have to call this macro before accessing the C API.
 
-The exporting module is a modification of the `spam` module from section <a href="#simpleExample" data-reference-type="ref" data-reference="simpleExample">[simpleExample]</a>. The function `spam.system()` does not call the C library function directly, but a function , which would of course do something more complicated in reality (such as adding “spam” to every command). This function is also exported to other extension modules.
+The exporting module is a modification of the `spam` module from section . The function `spam.system()` does not call the C library function directly, but a function , which would of course do something more complicated in reality (such as adding “spam” to every command). This function is also exported to other extension modules.
 
 The function is a plain C function, declared like everything else:
 
@@ -879,16 +879,15 @@ Any modules defined in the Setup file before the `*shared*` line will be statica
 
 Several compiler options are supported:
 
-|          |                                                  |
-|:---------|:-------------------------------------------------|
-| -C       | Tell the C pre-processor not to discard comments |
-| -D       |                                                  |
-| =*value* |                                                  |
-|          |                                                  |
-|          |                                                  |
-|          |                                                  |
-|          |                                                  |
-|          |                                                  |
+|                  |                                                  |
+|:-----------------|:-------------------------------------------------|
+| -C               | Tell the C pre-processor not to discard comments |
+| -D*name*=*value* | Define a macro                                   |
+| -I*dir*          | Specify an include directory, *dir*              |
+| -L*dir*          | Specify a link-time library directory, *dir*     |
+| -R*dir*          | Specify a run-time library directory, *dir*      |
+| -l*lib*          | Link a library, *lib*                            |
+| -U*name*         | Undefine a macro                                 |
 
 Other compiler options can be included (snuck in) by putting them in variables.
 
@@ -929,7 +928,7 @@ Grab the binary installer from `http://www.python.org/` and install Python. The 
 
 Get the source distribution and extract it into a convenient location. Copy the `config.h` from the `PC/` directory into the `include/` directory created by the installer.
 
-Create a `Setup` file for your extension module, as described in chapter <a href="#building-on-unix" data-reference-type="ref" data-reference="building-on-unix">[building-on-unix]</a>.
+Create a `Setup` file for your extension module, as described in chapter .
 
 Get David Ascher’s `compile.py` script from `http://starship.python.net/crew/da/compile/`. Run the script to create Microsoft Visual C++ project files.
 

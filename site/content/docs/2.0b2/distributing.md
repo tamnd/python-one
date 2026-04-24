@@ -44,7 +44,7 @@ Some observations:
 
 - modules are specified by module name, not filename (the same will hold true for packages and extensions)
 
-- it’s recommended that you supply a little more meta-data, in particular your name, email address and a URL for the project (see section <a href="#setup-script" data-reference-type="ref" data-reference="setup-script">[setup-script]</a> for an example)
+- it’s recommended that you supply a little more meta-data, in particular your name, email address and a URL for the project (see section  for an example)
 
 To create a source distribution for this module, you would create a setup script, `setup.py`, containing the above code, and run:
 
@@ -58,21 +58,21 @@ If an end-user wishes to install your `foo` module, all she has to do is downloa
 
 which will ultimately copy `foo.py` to the appropriate directory for third-party modules in their Python installation.
 
-This simple example demonstrates some fundamental concepts of the Distutils: first, both developers and installers have the same basic user interface, i.e. the setup script. The difference is which Distutils *commands* they use: the command is almost exclusively for module developers, while is more often for installers (although most developers will want to install their own code occasionally).
+This simple example demonstrates some fundamental concepts of the Distutils: first, both developers and installers have the same basic user interface, i.e. the setup script. The difference is which Distutils *commands* they use: the `sdist` command is almost exclusively for module developers, while `install` is more often for installers (although most developers will want to install their own code occasionally).
 
-If you want to make things really easy for your users, you can create one or more built distributions for them. For instance, if you are running on a Windows machine, and want to make things easy for other Windows users, you can create an executable installer (the most appropriate type of built distribution for this platform) with the command. For example:
+If you want to make things really easy for your users, you can create one or more built distributions for them. For instance, if you are running on a Windows machine, and want to make things easy for other Windows users, you can create an executable installer (the most appropriate type of built distribution for this platform) with the `bdist_wininst` command. For example:
 
     python setup.py bdist_wininst
 
 will create an executable installer, `Foo-1.0.win32.exe`, in the current directory.
 
-(Another way to create executable installers for Windows is with the command, which uses Wise—the commercial installer-generator used to create Python’s own installer—to create the installer. Wise-based installers are more appropriate for large, industrial-strength applications that need the full capabilities of a “real” installer. creates a self-extracting zip file with a minimal user interface, which is enough for small- to medium-sized module collections. You’ll need to have version XXX of Wise installed on your system for the command to work; it’s available from `http://foo/bar/baz`.)
+(Another way to create executable installers for Windows is with the `bdist_wise` command, which uses Wise—the commercial installer-generator used to create Python’s own installer—to create the installer. Wise-based installers are more appropriate for large, industrial-strength applications that need the full capabilities of a “real” installer. `bdist_wininst` creates a self-extracting zip file with a minimal user interface, which is enough for small- to medium-sized module collections. You’ll need to have version XXX of Wise installed on your system for the `bdist_wise` command to work; it’s available from `http://foo/bar/baz`.)
 
-Currently (Distutils 0.9.2), the are only other useful built distribution format is RPM, implemented by the command. For example, the following command will create an RPM file called `Foo-1.0.noarch.rpm`:
+Currently (Distutils 0.9.2), the are only other useful built distribution format is RPM, implemented by the `bdist_rpm` command. For example, the following command will create an RPM file called `Foo-1.0.noarch.rpm`:
 
     python setup.py bdist_rpm
 
-(This uses the command, so has to be run on an RPM-based system such as Red Hat Linux, SuSE Linux, or Mandrake Linux.)
+(This uses the `rpm` command, so has to be run on an RPM-based system such as Red Hat Linux, SuSE Linux, or Mandrake Linux.)
 
 You can find out what distribution formats are available at any time by running
 
@@ -115,7 +115,7 @@ the top-level directory of your source tree (or source distribution); the direct
 
 # Writing the Setup Script
 
-The setup script is the centre of all activity in building, distributing, and installing modules using the Distutils. The main purpose of the setup script is to describe your module distribution to the Distutils, so that the various commands that operate on your modules do the right thing. As we saw in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">[simple-example]</a> above, the setup script consists mainly of a call to `setup()`, and most information supplied to the Distutils by the module developer is supplied as keyword arguments to `setup()`.
+The setup script is the centre of all activity in building, distributing, and installing modules using the Distutils. The main purpose of the setup script is to describe your module distribution to the Distutils, so that the various commands that operate on your modules do the right thing. As we saw in section  above, the setup script consists mainly of a call to `setup()`, and most information supplied to the Distutils by the module developer is supplied as keyword arguments to `setup()`.
 
 Here’s a slightly more involved example, which we’ll follow for the next couple of sections: the Distutils’ own setup script. (Keep in mind that although the Distutils are included with Python 1.6 and later, they also have an independent existence so that Python 1.5.2 users can use them to install other module distributions. The Distutils’ own setup script, shown here, is used to install the package into Python 1.5.2.)
 
@@ -133,15 +133,15 @@ Here’s a slightly more involved example, which we’ll follow for the next cou
            packages = ['distutils', 'distutils.command'],
           )
 
-There are only two differences between this and the trivial one-file distribution presented in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">[simple-example]</a>: more meta-data, and the specification of pure Python modules by package, rather than by module. This is important since the Distutils consist of a couple of dozen modules split into (so far) two packages; an explicit list of every module would be tedious to generate and difficult to maintain.
+There are only two differences between this and the trivial one-file distribution presented in section : more meta-data, and the specification of pure Python modules by package, rather than by module. This is important since the Distutils consist of a couple of dozen modules split into (so far) two packages; an explicit list of every module would be tedious to generate and difficult to maintain.
 
 Note that any pathnames (files or directories) supplied in the setup script should be written using the Unix convention, i.e. slash-separated. The Distutils will take care of converting this platform-neutral representation into whatever is appropriate on your current platform before actually using the pathname. This makes your setup script portable across operating systems, which of course is one of the major goals of the Distutils. In this spirit, all pathnames in this document are slash-separated (Mac OS programmers should keep in mind that the *absence* of a leading slash indicates a relative path, the opposite of the Mac OS convention with colons).
 
 ## Listing whole packages
 
-The option tells the Distutils to process (build, distribute, install, etc.) all pure Python modules found in each package mentioned in the list. In order to do this, of course, there has to be a correspondence between package names and directories in the filesystem. The default correspondence is the most obvious one, i.e. package `distutils` is found in the directory `distutils` relative to the distribution root. Thus, when you say `packages = [’foo’]` in your setup script, you are promising that the Distutils will find a file `foo/__init__.py` (which might be spelled differently on your system, but you get the idea) relative to the directory where your setup script lives. (If you break this promise, the Distutils will issue a warning but process the broken package anyways.)
+The `packages` option tells the Distutils to process (build, distribute, install, etc.) all pure Python modules found in each package mentioned in the `packages` list. In order to do this, of course, there has to be a correspondence between package names and directories in the filesystem. The default correspondence is the most obvious one, i.e. package `distutils` is found in the directory `distutils` relative to the distribution root. Thus, when you say `packages = [’foo’]` in your setup script, you are promising that the Distutils will find a file `foo/__init__.py` (which might be spelled differently on your system, but you get the idea) relative to the directory where your setup script lives. (If you break this promise, the Distutils will issue a warning but process the broken package anyways.)
 
-If you use a different convention to lay out your source directory, that’s no problem: you just have to supply the option to tell the Distutils about your convention. For example, say you keep all Python source under `lib`, so that modules in the “root package” (i.e., not in any package at all) are right in `lib`, modules in the `foo` package are in `lib/foo`, and so forth. Then you would put
+If you use a different convention to lay out your source directory, that’s no problem: you just have to supply the `package_dir` option to tell the Distutils about your convention. For example, say you keep all Python source under `lib`, so that modules in the “root package” (i.e., not in any package at all) are right in `lib`, modules in the `foo` package are in `lib/foo`, and so forth. Then you would put
 
     package_dir = {'': 'lib'}
 
@@ -151,21 +151,21 @@ Another possible convention is to put the `foo` package right in `lib`, the `foo
 
     package_dir = {'foo': 'lib'}
 
-A *`package`*`: `*`dir`* entry in the dictionary implicitly applies to all packages below *package*, so the `foo.bar` case is automatically handled here. In this example, having `packages = [’foo’, ’foo.bar’]` tells the Distutils to look for `lib/__init__.py` and `lib/bar/__init__.py`. (Keep in mind that although applies recursively, you must explicitly list all packages in : the Distutils will *not* recursively scan your source tree looking for any directory with an `__init__.py` file.)
+A *`package`*`: `*`dir`* entry in the `package_dir` dictionary implicitly applies to all packages below *package*, so the `foo.bar` case is automatically handled here. In this example, having `packages = [’foo’, ’foo.bar’]` tells the Distutils to look for `lib/__init__.py` and `lib/bar/__init__.py`. (Keep in mind that although `package_dir` applies recursively, you must explicitly list all packages in `packages`: the Distutils will *not* recursively scan your source tree looking for any directory with an `__init__.py` file.)
 
 ## Listing individual modules
 
-For a small module distribution, you might prefer to list all modules rather than listing packages—especially the case of a single module that goes in the “root package” (i.e., no package at all). This simplest case was shown in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">[simple-example]</a>; here is a slightly more involved example:
+For a small module distribution, you might prefer to list all modules rather than listing packages—especially the case of a single module that goes in the “root package” (i.e., no package at all). This simplest case was shown in section ; here is a slightly more involved example:
 
     py_modules = ['mod1', 'pkg.mod2']
 
-This describes two modules, one of them in the “root” package, the other in the `pkg` package. Again, the default package/directory layout implies that these two modules can be found in `mod1.py` and `pkg/mod2.py`, and that `pkg/__init__.py` exists as well. And again, you can override the package/directory correspondence using the option.
+This describes two modules, one of them in the “root” package, the other in the `pkg` package. Again, the default package/directory layout implies that these two modules can be found in `mod1.py` and `pkg/mod2.py`, and that `pkg/__init__.py` exists as well. And again, you can override the package/directory correspondence using the `package_dir` option.
 
 ## Describing extension modules
 
 Just as writing Python extension modules is a bit more complicated than writing pure Python modules, describing them to the Distutils is a bit more complicated. Unlike pure modules, it’s not enough just to list modules or packages and expect the Distutils to go out and find the right files; you have to specify the extension name, source file(s), and any compile/link requirements (include directories, libraries to link with, etc.).
 
-All of this is done through another keyword argument to `setup()`, the option. is just a list of `Extension` instances, each of which describes a single extension module. Suppose your distribution includes a single extension, called `foo` and implemented by `foo.c`. If no additional instructions to the compiler/linker are needed, describing this extension is quite simple:
+All of this is done through another keyword argument to `setup()`, the `extensions` option. `extensions` is just a list of `Extension` instances, each of which describes a single extension module. Suppose your distribution includes a single extension, called `foo` and implemented by `foo.c`. If no additional instructions to the compiler/linker are needed, describing this extension is quite simple:
 
     Extension("foo", ["foo.c"])
 
@@ -175,7 +175,7 @@ The `Extension` class can be imported from `distutils.core`, along with `setup()
     setup(name = "foo", version = "1.0",
           ext_modules = [Extension("foo", ["foo.c"])])
 
-The `Extension` class (actually, the underlying extension-building machinery implemented by the command) supports a great deal of flexibility in describing Python extensions, which is explained in the following sections.
+The `Extension` class (actually, the underlying extension-building machinery implemented by the `built_ext` command) supports a great deal of flexibility in describing Python extensions, which is explained in the following sections.
 
 ### Extension names and packages
 
@@ -189,7 +189,7 @@ describes an extension that lives in the root package, while
 
 describes the same extension in the `pkg` package. The source files and resulting object code are identical in both cases; the only difference is where in the filesystem (and therefore where in Python’s namespace hierarchy) the resulting extension lives.
 
-If you have a number of extensions all in the same package (or all under the same base package), use the keyword argument to `setup()`. For example,
+If you have a number of extensions all in the same package (or all under the same base package), use the `ext_package` keyword argument to `setup()`. For example,
 
     setup(...
           ext_package = "pkg",
@@ -203,7 +203,7 @@ will compile `foo.c` to the extension `pkg.foo`, and `bar.c` to `pkg.subpkg.bar`
 
 The second argument to the `Extension` constructor is a list of source files. Since the Distutils currently only support C/C++ extensions, these are normally C/C++ source files. (Be sure to use appropriate extensions to distinguish C++ source files: `.cc` and `.cpp` seem to be recognized by both Unix and Windows compilers.)
 
-However, you can also include SWIG interface (`.i`) files in the list; the command knows how to deal with SWIG extensions: it will run SWIG on the interface file and compile the resulting C/C++ file into your extension.
+However, you can also include SWIG interface (`.i`) files in the list; the `build_ext` command knows how to deal with SWIG extensions: it will run SWIG on the interface file and compile the resulting C/C++ file into your extension.
 
 On some platforms, you can include non-source files that are processed by the compiler and included in your extension. Currently, this just means Windows resource files for Visual C++.
 
@@ -283,7 +283,7 @@ The basic syntax of the configuration file is simple:
     option=value
     ...
 
-where *command* is one of the Distutils commands (e.g. , ), and *option* is one of the options that command supports. Any number of options can be supplied for each command, and any number of command sections can be included in the file. Blank lines are ignored, as are comments (from a `#` character to end-of-line). Long option values can be split across multiple lines simply by indenting the continuation lines.
+where *command* is one of the Distutils commands (e.g. `build_py`, `install`), and *option* is one of the options that command supports. Any number of options can be supplied for each command, and any number of command sections can be included in the file. Blank lines are ignored, as are comments (from a `#` character to end-of-line). Long option values can be split across multiple lines simply by indenting the continuation lines.
 
 You can find out the list of options supported by a particular command with the universal `--help` option, e.g.
 
@@ -299,22 +299,22 @@ You can find out the list of options supported by a particular command with the 
       --undef (-U)         C preprocessor macros to undefine
     [...]
 
-Or consult section <a href="#reference" data-reference-type="ref" data-reference="reference">[reference]</a> of this document (the command reference).
+Or consult section of this document (the command reference).
 
-Note that an option spelled `--foo-bar` on the command-line is spelled in configuration files.
+Note that an option spelled `--foo-bar` on the command-line is spelled `foo_bar` in configuration files.
 
 For example, say you want your extensions to be built “in-place”—that is, you have an extension `pkg.ext`, and you want the compiled extension file (`ext.so` on Unix, say) to be put in the same source directory as your pure Python modules `pkg.mod1` and `pkg.mod2`. You can always use the `--inplace` option on the command-line to ensure this:
 
     python setup.py build_ext --inplace
 
-But this requires that you always specify the command explicitly, and remember to provide `--inplace`. An easier way is to “set and forget” this option, by encoding it in `setup.cfg`, the configuration file for this distribution:
+But this requires that you always specify the `build_ext` command explicitly, and remember to provide `--inplace`. An easier way is to “set and forget” this option, by encoding it in `setup.cfg`, the configuration file for this distribution:
 
     [build_ext]
     inplace=1
 
-This will affect all builds of this module distribution, whether or not you explcitly specify . If you include `setup.cfg` in your source distribution, it will also affect end-user builds—which is probably a bad idea for this option, since always building extensions in-place would break installation of the module distribution. In certain peculiar cases, though, modules are built right in their installation directory, so this is conceivably a useful ability. (Distributing extensions that expect to be built in their installation directory is almost always a bad idea, though.)
+This will affect all builds of this module distribution, whether or not you explcitly specify `build_ext`. If you include `setup.cfg` in your source distribution, it will also affect end-user builds—which is probably a bad idea for this option, since always building extensions in-place would break installation of the module distribution. In certain peculiar cases, though, modules are built right in their installation directory, so this is conceivably a useful ability. (Distributing extensions that expect to be built in their installation directory is almost always a bad idea, though.)
 
-Another example: certain commands take a lot of options that don’t change from run-to-run; for example, needs to know everything required to generate a “spec” file for creating an RPM distribution. Some of this information comes from the setup script, and some is automatically generated by the Distutils (such as the list of files installed). But some of it has to be supplied as options to , which would be very tedious to do on the command-line for every run. Hence, here is a snippet from the Distutils’ own `setup.cfg`:
+Another example: certain commands take a lot of options that don’t change from run-to-run; for example, `bdist_rpm` needs to know everything required to generate a “spec” file for creating an RPM distribution. Some of this information comes from the setup script, and some is automatically generated by the Distutils (such as the list of files installed). But some of it has to be supplied as options to `bdist_rpm`, which would be very tedious to do on the command-line for every run. Hence, here is a snippet from the Distutils’ own `setup.cfg`:
 
     [bdist_rpm]
     release = 1
@@ -325,15 +325,15 @@ Another example: certain commands take a lot of options that don’t change from
                 doc/
                 examples/
 
-Note that the option is simply a whitespace-separated string split across multiple lines for readability.
+Note that the `doc_files` option is simply a whitespace-separated string split across multiple lines for readability.
 
 # Creating a Source Distribution
 
-As shown in section <a href="#simple-example" data-reference-type="ref" data-reference="simple-example">[simple-example]</a>, you use the command to create a source distribution. In the simplest case,
+As shown in section , you use the `sdist` command to create a source distribution. In the simplest case,
 
     python setup.py sdist
 
-(assuming you haven’t specified any options in the setup script or config file), creates the archive of the default format for the current platform. The default format is gzip’ed tar file (`.tar.gz`) on Unix, and ZIP file on Windows.
+(assuming you haven’t specified any `sdist` options in the setup script or config file), `sdist` creates the archive of the default format for the current platform. The default format is gzip’ed tar file (`.tar.gz`) on Unix, and ZIP file on Windows.
 
 You can specify as many formats as you like using the `--formats` option, for example:
 
@@ -341,14 +341,13 @@ You can specify as many formats as you like using the `--formats` option, for ex
 
 to create a gzipped tarball and a zip file. The available formats are:
 
-|     |                       |     |
-|:----|:----------------------|:----|
-| zip | zip file (            |     |
-| )   | gzip’ed tar file (    |     |
-| )   | bzip2’ed tar file (   |     |
-| )   | compressed tar file ( |     |
-| )   | tar file (            |     |
-| )   |                       |     |
+|       |                                |         |
+|:------|:-------------------------------|:--------|
+| zip   | zip file (`.zip`)              | (1),(3) |
+| gztar | gzip’ed tar file (`.tar.gz`)   | (2),(4) |
+| bztar | bzip2’ed tar file (`.tar.gz`)  | \(4\)   |
+| ztar  | compressed tar file (`.tar.Z`) | \(4\)   |
+| tar   | tar file (`.tar`)              | \(4\)   |
 
 Notes:
 
@@ -366,17 +365,17 @@ requires external utilities: and possibly one of , , or
 
 ## Specifying the files to distribute
 
-If you don’t supply an explicit list of files (or instructions on how to generate one), the command puts a minimal default set into the source distribution:
+If you don’t supply an explicit list of files (or instructions on how to generate one), the `sdist` command puts a minimal default set into the source distribution:
 
-- all Python source files implied by the and options
+- all Python source files implied by the `py_modules` and `packages` options
 
-- all C source files mentioned in the or options ()
+- all C source files mentioned in the `ext_modules` or `libraries` options ()
 
 - anything that looks like a test script: `test/test*.py` (currently, the Distutils don’t do anything with test scripts except include them in source distributions, but in the future there will be a standard for testing Python module distributions)
 
 - `README.txt` (or `README`), `setup.py` (or whatever you called your setup script), and `setup.cfg`
 
-Sometimes this is enough, but usually you will want to specify additional files to distribute. The typical way to do this is to write a *manifest template*, called `MANIFEST.in` by default. The manifest template is just a list of instructions for how to generate your manifest file, `MANIFEST`, which is the exact list of files to include in your source distribution. The command processes this template and generates a manifest based on its instructions and what it finds in the filesystem.
+Sometimes this is enough, but usually you will want to specify additional files to distribute. The typical way to do this is to write a *manifest template*, called `MANIFEST.in` by default. The manifest template is just a list of instructions for how to generate your manifest file, `MANIFEST`, which is the exact list of files to include in your source distribution. The `sdist` command processes this template and generates a manifest based on its instructions and what it finds in the filesystem.
 
 If you prefer to roll your own manifest file, the format is simple: one filename per line, regular files (or symlinks to them) only. If you do supply your own `MANIFEST`, you must specify everything: the default set of files described above does not apply in this case.
 
@@ -386,7 +385,7 @@ The manifest template has one command per line, where each command specifies a s
     recursive-include examples *.txt *.py
     prune examples/sample?/build
 
-The meanings should be fairly clear: include all files in the distribution root matching `*.txt`, all files anywhere under the `examples` directory matching `*.txt` or `*.py`, and exclude all directories matching `examples/sample?/build`. All of this is done *after* the standard include set, so you can exclude files from the standard set with explicit instructions in the manifest template. (Or, you can use the `--no-defaults` option to disable the standard set entirely.) There are several other commands available in the manifest template mini-language; see section <a href="#sdist-cmd" data-reference-type="ref" data-reference="sdist-cmd">[sdist-cmd]</a>.
+The meanings should be fairly clear: include all files in the distribution root matching `*.txt`, all files anywhere under the `examples` directory matching `*.txt` or `*.py`, and exclude all directories matching `examples/sample?/build`. All of this is done *after* the standard include set, so you can exclude files from the standard set with explicit instructions in the manifest template. (Or, you can use the `--no-defaults` option to disable the standard set entirely.) There are several other commands available in the manifest template mini-language; see section .
 
 The order of commands in the manifest template matters: initially, we have the list of default files as described above, and each command in the template adds to or removes from that list of files. Once we have fully processed the manifest template, we remove files that should not be included in the source distribution:
 
@@ -398,9 +397,9 @@ Now we have our complete list of files, which is written to the manifest for fut
 
 You can disable the default set of included files with the `--no-defaults` option, and you can disable the standard exclude set with `--no-prune`.
 
-Following the Distutils’ own manifest template, let’s trace how the command builds the list of files to include in the Distutils source distribution:
+Following the Distutils’ own manifest template, let’s trace how the `sdist` command builds the list of files to include in the Distutils source distribution:
 
-1.  include all Python source files in the `distutils` and `distutils/command` subdirectories (because packages corresponding to those two directories were mentioned in the option in the setup script—see section <a href="#setup-script" data-reference-type="ref" data-reference="setup-script">[setup-script]</a>)
+1.  include all Python source files in the `distutils` and `distutils/command` subdirectories (because packages corresponding to those two directories were mentioned in the `packages` option in the setup script—see section )
 
 2.  include `README.txt`, `setup.py`, and `setup.cfg` (standard files)
 
@@ -418,7 +417,7 @@ Just like in the setup script, file and directory names in the manifest template
 
 ## Manifest-related options
 
-The normal course of operations for the command is as follows:
+The normal course of operations for the `sdist` command is as follows:
 
 - if the manifest file, `MANIFEST` doesn’t exist, read `MANIFEST.in` and create the manifest
 
@@ -446,7 +445,7 @@ A “built distribution” is what you’re probably used to thinking of either 
 
 A built distribution is how you make life as easy as possible for installers of your module distribution: for users of RPM-based Linux systems, it’s a binary RPM; for Windows users, it’s an executable installer; for Debian-based Linux users, it’s a Debian package; and so forth. Obviously, no one person will be able to create built distributions for every platform under the sun, so the Distutils are designed to enable module developers to concentrate on their specialty—writing code and creating source distributions—while an intermediary species of *packager* springs up to turn source distributions into built distributions for as many platforms as there are packagers.
 
-Of course, the module developer could be his own packager; or the packager could be a volunteer “out there” somewhere who has access to a platform which the original developer does not; or it could be software periodically grabbing new source distributions and turning them into built distributions for as many platforms as the software has access to. Regardless of the nature of the beast, a packager uses the setup script and the command family to generate built distributions.
+Of course, the module developer could be his own packager; or the packager could be a volunteer “out there” somewhere who has access to a platform which the original developer does not; or it could be software periodically grabbing new source distributions and turning them into built distributions for as many platforms as the software has access to. Regardless of the nature of the beast, a packager uses the setup script and the `bdist` command family to generate built distributions.
 
 As a simple example, if I run the following command in the Distutils source tree:
 
@@ -454,11 +453,11 @@ As a simple example, if I run the following command in the Distutils source tree
 
 then the Distutils builds my module distribution (the Distutils itself in this case), does a “fake” installation (also in the `build` directory), and creates the default type of built distribution for my platform. The default format for built distributions is a “dumb” tar file on Unix, and an simple executable installer on Windows. (That tar file is considered “dumb” because it has to be unpacked in a specific location to work.)
 
-Thus, the above command on a Unix system creates `Distutils-0.9.1..tar.gz`; unpacking this tarball from the right place installs the Distutils just as though you had downloaded the source distribution and run `python setup.py install`. (The “right place” is either the root of the filesystem or Python’s directory, depending on the options given to the command; the default is to make dumb distributions relative to .)
+Thus, the above command on a Unix system creates `Distutils-0.9.1..tar.gz`; unpacking this tarball from the right place installs the Distutils just as though you had downloaded the source distribution and run `python setup.py install`. (The “right place” is either the root of the filesystem or Python’s directory, depending on the options given to the `bdist_dumb` command; the default is to make dumb distributions relative to .)
 
 Obviously, for pure Python distributions, this isn’t a huge win—but for non-pure distributions, which include extensions that would need to be compiled, it can mean the difference between someone being able to use your extensions or not. And creating “smart” built distributions, such as an RPM package or an executable installer for Windows, is a big win for users even if your distribution doesn’t include any extensions.
 
-The command has a `--formats` option, similar to the command, which you can use to select the types of built distribution to generate: for example,
+The `bdist` command has a `--formats` option, similar to the `sdist` command, which you can use to select the types of built distribution to generate: for example,
 
     python setup.py bdist --format=zip
 
@@ -466,15 +465,15 @@ would, when run on a Unix system, create `Distutils-0.8..zip`—again, this arch
 
 The available formats for built distributions are:
 
-|       |                                      |         |
-|:------|:-------------------------------------|:--------|
-| gztar | gzipped tar file (                   |         |
-| )     | compressed tar file (                |         |
-| )     | tar file (                           |         |
-| )     | zip file (                           |         |
-| )     | RPM                                  | \(5\)   |
-| srpm  | source RPM                           | \(5\)   |
-|       | self-extracting ZIP file for Windows | (2),(6) |
+|         |                                      |         |
+|:--------|:-------------------------------------|:--------|
+| gztar   | gzipped tar file (`.tar.gz`)         | (1),(3) |
+| ztar    | compressed tar file (`.tar.Z`)       | \(3\)   |
+| tar     | tar file (`.tar`)                    | \(3\)   |
+| zip     | zip file (`.zip`)                    | \(4\)   |
+| rpm     | RPM                                  | \(5\)   |
+| srpm    | source RPM                           | \(5\)   |
+| wininst | self-extracting ZIP file for Windows | (2),(6) |
 
 Notes:
 
@@ -495,7 +494,7 @@ requires external utility, version 3.0.4 or better (use `rpm --version` to find 
 
 \(6\)  
 
-You don’t have to use the command with the `--formats` option; you can also use the command that directly implements the format you’re interested in. Some of these “sub-commands” actually generate several similar formats; for instance, the command generates all the “dumb” archive formats (`tar`, `ztar`, `gztar`, and `zip`), and generates both binary and source RPMs. The sub-commands, and the formats generated by each, are:
+You don’t have to use the `bdist` command with the `--formats` option; you can also use the command that directly implements the format you’re interested in. Some of these `bdist` “sub-commands” actually generate several similar formats; for instance, the `bdist_dumb` command generates all the “dumb” archive formats (`tar`, `ztar`, `gztar`, and `zip`), and `bdist_rpm` generates both binary and source RPMs. The `bdist` sub-commands, and the formats generated by each, are:
 
 |               |                       |
 |:--------------|:----------------------|
@@ -503,7 +502,7 @@ You don’t have to use the command with the `--formats` option; you can also us
 | bdist_rpm     | rpm, srpm             |
 | bdist_wininst | wininst               |
 
-The following sections give details on the individual commands.
+The following sections give details on the individual `bdist_*` commands.
 
 ## Creating dumb built distributions
 
@@ -511,45 +510,49 @@ The following sections give details on the individual commands.
 
 The RPM format is used by many of popular Linux distributions, including Red Hat, SuSE, and Mandrake. If one of these (or any of the other RPM-based Linux distributions) is your usual environment, creating RPM packages for other users of that same distribution is trivial. Depending on the complexity of your module distribution and differences between Linux distributions, you may also be able to create RPMs that work on different RPM-based distributions.
 
-The usual way to create an RPM of your module distribution is to run the command:
+The usual way to create an RPM of your module distribution is to run the `bdist_rpm` command:
 
     python setup.py bdist_rpm
 
-or the command with the `--format` option:
+or the `bdist` command with the `--format` option:
 
     python setup.py bdist --formats=rpm
 
-The former allows you to specify RPM-specific options; the latter allows you to easily specify multiple formats in one run. If you need to do both, you can explicitly specify multiple commands and their options:
+The former allows you to specify RPM-specific options; the latter allows you to easily specify multiple formats in one run. If you need to do both, you can explicitly specify multiple `bdist_*` commands and their options:
 
     python setup.py bdist_rpm --packager="John Doe <jdoe@python.net>" \
                     bdist_wininst --target_version="2.0"
 
-Creating RPM packages is driven by a `.spec` file, much as using the Distutils is driven by the setup script. To make your life easier, the command normally creates a `.spec` file based on the information you supply in the setup script, on the command line, and in any Distutils configuration files. Various options and section in the `.spec` file are derived from options in the setup script as follows:
+Creating RPM packages is driven by a `.spec` file, much as using the Distutils is driven by the setup script. To make your life easier, the `bdist_rpm` command normally creates a `.spec` file based on the information you supply in the setup script, on the command line, and in any Distutils configuration files. Various options and section in the `.spec` file are derived from options in the setup script as follows:
 
-<div class="tabular">
+|                        |                                     |
+|:-----------------------|:------------------------------------|
+| Name                   | `name`                              |
+| Summary (in preamble)  | `description`                       |
+| Version                | `version`                           |
+| Vendor                 | `author` and `author_email`, or     |
+|                        | `maintainer` and `maintainer_email` |
+| Copyright              | `licence`                           |
+| Url                    | `url`                               |
+| %description (section) | `long_description`                  |
 
-ll Name & Summary (in preamble) & Version & Vendor & Copyright & Url & %description (section) &
+Additionally, there many options in `.spec` files that don’t have corresponding options in the setup script. Most of these are handled through options to the `bdist_rpm` command as follows:
 
-</div>
+|               |                     |                         |
+|:--------------|:--------------------|:------------------------|
+| Release       | `release`           | “1”                     |
+| Group         | `group`             | “Development/Libraries” |
+| Vendor        | `vendor`            | (see above)             |
+| Packager      | packager            | (none)                  |
+| Provides      | provides            | (none)                  |
+| Requires      | requires            | (none)                  |
+| Conflicts     | conflicts           | (none)                  |
+| Obsoletes     | obsoletes           | (none)                  |
+| Distribution  | `distribution_name` | (none)                  |
+| BuildRequires | `build_requires`    | (none)                  |
+| Icon          | `icon`              | (none)                  |
 
-Additionally, there many options in `.spec` files that don’t have corresponding options in the setup script. Most of these are handled through options to the command as follows:
-
-|              |           |        |
-|:-------------|:----------|:-------|
-| Release      |           |        |
-|              |           |        |
-|              |           |        |
-|              | packager  | (none) |
-| Provides     | provides  | (none) |
-| Requires     | requires  | (none) |
-| Conflicts    | conflicts | (none) |
-| Obsoletes    | obsoletes | (none) |
-| Distribution |           |        |
-|              |           |        |
-|              |           |        |
-|              |           |        |
-
-Obviously, supplying even a few of these options on the command-line would be tedious and error-prone, so it’s usually best to put them in the setup configuration file, `setup.cfg`—see section <a href="#setup-config" data-reference-type="ref" data-reference="setup-config">[setup-config]</a>. If you distribute or package many Python module distributions, you might want to put options that apply to all of them in your personal Distutils configuration file (`~/.pydistutils.cfg`).
+Obviously, supplying even a few of these options on the command-line would be tedious and error-prone, so it’s usually best to put them in the setup configuration file, `setup.cfg`—see section . If you distribute or package many Python module distributions, you might want to put options that apply to all of them in your personal Distutils configuration file (`~/.pydistutils.cfg`).
 
 There are three steps to building a binary RPM package, all of which are handled automatically by the Distutils:
 
@@ -561,7 +564,7 @@ There are three steps to building a binary RPM package, all of which are handled
 
 Normally, RPM bundles the last two steps together; when you use the Distutils, all three steps are typically bundled together.
 
-If you wish, you can separate these three steps. You can use the `--spec-only` option to make just create the `.spec` file and exit; in this case, the `.spec` file will be written to the “distribution directory”—normally `dist/`, but customizable with the `--dist-dir` option. (Normally, the `.spec` file winds up deep in the “build tree,” in a temporary directory created by .)
+If you wish, you can separate these three steps. You can use the `--spec-only` option to make `bdist_rpm` just create the `.spec` file and exit; in this case, the `.spec` file will be written to the “distribution directory”—normally `dist/`, but customizable with the `--dist-dir` option. (Normally, the `.spec` file winds up deep in the “build tree,” in a temporary directory created by `bdist_rpm`.)
 
 You can also specify a custom `.spec` file with the `--spec-file` option; used in conjunctin with `--spec-only`, this gives you an opportunity to customize the `.spec` file manually:
 
@@ -569,7 +572,7 @@ You can also specify a custom `.spec` file with the `--spec-file` option; used i
     # ...edit dist/FooBar-1.0.spec
     > python setup.py bdist_rpm --spec-file=dist/FooBar-1.0.spec
 
-(Although a better way to do this is probably to override the standard command with one that writes whatever else you want to the `.spec` file; see section <a href="#extending" data-reference-type="ref" data-reference="extending">[extending]</a> for information on extending the Distutils.)
+(Although a better way to do this is probably to override the standard `bdist_rpm` command with one that writes whatever else you want to the `.spec` file; see section  for information on extending the Distutils.)
 
 ## Creating Windows installers
 
@@ -593,63 +596,62 @@ You can also specify a custom `.spec` file with the `--spec-file` option; used i
 
 # Reference
 
-## Building modules: the command family
+## Building modules: the `build` command family
 
-### 
+### `build`
 
-### 
+### `build_py`
 
-### 
+### `build_ext`
 
-### 
+### `build_clib`
 
-## Installing modules: the command family
+## Installing modules: the `install` command family
 
-The install command ensures that the build commands have been run and then runs the subcommands , and .
+The install command ensures that the build commands have been run and then runs the subcommands `install_lib`, `install_data` and `install_scripts`.
 
-### 
+### `install_lib`
 
-### 
+### `install_data`
 
 This command installs all data files provided with the distribution.
 
-### 
+### `install_scripts`
 
 This command installs all (Python) scripts in the distribution.
 
-## Cleaning up: the command
+## Cleaning up: the `clean` command
 
-## Creating a source distribution: the command
+## Creating a source distribution: the `sdist` command
 
 The manifest template commands are:
 
-|                   |                            |
-|:------------------|:---------------------------|
-| include           |                            |
-| *pat2* ...        |                            |
-| *pat2* ...        |                            |
-| *pat1* *pat2* ... |                            |
-| *pat1* *pat2* ... |                            |
-| *pat2* ...        |                            |
-|                   | any of the listed patterns |
-| *pat2* ...        |                            |
-|                   | any of the listed patterns |
-|                   |                            |
-|                   |                            |
+|  |  |
+|:---|:---|
+| include *pat1* *pat2* ... | include all files matching any of the listed patterns |
+| exclude *pat1* *pat2* ... | exclude all files matching any of the listed patterns |
+| recursive-include *dir* *pat1* *pat2* ... | include all files under *dir* matching any of the listed patterns |
+| recursive-exclude *dir* *pat1* *pat2* ... | exclude all files under *dir* matching any of the listed patterns |
+| global-include *pat1* *pat2* ... | include all files anywhere in the source tree matching |
+|  | any of the listed patterns |
+| global-exclude *pat1* *pat2* ... | exclude all files anywhere in the source tree matching |
+|  | any of the listed patterns |
+| prune *dir* | exclude all files under *dir* |
+| graft *dir* | include all files under *dir* |
 
 The patterns here are Unix-style “glob” patterns: `*` matches any sequence of regular filename characters, `?` matches any single regular filename character, and `[`*`range`*`]` matches any of the characters in *range* (e.g., `a-z`, `a-zA-Z`, `a-f0-9_.`). The definition of “regular filename character” is platform-specific: on Unix it is anything except slash; on Windows anything except backslash or colon; on Mac OS anything except colon.
 
-## Creating a “built” distribution: the command family
+## Creating a “built” distribution: the `bdist` command family
 
-### 
+### `blib`
 
-### 
+### `blib_dumb`
 
-### 
+### `blib_rpm`
 
-### 
+### `blib_wise`
 
-[^1]: But be careful about putting arbitrarily expensive operations in your setup script; unlike, say, Autoconf-style configure scripts, the setup script may be run multiple times in the course of building and installing your module distribution. If you need to insert potentially expensive processing steps into the Distutils chain, see section <a href="#extending" data-reference-type="ref" data-reference="extending">[extending]</a> on extending the Distutils.
+[^1]: But be careful about putting arbitrarily expensive operations in your setup script; unlike, say, Autoconf-style configure scripts, the setup script may be run multiple times in the course of building and installing your module distribution. If you need to insert potentially expensive processing steps into the Distutils chain, see section  on extending the Distutils.
 
 [^2]: This ideal probably won’t be achieved until auto-configuration is fully supported by the Distutils.
 

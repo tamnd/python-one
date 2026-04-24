@@ -356,13 +356,12 @@ This function is similar to but lets you specify an arbitrary Python object for 
 
 This function sets the error indicator. *exception* should be a Python object. *fmt* should be a string, containing format codes, similar to . The `width.precision` before a format code is parsed, but the width part is ignored.
 
-|           |                              |
-|:----------|:-----------------------------|
-| c         | Character, as an             |
-| parameter | Number in decimal, as an     |
-| parameter | Number in hexadecimal, as an |
-| parameter | A string, as a               |
-| parameter |                              |
+|     |                                              |
+|:----|:---------------------------------------------|
+| c   | Character, as an `int` parameter             |
+| d   | Number in decimal, as an `int` parameter     |
+| x   | Number in hexadecimal, as an `int` parameter |
+| x   | A string, as a `char *` parameter            |
 
 An unrecognized format character causes all the rest of the format string to be copied as-is to the result string, and any extra arguments discarded.
 
@@ -410,36 +409,35 @@ The function is called with a single argument *obj* that identifies where the co
 
 All standard Python exceptions are available as global variables whose names are `PyExc_` followed by the Python exception name. These have the type `PyObject*`; they are all class objects. For completeness, here are all the variables:
 
-|                 |     |     |
-|:----------------|:----|:----|
-| PyExc_Exception |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
-|                 |     |     |
+|                           |                       |       |
+|:--------------------------|:----------------------|:------|
+| PyExc_Exception           | `Exception`           | \(1\) |
+| PyExc_StandardError       | `StandardError`       | \(1\) |
+| PyExc_ArithmeticError     | `ArithmeticError`     | \(1\) |
+| PyExc_LookupError         | `LookupError`         | \(1\) |
+| PyExc_AssertionError      | `AssertionError`      |       |
+| PyExc_AttributeError      | `AttributeError`      |       |
+| PyExc_EOFError            | `EOFError`            |       |
+| PyExc_EnvironmentError    | `EnvironmentError`    | \(1\) |
+| PyExc_FloatingPointError  | `FloatingPointError`  |       |
+| PyExc_IOError             | `IOError`             |       |
+| PyExc_ImportError         | `ImportError`         |       |
+| PyExc_IndexError          | `IndexError`          |       |
+| PyExc_KeyError            | `KeyError`            |       |
+| PyExc_KeyboardInterrupt   | `KeyboardInterrupt`   |       |
+| PyExc_MemoryError         | `MemoryError`         |       |
+| PyExc_NameError           | `NameError`           |       |
+| PyExc_NotImplementedError | `NotImplementedError` |       |
+| PyExc_OSError             | `OSError`             |       |
+| PyExc_OverflowError       | `OverflowError`       |       |
+| PyExc_RuntimeError        | `RuntimeError`        |       |
+| PyExc_SyntaxError         | `SyntaxError`         |       |
+| PyExc_SystemError         | `SystemError`         |       |
+| PyExc_SystemExit          | `SystemExit`          |       |
+| PyExc_TypeError           | `TypeError`           |       |
+| PyExc_ValueError          | `ValueError`          |       |
+| PyExc_WindowsError        | `WindowsError`        | \(2\) |
+| PyExc_ZeroDivisionError   | `ZeroDivisionError`   |       |
 
 Notes:
 
@@ -908,7 +906,7 @@ Returns true is the object *o* is a type object.
 
 #### `PyType_HasFeature`(PyObject *o, int feature)
 
-Returns true if the type object *o* sets the feature *feature*. Type features are denoted by single bit flags. The only defined feature flag is , described in section <a href="#buffer-structs" data-reference-type="ref" data-reference="buffer-structs">[buffer-structs]</a>.
+Returns true if the type object *o* sets the feature *feature*. Type features are denoted by single bit flags. The only defined feature flag is , described in section .
 
 ### The None Object 
 
@@ -1406,7 +1404,7 @@ Two examples of objects that support the buffer interface are strings and arrays
 
 An example user of the buffer interface is the file object’s `write()` method. Any object that can export a series of bytes through the buffer interface can be written to a file. There are a number of format codes to that operate against an object’s buffer interface, returning data from the target object.
 
-More information on the buffer interface is provided in the section “Buffer Object Structures” (section <a href="#buffer-structs" data-reference-type="ref" data-reference="buffer-structs">[buffer-structs]</a>), under the description for `PyBufferProcs`.
+More information on the buffer interface is provided in the section “Buffer Object Structures” (section ), under the description for `PyBufferProcs`.
 
 A “buffer object” is defined in the `bufferobject.h` header (included by `Python.h`). These objects look very similar to string objects at the Python programming level: they support slicing, indexing, concatenation, and some other standard string operations. However, their data can come from one of two sources: from a block of memory, or from another object which exports the buffer interface.
 
@@ -2241,7 +2239,7 @@ Same as .
 
 ## Examples 
 
-Here is the example from section <a href="#memoryOverview" data-reference-type="ref" data-reference="memoryOverview">[memoryOverview]</a>, rewritten so that the I/O buffer is allocated from the Python heap by using the first function set:
+Here is the example from section , rewritten so that the I/O buffer is allocated from the Python heap by using the first function set:
 
         PyObject *res;
         char *buf = (char *) PyMem_Malloc(BUFSIZ); /* for I/O */

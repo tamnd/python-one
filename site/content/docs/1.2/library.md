@@ -47,12 +47,10 @@ All other values are considered true — so objects of many types are always tru
 
 These are the Boolean operations, ordered by ascending priority:
 
-|         |     |     |
-|:--------|:----|:----|
-|         |     |     |
-| or *y*  |     |     |
-| and *y* |     |     |
-|         |     |     |
+| *x* or *y*  | if *x* is false, then *y*, else *x* | \(1\) |
+|:------------|:------------------------------------|:------|
+| *x* and *y* | if *x* is false, then *x*, else *y* | \(1\) |
+| not *x*     | if *x* is false, then `1`, else `0` | \(2\) |
 
 Notes:
 
@@ -91,22 +89,21 @@ Two more operations with the same syntactic priority, `in` and `not in`, are sup
 
 There are three numeric types: *plain integers*, *long integers*, and *floating point numbers*. Plain integers (also just called *integers*) are implemented using `long` in C, which gives them at least 32 bits of precision. Long integers have unlimited precision. Floating point numbers are implemented using `double` in C. All bets on their precision are off unless you happen to know the machine you are working with. Numbers are created by numeric literals or as the result of built-in functions and operators. Unadorned integer literals (including hex and octal numbers) yield plain integers. Integer literals with an `L` or `l` suffix yield long integers (`L` is preferred because `1l` looks too much like eleven!). Numeric literals containing a decimal point or an exponent sign yield floating point numbers. Python fully supports mixed arithmetic: when a binary arithmetic operator has operands of different numeric types, the operand with the “smaller” type is converted to that of the other, where plain integer is smaller than long integer is smaller than floating point. Comparisons between numbers of mixed type use the same rule. [^2] The functions `int()`, `long()` and `float()` can be used to coerce numbers to a specific type. All numeric types support the following operations, sorted by ascending priority (operations in the same box have the same priority; all numeric operations have a higher priority than comparison operations):
 
-|        |     |     |
-|:-------|:----|:----|
-|        |     |     |
-| \+ *y* |     |     |
-| \- *y* |     |     |
-| * *y* |     |     |
-| / *y*  |     |     |
-| % *y*  |     |     |
-|        |     |     |
-|        |     |     |
-| )      |     |     |
-| )      |     |     |
-| )      |     |     |
-| )      |     |     |
-| , *y*) |     |     |
-| , *y*) |     |     |
+|                  |                                 |       |
+|:-----------------|:--------------------------------|:------|
+| *x* + *y*        | sum of *x* and *y*              |       |
+| *x* - *y*        | difference of *x* and *y*       |       |
+| *x* * *y*       | product of *x* and *y*          |       |
+| *x* / *y*        | quotient of *x* and *y*         | \(1\) |
+| *x* % *y*        |                                 |       |
+|                  | *x* negated                     |       |
+| \+*x*            | *x* unchanged                   |       |
+| abs(*x*)         | absolute value of *x*           |       |
+| int(*x*)         | *x* converted to integer        | \(2\) |
+| long(*x*)        | *x* converted to long integer   | \(2\) |
+| float(*x*)       | *x* converted to floating point |       |
+| divmod(*x*, *y*) |                                 |       |
+|                  | *x* to the power *y*            |       |
 
 Notes:
 
@@ -127,15 +124,13 @@ The priorities of the binary bit-wise operations are all lower than the numeric 
 
 This table lists the bit-string operations sorted in ascending priority (operations in the same box have the same priority):
 
-|          |     |     |
-|:---------|:----|:----|
-|          |     |     |
-| \| *y*   |     |     |
-| ^ *y*    |     |     |
-| & *y*    |     |     |
-| \<\< *n* |     |     |
-| \>\> *n* |     |     |
-|          |     |     |
+| *x* \| *y*   | bitwise *or* of *x* and *y*           |          |
+|:-------------|:--------------------------------------|:---------|
+| *x* ^ *y*    | bitwise *exclusive or* of *x* and *y* |          |
+| *x* & *y*    | bitwise *and* of *x* and *y*          |          |
+| *x* \<\< *n* | *x* shifted left by *n* bits          | (1), (2) |
+| *x* \>\> *n* | *x* shifted right by *n* bits         | (1), (3) |
+| *x*          | the bits of *x* inverted              |          |
 
 Notes:
 
@@ -156,18 +151,17 @@ Strings literals are written in single or double quotes: `’xyzzy’`, `"froboz
 
 This table lists the sequence operations sorted in ascending priority (operations in the same box have the same priority). In the table, *s* and *t* are sequences of the same type; *n*, *i* and *j* are integers:
 
-|                    |     |     |
-|:-------------------|:----|:----|
-|                    |     |     |
-| in *s*             |     |     |
-| not in *s*         |     |     |
-| \+ *t*             |     |     |
-| * *n*, *n* * *s* |     |     |
-|                    |     |     |
-|                    |     |     |
-| )                  |     |     |
-| )                  |     |     |
-| )                  |     |     |
+|  |  |  |
+|:---|:---|:---|
+| *x* in *s* | `1` if an item of *s* is equal to *x*, else `0` |  |
+| *x* not in *s* | `0` if an item of *s* is equal to *x*, else `1` |  |
+| *s* + *t* | the concatenation of *s* and *t* |  |
+| *s* * *n*, *n* * *s* | *n* copies of *s* concatenated |  |
+| *s*[*i*] | *i*’th item of *s*, origin 0 | \(1\) |
+| *s*[*i*:*j*] | slice of *s* from *i* to *j* | (1), (2) |
+| len(*s*) | length of *s* |  |
+| min(*s*) | smallest item of *s* |  |
+| max(*s*) | largest item of *s* |  |
 
 Notes:
 
@@ -201,19 +195,19 @@ Additional string operations are defined in standard module `string` and in buil
 
 List objects support additional operations that allow in-place modification of the object. These operations would be supported by other mutable sequence types (when added to the language) as well. Strings and tuples are immutable sequence types and such objects cannot be modified once created. The following operations are defined on mutable sequence types (where *x* is an arbitrary object):
 
-|                   |     |     |
-|:------------------|:----|:----|
-|                   |     |     |
-| = *x*             |     |     |
-| = *t*             |     |     |
-|                   |     |     |
-| .append(*x*)      |     |     |
-| .count(*x*)       |     |     |
-| .index(*x*)       |     |     |
-| .insert(*i*, *x*) |     |     |
-| .remove(*x*)      |     |     |
-| .reverse()        |     |     |
-| .sort()           |     |     |
+|  |  |  |
+|:---|:---|:---|
+| *s*[*i*] = *x* | item *i* of *s* is replaced by *x* |  |
+| *s*[*i*:*j*] = *t* | slice of *s* from *i* to *j* is replaced by *t* |  |
+| del *s*[*i*:*j*] |  |  |
+| same as *`s`*`[`*`i`*`:`*`j`*`] = []` *s*.append(*x*) |  |  |
+| same as *`s`*`[len(`*`s`*`):len(`*`s`*`)] = [`*`x`*`]` *s*.count(*x*) |  |  |
+| return number of *i*’s for which *`s`*`[`*`i`*`] == `*`x`* *s*.index(*x*) |  |  |
+| return smallest *i* such that *`s`*`[`*`i`*`] == `*`x`*(1) *s*.insert(*i*, *x*) |  |  |
+| same as *`s`*`[`*`i`*`:`*`i`*`] = [`*`x`*`]` *s*.remove(*x*) |  |  |
+| same as `del `*`s`*`[`*`s`*`.index(`*`x`*`)]`(1) *s*.reverse() | reverses the items of *s* in place |  |
+| *s*.sort() |  |  |
+| permutes the items of *s* to satisfy *`s`*`[`*`i`*`] <= `*`s`*`[`*`j`*`]`, for *`i`*` < `*`j`*(2) |  |  |
 
 Notes:
 
@@ -231,17 +225,16 @@ Dictionaries are created by placing a comma-separated list of *`key`*`: var``v
 
 The following operations are defined on mappings (where *a* is a mapping, *k* is a key and *x* is an arbitrary object):
 
-|               |     |     |
-|:--------------|:----|:----|
-| len(          |     |     |
-| )             |     |     |
-|               |     |     |
-| = *x*         |     |     |
-|               |     |     |
-| .items()      |     |     |
-| .keys()       |     |     |
-| .values()     |     |     |
-| .has_key(*k*) |     |     |
+|                  |                                           |       |
+|:-----------------|:------------------------------------------|:------|
+| len(*a*)         | the number of items in *a*                |       |
+| *a*[*k*]       | the item of *a* with key *k*              | \(1\) |
+| *a*[*k*] = *x* |                                           |       |
+|                  |                                           |       |
+|                  | a copy of *a*’s list of (key, item) pairs | \(2\) |
+| *a*.keys()       | a copy of *a*’s list of keys              | \(2\) |
+| *a*.values()     | a copy of *a*’s list of values            | \(2\) |
+| *a*.has_key(*k*) | `1` if *a* has a key *k*, else `0`        |       |
 
 Notes:
 
@@ -2656,8 +2649,7 @@ In addition the following modifiers can be added to the format:
 |  |  |  |
 |:---|:---|:---|
 | \| | wait until the lock has been granted |  |
-| ? | return the first lock conflicting with the requested lock, or |  |
-| if there is no conflict. |  |  |
+| ? | return the first lock conflicting with the requested lock, or `None` if there is no conflict. | \(1\) |
 
 Note:
 
@@ -10947,8 +10939,7 @@ In addition the following modifiers can be added to the format:
 |  |  |  |
 |:---|:---|:---|
 | \| | wait until the lock has been granted |  |
-| ? | return the first lock conflicting with the requested lock, or |  |
-| if there is no conflict. |  |  |
+| ? | return the first lock conflicting with the requested lock, or `None` if there is no conflict. | \(1\) |
 
 Note:
 
@@ -13186,12 +13177,10 @@ All other values are considered true — so objects of many types are always tru
 
 These are the Boolean operations, ordered by ascending priority:
 
-|         |     |     |
-|:--------|:----|:----|
-|         |     |     |
-| or *y*  |     |     |
-| and *y* |     |     |
-|         |     |     |
+| *x* or *y*  | if *x* is false, then *y*, else *x* | \(1\) |
+|:------------|:------------------------------------|:------|
+| *x* and *y* | if *x* is false, then *x*, else *y* | \(1\) |
+| not *x*     | if *x* is false, then `1`, else `0` | \(2\) |
 
 Notes:
 
@@ -13230,22 +13219,21 @@ Two more operations with the same syntactic priority, `in` and `not in`, are sup
 
 There are three numeric types: *plain integers*, *long integers*, and *floating point numbers*. Plain integers (also just called *integers*) are implemented using `long` in C, which gives them at least 32 bits of precision. Long integers have unlimited precision. Floating point numbers are implemented using `double` in C. All bets on their precision are off unless you happen to know the machine you are working with. Numbers are created by numeric literals or as the result of built-in functions and operators. Unadorned integer literals (including hex and octal numbers) yield plain integers. Integer literals with an `L` or `l` suffix yield long integers (`L` is preferred because `1l` looks too much like eleven!). Numeric literals containing a decimal point or an exponent sign yield floating point numbers. Python fully supports mixed arithmetic: when a binary arithmetic operator has operands of different numeric types, the operand with the “smaller” type is converted to that of the other, where plain integer is smaller than long integer is smaller than floating point. Comparisons between numbers of mixed type use the same rule. [^1] The functions `int()`, `long()` and `float()` can be used to coerce numbers to a specific type. All numeric types support the following operations, sorted by ascending priority (operations in the same box have the same priority; all numeric operations have a higher priority than comparison operations):
 
-|        |     |     |
-|:-------|:----|:----|
-|        |     |     |
-| \+ *y* |     |     |
-| \- *y* |     |     |
-| * *y* |     |     |
-| / *y*  |     |     |
-| % *y*  |     |     |
-|        |     |     |
-|        |     |     |
-| )      |     |     |
-| )      |     |     |
-| )      |     |     |
-| )      |     |     |
-| , *y*) |     |     |
-| , *y*) |     |     |
+|                  |                                 |       |
+|:-----------------|:--------------------------------|:------|
+| *x* + *y*        | sum of *x* and *y*              |       |
+| *x* - *y*        | difference of *x* and *y*       |       |
+| *x* * *y*       | product of *x* and *y*          |       |
+| *x* / *y*        | quotient of *x* and *y*         | \(1\) |
+| *x* % *y*        |                                 |       |
+|                  | *x* negated                     |       |
+| \+*x*            | *x* unchanged                   |       |
+| abs(*x*)         | absolute value of *x*           |       |
+| int(*x*)         | *x* converted to integer        | \(2\) |
+| long(*x*)        | *x* converted to long integer   | \(2\) |
+| float(*x*)       | *x* converted to floating point |       |
+| divmod(*x*, *y*) |                                 |       |
+|                  | *x* to the power *y*            |       |
 
 Notes:
 
@@ -13266,15 +13254,13 @@ The priorities of the binary bit-wise operations are all lower than the numeric 
 
 This table lists the bit-string operations sorted in ascending priority (operations in the same box have the same priority):
 
-|          |     |     |
-|:---------|:----|:----|
-|          |     |     |
-| \| *y*   |     |     |
-| ^ *y*    |     |     |
-| & *y*    |     |     |
-| \<\< *n* |     |     |
-| \>\> *n* |     |     |
-|          |     |     |
+| *x* \| *y*   | bitwise *or* of *x* and *y*           |          |
+|:-------------|:--------------------------------------|:---------|
+| *x* ^ *y*    | bitwise *exclusive or* of *x* and *y* |          |
+| *x* & *y*    | bitwise *and* of *x* and *y*          |          |
+| *x* \<\< *n* | *x* shifted left by *n* bits          | (1), (2) |
+| *x* \>\> *n* | *x* shifted right by *n* bits         | (1), (3) |
+| *x*          | the bits of *x* inverted              |          |
 
 Notes:
 
@@ -13295,18 +13281,17 @@ Strings literals are written in single or double quotes: `’xyzzy’`, `"froboz
 
 This table lists the sequence operations sorted in ascending priority (operations in the same box have the same priority). In the table, *s* and *t* are sequences of the same type; *n*, *i* and *j* are integers:
 
-|                    |     |     |
-|:-------------------|:----|:----|
-|                    |     |     |
-| in *s*             |     |     |
-| not in *s*         |     |     |
-| \+ *t*             |     |     |
-| * *n*, *n* * *s* |     |     |
-|                    |     |     |
-|                    |     |     |
-| )                  |     |     |
-| )                  |     |     |
-| )                  |     |     |
+|  |  |  |
+|:---|:---|:---|
+| *x* in *s* | `1` if an item of *s* is equal to *x*, else `0` |  |
+| *x* not in *s* | `0` if an item of *s* is equal to *x*, else `1` |  |
+| *s* + *t* | the concatenation of *s* and *t* |  |
+| *s* * *n*, *n* * *s* | *n* copies of *s* concatenated |  |
+| *s*[*i*] | *i*’th item of *s*, origin 0 | \(1\) |
+| *s*[*i*:*j*] | slice of *s* from *i* to *j* | (1), (2) |
+| len(*s*) | length of *s* |  |
+| min(*s*) | smallest item of *s* |  |
+| max(*s*) | largest item of *s* |  |
 
 Notes:
 
@@ -13340,19 +13325,19 @@ Additional string operations are defined in standard module `string` and in buil
 
 List objects support additional operations that allow in-place modification of the object. These operations would be supported by other mutable sequence types (when added to the language) as well. Strings and tuples are immutable sequence types and such objects cannot be modified once created. The following operations are defined on mutable sequence types (where *x* is an arbitrary object):
 
-|                   |     |     |
-|:------------------|:----|:----|
-|                   |     |     |
-| = *x*             |     |     |
-| = *t*             |     |     |
-|                   |     |     |
-| .append(*x*)      |     |     |
-| .count(*x*)       |     |     |
-| .index(*x*)       |     |     |
-| .insert(*i*, *x*) |     |     |
-| .remove(*x*)      |     |     |
-| .reverse()        |     |     |
-| .sort()           |     |     |
+|  |  |  |
+|:---|:---|:---|
+| *s*[*i*] = *x* | item *i* of *s* is replaced by *x* |  |
+| *s*[*i*:*j*] = *t* | slice of *s* from *i* to *j* is replaced by *t* |  |
+| del *s*[*i*:*j*] |  |  |
+| same as *`s`*`[`*`i`*`:`*`j`*`] = []` *s*.append(*x*) |  |  |
+| same as *`s`*`[len(`*`s`*`):len(`*`s`*`)] = [`*`x`*`]` *s*.count(*x*) |  |  |
+| return number of *i*’s for which *`s`*`[`*`i`*`] == `*`x`* *s*.index(*x*) |  |  |
+| return smallest *i* such that *`s`*`[`*`i`*`] == `*`x`*(1) *s*.insert(*i*, *x*) |  |  |
+| same as *`s`*`[`*`i`*`:`*`i`*`] = [`*`x`*`]` *s*.remove(*x*) |  |  |
+| same as `del `*`s`*`[`*`s`*`.index(`*`x`*`)]`(1) *s*.reverse() | reverses the items of *s* in place |  |
+| *s*.sort() |  |  |
+| permutes the items of *s* to satisfy *`s`*`[`*`i`*`] <= `*`s`*`[`*`j`*`]`, for *`i`*` < `*`j`*(2) |  |  |
 
 Notes:
 
@@ -13370,17 +13355,16 @@ Dictionaries are created by placing a comma-separated list of *`key`*`: var``v
 
 The following operations are defined on mappings (where *a* is a mapping, *k* is a key and *x* is an arbitrary object):
 
-|               |     |     |
-|:--------------|:----|:----|
-| len(          |     |     |
-| )             |     |     |
-|               |     |     |
-| = *x*         |     |     |
-|               |     |     |
-| .items()      |     |     |
-| .keys()       |     |     |
-| .values()     |     |     |
-| .has_key(*k*) |     |     |
+|                  |                                           |       |
+|:-----------------|:------------------------------------------|:------|
+| len(*a*)         | the number of items in *a*                |       |
+| *a*[*k*]       | the item of *a* with key *k*              | \(1\) |
+| *a*[*k*] = *x* |                                           |       |
+|                  |                                           |       |
+|                  | a copy of *a*’s list of (key, item) pairs | \(2\) |
+| *a*.keys()       | a copy of *a*’s list of keys              | \(2\) |
+| *a*.values()     | a copy of *a*’s list of values            | \(2\) |
+| *a*.has_key(*k*) | `1` if *a* has a key *k*, else `0`        |       |
 
 Notes:
 

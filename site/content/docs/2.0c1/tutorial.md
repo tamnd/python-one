@@ -47,7 +47,7 @@ to the shell. Since the choice of the directory where the interpreter lives is a
 
 Typing an EOF character (`Control-D` on Unix, `Control-Z` on DOS or Windows) at the primary prompt causes the interpreter to exit with a zero exit status. If that doesn’t work, you can exit the interpreter by typing the following commands: `import sys; sys.exit()`.
 
-The interpreter’s line-editing features usually aren’t very sophisticated. On Unix, whoever installed the interpreter may have enabled support for the GNU readline library, which adds more elaborate interactive editing and history features. Perhaps the quickest check to see whether command line editing is supported is typing Control-P to the first Python prompt you get. If it beeps, you have command line editing; see Appendix <a href="#interacting" data-reference-type="ref" data-reference="interacting">[interacting]</a> for an introduction to the keys. If nothing appears to happen, or if `P̂` is echoed, command line editing isn’t available; you’ll only be able to use backspace to remove characters from the current line.
+The interpreter’s line-editing features usually aren’t very sophisticated. On Unix, whoever installed the interpreter may have enabled support for the GNU readline library, which adds more elaborate interactive editing and history features. Perhaps the quickest check to see whether command line editing is supported is typing Control-P to the first Python prompt you get. If it beeps, you have command line editing; see Appendix for an introduction to the keys. If nothing appears to happen, or if `P̂` is echoed, command line editing isn’t available; you’ll only be able to use backspace to remove characters from the current line.
 
 The interpreter operates somewhat like the Unix shell: when called with standard input connected to a tty device, it reads and executes commands interactively; when called with a file name argument or with a file as standard input, it reads and executes a *script* from that file.
 
@@ -1717,7 +1717,7 @@ Programs may name their own exceptions by assigning a string to a variable or cr
 
 Many standard modules use this to report errors that may occur in functions they define.
 
-More information on classes is presented in chapter <a href="#classes" data-reference-type="ref" data-reference="classes">[classes]</a>, “Classes.”
+More information on classes is presented in chapter , “Classes.”
 
 ## Defining Clean-up Actions 
 

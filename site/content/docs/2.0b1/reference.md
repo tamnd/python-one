@@ -147,11 +147,11 @@ The following identifiers are used as reserved words, or *keywords* of the langu
 
 Certain classes of identifiers (besides keywords) have special meanings. These are:
 
-|           |                             |     |
-|:----------|:----------------------------|:----|
-| _*      | Not imported by             |     |
-| import * | System-defined name         |     |
-| __*    | Class-private name mangling |     |
+|        |                             |     |
+|:-------|:----------------------------|:----|
+| _*   |                             |     |
+|        | System-defined name         |     |
+| __* | Class-private name mangling |     |
 
 (XXX need section references here.)
 
@@ -181,22 +181,21 @@ In plain English: String literals can be enclosed in matching single quotes (`�
 
 Unless an ‘r’ or ‘R’ prefix is present, escape sequences in strings are interpreted according to rules similar to those used by Standard C. The recognized escape sequences are:
 
-|                              |     |
-|:-----------------------------|:----|
-|                              |     |
-|                              |     |
-| Backslash () ’               |     |
-| Single quote (`’`) "         |     |
-| Double quote (`"`) a         |     |
-| ASCII Bell (BEL) b           |     |
-| ASCII Backspace (BS) f       |     |
-| ASCII Formfeed (FF) n        |     |
-| ASCII Linefeed (LF) r        |     |
-| ASCII Carriage Return (CR) t |     |
-| ASCII Horizontal Tab (TAB) v |     |
-| ASCII Vertical Tab (VT)      |     |
-|                              |     |
-|                              |     |
+|           |                                        |
+|:----------|:---------------------------------------|
+| *newline* | Ignored                                |
+|           | Backslash ()                           |
+| ’         | Single quote (`’`)                     |
+| "         | Double quote (`"`)                     |
+| a         | ASCII Bell (BEL)                       |
+| b         | ASCII Backspace (BS)                   |
+| f         | ASCII Formfeed (FF)                    |
+| n         | ASCII Linefeed (LF)                    |
+| r         | ASCII Carriage Return (CR)             |
+| t         | ASCII Horizontal Tab (TAB)             |
+| v         | ASCII Vertical Tab (VT)                |
+| *ooo*     | ASCII character with octal value *ooo* |
+| x*hh...*  | ASCII character with hex value *hh...* |
 
 In strict compatibility with Standard C, up to three octal digits are accepted, but an unlimited number of hex digits is taken to be part of the hex escape (and then the lower 8 bits of the resulting hex number are used in 8-bit implementations).
 
@@ -363,15 +362,15 @@ These represent finite sets of objects indexed by arbitrary index sets. The subs
 Dictionaries  
 Theserepresent finite sets of objects indexed by nearly arbitrary values. The only types of values not acceptable as keys are values containing lists or dictionaries or other mutable types that are compared by value rather than by object identity, the reason being that the efficient implementation of dictionaries requires a key’s hash value to remain constant. Numeric types used for keys obey the normal rules for numeric comparison: if two numbers compare equal (e.g., `1` and `1.0`) then they can be used interchangeably to index the same dictionary entry.
 
-Dictionaries are mutable; they are created by the `{...}` notation (see section <a href="#dict" data-reference-type="ref" data-reference="dict">[dict]</a>, “Dictionary Displays”).
+Dictionaries are mutable; they are created by the `{...}` notation (see section , “Dictionary Displays”).
 
 The extension modules `dbm`, `gdbm`, `bsddb`provide additional examples of mapping types.
 
 Callable types  
-Theseare the types to which the function call operation (see section <a href="#calls" data-reference-type="ref" data-reference="calls">[calls]</a>, “Calls”) can be applied:
+Theseare the types to which the function call operation (see section , “Calls”) can be applied:
 
 User-defined functions  
-A user-defined function object is created by a function definition (see section <a href="#function" data-reference-type="ref" data-reference="function">[function]</a>, “Function definitions”). It should be called with an argument list containing the same number of items as the function’s formal parameter list. Special attributes: `func_doc` or `__doc__` is the function’s documentation string, or None if unavailable; `func_name` or `__name__` is the function’s name; `func_defaults` is a tuple containing default argument values for those arguments that have defaults, or `None` if no arguments have a default value; `func_code` is the code object representing the compiled function body; `func_globals` is (a reference to) the dictionary that holds the function’s global variables — it defines the global namespace of the module in which the function was defined. Of these, `func_code`, `func_defaults` and `func_doc` (and this `__doc__`) may be writable; the others can never be changed. Additional information about a function’s definition can be retrieved from its code object; see the description of internal types below.
+A user-defined function object is created by a function definition (see section , “Function definitions”). It should be called with an argument list containing the same number of items as the function’s formal parameter list. Special attributes: `func_doc` or `__doc__` is the function’s documentation string, or None if unavailable; `func_name` or `__name__` is the function’s name; `func_defaults` is a tuple containing default argument values for those arguments that have defaults, or `None` if no arguments have a default value; `func_code` is the code object representing the compiled function body; `func_globals` is (a reference to) the dictionary that holds the function’s global variables — it defines the global namespace of the module in which the function was defined. Of these, `func_code`, `func_defaults` and `func_doc` (and this `__doc__`) may be writable; the others can never be changed. Additional information about a function’s definition can be retrieved from its code object; see the description of internal types below.
 
 User-defined methods  
 A user-defined method object combines a class, a class instance (or `None`) and a user-defined function. Special read-only attributes: `im_self` is the class instance object, `im_func` is the function object; `im_class` is the class that defined the method (which may be a base class of the class of which `im_self` is an instance); `__doc__` is the method’s documentation (same as `im_func.__doc__`); `__name__` is the method name (same as `im_func.__name__`). User-defined method objects are created in two ways: when getting an attribute of a class that is a user-defined function object, or when getting an attribute of a class instance that is a user-defined function object defined by the class of the instance. In the former case (class attribute), the `im_self` attribute is `None`, and the method object is said to be unbound; in the latter case (instance attribute), `im_self` is the instance, and the method object is said to be bound. For instance, when `C` is a class which contains a definition for a function `f()`, `C.f` does not yield the function object `f`; rather, it yields an unbound method object `m` where `m.im_class` is `C`, `m.im_func` is `f()`, and `m.im_self` is `None`. When `x` is a `C` instance, `x.f` yields a bound method object `m` where `m.im_class` is `C`, `m.im_func` is `f()`, and `m.im_self` is `x`. When an unbound user-defined method object is called, the underlying function (`im_func`) is called, with the restriction that the first argument must be an instance of the proper class (`im_class`) or of a derived class thereof.
@@ -393,15 +392,15 @@ Class instances
 Class instances are described below. Class instances are callable only when the class has a `__call__()` method; `x(arguments)` is a shorthand for `x.__call__(arguments)`.
 
 Modules  
-Modules are imported by the statement (see section <a href="#import" data-reference-type="ref" data-reference="import">[import]</a>, “The statement”). A module object has a namespace implemented by a dictionary object (this is the dictionary referenced by the func_globals attribute of functions defined in the module). Attribute references are translated to lookups in this dictionary, e.g., `m.x` is equivalent to `m.__dict__["x"]`. A module object does not contain the code object used to initialize the module (since it isn’t needed once the initialization is done). Attribute assignment updates the module’s namespace dictionary, e.g., `m.x = 1` is equivalent to `m.__dict__["x"] = 1`.
+Modules are imported by the statement (see section , “The statement”). A module object has a namespace implemented by a dictionary object (this is the dictionary referenced by the func_globals attribute of functions defined in the module). Attribute references are translated to lookups in this dictionary, e.g., `m.x` is equivalent to `m.__dict__["x"]`. A module object does not contain the code object used to initialize the module (since it isn’t needed once the initialization is done). Attribute assignment updates the module’s namespace dictionary, e.g., `m.x = 1` is equivalent to `m.__dict__["x"] = 1`.
 
 Special read-only attribute: `__dict__` is the module’s namespace as a dictionary object. Predefined (writable) attributes: `__name__` is the module’s name; `__doc__` is the module’s documentation string, or `None` if unavailable; `__file__` is the pathname of the file from which the module was loaded, if it was loaded from a file. The `__file__` attribute is not present for C modules that are statically linked into the interpreter; for extension modules loaded dynamically from a shared library, it is the pathname of the shared library file.
 
 Classes  
-Class objects are created by class definitions (see section <a href="#class" data-reference-type="ref" data-reference="class">[class]</a>, “Class definitions”). A class has a namespace implemented by a dictionary object. Class attribute references are translated to lookups in this dictionary, e.g., `C.x` is translated to `C.__dict__["x"]`. When the attribute name is not found there, the attribute search continues in the base classes. The search is depth-first, left-to-right in the order of occurrence in the base class list. When a class attribute reference would yield a user-defined function object, it is transformed into an unbound user-defined method object (see above). The `im_class` attribute of this method object is the class in which the function object was found, not necessarily the class for which the attribute reference was initiated. Class attribute assignments update the class’s dictionary, never the dictionary of a base class. A class object can be called (see above) to yield a class instance (see below). Special attributes: `__name__` is the class name; `__module__` is the module name in which the class was defined; `__dict__` is the dictionary containing the class’s namespace; `__bases__` is a tuple (possibly empty or a singleton) containing the base classes, in the order of their occurrence in the base class list; `__doc__` is the class’s documentation string, or None if undefined.
+Class objects are created by class definitions (see section , “Class definitions”). A class has a namespace implemented by a dictionary object. Class attribute references are translated to lookups in this dictionary, e.g., `C.x` is translated to `C.__dict__["x"]`. When the attribute name is not found there, the attribute search continues in the base classes. The search is depth-first, left-to-right in the order of occurrence in the base class list. When a class attribute reference would yield a user-defined function object, it is transformed into an unbound user-defined method object (see above). The `im_class` attribute of this method object is the class in which the function object was found, not necessarily the class for which the attribute reference was initiated. Class attribute assignments update the class’s dictionary, never the dictionary of a base class. A class object can be called (see above) to yield a class instance (see below). Special attributes: `__name__` is the class name; `__module__` is the module name in which the class was defined; `__dict__` is the dictionary containing the class’s namespace; `__bases__` is a tuple (possibly empty or a singleton) containing the base classes, in the order of their occurrence in the base class list; `__doc__` is the class’s documentation string, or None if undefined.
 
 Class instances  
-A class instance is created by calling a class object (see above). A class instance has a namespace implemented as a dictionary which is the first place in which attribute references are searched. When an attribute is not found there, and the instance’s class has an attribute by that name, the search continues with the class attributes. If a class attribute is found that is a user-defined function object (and in no other case), it is transformed into an unbound user-defined method object (see above). The `im_class` attribute of this method object is the class in which the function object was found, not necessarily the class of the instance for which the attribute reference was initiated. If no class attribute is found, and the object’s class has a `__getattr__()` method, that is called to satisfy the lookup. Attribute assignments and deletions update the instance’s dictionary, never a class’s dictionary. If the class has a `__setattr__()` or `__delattr__()` method, this is called instead of updating the instance dictionary directly. Class instances can pretend to be numbers, sequences, or mappings if they have methods with certain special names. See section <a href="#specialnames" data-reference-type="ref" data-reference="specialnames">[specialnames]</a>, “Special method names.” Special attributes: `__dict__` is the attribute dictionary; `__class__` is the instance’s class.
+A class instance is created by calling a class object (see above). A class instance has a namespace implemented as a dictionary which is the first place in which attribute references are searched. When an attribute is not found there, and the instance’s class has an attribute by that name, the search continues with the class attributes. If a class attribute is found that is a user-defined function object (and in no other case), it is transformed into an unbound user-defined method object (see above). The `im_class` attribute of this method object is the class in which the function object was found, not necessarily the class of the instance for which the attribute reference was initiated. If no class attribute is found, and the object’s class has a `__getattr__()` method, that is called to satisfy the lookup. Attribute assignments and deletions update the instance’s dictionary, never a class’s dictionary. If the class has a `__setattr__()` or `__delattr__()` method, this is called instead of updating the instance dictionary directly. Class instances can pretend to be numbers, sequences, or mappings if they have methods with certain special names. See section , “Special method names.” Special attributes: `__dict__` is the attribute dictionary; `__class__` is the instance’s class.
 
 Files  
 A fileobject represents an open file. File objects are created by the `open()`built-in function, and also by `os.popen()`, `os.fdopen()`, and the `makefile()`method of socket objects (and perhaps by other functions or methods provided by extension modules). The objects `sys.stdin`, `sys.stdout` and `sys.stderr` are initialized to file objects corresponding to the interpreter’s standardinput, output and error streams. See the Python Library Reference for complete documentation of file objects.
@@ -416,7 +415,7 @@ Frame objects
 Frame objects represent execution frames. They may occur in traceback objects (see below). Special read-only attributes: `f_back` is to the previous stack frame (towards the caller), or `None` if this is the bottom stack frame; `f_code` is the code object being executed in this frame; `f_locals` is the dictionary used to look up local variables; `f_globals` is used for global variables; `f_builtins` is used for built-in (intrinsic) names; `f_restricted` is a flag indicating whether the function is executing in restricted execution mode; `f_lineno` gives the line number and `f_lasti` gives the precise instruction (this is an index into the bytecode string of the code object). Special writable attributes: `f_trace`, if not `None`, is a function called at the start of each source code line (this is used by the debugger); `f_exc_type`, `f_exc_value`, `f_exc_traceback` represent the most recent exception caught in this frame.
 
 Traceback objects  
-Traceback objects represent a stack trace of an exception. A traceback object is created when an exception occurs. When the search for an exception handler unwinds the execution stack, at each unwound level a traceback object is inserted in front of the current traceback. When an exception handler is entered, the stack trace is made available to the program. (See section <a href="#try" data-reference-type="ref" data-reference="try">[try]</a>, “The `try` statement.”) It is accessible as `sys.exc_traceback`, and also as the third item of the tuple returned by `sys.exc_info()`. The latter is the preferred interface, since it works correctly when the program is using multiple threads. When the program contains no suitable handler, the stack trace is written (nicely formatted) to the standard error stream; if the interpreter is interactive, it is also made available to the user as `sys.last_traceback`. Special read-only attributes: `tb_next` is the next level in the stack trace (towards the frame where the exception occurred), or `None` if there is no next level; `tb_frame` points to the execution frame of the current level; `tb_lineno` gives the line number where the exception occurred; `tb_lasti` indicates the precise instruction. The line number and last instruction in the traceback may differ from the line number of its frame object if the exception occurred in a statement with no matching except clause or with a finally clause.
+Traceback objects represent a stack trace of an exception. A traceback object is created when an exception occurs. When the search for an exception handler unwinds the execution stack, at each unwound level a traceback object is inserted in front of the current traceback. When an exception handler is entered, the stack trace is made available to the program. (See section , “The `try` statement.”) It is accessible as `sys.exc_traceback`, and also as the third item of the tuple returned by `sys.exc_info()`. The latter is the preferred interface, since it works correctly when the program is using multiple threads. When the program contains no suitable handler, the stack trace is written (nicely formatted) to the standard error stream; if the interpreter is interactive, it is also made available to the user as `sys.last_traceback`. Special read-only attributes: `tb_next` is the next level in the stack trace (towards the frame where the exception occurred), or `None` if there is no next level; `tb_frame` points to the execution frame of the current level; `tb_lineno` gives the line number where the exception occurred; `tb_lasti` indicates the precise instruction. The line number and last instruction in the traceback may differ from the line number of its frame object if the exception occurred in a statement with no matching except clause or with a finally clause.
 
 Slice objects  
 Slice objects are used to represent slices when *extended slice syntax* is used. This is a slice using two colons, or multiple slices or ellipses separated by commas, e.g., `a[i:j:step]`, `a[i:j, k:l]`, or `a[..., i:j])`. They are also created by the built-in `slice()`function.
@@ -605,18 +604,17 @@ A target occurring in a statement is also considered bound for this purpose (tho
 
 When a global name is not found in the global namespace, it is searched in the built-in namespace (which is actually the global namespace of the module `__builtin__`). The built-in namespace associated with the execution of a code block is actually found by looking up the name `__builtins__` is its global namespace; this should be a dictionary or a module (in the latter case its dictionary is used). Normally, the `__builtins__` namespace is the dictionary of the built-in module `__builtin__` (note: no ‘s’); if it isn’t, restricted executionmode is in effect. When a name is not found at all, a `NameError`exception is raised. The following table lists the meaning of the local and global namespace for various types of code blocks. The namespace for a particular module is automatically created when the module is first imported (i.e., when it is loaded). Note that in almost all cases, the global namespace is the namespace of the containing module — scopes in Python do not nest!
 
-|                                                              |     |     |     |
-|:-------------------------------------------------------------|:----|:----|:----|
-| Module                                                       |     |     |     |
-| n.s. for this module same as global Script (file or command) |     |     |     |
-| n.s. for `__main__` same as global(1) Interactive command    |     |     |     |
-| n.s. for `__main__` same as global Class definition          |     |     |     |
-| global n.s. of containing block new n.s. Function body       |     |     |     |
-| global n.s. of containing block new n.s.(2) String passed to |     |     |     |
-| statement                                                    |     |     |     |
-|                                                              |     |     |     |
-|                                                              |     |     |     |
-|                                                              |     |     |     |
+|  |  |  |  |
+|:---|:---|:---|:---|
+| Module | n.s. for this module | same as global |  |
+| Script (file or command) | n.s. for `__main__` | same as global | \(1\) |
+| Interactive command | n.s. for `__main__` | same as global |  |
+| Class definition | global n.s. of containing block | new n.s. |  |
+| Function body | global n.s. of containing block | new n.s. | \(2\) |
+| String passed to statement | global n.s. of containing block | local n.s. of containing block | (2), (3) |
+| String passed to `eval()` | global n.s. of caller | local n.s. of caller | (2), (3) |
+| File read by `execfile()` | global n.s. of caller | local n.s. of caller | (2), (3) |
+| Expression read by `input()` | global n.s. of caller | local n.s. of caller |  |
 
 Notes:
 
@@ -646,7 +644,7 @@ Exceptions are identified by string objects or class instances. Selection of a m
 
 When an exception is raised, an object (maybe `None`) is passed as the exception’s “parameter” or “value”; this object does not affect the selection of an exception handler, but is passed to the selected exception handler as additional information. For class exceptions, this object must be an instance of the exception class being raised.
 
-See also the description of the statement in section <a href="#try" data-reference-type="ref" data-reference="try">[try]</a> and statement in section <a href="#raise" data-reference-type="ref" data-reference="raise">[raise]</a>.
+See also the description of the statement in section and statement in section .
 
 # Expressions
 
@@ -689,7 +687,7 @@ Python supports string literals and various numeric literals:
 
     literal: stringliteral | integer | longinteger | floatnumber | imagnumber
 
-Evaluation of a literal yields an object of the given type (string, integer, long integer, floating point number, complex number) with the given value. The value may be approximated in the case of floating point and imaginary (complex) literals. See section <a href="#literals" data-reference-type="ref" data-reference="literals">[literals]</a> for details.
+Evaluation of a literal yields an object of the given type (string, integer, long integer, floating point number, complex number) with the given value. The value may be approximated in the case of floating point and imaginary (complex) literals. See section for details.
 
 All literals correspond to immutable data types, and hence the object’s identity is less important than its value. Multiple evaluations of literals with the same value (either the same occurrence in the program text or a different occurrence) may obtain the same object or a different object with the same value.
 
@@ -725,7 +723,7 @@ A dictionary display is a possibly empty series of key/datum pairs enclosed in c
 
 A dictionary display yields a new dictionary object. The key/datum pairs are evaluated from left to right to define the entries of the dictionary: each key object is used as a key into the dictionary to store the corresponding datum.
 
-Restrictions on the types of the key values are listed earlier in section <a href="#types" data-reference-type="ref" data-reference="types">[types]</a>. (To summarize,the key type should be hashable, which excludes all mutable objects.) Clashes between duplicate keys are not detected; the last datum (textually rightmost in the display) stored for a given key value prevails.
+Restrictions on the types of the key values are listed earlier in section . (To summarize,the key type should be hashable, which excludes all mutable objects.) Clashes between duplicate keys are not detected; the last datum (textually rightmost in the display) stored for a given key value prevails.
 
 ### String conversions
 
@@ -788,7 +786,7 @@ A slicing selects a range of items in a sequence object (e.g., a string, tuple o
 
 There is ambiguity in the formal syntax here: anything that looks like an expression list also looks like a slice list, so any subscription can be interpreted as a slicing. Rather than further complicating the syntax, this is disambiguated by defining that in this case the interpretation as a subscription takes priority over the interpretation as a slicing (this is the case if the slice list contains no proper slice nor ellipses). Similarly, when the slice list has exactly one short slice and no trailing comma, the interpretation as a simple slicing takes priority over that as an extended slicing.The semantics for a simple slicing are as follows. The primary must evaluate to a sequence object. The lower and upper bound expressions, if present, must evaluate to plain integers; defaults are zero and the `sys.maxint`, respectively. If either bound is negative, the sequence’s length is added to it. The slicing now selects all items with index *k* such that *`i`*` <= `*`k`*` < `*`j`* where *i* and *j* are the specified lower and upper bounds. This may be an empty sequence. It is not an error if *i* or *j* lie outside the range of valid indexes (such items don’t exist so they aren’t selected).
 
-The semantics for an extended slicing are as follows. The primary must evaluate to a mapping object, and it is indexed with a key that is constructed from the slice list, as follows. If the slice list contains at least one comma, the key is a tuple containing the conversion of the slice items; otherwise, the conversion of the lone slice item is the key. The conversion of a slice item that is an expression is that expression. The conversion of an ellipsis slice item is the built-in `Ellipsis` object. The conversion of a proper slice is a slice object (see section <a href="#types" data-reference-type="ref" data-reference="types">[types]</a>) whose `start`, `stop` and `step` attributes are the values of the expressions given as lower bound, upper bound and stride, respectively, substituting `None` for missing expressions.
+The semantics for an extended slicing are as follows. The primary must evaluate to a mapping object, and it is indexed with a key that is constructed from the slice list, as follows. If the slice list contains at least one comma, the key is a tuple containing the conversion of the slice items; otherwise, the conversion of the lone slice item is the key. The conversion of a slice item that is an expression is that expression. The conversion of an ellipsis slice item is the built-in `Ellipsis` object. The conversion of a proper slice is a slice object (see section ) whose `start`, `stop` and `step` attributes are the values of the expressions given as lower bound, upper bound and stride, respectively, substituting `None` for missing expressions.
 
 ### Calls
 
@@ -803,7 +801,7 @@ A call calls a callable object (e.g., a function) with a possibly empty series o
 
 A trailing comma may be present after an argument list but does not affect the semantics.
 
-The primary must evaluate to a callable object (user-defined functions, built-in functions, methods of built-in objects, class objects, methods of class instances, and certain class instances themselves are callable; extensions may define additional callable object types). All argument expressions are evaluated before the call is attempted. Please refer to section <a href="#function" data-reference-type="ref" data-reference="function">[function]</a> for the syntax of formal parameter lists.
+The primary must evaluate to a callable object (user-defined functions, built-in functions, methods of built-in objects, class objects, methods of class instances, and certain class instances themselves are callable; extensions may define additional callable object types). All argument expressions are evaluated before the call is attempted. Please refer to section for the syntax of formal parameter lists.
 
 If keyword arguments are present, they are first converted to positional arguments, as follows. First, a list of unfilled slots is created for the formal parameters. If there are N positional arguments, they are placed in the first N slots. Next, for each keyword argument, the identifier is used to determine the corresponding slot (if the identifier is the same as the first formal parameter name, the first slot is used, and so on). If the slot is already filled, a `TypeError` exception is raised. Otherwise, the value of the argument is placed in the slot, filling it (even if the expression is `None`, it fills the slot). When all arguments have been processed, the slots that are still unfilled are filled with the corresponding default value from the function definition. (Default values are calculated, once, when the function is defined; thus, a mutable object such as a list or dictionary used as default value will be shared by all calls that don’t specify an argument value for the corresponding slot; this should usually be avoided.) If there are any unfilled slots for which no default value is specified, a `TypeError` exception is raised. Otherwise, the list of filled slots is used as the argument list for the call.
 
@@ -818,7 +816,7 @@ A call always returns some value, possibly `None`, unless it raises an exception
 If it is—
 
 a user-defined function:  
-The code block for the function is executed, passing it the argument list. The first thing the code block will do is bind the formal parameters to the arguments; this is described in section <a href="#function" data-reference-type="ref" data-reference="function">[function]</a>. When the code block executes a statement, this specifies the return value of the function call.
+The code block for the function is executed, passing it the argument list. The first thing the code block will do is bind the formal parameters to the arguments; this is described in section . When the code block executes a statement, this specifies the return value of the function call.
 
 a built-in function or method:  
 The result is up to the interpreter; see the Python Library Reference for the descriptions of built-in functions and methods.
@@ -891,7 +889,7 @@ Contrary to C, all comparison operations in Python have the same priority, which
 
 Comparisons yield integer values: `1` for true, `0` for false.
 
-Comparisons can be chained arbitrarily, e.g., `x < y <= z` is equivalent to `x < y and y <= z`, except that `y` is evaluated only once (but in both cases `z` is not evaluated at all when `x < y` is found to be false). Formally, if *a*, *b*, *c*, …, *y*, *z* are expressions and *opa*, *opb*, …, *opy* are comparison operators, then *a opa b opb c* …*y opy z* is equivalent to *a opa b* *b opb c* … *y opy z*, except that each expression is evaluated at most once.
+Comparisons can be chained arbitrarily, e.g., `x < y <= z` is equivalent to `x < y and y <= z`, except that `y` is evaluated only once (but in both cases `z` is not evaluated at all when `x < y` is found to be false). Formally, if *a*, *b*, *c*, …, *y*, *z* are expressions and *opa*, *opb*, …, *opy* are comparison operators, then *a opa b opb c* …*y opy z* is equivalent to *a opa b* *b opb c* …*y opy z*, except that each expression is evaluated at most once.
 
 Note that *a opa b opb c* doesn’t imply any kind of comparison between *a* and *c*, so that, e.g., `x < y > z` is perfectly legal (though perhaps not pretty).
 
@@ -952,7 +950,7 @@ Lambda forms (lambda expressions) have the same syntactic position as expression
     def name(arguments):
         return expression
 
-See section <a href="#function" data-reference-type="ref" data-reference="function">[function]</a> for the syntax of parameter lists. Note that functions created with lambda forms cannot contain statements.
+See section for the syntax of parameter lists. Note that functions created with lambda forms cannot contain statements.
 
 **Programmer’s note:** a lambda form defined inside a function has no access to names defined in the function’s namespace. This is because Python has only two scopes: local and global. A common work-around is to use default argument values to pass selected variables into the lambda’s namespace, e.g.:
 
@@ -969,33 +967,22 @@ An expression list containing at least one comma yields a tuple. The length of t
 
 The following table summarizes the operator precedencesin Python, from lowest precedence (least binding) to highest precedence (most binding). Operators in the same box have the same precedence. Unless the syntax is explicitly given, operators are binary. Operators in the same box group left to right (except for comparisons, which chain from left to right — see above).
 
-|                                     |     |
-|:------------------------------------|:----|
-|                                     |     |
-|                                     |     |
-|                                     |     |
-|                                     |     |
-| *x*                                 |     |
-| ,                                   |     |
-| ,                                   |     |
-| , `<=`, `>`, `>=`, `<>`, `!=`, `==` |     |
-|                                     |     |
-|                                     |     |
-|                                     |     |
-| , `>>`                              |     |
-| , `-`                               |     |
-| , `/`, `%`                          |     |
-|                                     |     |
-|                                     |     |
-|                                     |     |
-| .*attribute*                        |     |
-|                                     |     |
-|                                     |     |
-| (*arguments*...)                    |     |
-| …)                                  |     |
-| …]                                 |     |
-| :*datum*…}                          |     |
-| …‘                                  |     |
+|  | Lambda expression |
+|:---|:---|
+|  | Boolean OR |
+|  | Boolean AND |
+| *x* | Boolean NOT |
+| , | Membership tests |
+| , | Identity tests |
+| `<`, `<=`, `>`, `>=`, `<>`, `!=`, `==` | Comparisons |
+| `|` | Bitwise OR |
+| `^` | Bitwise XOR |
+| `&` | Bitwise AND |
+| `<<`, `>>` | Shifts |
+| `+`, `-` | Addition and subtraction |
+| `*`, `/`, `%` | Multiplication, division, remainder |
+| `**` | Exponentiation |
+| Positive, negative Bitwise not Attribute reference Subscription Slicing Function call Binding or tuple display List display String conversion |  |
 
 # Simple statements 
 
@@ -1021,7 +1008,7 @@ Expression statements are used (mostly interactively) to compute and write a val
 
     expression_stmt: expression_list
 
-An expression statement evaluates the expression list (which may be a single expression). In interactive mode, if the value is not `None`, it is converted to a string using the built-in `repr()`function and the resulting string is written to standard output (see section <a href="#print" data-reference-type="ref" data-reference="print">[print]</a>) on a line by itself. (Expression statements yielding None are not written, so that procedure calls do not cause any output.)
+An expression statement evaluates the expression list (which may be a single expression). In interactive mode, if the value is not `None`, it is converted to a string using the built-in `repr()`function and the resulting string is written to standard output (see section ) on a line by itself. (Expression statements yielding None are not written, so that procedure calls do not cause any output.)
 
 ## Assert statements 
 
@@ -1050,9 +1037,9 @@ Assignment statementsare used to (re)bind names to values and to modify attribut
     target:          identifier | "(" target_list ")" | "[" target_list "]"
                    | attributeref | subscription | slicing
 
-(See section <a href="#primaries" data-reference-type="ref" data-reference="primaries">[primaries]</a> for the syntax definitions for the last three symbols.)
+(See section for the syntax definitions for the last three symbols.)
 
-An assignment statement evaluates the expression list (remember that this can be a single expression or a comma-separated list, the latter yielding a tuple) and assigns the single resulting object to each of the target lists, from left to right. Assignment is defined recursively depending on the form of the target (list). When a target is part of a mutable object (an attribute reference, subscription or slicing), the mutable object must ultimately perform the assignment and decide about its validity, and may raise an exception if the assignment is unacceptable. The rules observed by various types and the exceptions raised are given with the definition of the object types (see section <a href="#types" data-reference-type="ref" data-reference="types">[types]</a>). Assignment of an object to a target list is recursively defined as follows.
+An assignment statement evaluates the expression list (remember that this can be a single expression or a comma-separated list, the latter yielding a tuple) and assigns the single resulting object to each of the target lists, from left to right. Assignment is defined recursively depending on the form of the target (list). When a target is part of a mutable object (an attribute reference, subscription or slicing), the mutable object must ultimately perform the assignment and decide about its validity, and may raise an exception if the assignment is unacceptable. The rules observed by various types and the exceptions raised are given with the definition of the object types (see section ). Assignment of an object to a target list is recursively defined as follows.
 
 - If the target list is a single target: The object is assigned to that target.
 
@@ -1131,7 +1118,7 @@ If no expressions are present, re-raises the last expression that was raised in 
 
 Otherwise, evaluates its first expression, which must yield a string, class, or instance object. If there is a second expression, this is evaluated, else `None` is substituted. If the first expression is a class object, then the second expression may be an instance of that class or one of its derivatives, and then that instance is raised. If the second expression is not such an instance, the given class is instantiated. The argument list for the instantiation is determined as follows: if the second expression is a tuple, it is used as the argument list; if it is `None`, the argument list is empty; otherwise, the argument list consists of a single argument which is the second expression. If the first expression is an instance object, the second expression must be `None`. If the first object is a string, it then raises the exception identified by the first object, with the second one (or `None`) as its parameter. If the first object is a class or instance, it raises the exception identified by the class of the instance determined in the previous step, with the instance as its parameter.
 
-If a third object is present, and it is not `None`, it should be a traceback object (see section <a href="#traceback" data-reference-type="ref" data-reference="traceback">[traceback]</a>), and it is substituted instead of the current location as the place where the exception occurred. This is useful to re-raise an exception transparently in an except clause.
+If a third object is present, and it is not `None`, it should be a traceback object (see section ), and it is substituted instead of the current location as the place where the exception occurred. This is useful to re-raise an exception transparently in an except clause.
 
 ## The statement 
 
@@ -1215,7 +1202,7 @@ The statement is used for conditional execution:
                    ("elif" expression ":" suite)*
                    ["else" ":" suite]
 
-It selects exactly one of the suites by evaluating the expressions one by one until one is found to be true (see section <a href="#Booleans" data-reference-type="ref" data-reference="Booleans">[Booleans]</a> for the definition of true and false); then that suite is executed (and no other part of the statement is executed or evaluated). If all expressions are false, the suite of the clause, if present, is executed.
+It selects exactly one of the suites by evaluating the expressions one by one until one is found to be true (see section for the definition of true and false); then that suite is executed (and no other part of the statement is executed or evaluated). If all expressions are false, the suite of the clause, if present, is executed.
 
 ## The statement
 
@@ -1259,11 +1246,11 @@ If the evaluation of an expression in the header of an except clause raises an e
 
 When a matching except clause is found, the exception’s parameter is assigned to the target specified in that except clause, if present, and the except clause’s suite is executed. All except clauses must have an executable block. When the end of this block is reached, execution continues normally after the entire try statement. (This means that if two nested handlers exist for the same exception, and the exception occurs in the try clause of the inner handler, the outer handler will not handle the exception.)
 
-Before an except clause’s suite is executed, details about the exception are assigned to three variables in the `sys`module: `sys.exc_type` receives the object identifying the exception; `sys.exc_value` receives the exception’s parameter; `sys.exc_traceback` receives a traceback object(see section <a href="#traceback" data-reference-type="ref" data-reference="traceback">[traceback]</a>) identifying the point in the program where the exception occurred. These details are also available through the `sys.exc_info()` function, which returns a tuple `(`*`exc_type`*`, `*`exc_value`*`, `*`exc_traceback`*`)`. Use of the corresponding variables is deprecated in favor of this function, since their use is unsafe in a threaded program. As of Python 1.5, the variables are restored to their previous values (before the call) when returning from a function that handled an exception. The optional clause is executed when no exception occurs in the clause. Exceptions in the clause are not handled by the preceding clauses. The ... form specifies a ‘cleanup’ handler. The clause is executed. When no exception occurs, the clause is executed. When an exception occurs in the clause, the exception is temporarily saved, the clause is executed, and then the saved exception is re-raised. If the clause raises another exception or executes a , or statement, the saved exception is lost. The exception information is not available to the program during execution of the clause. When a or statement is executed in the suite of a ... statement, the clause is also executed ‘on the way out.’ A statement is illegal in the clause. (The reason is a problem with the current implementation — this restriction may be lifted in the future).
+Before an except clause’s suite is executed, details about the exception are assigned to three variables in the `sys`module: `sys.exc_type` receives the object identifying the exception; `sys.exc_value` receives the exception’s parameter; `sys.exc_traceback` receives a traceback object(see section ) identifying the point in the program where the exception occurred. These details are also available through the `sys.exc_info()` function, which returns a tuple `(`*`exc_type`*`, `*`exc_value`*`, `*`exc_traceback`*`)`. Use of the corresponding variables is deprecated in favor of this function, since their use is unsafe in a threaded program. As of Python 1.5, the variables are restored to their previous values (before the call) when returning from a function that handled an exception. The optional clause is executed when no exception occurs in the clause. Exceptions in the clause are not handled by the preceding clauses. The ... form specifies a ‘cleanup’ handler. The clause is executed. When no exception occurs, the clause is executed. When an exception occurs in the clause, the exception is temporarily saved, the clause is executed, and then the saved exception is re-raised. If the clause raises another exception or executes a , or statement, the saved exception is lost. The exception information is not available to the program during execution of the clause. When a or statement is executed in the suite of a ... statement, the clause is also executed ‘on the way out.’ A statement is illegal in the clause. (The reason is a problem with the current implementation — this restriction may be lifted in the future).
 
 ## Function definitions
 
-A function definition defines a user-defined function object (see section <a href="#types" data-reference-type="ref" data-reference="types">[types]</a>):
+A function definition defines a user-defined function object (see section ):
 
     funcdef:        "def" funcname "(" [parameter_list] ")" ":" suite
     parameter_list: (defparameter ",")* ("*" identifier [, "**" identifier] 
@@ -1284,9 +1271,9 @@ When one or more top-level parameters have the form *parameter* `=` *expression*
         penguin.append("property of the zoo")
         return penguin
 
-Function call semantics are described in more detail in section <a href="#calls" data-reference-type="ref" data-reference="calls">[calls]</a>. A function call always assigns values to all parameters mentioned in the parameter list, either from position arguments, from keyword arguments, or from default values. If the form “`*identifier`” is present, it is initialized to a tuple receiving any excess positional parameters, defaulting to the empty tuple. If the form “`**identifier`” is present, it is initialized to a new dictionary receiving any excess keyword arguments, defaulting to a new empty dictionary.
+Function call semantics are described in more detail in section . A function call always assigns values to all parameters mentioned in the parameter list, either from position arguments, from keyword arguments, or from default values. If the form “`*identifier`” is present, it is initialized to a tuple receiving any excess positional parameters, defaulting to the empty tuple. If the form “`**identifier`” is present, it is initialized to a new dictionary receiving any excess keyword arguments, defaulting to a new empty dictionary.
 
-It is also possible to create anonymous functions (functions not bound to a name), for immediate use in expressions. This uses lambda forms, described in section <a href="#lambda" data-reference-type="ref" data-reference="lambda">[lambda]</a>. Note that the lambda form is merely a shorthand for a simplified function definition; a function defined in a “” statement can be passed around or assigned to another name just like a function defined by a lambda form. The “” form is actually more powerful since it allows the execution of multiple statements. **Programmer’s note:** a “`def`” form executed inside a function definition defines a local function that can be returned or passed around. Because of Python’s two-scope philosophy, a local function defined in this way does not have access to the local variables of the function that contains its definition; the same rule applies to functions defined by a lambda form. A standard trick to pass selected local variables into a locally defined function is to use default argument values, like this:
+It is also possible to create anonymous functions (functions not bound to a name), for immediate use in expressions. This uses lambda forms, described in section . Note that the lambda form is merely a shorthand for a simplified function definition; a function defined in a “” statement can be passed around or assigned to another name just like a function defined by a lambda form. The “” form is actually more powerful since it allows the execution of multiple statements. **Programmer’s note:** a “`def`” form executed inside a function definition defines a local function that can be returned or passed around. Because of Python’s two-scope philosophy, a local function defined in this way does not have access to the local variables of the function that contains its definition; the same rule applies to functions defined by a lambda form. A standard trick to pass selected local variables into a locally defined function is to use default argument values, like this:
 
     # Return a function that returns its argument incremented by 'n'
     def make_incrementer(n):
@@ -1299,13 +1286,13 @@ It is also possible to create anonymous functions (functions not bound to a name
 
 ## Class definitions
 
-A class definition defines a class object (see section <a href="#types" data-reference-type="ref" data-reference="types">[types]</a>):
+A class definition defines a class object (see section ):
 
     classdef:       "class" classname [inheritance] ":" suite
     inheritance:    "(" [expression_list] ")"
     classname:      identifier
 
-A class definition is an executable statement. It first evaluates the inheritance list, if present. Each item in the inheritance list should evaluate to a class object. The class’s suite is then executed in a new execution frame (see section <a href="#execframes" data-reference-type="ref" data-reference="execframes">[execframes]</a>), using a newly created local namespace and the original global namespace. (Usually, the suite contains only function definitions.) When the class’s suite finishes execution, its execution frame is discarded but its local namespace is saved. A class object is then created using the inheritance list for the base classes and the saved local namespace for the attribute dictionary. The class name is bound to this class object in the original local namespace. **Programmer’s note:** variables defined in the class definition are class variables; they are shared by all instances. To define instance variables, they must be given a value in the the `__init__()` method or in another method. Both class and instance variables are accessible through the notation “‘codeself.name’’, and an instance variable hides a class variable with the same name when accessed in this way. Class variables with immutable values can be used as defaults for instance variables.
+A class definition is an executable statement. It first evaluates the inheritance list, if present. Each item in the inheritance list should evaluate to a class object. The class’s suite is then executed in a new execution frame (see section ), using a newly created local namespace and the original global namespace. (Usually, the suite contains only function definitions.) When the class’s suite finishes execution, its execution frame is discarded but its local namespace is saved. A class object is then created using the inheritance list for the base classes and the saved local namespace for the attribute dictionary. The class name is bound to this class object in the original local namespace. **Programmer’s note:** variables defined in the class definition are class variables; they are shared by all instances. To define instance variables, they must be given a value in the the `__init__()` method or in another method. Both class and instance variables are accessible through the notation “‘codeself.name’’, and an instance variable hides a class variable with the same name when accessed in this way. Class variables with immutable values can be used as defaults for instance variables.
 
 # Top-level components
 

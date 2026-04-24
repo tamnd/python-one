@@ -41,7 +41,15 @@ _run_pandoc() {
         --wrap=none \
         --syntax-highlighting=none \
         "$tmpfile" 2>/dev/null \
-    | sed 's/\\\*/*/g; s/\\_/_/g; s/\\\[/[/g; s/\\\]/]/g' \
+    | sed \
+        -e 's/\\\*/*/g' \
+        -e 's/\\_/_/g' \
+        -e 's/\\\[/[/g' \
+        -e 's/\\\]/]/g' \
+        -e 's/<span class="roman">//g' \
+        -e 's|</span>||g' \
+        -e 's/ data-reference-type="[^"]*"//g' \
+        -e 's/ data-reference="[^"]*"//g' \
     || true
     rm -f "$tmpfile"
 }

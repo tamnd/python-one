@@ -1691,7 +1691,7 @@ Programs may name their own exceptions by assigning a string to a variable or cr
 
 Many standard modules use this to report errors that may occur in functions they define.
 
-More information on classes is presented in chapter <a href="#classes" data-reference-type="ref" data-reference="classes">[classes]</a>, “Classes.”
+More information on classes is presented in chapter , “Classes.”
 
 ## Defining Clean-up Actions 
 

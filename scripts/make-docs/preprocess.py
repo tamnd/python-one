@@ -170,6 +170,17 @@ def strip_doc_structure(text: str) -> str:
     # which leaves invalid HTML; headings already get anchor slugs from Hugo.
     body = re.sub(r'\\label\{[^}]*\}', '', body)
 
+    # Strip \ref{...} and \pageref{...} -- section/page number cross-references
+    # that have no meaning in flat web docs; pandoc generates ugly data-reference
+    # anchor tags for them.
+    body = re.sub(r'\\(?:ref|pageref)\{[^}]*\}', '', body)
+
+    # Normalise \ldots / \dots / \cdots to plain ellipsis character
+    body = re.sub(r'\\(?:ldots|dots|cdots)\b\s*', '…', body)
+
+    # Strip \protect (fragile-command guard, meaningless outside real LaTeX)
+    body = re.sub(r'\\protect\b\s*', '', body)
+
     return body
 
 
@@ -298,13 +309,37 @@ def _skip_braced_arg(text: str, pos: int) -> int:
     return pos
 
 
+def _extract_braced_args(text: str, pos: int, max_args: int) -> list:
+    """Extract up to max_args braced arguments, handling nested braces.
+    Returns list of arg strings (without outer braces).
+    """
+    args = []
+    n = len(text)
+    for _ in range(max_args):
+        while pos < n and text[pos] in ' \t\n':
+            pos += 1
+        if pos >= n or text[pos] != '{':
+            break
+        start = pos + 1
+        pos += 1
+        depth = 1
+        while pos < n and depth:
+            if text[pos] == '{':
+                depth += 1
+            elif text[pos] == '}':
+                depth -= 1
+            pos += 1
+        args.append(text[start:pos - 1])
+    return args
+
+
 def fix_tables(text: str) -> str:
     r"""
     Convert Python doc table environments to something pandoc can handle.
     Handles column specs with nested braces like {l|p{4in}\code}.
     """
     text = re.sub(
-        r'\\begin\{table(ii|iii|iv)\}(.*?)\\end\{table(?:ii|iii|iv)\}',
+        r'\\begin\{table(iv|iii|ii)\}(.*?)\\end\{table(?:iv|iii|ii)\}',
         repl_table_generic,
         text, flags=re.DOTALL
     )
@@ -316,7 +351,7 @@ _TABLE_NCOLS = {'ii': 2, 'iii': 3, 'iv': 4}
 
 def repl_table_generic(m: re.Match) -> str:
     full = m.group(0)
-    col_match = re.match(r'\\begin\{table(ii|iii|iv)\}', full)
+    col_match = re.match(r'\\begin\{table(iv|iii|ii)\}', full)
     if not col_match:
         return full
     n = _TABLE_NCOLS[col_match.group(1)]
@@ -329,13 +364,18 @@ def repl_table_generic(m: re.Match) -> str:
 
     body = full[pos:]
     # Strip closing \end{tableN}
-    body = re.sub(r'\\end\{table(?:ii|iii|iv)\}\s*$', '', body)
+    body = re.sub(r'\\end\{table(?:iv|iii|ii)\}\s*$', '', body)
 
-    # Convert \lineN{a}{b}... rows (args may not contain nested braces in data)
+    # Convert \lineN{a}{b}... rows using brace-aware arg extractor.
+    # Use regex that handles one level of brace nesting in args.
     def repl_line(lm: re.Match) -> str:
-        args = re.findall(r'\{([^}]*)\}', lm.group(0))
+        cmd_end = re.match(r'\\line(?:iv|iii|ii)', lm.group(0)).end()
+        args = _extract_braced_args(lm.group(0), cmd_end, n)
         return ' & '.join(args[:n]) + r' \\'
-    body = re.sub(r'\\line(?:ii|iii|iv)(?:\{[^}]*\})+', repl_line, body)
+    body = re.sub(
+        r'\\line(?:iv|iii|ii)(?:\s*\{(?:[^{}]|\{[^{}]*\})*\})+',
+        repl_line, body
+    )
 
     cols = 'l' * n
     return r'\begin{tabular}{' + cols + r'}' + '\n' + body.strip() + '\n' + r'\end{tabular}'

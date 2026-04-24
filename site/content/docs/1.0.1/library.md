@@ -33,12 +33,11 @@ Any object can be tested for truth value, for use in an `if` or `while` conditio
 
 These are the Boolean operations:
 
-|         |     |     |
-|:--------|:----|:----|
-|         |     |     |
-| or *y*  |     |     |
-| and *y* |     |     |
-|         |     |     |
+|             |                                     |       |
+|:------------|:------------------------------------|:------|
+| *x* or *y*  | if *x* is false, then *y*, else *x* | \(1\) |
+| *x* and *y* | if *x* is false, then *x*, else *y* | \(1\) |
+| not *x*     | if *x* is false, then `1`, else `0` |       |
 
 Notes:
 
@@ -74,22 +73,21 @@ Two more operations with the same syntactic priority, `in` and `not in`, are sup
 
 There are three numeric types: *plain integers*, *long integers*, and *floating point numbers*. Plain integers (also just called *integers*) are implemented using `long` in C, which gives them at least 32 bits of precision. Long integers have unlimited precision. Floating point numbers are implemented using `double` in C. All bets on their precision are off unless you happen to know the machine you are working with. Numbers are created by numeric literals or as the result of built-in functions and operators. Unadorned integer literals (including hex and octal numbers) yield plain integers. Integer literals with an `L` or `l` suffix yield long integers (`L` is preferred because `1l` looks too much like eleven!). Numeric literals containing a decimal point or an exponent sign yield floating point numbers. Python fully supports mixed arithmetic: when a binary arithmetic operator has operands of different numeric types, the operand with the “smaller” type is converted to that of the other, where plain integer is smaller than long integer is smaller than floating point. Comparisons between numbers of mixed type use the same rule. [^2] The functions `int()`, `long()` and `float()` can be used to coerce numbers to a specific type. All numeric types support the following operations:
 
-|        |     |     |
-|:-------|:----|:----|
-| abs(   |     |     |
-| )      |     |     |
-| )      |     |     |
-| )      |     |     |
-| )      |     |     |
-|        |     |     |
-|        |     |     |
-| \+ *y* |     |     |
-| \- *y* |     |     |
-| * *y* |     |     |
-| / *y*  |     |     |
-| % *y*  |     |     |
-| , *y*) |     |     |
-| , *y*) |     |     |
+|            |                                 |       |
+|:-----------|:--------------------------------|:------|
+| abs(*x*)   | absolute value of *x*           |       |
+| int(*x*)   | *x* converted to integer        | \(1\) |
+| long(*x*)  | *x* converted to long integer   | \(1\) |
+| float(*x*) | *x* converted to floating point |       |
+| \-*x*      | *x* negated                     |       |
+| \+*x*      | *x* unchanged                   |       |
+| *x* + *y*  | sum of *x* and *y*              |       |
+| *x* - *y*  | difference of *x* and *y*       |       |
+| *x* * *y* | product of *x* and *y*          |       |
+| *x* / *y*  | quotient of *x* and *y*         | \(2\) |
+| *x* % *y*  |                                 |       |
+|            |                                 |       |
+|            | *x* to the power *y*            |       |
 
 Notes:
 
@@ -108,32 +106,30 @@ See the section on built-in functions for an exact definition.
 
 Plain and long integer types support additional operations that make sense only for bit-strings. Negative numbers are treated as their 2’s complement value:
 
-|          |     |     |
-|:---------|:----|:----|
-| ~        |     |     |
-|          |     |     |
-| ^ *y*    |     |     |
-| & *y*    |     |     |
-| \| *y*   |     |     |
-| \<\< *n* |     |     |
-| \>\> *n* |     |     |
+|              |                                       |     |
+|:-------------|:--------------------------------------|:----|
+| *x*          | the bits of *x* inverted              |     |
+| *x* ^ *y*    | bitwise *exclusive or* of *x* and *y* |     |
+| *x* & *y*    | bitwise *and* of *x* and *y*          |     |
+| *x* \| *y*   | bitwise *or* of *x* and *y*           |     |
+| *x* \<\< *n* | *x* shifted left by *n* bits          |     |
+| *x* \>\> *n* | *x* shifted right by *n* bits         |     |
 
 ### Sequence Types
 
 There are three sequence types: strings, lists and tuples. Strings literals are written in single quotes: `’xyzzy’`. Lists are constructed with square brackets, separating items with commas: `[a, b, c]`. Tuples are constructed by the comma operator (not within square brackets), with or without enclosing parentheses, but an empty tuple must have the enclosing parentheses, e.g., `a, b, c` or `()`. A single item tuple must have a trailing comma, e.g., `(d,)`. Sequence types support the following operations (*s* and *t* are sequences of the same type; *n*, *i* and *j* are integers):
 
-|                    |     |     |
-|:-------------------|:----|:----|
-| len(               |     |     |
-| )                  |     |     |
-| )                  |     |     |
-| )                  |     |     |
-| in *s*             |     |     |
-| not in *s*         |     |     |
-| \+ *t*             |     |     |
-| * *n*, *n* * *s* |     |     |
-|                    |     |     |
-|                    |     |     |
+|  |  |  |
+|:---|:---|:---|
+| len(*s*) | length of *s* |  |
+| min(*s*) | smallest item of *s* |  |
+| max(*s*) | largest item of *s* |  |
+| *x* in *s* | `1` if an item of *s* is equal to *x*, else `0` |  |
+| *x* not in *s* | `0` if an item of *s* is equal to *x*, else `1` |  |
+| *s* + *t* | the concatenation of *s* and *t* |  |
+| *s* * *n*, *n* * *s* | *n* copies of *s* concatenated |  |
+| *s*[*i*] | *i*’th item of *s*, origin 0 | \(1\) |
+| *s*[*i*:*j*] | slice of *s* from *i* to *j* | (1), (2) |
 
 Notes:
 
@@ -158,19 +154,19 @@ Additional string operations are defined in standard module `string` and in buil
 
 List objects support additional operations that allow in-place modification of the object. These operations would be supported by other mutable sequence types (when added to the language) as well. Strings and tuples are immutable sequence types and such objects cannot be modified once created. The following operations are defined on mutable sequence types (where *x* is an arbitrary object):
 
-|                   |     |     |
-|:------------------|:----|:----|
-|                   |     |     |
-| = *x*             |     |     |
-| = *t*             |     |     |
-|                   |     |     |
-| .append(*x*)      |     |     |
-| .count(*x*)       |     |     |
-| .index(*x*)       |     |     |
-| .insert(*i*, *x*) |     |     |
-| .remove(*x*)      |     |     |
-| .reverse()        |     |     |
-| .sort()           |     |     |
+|  |  |  |
+|:---|:---|:---|
+| *s*[*i*] = *x* | item *i* of *s* is replaced by *x* |  |
+| *s*[*i*:*j*] = *t* | slice of *s* from *i* to *j* is replaced by *t* |  |
+| del *s*[*i*:*j*] |  |  |
+| same as *`s`*`[`*`i`*`:`*`j`*`] = []` *s*.append(*x*) |  |  |
+| same as *`s`*`[len(`*`x`*`):len(`*`x`*`)] = [`*`x`*`]` *s*.count(*x*) |  |  |
+| return number of *i*’s for which *`s`*`[`*`i`*`] == `*`x`* *s*.index(*x*) |  |  |
+| return smallest *i* such that *`s`*`[`*`i`*`] == `*`x`*(1) *s*.insert(*i*, *x*) |  |  |
+| same as *`s`*`[`*`i`*`:`*`i`*`] = [`*`x`*`]` *s*.remove(*x*) |  |  |
+| same as `del `*`s`*`[`*`s`*`.index(`*`x`*`)]`(1) *s*.reverse() | reverses the items of *s* in place |  |
+| *s*.sort() |  |  |
+| permutes the items of *s* to satisfy *`s`*`[`*`i`*`] <= `*`s`*`[`*`j`*`]`, for *`i`*` < `*`j`*(2) |  |  |
 
 Notes:
 
@@ -188,17 +184,16 @@ Dictionaries are created by placing a comma-separated list of *`key`*`: `*`value
 
 The following operations are defined on mappings (where *a* is a mapping, *k* is a key and *x* is an arbitrary object):
 
-|               |     |     |
-|:--------------|:----|:----|
-| len(          |     |     |
-| )             |     |     |
-|               |     |     |
-| = *x*         |     |     |
-|               |     |     |
-| .items()      |     |     |
-| .keys()       |     |     |
-| .values()     |     |     |
-| .has_key(*k*) |     |     |
+|                  |                                           |       |
+|:-----------------|:------------------------------------------|:------|
+| len(*a*)         | the number of items in *a*                |       |
+| *a*[*k*]       | the item of *a* with key *k*              | \(1\) |
+| *a*[*k*] = *x* |                                           |       |
+|                  |                                           |       |
+|                  | a copy of *a*’s list of (key, item) pairs | \(2\) |
+| *a*.keys()       | a copy of *a*’s list of keys              | \(2\) |
+| *a*.values()     | a copy of *a*’s list of values            | \(2\) |
+| *a*.has_key(*k*) | `1` if *a* has a key *k*, else `0`        |       |
 
 Notes:
 
@@ -6703,12 +6698,11 @@ Any object can be tested for truth value, for use in an `if` or `while` conditio
 
 These are the Boolean operations:
 
-|         |     |     |
-|:--------|:----|:----|
-|         |     |     |
-| or *y*  |     |     |
-| and *y* |     |     |
-|         |     |     |
+|             |                                     |       |
+|:------------|:------------------------------------|:------|
+| *x* or *y*  | if *x* is false, then *y*, else *x* | \(1\) |
+| *x* and *y* | if *x* is false, then *x*, else *y* | \(1\) |
+| not *x*     | if *x* is false, then `1`, else `0` |       |
 
 Notes:
 
@@ -6744,22 +6738,21 @@ Two more operations with the same syntactic priority, `in` and `not in`, are sup
 
 There are three numeric types: *plain integers*, *long integers*, and *floating point numbers*. Plain integers (also just called *integers*) are implemented using `long` in C, which gives them at least 32 bits of precision. Long integers have unlimited precision. Floating point numbers are implemented using `double` in C. All bets on their precision are off unless you happen to know the machine you are working with. Numbers are created by numeric literals or as the result of built-in functions and operators. Unadorned integer literals (including hex and octal numbers) yield plain integers. Integer literals with an `L` or `l` suffix yield long integers (`L` is preferred because `1l` looks too much like eleven!). Numeric literals containing a decimal point or an exponent sign yield floating point numbers. Python fully supports mixed arithmetic: when a binary arithmetic operator has operands of different numeric types, the operand with the “smaller” type is converted to that of the other, where plain integer is smaller than long integer is smaller than floating point. Comparisons between numbers of mixed type use the same rule. [^1] The functions `int()`, `long()` and `float()` can be used to coerce numbers to a specific type. All numeric types support the following operations:
 
-|        |     |     |
-|:-------|:----|:----|
-| abs(   |     |     |
-| )      |     |     |
-| )      |     |     |
-| )      |     |     |
-| )      |     |     |
-|        |     |     |
-|        |     |     |
-| \+ *y* |     |     |
-| \- *y* |     |     |
-| * *y* |     |     |
-| / *y*  |     |     |
-| % *y*  |     |     |
-| , *y*) |     |     |
-| , *y*) |     |     |
+|            |                                 |       |
+|:-----------|:--------------------------------|:------|
+| abs(*x*)   | absolute value of *x*           |       |
+| int(*x*)   | *x* converted to integer        | \(1\) |
+| long(*x*)  | *x* converted to long integer   | \(1\) |
+| float(*x*) | *x* converted to floating point |       |
+| \-*x*      | *x* negated                     |       |
+| \+*x*      | *x* unchanged                   |       |
+| *x* + *y*  | sum of *x* and *y*              |       |
+| *x* - *y*  | difference of *x* and *y*       |       |
+| *x* * *y* | product of *x* and *y*          |       |
+| *x* / *y*  | quotient of *x* and *y*         | \(2\) |
+| *x* % *y*  |                                 |       |
+|            |                                 |       |
+|            | *x* to the power *y*            |       |
 
 Notes:
 
@@ -6778,32 +6771,30 @@ See the section on built-in functions for an exact definition.
 
 Plain and long integer types support additional operations that make sense only for bit-strings. Negative numbers are treated as their 2’s complement value:
 
-|          |     |     |
-|:---------|:----|:----|
-| ~        |     |     |
-|          |     |     |
-| ^ *y*    |     |     |
-| & *y*    |     |     |
-| \| *y*   |     |     |
-| \<\< *n* |     |     |
-| \>\> *n* |     |     |
+|              |                                       |     |
+|:-------------|:--------------------------------------|:----|
+| *x*          | the bits of *x* inverted              |     |
+| *x* ^ *y*    | bitwise *exclusive or* of *x* and *y* |     |
+| *x* & *y*    | bitwise *and* of *x* and *y*          |     |
+| *x* \| *y*   | bitwise *or* of *x* and *y*           |     |
+| *x* \<\< *n* | *x* shifted left by *n* bits          |     |
+| *x* \>\> *n* | *x* shifted right by *n* bits         |     |
 
 ## Sequence Types
 
 There are three sequence types: strings, lists and tuples. Strings literals are written in single quotes: `’xyzzy’`. Lists are constructed with square brackets, separating items with commas: `[a, b, c]`. Tuples are constructed by the comma operator (not within square brackets), with or without enclosing parentheses, but an empty tuple must have the enclosing parentheses, e.g., `a, b, c` or `()`. A single item tuple must have a trailing comma, e.g., `(d,)`. Sequence types support the following operations (*s* and *t* are sequences of the same type; *n*, *i* and *j* are integers):
 
-|                    |     |     |
-|:-------------------|:----|:----|
-| len(               |     |     |
-| )                  |     |     |
-| )                  |     |     |
-| )                  |     |     |
-| in *s*             |     |     |
-| not in *s*         |     |     |
-| \+ *t*             |     |     |
-| * *n*, *n* * *s* |     |     |
-|                    |     |     |
-|                    |     |     |
+|  |  |  |
+|:---|:---|:---|
+| len(*s*) | length of *s* |  |
+| min(*s*) | smallest item of *s* |  |
+| max(*s*) | largest item of *s* |  |
+| *x* in *s* | `1` if an item of *s* is equal to *x*, else `0` |  |
+| *x* not in *s* | `0` if an item of *s* is equal to *x*, else `1` |  |
+| *s* + *t* | the concatenation of *s* and *t* |  |
+| *s* * *n*, *n* * *s* | *n* copies of *s* concatenated |  |
+| *s*[*i*] | *i*’th item of *s*, origin 0 | \(1\) |
+| *s*[*i*:*j*] | slice of *s* from *i* to *j* | (1), (2) |
 
 Notes:
 
@@ -6828,19 +6819,19 @@ Additional string operations are defined in standard module `string` and in buil
 
 List objects support additional operations that allow in-place modification of the object. These operations would be supported by other mutable sequence types (when added to the language) as well. Strings and tuples are immutable sequence types and such objects cannot be modified once created. The following operations are defined on mutable sequence types (where *x* is an arbitrary object):
 
-|                   |     |     |
-|:------------------|:----|:----|
-|                   |     |     |
-| = *x*             |     |     |
-| = *t*             |     |     |
-|                   |     |     |
-| .append(*x*)      |     |     |
-| .count(*x*)       |     |     |
-| .index(*x*)       |     |     |
-| .insert(*i*, *x*) |     |     |
-| .remove(*x*)      |     |     |
-| .reverse()        |     |     |
-| .sort()           |     |     |
+|  |  |  |
+|:---|:---|:---|
+| *s*[*i*] = *x* | item *i* of *s* is replaced by *x* |  |
+| *s*[*i*:*j*] = *t* | slice of *s* from *i* to *j* is replaced by *t* |  |
+| del *s*[*i*:*j*] |  |  |
+| same as *`s`*`[`*`i`*`:`*`j`*`] = []` *s*.append(*x*) |  |  |
+| same as *`s`*`[len(`*`x`*`):len(`*`x`*`)] = [`*`x`*`]` *s*.count(*x*) |  |  |
+| return number of *i*’s for which *`s`*`[`*`i`*`] == `*`x`* *s*.index(*x*) |  |  |
+| return smallest *i* such that *`s`*`[`*`i`*`] == `*`x`*(1) *s*.insert(*i*, *x*) |  |  |
+| same as *`s`*`[`*`i`*`:`*`i`*`] = [`*`x`*`]` *s*.remove(*x*) |  |  |
+| same as `del `*`s`*`[`*`s`*`.index(`*`x`*`)]`(1) *s*.reverse() | reverses the items of *s* in place |  |
+| *s*.sort() |  |  |
+| permutes the items of *s* to satisfy *`s`*`[`*`i`*`] <= `*`s`*`[`*`j`*`]`, for *`i`*` < `*`j`*(2) |  |  |
 
 Notes:
 
@@ -6858,17 +6849,16 @@ Dictionaries are created by placing a comma-separated list of *`key`*`: `*`value
 
 The following operations are defined on mappings (where *a* is a mapping, *k* is a key and *x* is an arbitrary object):
 
-|               |     |     |
-|:--------------|:----|:----|
-| len(          |     |     |
-| )             |     |     |
-|               |     |     |
-| = *x*         |     |     |
-|               |     |     |
-| .items()      |     |     |
-| .keys()       |     |     |
-| .values()     |     |     |
-| .has_key(*k*) |     |     |
+|                  |                                           |       |
+|:-----------------|:------------------------------------------|:------|
+| len(*a*)         | the number of items in *a*                |       |
+| *a*[*k*]       | the item of *a* with key *k*              | \(1\) |
+| *a*[*k*] = *x* |                                           |       |
+|                  |                                           |       |
+|                  | a copy of *a*’s list of (key, item) pairs | \(2\) |
+| *a*.keys()       | a copy of *a*’s list of keys              | \(2\) |
+| *a*.values()     | a copy of *a*’s list of values            | \(2\) |
+| *a*.has_key(*k*) | `1` if *a* has a key *k*, else `0`        |       |
 
 Notes:
 
