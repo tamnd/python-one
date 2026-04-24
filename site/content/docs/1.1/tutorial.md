@@ -49,7 +49,7 @@ The interpreter operates somewhat like the Unix shell: when called with standard
 
 A third way of starting the interpreter is “`python -c command [arg] ...`”, which executes the statement(s) in `command`, analogous to the shell’s `-c` option. Since Python statements often contain spaces or other characters that are special to the shell, it is best to quote ` command` in its entirety with double quotes.
 
-Note that there is a difference between “`python file`” and “`python `$`<`$`file`”. In the latter case, input requests from the program, such as calls to `input()` and `raw_input()`, are satisfied from *file*. Since this file has already been read until the end by the parser before the program starts executing, the program will encounter EOF immediately. In the former case (which is usually what you want) they are satisfied from whatever file or device is connected to standard input of the Python interpreter.
+Note that there is a difference between “`python file`” and “`python <file`”. In the latter case, input requests from the program, such as calls to `input()` and `raw_input()`, are satisfied from *file*. Since this file has already been read until the end by the parser before the program starts executing, the program will encounter EOF immediately. In the former case (which is usually what you want) they are satisfied from whatever file or device is connected to standard input of the Python interpreter.
 
 When a script file is used, it is sometimes useful to be able to run the script and enter interactive mode afterwards. This can be done by passing `-i` before the script. (This does not work if the script is read from standard input, for the same reason as explained in the previous paragraph.)
 

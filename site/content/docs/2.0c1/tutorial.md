@@ -51,7 +51,7 @@ The interpreter’s line-editing features usually aren’t very sophisticated. O
 
 The interpreter operates somewhat like the Unix shell: when called with standard input connected to a tty device, it reads and executes commands interactively; when called with a file name argument or with a file as standard input, it reads and executes a *script* from that file.
 
-A third way of starting the interpreter is ` ``-c`` `*`command`*` [arg] ...`, which executes the statement(s) in *command*, analogous to the shell’s `-c` option. Since Python statements often contain spaces or other characters that are special to the shell, it is best to quote *command* in its entirety with double quotes.
+A third way of starting the interpreter is **`python`**` ``-c`` `*`command`*` [arg] ...`, which executes the statement(s) in *command*, analogous to the shell’s `-c` option. Since Python statements often contain spaces or other characters that are special to the shell, it is best to quote *command* in its entirety with double quotes.
 
 Note that there is a difference between `python file` and `python <file`. In the latter case, input requests from the program, such as calls to `input()` and `raw_input()`, are satisfied from *file*. Since this file has already been read until the end by the parser before the program starts executing, the program will encounter EOF immediately. In the former case (which is usually what you want) they are satisfied from whatever file or device is connected to standard input of the Python interpreter.
 
@@ -409,7 +409,7 @@ The raw mode is most useful when you have to enter lots of backslashes e.g. in r
 
 Apart from these standard encodings, Python provides a whole set of other ways of creating Unicode strings on the basis of a known encoding.
 
-The builtin `unicode()`provides access to all registered Unicode codecs (COders and DECoders). Some of the more well known encodings which these codecs can convert are *Latin-1*, *ASCII*, *UTF-8* and *UTF-16*. The latter two are variable length encodings which permit to store Unicode characters in 8 or 16 bits. Python uses UTF-8 as default encoding. This becomes noticeable when printing Unicode strings or writing them to files.
+The builtin `unicode()` provides access to all registered Unicode codecs (COders and DECoders). Some of the more well known encodings which these codecs can convert are *Latin-1*, *ASCII*, *UTF-8* and *UTF-16*. The latter two are variable length encodings which permit to store Unicode characters in 8 or 16 bits. Python uses UTF-8 as default encoding. This becomes noticeable when printing Unicode strings or writing them to files.
 
     >>> u"���"
     u'\344\366\374'
@@ -662,7 +662,9 @@ We can create a function that writes the Fibonacci series to an arbitrary bounda
     ... fib(2000)
     1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 1597
 
-The keyword introduces a function *definition*. It must be followed by the function name and the parenthesized list of formal parameters. The statements that form the body of the function start at the next line, and must be indented. The first statement of the function body can optionally be a string literal; this string literal is the function’s documentation string, or *docstring*.There are tools which use docstrings to automatically produce online or printed documentation, or to let the user interactively browse through code; it’s good practice to include docstrings in code that you write, so try to make a habit of it.
+The keyword introduces a function *definition*. It must be followed by the function name and the parenthesized list of formal parameters. The statements that form the body of the function start at the next line, and must be indented. The first statement of the function body can optionally be a string literal; this string literal is the function’s documentation string, or *docstring*.
+
+There are tools which use docstrings to automatically produce online or printed documentation, or to let the user interactively browse through code; it’s good practice to include docstrings in code that you write, so try to make a habit of it.
 
 The *execution* of a function introduces a new symbol table used for the local variables of the function. More precisely, all variable assignments in a function store the value in the local symbol table; whereas variable references first look in the local symbol table, then in the global symbol table, and then in the table of built-in names. Thus, global variables cannot be directly assigned a value within a function (unless named in a statement), although they may be referenced.
 
@@ -831,7 +833,9 @@ By popular demand, a few features commonly found in functional programming langu
 
 ### Documentation Strings 
 
-There are emerging conventions about the content and formatting of documentation strings. The first line should always be a short, concise summary of the object’s purpose. For brevity, it should not explicitly state the object’s name or type, since these are available by other means (except if the name happens to be a verb describing a function’s operation). This line should begin with a capital letter and end with a period.
+There are emerging conventions about the content and formatting of documentation strings.
+
+The first line should always be a short, concise summary of the object’s purpose. For brevity, it should not explicitly state the object’s name or type, since these are available by other means (except if the name happens to be a verb describing a function’s operation). This line should begin with a capital letter and end with a period.
 
 If there are more lines in the documentation string, the second line should be blank, visually separating the summary from the rest of the description. The following lines should be one or more paragraphs describing the object’s calling conventions, its side effects, etc.
 
@@ -1233,7 +1237,7 @@ Some tips for experts:
 
 - It is possible to have a file called `spam.pyc` (or `spam.pyo` when `-O` is used) without a file `spam.py` for the same module. This can be used to distribute a library of Python code in a form that is moderately hard to reverse engineer.
 
-- The module `compileall`can create `.pyc` files (or `.pyo` files when `-O` is used) for all modules in a directory.
+- The module `compileall` can create `.pyc` files (or `.pyo` files when `-O` is used) for all modules in a directory.
 
 ## Standard Modules 
 
@@ -1388,7 +1392,7 @@ There are several ways to present the output of a program; data can be printed i
 
 So far we’ve encountered two ways of writing values: *expression statements* and the statement. (A third way is using the `write()` method of file objects; the standard output file can be referenced as `sys.stdout`. See the Library Reference for more information on this.)
 
-Often you’ll want more control over the formatting of your output than simply printing space-separated values. There are two ways to format your output; the first way is to do all the string handling yourself; using string slicing and concatenation operations you can create any lay-out you can imagine. The standard module `string`contains some useful operations for padding strings to a given column width; these will be discussed shortly. The second way is to use the `%` operator with a string as the left argument. The `%` operator interprets the left argument as a C much like a -style format string to be applied to the right argument, and returns the string resulting from this formatting operation.
+Often you’ll want more control over the formatting of your output than simply printing space-separated values. There are two ways to format your output; the first way is to do all the string handling yourself; using string slicing and concatenation operations you can create any lay-out you can imagine. The standard module `string` contains some useful operations for padding strings to a given column width; these will be discussed shortly. The second way is to use the `%` operator with a string as the left argument. The `%` operator interprets the left argument as a C much like a -style format string to be applied to the right argument, and returns the string resulting from this formatting operation.
 
 One question remains, of course: how do you convert values to strings? Luckily, Python has a way to convert any value to a string: pass it to the `repr()` function, or just write the value between reverse quotes (`‘‘`). Some examples:
 
@@ -1485,7 +1489,7 @@ This is particularly useful in combination with the new built-in `vars()` functi
 
 ## Reading and Writing Files 
 
-`open()`returns a file object, and is most commonly used with two arguments: `open(`*`filename`*`, `*`mode`*`)`.
+`open()` returns a file object, and is most commonly used with two arguments: `open(`*`filename`*`, `*`mode`*`)`.
 
     >>> f=open('/tmp/workfile', 'w')
     >>> print f
@@ -1717,7 +1721,7 @@ Programs may name their own exceptions by assigning a string to a variable or cr
 
 Many standard modules use this to report errors that may occur in functions they define.
 
-More information on classes is presented in chapter , “Classes.”
+More information on classes is presented in chapter, “Classes.”
 
 ## Defining Clean-up Actions 
 

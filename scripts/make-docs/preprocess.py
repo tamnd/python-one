@@ -170,10 +170,10 @@ def strip_doc_structure(text: str) -> str:
     # which leaves invalid HTML; headings already get anchor slugs from Hugo.
     body = re.sub(r'\\label\{[^}]*\}', '', body)
 
-    # Strip \ref{...} and \pageref{...} -- section/page number cross-references
-    # that have no meaning in flat web docs; pandoc generates ugly data-reference
-    # anchor tags for them.
-    body = re.sub(r'\\(?:ref|pageref)\{[^}]*\}', '', body)
+    # Strip \ref{...} and \pageref{...} -- section/page number cross-references.
+    # Also consume any preceding space or ~ so "section \ref{x}" → "section"
+    # rather than "section ," when a comma follows.
+    body = re.sub(r'[ \t]*\n?[ \t]*~?\\(?:ref|pageref)\{[^}]*\}', '', body)
 
     # Normalise \ldots / \dots / \cdots to plain ellipsis character
     body = re.sub(r'\\(?:ldots|dots|cdots)\b\s*', '…', body)
@@ -222,22 +222,32 @@ def strip_ifhtml(text: str) -> str:
 
 
 def _eat_braced_args(text: str, start: int, max_args: int) -> int:
-    """Return the position after eating up to max_args braced args from text[start:]."""
+    """Return the position after eating up to max_args braced args from text[start:].
+
+    Peeks ahead past whitespace before each arg; if no { or [ follows, returns
+    WITHOUT consuming the whitespace (prevents run-together words like 'Theseare').
+    """
     pos = start
     n = len(text)
     for _ in range(max_args):
-        # skip whitespace and optional [...]
-        while pos < n and text[pos] in ' \t\n':
-            pos += 1
-        if pos < n and text[pos] == '[':
-            pos += 1
+        # Peek past whitespace without committing
+        peek = pos
+        while peek < n and text[peek] in ' \t\n':
+            peek += 1
+        if peek >= n:
+            break
+        if text[peek] == '[':
+            # Optional arg -- commit
+            pos = peek + 1
             while pos < n and text[pos] != ']':
                 pos += 1
-            pos += 1  # skip ']'
+            if pos < n:
+                pos += 1  # skip ']'
             continue
-        if pos >= n or text[pos] != '{':
-            break
-        pos += 1  # skip opening '{'
+        if text[peek] != '{':
+            break  # no braced arg -- do NOT advance past whitespace
+        # Braced arg found -- commit: skip leading whitespace + opening '{'
+        pos = peek + 1
         depth = 1
         while pos < n and depth:
             if text[pos] == '{':
@@ -333,6 +343,35 @@ def _extract_braced_args(text: str, pos: int, max_args: int) -> list:
     return args
 
 
+def _convert_line_rows(text: str, n: int) -> str:
+    r"""Replace \lineii/iii/iv{a}{b}... with 'a & b & ... \\' tabular rows.
+
+    Uses a character-level scan so args with arbitrary brace depth (e.g.
+    \filenq{\filevar{prefix}/lib}) are parsed correctly.
+    """
+    _LINE_CMD = re.compile(r'\\line(?:iv|iii|ii)\b')
+    out = []
+    pos = 0
+    for m in _LINE_CMD.finditer(text):
+        if m.start() < pos:
+            continue
+        out.append(text[pos:m.start()])
+        args = _extract_braced_args(text, m.end(), n)
+        out.append(' & '.join(args[:n]) + r' \\')
+        pos = m.end()
+        # advance past the args we just extracted
+        pos = m.end()
+        tmp_pos = m.end()
+        for _ in range(n):
+            new_pos = _skip_braced_arg(text, tmp_pos)
+            if new_pos == tmp_pos:
+                break
+            tmp_pos = new_pos
+        pos = tmp_pos
+    out.append(text[pos:])
+    return ''.join(out)
+
+
 def fix_tables(text: str) -> str:
     r"""
     Convert Python doc table environments to something pandoc can handle.
@@ -366,38 +405,68 @@ def repl_table_generic(m: re.Match) -> str:
     # Strip closing \end{tableN}
     body = re.sub(r'\\end\{table(?:iv|iii|ii)\}\s*$', '', body)
 
-    # Convert \lineN{a}{b}... rows using brace-aware arg extractor.
-    # Use regex that handles one level of brace nesting in args.
-    def repl_line(lm: re.Match) -> str:
-        cmd_end = re.match(r'\\line(?:iv|iii|ii)', lm.group(0)).end()
-        args = _extract_braced_args(lm.group(0), cmd_end, n)
-        return ' & '.join(args[:n]) + r' \\'
-    body = re.sub(
-        r'\\line(?:iv|iii|ii)(?:\s*\{(?:[^{}]|\{[^{}]*\})*\})+',
-        repl_line, body
-    )
+    # Convert \lineN{a}{b}... rows with full brace-depth handling
+    body = _convert_line_rows(body, n)
 
     cols = 'l' * n
     return r'\begin{tabular}{' + cols + r'}' + '\n' + body.strip() + '\n' + r'\end{tabular}'
 
 
+_MATH_SYMBOLS = [
+    (r'\\geq?\b', '≥'), (r'\\leq?\b', '≤'), (r'\\neq\b', '≠'),
+    (r'\\ge\b', '≥'), (r'\\le\b', '≤'),
+    (r'\\approx\b', '≈'), (r'\\sim\b', '~'), (r'\\ne\b', '≠'),
+    (r'\\times\b', '×'), (r'\\cdot\b', '·'), (r'\\pm\b', '±'),
+    (r'\\infty\b', '∞'), (r'\\pi\b', 'π'), (r'\\alpha\b', 'α'),
+    (r'\\beta\b', 'β'), (r'\\gamma\b', 'γ'), (r'\\delta\b', 'δ'),
+    (r'\\sqrt\{([^}]*)\}', r'√(\1)'),
+    (r'\\frac\{([^}]*)\}\{([^}]*)\}', r'(\1)/(\2)'),
+    (r'\\emph\{([^}]*)\}', r'\1'),
+    (r'\\text(?:rm|it|bf|tt|sf)?\{([^}]*)\}', r'\1'),
+    (r'\\mathit\{([^}]*)\}', r'\1'),
+    (r'\\mathrm\{([^}]*)\}', r'\1'),
+]
+
+
 def fix_math(text: str) -> str:
     r"""Clean up math expressions.
-    - Replace \emph{x} with x inside $ ... $ (not a valid math command).
+    - Expand math symbols/commands to Unicode so $...$ becomes plain text.
+    - Handle both $...$ and \begin{math}...\end{math} forms.
     - Strip \catcode lines (TeX primitives pandoc can't handle).
-    - Strip \* -> * (\* is not a standard LaTeX command; used in C API docs as literal *).
+    - Strip \* -> * (used in C API docs as literal asterisk).
     """
     # Strip \catcode`... lines anywhere
     text = re.sub(r'\\catcode[^\n]*', '', text)
 
-    # Replace \emph{x} -> x inside inline math $...$
-    def clean_inline_math(m: re.Match) -> str:
-        content = re.sub(r'\\emph\{([^}]*)\}', r'\1', m.group(1))
-        return '$' + content + '$'
-    text = re.sub(r'\$([^$\n]{1,200})\$', clean_inline_math, text)
+    def expand_math(content: str) -> str:
+        for pattern, repl in _MATH_SYMBOLS:
+            content = re.sub(pattern, repl, content)
+        # Strip any remaining \cmd forms (unknown math macros)
+        content = re.sub(r'\\[a-zA-Z]+\s*', '', content)
+        # Strip leftover braces and thin-space \,
+        content = content.replace(r'\,', ', ').replace('{', '').replace('}', '')
+        return content.strip()
+
+    # Strip thin-space \, outside math (cosmetic spacing, produces gaps in headings)
+    text = re.sub(r'\\,(?!\s*[^{$])', '', text)
+
+    # Handle \begin{math}...\end{math} and \begin{displaymath}...\end{displaymath}
+    text = re.sub(
+        r'\\begin\{(?:math|displaymath)\}(.*?)\\end\{(?:math|displaymath)\}',
+        lambda m: expand_math(m.group(1)),
+        text, flags=re.DOTALL
+    )
+
+    # Handle \(...\) inline math
+    text = re.sub(r'\\\((.*?)\\\)', lambda m: expand_math(m.group(1)), text, flags=re.DOTALL)
+
+    # Handle \[...\] display math
+    text = re.sub(r'\\\[(.*?)\\\]', lambda m: expand_math(m.group(1)), text, flags=re.DOTALL)
+
+    # Handle inline $...$
+    text = re.sub(r'\$([^$\n]{1,200})\$', lambda m: expand_math(m.group(1)), text)
 
     # \* is used in C API arg lists as a literal asterisk (e.g. FILE \*fp).
-    # Strip the backslash so pandoc outputs * not \* in GFM headings.
     text = text.replace(r'\*', '*')
 
     return text

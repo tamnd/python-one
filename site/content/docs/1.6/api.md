@@ -23,7 +23,7 @@ All user visible names defined by Python.h (except those defined by the included
 
 **Important:** user code should never define names that begin with `Py` or `_Py`. This confuses the reader, and jeopardizes the portability of the user code to future Python versions, which may define additional names beginning with one of these prefixes.
 
-The header files are typically installed with Python. On Unix, these are located in the directories `/include/python`*`version`*`/` and `/include/python`*`version`*`/`, where and are defined by the corresponding parameters to Python’s script and *version* is `sys.version[:3]`. On Windows, the headers are installed in `/include`, where is the installation directory specified to the installer.
+The header files are typically installed with Python. On Unix, these are located in the directories `/include/python`*`version`*`/` and `/include/python`*`version`*`/`, where and are defined by the corresponding parameters to Python’s **configure** script and *version* is `sys.version[:3]`. On Windows, the headers are installed in `/include`, where is the installation directory specified to the installer.
 
 To include the headers, place both directories (if different) on your compiler’s search path for includes. Do *not* place the parent directories on the search path and then use `#include <python1.5/Python.h>`; this will break on multi-platform builds since the platform independent headers under include the platform specific headers from .
 
@@ -149,9 +149,13 @@ For C programmers, however, error checking always has to be explicit. All functi
 
 Exception state is maintained in per-thread storage (this is equivalent to using global storage in an unthreaded application). A thread can be in one of two states: an exception has occurred, or not. The function can be used to check for this: it returns a borrowed reference to the exception type object when an exception has occurred, and NULL otherwise. There are a number of functions to set the exception state: is the most common (though not the most general) function to set the exception state, and clears the exception state.
 
-The full exception state consists of three objects (all of which can be NULL): the exception type, the corresponding exception value, and the traceback. These have the same meanings as the Python objects `sys.exc_type`, `sys.exc_value`, and `sys.exc_traceback`; however, they are not the same: the Python objects represent the last exception being handled by a Python …  statement, while the C level exception state only exists while an exception is being passed on between C functions until it reaches the Python bytecode interpreter’s main loop, which takes care of transferring it to `sys.exc_type` and friends.
+The full exception state consists of three objects (all of which can be NULL): the exception type, the corresponding exception value, and the traceback. These have the same meanings as the Python
 
-Note that starting with Python 1.5, the preferred, thread-safe way to access the exception state from Python code is to call the function `sys.exc_info()`, which returns the per-thread exception state for Python code. Also, the semantics of both ways to access the exception state have changed so that a function which catches an exception will save and restore its thread’s exception state so as to preserve the exception state of its caller. This prevents common bugs in exception handling code caused by an innocent-looking function overwriting the exception being handled; it also reduces the often unwanted lifetime extension for objects that are referenced by the stack frames in the traceback.
+objects `sys.exc_type`, `sys.exc_value`, and `sys.exc_traceback`; however, they are not the same: the Python objects represent the last exception being handled by a Python …  statement, while the C level exception state only exists while an exception is being passed on between C functions until it reaches the Python bytecode interpreter’s main loop, which takes care of transferring it to `sys.exc_type` and friends.
+
+Note that starting with Python 1.5, the preferred, thread-safe way to access the exception state from Python code is to call the function
+
+`sys.exc_info()`, which returns the per-thread exception state for Python code. Also, the semantics of both ways to access the exception state have changed so that a function which catches an exception will save and restore its thread’s exception state so as to preserve the exception state of its caller. This prevents common bugs in exception handling code caused by an innocent-looking function overwriting the exception being handled; it also reduces the often unwanted lifetime extension for objects that are referenced by the stack frames in the traceback.
 
 As a general principle, a function that calls another function to perform some task should check whether the called function raised an exception, and if so, pass the exception state on to its caller. It should discard any object references that it owns, and return an error indicator, but it should *not* set another exception — that would overwrite the exception that was just raised, and lose important information about the exact cause of the error.
 
@@ -210,13 +214,15 @@ This example represents an endorsed use of the statement in C! It illustrates th
 
 The one important task that only embedders (as opposed to extension writers) of the Python interpreter have to worry about is the initialization, and possibly the finalization, of the Python interpreter. Most functionality of the interpreter can only be used after the interpreter has been initialized.
 
-The basic initialization function is . This initializes the table of loaded modules, and creates the fundamental modules `__builtin__`, `__main__`and `sys`. It also initializes the module search path (`sys.path`). does not set the “script argument list” (`sys.argv`). If this variable is needed by Python code that will be executed later, it must be set explicitly with a call to `PySys_SetArgv(`*`argc`*`, `*`argv`*`)`subsequent to the call to .
+The basic initialization function is . This initializes the table of loaded modules, and creates the fundamental modules `__builtin__`, `__main__` and `sys`. It also initializes the module search path (`sys.path`).
+
+does not set the “script argument list” (`sys.argv`). If this variable is needed by Python code that will be executed later, it must be set explicitly with a call to `PySys_SetArgv(`*`argc`*`, `*`argv`*`)` subsequent to the call to .
 
 On most systems (in particular, on Unix and Windows, although the details are slightly different), calculates the module search path based upon its best guess for the location of the standard Python interpreter executable, assuming that the Python library is found in a fixed location relative to the Python interpreter executable. In particular, it looks for a directory named `lib/python1.5` (replacing `1.5` with the current interpreter version) relative to the parent directory where the executable named `python` is found on the shell command search path (the environment variable ).
 
 For instance, if the Python executable is found in `/usr/local/bin/python`, it will assume that the libraries are in `/usr/local/lib/python1.5`. (In fact, this particular path is also the “fallback” location, used when no executable file named `python` is found along .) The user can override this behavior by setting the environment variable , or insert additional directories in front of the standard path by setting .
 
-The embedding application can steer the search by calling `Py_SetProgramName(`*`file`*`)`*before* calling . Note that still overrides this and is still inserted in front of the standard path. An application that requires total control has to provide its own implementation of , , , and (all defined in `Modules/getpath.c`).
+The embedding application can steer the search by calling `Py_SetProgramName(`*`file`*`)` *before* calling . Note that still overrides this and is still inserted in front of the standard path. An application that requires total control has to provide its own implementation of , , , and (all defined in `Modules/getpath.c`).
 
 Sometimes, it is desirable to “uninitialize” Python. For instance, the application may want to start over (make another call to ) or the application is simply done with its use of Python and wants to free all memory allocated by Python. This can be accomplished by calling . The function returns true if Python is currently in the initialized state. More information about these functions is given in a later chapter.
 
@@ -304,7 +310,9 @@ The following functions or macros are only for use within the interpreter core: 
 
 The functions described in this chapter will let you handle and raise Python exceptions. It is important to understand some of the basics of Python exception handling. It works somewhat like the Unix variable: there is a global indicator (per thread) of the last error that occurred. Most functions don’t clear this on success, but will set it to indicate the cause of the error on failure. Most functions also return an error indicator, usually NULL if they are supposed to return a pointer, or `-1` if they return an integer (exception: the functions return `1` for success and `0` for failure). When a function must fail because some function it called failed, it generally doesn’t set the error indicator; the function it called already set it.
 
-The error indicator consists of three Python objects corresponding to the Python variables `sys.exc_type`, `sys.exc_value` and `sys.exc_traceback`. API functions exist to interact with the error indicator in various ways. There is a separate error indicator for each thread.
+The error indicator consists of three Python objects corresponding to
+
+the Python variables `sys.exc_type`, `sys.exc_value` and `sys.exc_traceback`. API functions exist to interact with the error indicator in various ways. There is a separate error indicator for each thread.
 
 #### `PyErr_Print`()
 
@@ -372,11 +380,15 @@ This is a shorthand for `PyErr_SetString(PyExc_TypeError, `*`message`*`)`, where
 
 #### `PyErr_CheckSignals`()
 
-This function interacts with Python’s signal handling. It checks whether a signal has been sent to the processes and if so, invokes the corresponding signal handler. If the `signal`module is supported, this can invoke a signal handler written in Python. In all cases, the default effect for is to raise the `KeyboardInterrupt` exception. If an exception is raised the error indicator is set and the function returns `1`; otherwise the function returns `0`. The error indicator may or may not be cleared if it was previously set.
+This function interacts with Python’s signal handling. It checks whether a signal has been sent to the processes and if so, invokes the corresponding signal handler. If the `signal` module is supported, this can invoke a signal handler written in Python. In all cases, the default effect for is to raise the
+
+`KeyboardInterrupt` exception. If an exception is raised the error indicator is set and the function returns `1`; otherwise the function returns `0`. The error indicator may or may not be cleared if it was previously set.
 
 #### `PyErr_SetInterrupt`()
 
-This function is obsolete. It simulates the effect of a signal arriving — the next time is called, `KeyboardInterrupt` will be raised. It may be called without holding the interpreter lock.
+This function is obsolete. It simulates the effect of a signal arriving — the next time is called,
+
+`KeyboardInterrupt` will be raised. It may be called without holding the interpreter lock.
 
 #### `PyErr_NewException`(char *name, PyObject *base, PyObject *dict)
 
@@ -422,7 +434,9 @@ This is a base class for other standard exceptions. If the `-X` interpreter opti
 
 ## Deprecation of String Exceptions
 
-The `-X` command-line option will be removed in Python 1.6. All exceptions built into Python or provided in the standard library will be classes derived from `Exception`.
+The `-X` command-line option will be removed in Python 1.6. All exceptions built into Python or provided in the standard library will
+
+be classes derived from `Exception`.
 
 String exceptions will still be supported in the interpreter to allow existing code to run unmodified, but this will also change in a future release.
 
@@ -458,7 +472,9 @@ Register a cleanup function to be called by . The cleanup function will be calle
 
 #### `PyImport_ImportModule`(char *name)
 
-This is a simplified interface to below, leaving the *globals* and *locals* arguments set to NULL. When the *name* argument contains a dot (i.e., when it specifies a submodule of a package), the *fromlist* argument is set to the list `[’*’]` so that the return value is the named module rather than the top-level package containing it as would otherwise be the case. (Unfortunately, this has an additional side effect when *name* in fact specifies a subpackage instead of a submodule: the submodules specified in the package’s `__all__` variable are loaded.) Return a new reference to the imported module, or NULL with an exception set on failure (the module may still be created in this case — examine `sys.modules` to find out).
+This is a simplified interface to below, leaving the *globals* and *locals* arguments set to NULL. When the *name* argument contains a dot (i.e., when it specifies a submodule of a package), the *fromlist* argument is set to the list `[’*’]` so that the return value is the named module rather than the top-level package containing it as would otherwise be the case. (Unfortunately, this has an additional side effect when *name* in fact specifies a subpackage instead of a submodule: the submodules specified in the package’s `__all__` variable are
+
+loaded.) Return a new reference to the imported module, or NULL with an exception set on failure (the module may still be created in this case — examine `sys.modules` to find out).
 
 #### `PyImport_ImportModuleEx`(char *name, PyObject *globals, PyObject *locals, PyObject *fromlist)
 
@@ -468,7 +484,7 @@ The return value is a new reference to the imported module or top-level package,
 
 #### `PyImport_Import`(PyObject *name)
 
-This is a higher-level interface that calls the current “import hook function”. It invokes the `__import__()` function from the `__builtins__` of the current globals. This means that the import is done using whatever import hooks are installed in the current environment, e.g. by `rexec`or `ihooks`.
+This is a higher-level interface that calls the current “import hook function”. It invokes the `__import__()` function from the `__builtins__` of the current globals. This means that the import is done using whatever import hooks are installed in the current environment, e.g. by `rexec` or `ihooks`.
 
 #### `PyImport_ReloadModule`(PyObject *m)
 
@@ -516,7 +532,7 @@ Load a frozen module. Return `1` for success, `0` if the module is not found, an
 
 #### `[`
 
-_frozen]struct _frozen This is the structure type definition for frozen module descriptors, as generated by the utility (see `Tools/freeze/` in the Python source distribution). Its definition is:
+_frozen]struct _frozen This is the structure type definition for frozen module descriptors, as generated by the **freeze** utility (see `Tools/freeze/` in the Python source distribution). Its definition is:
 
     struct _frozen {
         char *name;
@@ -572,19 +588,19 @@ Delete attribute named *attr_name*, for object *o*. Returns `-1` on failure. Thi
 
 #### `PyObject_Cmp`(PyObject *o1, PyObject *o2, int *result)
 
-Compare the values of *o1* and *o2* using a routine provided by *o1*, if one exists, otherwise with a routine provided by *o2*. The result of the comparison is returned in *result*. Returns `-1` on failure. This is the equivalent of the Python statement*`result`*` = cmp(`*`o1`*`, `*`o2`*`)`.
+Compare the values of *o1* and *o2* using a routine provided by *o1*, if one exists, otherwise with a routine provided by *o2*. The result of the comparison is returned in *result*. Returns `-1` on failure. This is the equivalent of the Python statement *`result`*` = cmp(`*`o1`*`, `*`o2`*`)`.
 
 #### `PyObject_Compare`(PyObject *o1, PyObject *o2)
 
-Compare the values of *o1* and *o2* using a routine provided by *o1*, if one exists, otherwise with a routine provided by *o2*. Returns the result of the comparison on success. On error, the value returned is undefined; use to detect an error. This is equivalent to the Python expression`cmp(`*`o1`*`, `*`o2`*`)`.
+Compare the values of *o1* and *o2* using a routine provided by *o1*, if one exists, otherwise with a routine provided by *o2*. Returns the result of the comparison on success. On error, the value returned is undefined; use to detect an error. This is equivalent to the Python expression `cmp(`*`o1`*`, `*`o2`*`)`.
 
 #### `PyObject_Repr`(PyObject *o)
 
-Compute a string representation of object *o*. Returns the string representation on success, NULL on failure. This is the equivalent of the Python expression `repr(`*`o`*`)`. Called by the `repr()`built-in function and by reverse quotes.
+Compute a string representation of object *o*. Returns the string representation on success, NULL on failure. This is the equivalent of the Python expression `repr(`*`o`*`)`. Called by the `repr()` built-in function and by reverse quotes.
 
 #### `PyObject_Str`(PyObject *o)
 
-Compute a string representation of object *o*. Returns the string representation on success, NULL on failure. This is the equivalent of the Python expression `str(`*`o`*`)`. Called by the `str()`built-in function and by the statement.
+Compute a string representation of object *o*. Returns the string representation on success, NULL on failure. This is the equivalent of the Python expression `str(`*`o`*`)`. Called by the `str()` built-in function and by the statement.
 
 #### `PyCallable_Check`(PyObject *o)
 
@@ -844,7 +860,7 @@ Returns true is the object *o* is a type object.
 
 #### `PyType_HasFeature`(PyObject *o, int feature)
 
-Returns true if the type object *o* sets the feature *feature*. Type features are denoted by single bit flags. The only defined feature flag is , described in section .
+Returns true if the type object *o* sets the feature *feature*. Type features are denoted by single bit flags. The only defined feature flag is , described in section.
 
 ### The None Object 
 
@@ -1320,13 +1336,13 @@ Checks whether *element* is contained in *container* and returns 1/0 accordingly
 
 ### Buffer Objects 
 
-Python objects implemented in C can export a group of functions called the “bufferinterface.” These functions can be used by an object to expose its data in a raw, byte-oriented format. Clients of the object can use the buffer interface to access the object data directly, without needing to copy it first.
+Python objects implemented in C can export a group of functions called the “buffer interface.” These functions can be used by an object to expose its data in a raw, byte-oriented format. Clients of the object can use the buffer interface to access the object data directly, without needing to copy it first.
 
 Two examples of objects that support the buffer interface are strings and arrays. The string object exposes the character contents in the buffer interface’s byte-oriented form. An array can also expose its contents, but it should be noted that array elements may be multi-byte values.
 
 An example user of the buffer interface is the file object’s `write()` method. Any object that can export a series of bytes through the buffer interface can be written to a file. There are a number of format codes to that operate against an object’s buffer interface, returning data from the target object.
 
-More information on the buffer interface is provided in the section “Buffer Object Structures” (section ), under the description for `PyBufferProcs`.
+More information on the buffer interface is provided in the section “Buffer Object Structures” (section), under the description for `PyBufferProcs`.
 
 A “buffer object” is defined in the `bufferobject.h` header (included by `Python.h`). These objects look very similar to string objects at the Python programming level: they support slicing, indexing, concatenation, and some other standard string operations. However, their data can come from one of two sources: from a block of memory, or from another object which exports the buffer interface.
 
@@ -1845,7 +1861,7 @@ Returns the description `void *` that the `PyCObject` *self* was created with.
 
 #### `Py_Initialize`()
 
-Initialize the Python interpreter. In an application embedding Python, this should be called before using any other Python/C API functions; with the exception of , , , and . This initializes the table of loaded modules (`sys.modules`), and creates the fundamental modules `__builtin__`, `__main__`and `sys`. It also initializes the module searchpath (`sys.path`). It does not set `sys.argv`; use for that. This is a no-op when called for a second time (without calling first). There is no return value; it is a fatal error if the initialization fails.
+Initialize the Python interpreter. In an application embedding Python, this should be called before using any other Python/C API functions; with the exception of , , , and . This initializes the table of loaded modules (`sys.modules`), and creates the fundamental modules `__builtin__`, `__main__` and `sys`. It also initializes the module search path (`sys.path`). It does not set `sys.argv`; use for that. This is a no-op when called for a second time (without calling first). There is no return value; it is a fatal error if the initialization fails.
 
 #### `Py_IsInitialized`()
 
@@ -1861,11 +1877,15 @@ This function is provided for a number of reasons. An embedding application migh
 
 #### `Py_NewInterpreter`()
 
-Create a new sub-interpreter. This is an (almost) totally separate environment for the execution of Python code. In particular, the new interpreter has separate, independent versions of all imported modules, including the fundamental modules `__builtin__`, `__main__`and `sys`. The table of loaded modules (`sys.modules`) and the module search path (`sys.path`) are also separate. The new environment has no `sys.argv` variable. It has new standard I/O stream file objects `sys.stdin`, `sys.stdout` and `sys.stderr` (however these refer to the same underlying `FILE` structures in the C library). The return value points to the first thread state created in the new sub-interpreter. This thread state is made the current thread state. Note that no actual thread is created; see the discussion of thread states below. If creation of the new interpreter is unsuccessful, NULL is returned; no exception is set since the exception state is stored in the current thread state and there may not be a current thread state. (Like all other Python/C API functions, the global interpreter lock must be held before calling this function and is still held when it returns; however, unlike most other Python/C API functions, there needn’t be a current thread state on entry.)
+Create a new sub-interpreter. This is an (almost) totally separate environment for the execution of Python code. In particular, the new interpreter has separate, independent versions of all imported modules, including the fundamental modules `__builtin__`, `__main__` and `sys`. The table of loaded modules (`sys.modules`) and the module search path (`sys.path`) are also separate. The new environment has no `sys.argv` variable. It has new standard I/O stream file objects `sys.stdin`, `sys.stdout` and `sys.stderr` (however these refer to the same underlying `FILE` structures in the C library).
+
+The return value points to the first thread state created in the new sub-interpreter. This thread state is made the current thread state. Note that no actual thread is created; see the discussion of thread states below. If creation of the new interpreter is unsuccessful, NULL is returned; no exception is set since the exception state is stored in the current thread state and there may not be a current thread state. (Like all other Python/C API functions, the global interpreter lock must be held before calling this function and is still held when it returns; however, unlike most other Python/C API functions, there needn’t be a current thread state on entry.)
 
 Extension modules are shared between (sub-)interpreters as follows: the first time a particular extension is imported, it is initialized normally, and a (shallow) copy of its module’s dictionary is squirreled away. When the same extension is imported by another (sub-)interpreter, a new module is initialized and filled with the contents of this copy; the extension’s `init` function is not called. Note that this is different from what happens when an extension is imported after the interpreter has been completely re-initialized by calling and ; in that case, the extension’s `init`*`module`* function *is* called again.
 
-**Bugs and caveats:** Because sub-interpreters (and the main interpreter) are part of the same process, the insulation between them isn’t perfect — for example, using low-level file operations like `os.close()` they can (accidentally or maliciously) affect each other’s open files. Because of the way extensions are shared between (sub-)interpreters, some extensions may not work properly; this is especially likely when the extension makes use of (static) global variables, or when the extension manipulates its module’s dictionary after its initialization. It is possible to insert objects created in one sub-interpreter into a namespace of another sub-interpreter; this should be done with great care to avoid sharing user-defined functions, methods, instances or classes between sub-interpreters, since import operations executed by such objects may affect the wrong (sub-)interpreter’s dictionary of loaded modules. (XXX This is a hard-to-fix bug that will be addressed in a future release.)
+**Bugs and caveats:** Because sub-interpreters (and the main interpreter) are part of the same process, the insulation between them isn’t perfect — for example, using low-level file operations like
+
+`os.close()` they can (accidentally or maliciously) affect each other’s open files. Because of the way extensions are shared between (sub-)interpreters, some extensions may not work properly; this is especially likely when the extension makes use of (static) global variables, or when the extension manipulates its module’s dictionary after its initialization. It is possible to insert objects created in one sub-interpreter into a namespace of another sub-interpreter; this should be done with great care to avoid sharing user-defined functions, methods, instances or classes between sub-interpreters, since import operations executed by such objects may affect the wrong (sub-)interpreter’s dictionary of loaded modules. (XXX This is a hard-to-fix bug that will be addressed in a future release.)
 
 #### `Py_EndInterpreter`(PyThreadState *tstate)
 
@@ -1881,17 +1901,17 @@ Return the program name set with , or the default. The returned string points in
 
 #### `Py_GetPrefix`()
 
-Return the *prefix* for installed platform-independent files. This is derived through a number of complicated rules from the program name set with and some environment variables; for example, if the program name is `"/usr/local/bin/python"`, the prefix is `"/usr/local"`. The returned string points into static storage; the caller should not modify its value. This corresponds to the variable in the top-level `Makefile` and the `-``-prefix` argument to the script at build time. The value is available to Python code as `sys.prefix`. It is only useful on Unix. See also the next function.
+Return the *prefix* for installed platform-independent files. This is derived through a number of complicated rules from the program name set with and some environment variables; for example, if the program name is `"/usr/local/bin/python"`, the prefix is `"/usr/local"`. The returned string points into static storage; the caller should not modify its value. This corresponds to the variable in the top-level `Makefile` and the `-``-prefix` argument to the **configure** script at build time. The value is available to Python code as `sys.prefix`. It is only useful on Unix. See also the next function.
 
 #### `Py_GetExecPrefix`()
 
-Return the *exec-prefix* for installed platform-*de*pendent files. This is derived through a number of complicated rules from the program name set with and some environment variables; for example, if the program name is `"/usr/local/bin/python"`, the exec-prefix is `"/usr/local"`. The returned string points into static storage; the caller should not modify its value. This corresponds to the variable in the top-level `Makefile` and the `-``-exec_prefix` argument to the script at build time. The value is available to Python code as `sys.exec_prefix`. It is only useful on Unix.
+Return the *exec-prefix* for installed platform-*de*pendent files. This is derived through a number of complicated rules from the program name set with and some environment variables; for example, if the program name is `"/usr/local/bin/python"`, the exec-prefix is `"/usr/local"`. The returned string points into static storage; the caller should not modify its value. This corresponds to the variable in the top-level `Makefile` and the `-``-exec_prefix` argument to the **configure** script at build time. The value is available to Python code as `sys.exec_prefix`. It is only useful on Unix.
 
 Background: The exec-prefix differs from the prefix when platform dependent files (such as executables and shared libraries) are installed in a different directory tree. In a typical installation, platform dependent files may be installed in the `"/usr/local/plat"` subtree while platform independent may be installed in `"/usr/local"`.
 
 Generally speaking, a platform is a combination of hardware and software families, e.g. Sparc machines running the Solaris 2.x operating system are considered the same platform, but Intel machines running Solaris 2.x are another platform, and Intel machines running Linux are yet another platform. Different major revisions of the same operating system generally also form different platforms. Non-Unix operating systems are a different story; the installation strategies on those systems are so different that the prefix and exec-prefix are meaningless, and set to the empty string. Note that compiled Python bytecode files are platform independent (but not independent from the Python version by which they were compiled!).
 
-System administrators will know how to configure the or programs to share `"/usr/local"` between platforms while having `"/usr/local/plat"` be a different filesystem for each platform.
+System administrators will know how to configure the **mount** or **automount** programs to share `"/usr/local"` between platforms while having `"/usr/local/plat"` be a different filesystem for each platform.
 
 #### `Py_GetProgramFullPath`()
 
@@ -1948,11 +1968,15 @@ Set `sys.argv` based on *argc* and *argv*. These parameters are similar to those
 
 The Python interpreter is not fully thread safe. In order to support multi-threaded Python programs, there’s a global lock that must be held by the current thread before it can safely access Python objects. Without the lock, even the simplest operations could cause problems in a multi-threaded program: for example, when two threads simultaneously increment the reference count of the same object, the reference count could end up being incremented only once instead of twice.
 
-Therefore, the rule exists that only the thread that has acquired the global interpreter lock may operate on Python objects or call Python/C API functions. In order to support multi-threaded Python programs, the interpreter regularly releases and reacquires the lock — by default, every ten bytecode instructions (this can be changed with `sys.setcheckinterval()`). The lock is also released and reacquired around potentially blocking I/O operations like reading or writing a file, so that other threads can run while the thread that requests the I/O is waiting for the I/O operation to complete.
+Therefore, the rule exists that only the thread that has acquired the global interpreter lock may operate on Python objects or call Python/C API functions. In order to support multi-threaded Python programs, the interpreter regularly releases and reacquires the lock — by default, every ten bytecode instructions (this can be changed with
 
-The Python interpreter needs to keep some bookkeeping information separate per thread — for this it uses a data structure called `PyThreadState`. This is new in Python 1.5; in earlier versions, such state was stored in global variables, and switching threads could cause problems. In particular, exception handling is now thread safe, when the application uses `sys.exc_info()` to access the exception last raised in the current thread.
+`sys.setcheckinterval()`). The lock is also released and reacquired around potentially blocking I/O operations like reading or writing a file, so that other threads can run while the thread that requests the I/O is waiting for the I/O operation to complete.
 
-There’s one global variable left, however: the pointer to the current `PyThreadState`structure. While most thread packages have a way to store “per-thread global data,” Python’s internal platform independent thread abstraction doesn’t support this yet. Therefore, the current thread state must be manipulated explicitly.
+The Python interpreter needs to keep some bookkeeping information separate per thread — for this it uses a data structure called `PyThreadState`. This is new in Python 1.5; in earlier versions, such state was stored in global variables, and switching threads could cause problems. In particular, exception handling is now thread safe, when the application uses
+
+`sys.exc_info()` to access the exception last raised in the current thread.
+
+There’s one global variable left, however: the pointer to the current `PyThreadState` structure. While most thread packages have a way to store “per-thread global data,” Python’s internal platform independent thread abstraction doesn’t support this yet. Therefore, the current thread state must be manipulated explicitly.
 
 This is easy enough in most cases. Most code manipulating the global interpreter lock has the following simple structure:
 
@@ -1968,7 +1992,7 @@ This is so common that a pair of macros exists to simplify it:
     ...Do some blocking I/O operation...
     Py_END_ALLOW_THREADS
 
-The `Py_BEGIN_ALLOW_THREADS`macro opens a new block and declares a hidden local variable; the `Py_END_ALLOW_THREADS`macro closes the block. Another advantage of using these two macros is that when Python is compiled without thread support, they are defined empty, thus saving the thread state and lock manipulations.
+The `Py_BEGIN_ALLOW_THREADS` macro opens a new block and declares a hidden local variable; the `Py_END_ALLOW_THREADS` macro closes the block. Another advantage of using these two macros is that when Python is compiled without thread support, they are defined empty, thus saving the thread state and lock manipulations.
 
 When thread support is enabled, the block above expands to the following code:
 
@@ -2012,7 +2036,7 @@ Initialize and acquire the global interpreter lock. It should be called in the m
 
 This is a no-op when called for a second time. It is safe to call this function before calling .
 
-When only the main thread exists, no lock operations are needed. This is a common situation (most Python programs do not use threads), and the lock operations slow the interpreter down a bit. Therefore, the lock is not created initially. This situation is equivalent to having acquired the lock: when there is only a single thread, all object accesses are safe. Therefore, when this function initializes the lock, it also acquires it. Before the Python `thread`module creates a new thread, knowing that either it has the lock or the lock hasn’t been created yet, it calls . When this call returns, it is guaranteed that the lock has been created and that it has acquired it.
+When only the main thread exists, no lock operations are needed. This is a common situation (most Python programs do not use threads), and the lock operations slow the interpreter down a bit. Therefore, the lock is not created initially. This situation is equivalent to having acquired the lock: when there is only a single thread, all object accesses are safe. Therefore, when this function initializes the lock, it also acquires it. Before the Python `thread` module creates a new thread, knowing that either it has the lock or the lock hasn’t been created yet, it calls . When this call returns, it is guaranteed that the lock has been created and that it has acquired it.
 
 It is **not** safe to call this function when it is unknown which thread (if any) currently has the global interpreter lock.
 
@@ -2168,7 +2192,7 @@ Same as .
 
 ## Examples 
 
-Here is the example from section , rewritten so that the I/O buffer is allocated from the Python heap by using the first function set:
+Here is the example from section, rewritten so that the I/O buffer is allocated from the Python heap by using the first function set:
 
         PyObject *res;
         char *buf = (char *) PyMem_Malloc(BUFSIZ); /* for I/O */

@@ -173,17 +173,17 @@ An example may be found in the file `Demo/embed/demo.c` in the Python source dis
 
 **Note:** Removing entries from `sys.modules` or importing compiled modules into multiple interpreters within a process (or following a without an intervening ) can create problems for some extension modules. Extension module authors should exercise caution when initializing internal data structures. Note also that the `reload()` function can be used with extension modules, and will call the module initialization function ( in the example), but will not load the module again if it was loaded from a dynamically loadable object file (`.so` on Unix, `.dll` on Windows).
 
-A more substantial example module is included in the Python source distribution as `Modules/xxmodule.c`. This file may be used as a template or simply read as an example. The script included in the source distribution or Windows install provides a simple graphical user interface for declaring the functions and objects which a module should implement, and can generate a template which can be filled in. The script lives in the `Tools/modulator/` directory; see the `README` file there for more information.
+A more substantial example module is included in the Python source distribution as `Modules/xxmodule.c`. This file may be used as a template or simply read as an example. The **modulator.py** script included in the source distribution or Windows install provides a simple graphical user interface for declaring the functions and objects which a module should implement, and can generate a template which can be filled in. The script lives in the `Tools/modulator/` directory; see the `README` file there for more information.
 
 ## Compilation and Linkage 
 
-There are two more things to do before you can use your new extension: compiling and linking it with the Python system. If you use dynamic loading, the details depend on the style of dynamic loading your system uses; see the chapters about building extension modules on Unix (chapter ) and Windows (chapter ) for more information about this.
+There are two more things to do before you can use your new extension: compiling and linking it with the Python system. If you use dynamic loading, the details depend on the style of dynamic loading your system uses; see the chapters about building extension modules on Unix (chapter) and Windows (chapter) for more information about this.
 
 If you can’t use dynamic loading, or if you want to make your module a permanent part of the Python interpreter, you will have to change the configuration setup and rebuild the interpreter. Luckily, this is very simple: just place your file (`spammodule.c` for example) in the `Modules/` directory of an unpacked source distribution, add a line to the file `Modules/Setup.local` describing your file:
 
     spam spammodule.o
 
-and rebuild the interpreter by running in the toplevel directory. You can also run in the `Modules/` subdirectory, but then you must first rebuild `Makefile` there by running ‘ Makefile’. (This is necessary each time you change the `Setup` file.)
+and rebuild the interpreter by running **make** in the toplevel directory. You can also run **make** in the `Modules/` subdirectory, but then you must first rebuild `Makefile` there by running ‘**make** Makefile’. (This is necessary each time you change the `Setup` file.)
 
 If your module requires additional libraries to link with, these can be listed on the line in the configuration file as well, for instance:
 
@@ -221,9 +221,9 @@ Calling a Python function is easy. First, the Python program must somehow pass y
         return result;
     }
 
-This function must be registered with the interpreter using the flag; this is described in section , “The Module’s Method Table and Initialization Function.” The function and its arguments are documented in section , “Format Strings for .”
+This function must be registered with the interpreter using the flag; this is described in section, “The Module’s Method Table and Initialization Function.” The function and its arguments are documented in section, “Format Strings for .”
 
-The macros and increment/decrement the reference count of an object and are safe in the presence of NULL pointers (but note that *temp* will not be NULL in this context). More info on them in section , “Reference Counts.”
+The macros and increment/decrement the reference count of an object and are safe in the presence of NULL pointers (but note that *temp* will not be NULL in this context). More info on them in section, “Reference Counts.”
 
 Later, when it is time to call the function, you call the C function . This function has two arguments, both pointers to arbitrary Python objects: the Python function, and the argument list. The argument list must always be a tuple object, whose length is the number of arguments. To call the Python function with no arguments, pass an empty tuple; to call it with one argument, pass a singleton tuple. returns a tuple when its format string consists of zero or more format codes between parentheses. For example:
 
@@ -705,7 +705,7 @@ Many extension modules just provide new functions and types to be used from Pyth
 
 At first sight this seems easy: just write the functions (without declaring them , of course), provide an appropriate header file, and document the C API. And in fact this would work if all extension modules were always linked statically with the Python interpreter. When modules are used as shared libraries, however, the symbols defined in one module may not be visible to another module. The details of visibility depend on the operating system; some systems use one global namespace for the Python interpreter and all extension modules (e.g. Windows), whereas others require an explicit list of imported symbols at module link time (e.g. AIX), or offer a choice of different strategies (most Unices). And even if symbols are globally visible, the module whose functions one wishes to call might not have been loaded yet!
 
-Portability therefore requires not to make any assumptions about symbol visibility. This means that all symbols in extension modules should be declared , except for the module’s initialization function, in order to avoid name clashes with other extension modules (as discussed in section ). And it means that symbols that *should* be accessible from other extension modules must be exported in a different way.
+Portability therefore requires not to make any assumptions about symbol visibility. This means that all symbols in extension modules should be declared , except for the module’s initialization function, in order to avoid name clashes with other extension modules (as discussed in section). And it means that symbols that *should* be accessible from other extension modules must be exported in a different way.
 
 Python provides a special mechanism to pass C-level information (i.e. pointers) from one extension module to another one: CObjects. A CObject is a Python data type which stores a pointer (`void *`). CObjects can only be created and accessed via their C API, but they can be passed around like any other Python object. In particular, they can be assigned to a name in an extension module’s namespace. Other extension modules can then import this module, retrieve the value of this name, and then retrieve the pointer from the CObject.
 
@@ -713,7 +713,7 @@ There are many ways in which CObjects can be used to export the C API of an exte
 
 The following example demonstrates an approach that puts most of the burden on the writer of the exporting module, which is appropriate for commonly used library modules. It stores all C API pointers (just one in the example!) in an array of `void` pointers which becomes the value of a CObject. The header file corresponding to the module provides a macro that takes care of importing the module and retrieving its C API pointers; client modules only have to call this macro before accessing the C API.
 
-The exporting module is a modification of the `spam` module from section . The function `spam.system()` does not call the C library function directly, but a function , which would of course do something more complicated in reality (such as adding “spam” to every command). This function is also exported to other extension modules.
+The exporting module is a modification of the `spam` module from section. The function `spam.system()` does not call the C library function directly, but a function , which would of course do something more complicated in reality (such as adding “spam” to every command). This function is also exported to other extension modules.
 
 The function is a plain C function, declared like everything else:
 
@@ -924,11 +924,11 @@ Other input files include files with `.a`, `.o`, `.sl`, and `.so` extensions.
 Here is a more complicated example from `Modules/Setup.in`:
 
     GMP=/ufs/guido/src/gmp
-    mpz mpzmodule.c -I$(GMP) $(GMP)/libgmp.a
+    mpz mpzmodule.c -I(GMP)(GMP)/libgmp.a
 
 which could also be written as:
 
-    mpz mpzmodule.c -I$(GMP) -L$(GMP) -lgmp
+    mpz mpzmodule.c -I(GMP) -L(GMP) -lgmp
 
 ## Distributing your extension modules 
 
@@ -952,7 +952,7 @@ Grab the binary installer from `http://www.python.org/` and install Python. The 
 
 Get the source distribution and extract it into a convenient location. Copy the `config.h` from the `PC/` directory into the `include/` directory created by the installer.
 
-Create a `Setup` file for your extension module, as described in chapter .
+Create a `Setup` file for your extension module, as described in chapter.
 
 Get David Ascher’s `compile.py` script from `http://starship.python.net/crew/da/compile/`. Run the script to create Microsoft Visual C++ project files.
 
@@ -1021,7 +1021,7 @@ It is also possible to embed Python in a C++ program; precisely how this is done
 
 ## Linking Requirements 
 
-While the script shipped with the Python sources will correctly build Python to export the symbols needed by dynamically linked extensions, this is not automatically inherited by applications which embed the Python library statically, at least on Unix. This is an issue when the application is linked to the static runtime library (`libpython.a`) and needs to load dynamic extensions (implemented as `.so` files).
+While the **configure** script shipped with the Python sources will correctly build Python to export the symbols needed by dynamically linked extensions, this is not automatically inherited by applications which embed the Python library statically, at least on Unix. This is an issue when the application is linked to the static runtime library (`libpython.a`) and needs to load dynamic extensions (implemented as `.so` files).
 
 The problem is that some entry points are defined by the Python runtime solely for extension modules to use. If the embedding application does not use any of these entry points, some linkers will not include those entries in the symbol table of the finished executable. Some additional options are needed to inform the linker not to remove these symbols.
 

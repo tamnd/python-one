@@ -50,6 +50,8 @@ _run_pandoc() {
         -e 's|</span>||g' \
         -e 's/ data-reference-type="[^"]*"//g' \
         -e 's/ data-reference="[^"]*"//g' \
+        -e 's/<div class="[a-z]*">//g' \
+        -e 's|</div>||g' \
     || true
     rm -f "$tmpfile"
 }

@@ -57,7 +57,7 @@ The interpreter operates somewhat like the Unix shell: when called with standard
 
 A third way of starting the interpreter is “`python -c command [arg] ...`”, which executes the statement(s) in `command`, analogous to the shell’s `-c` option. Since Python statements often contain spaces or other characters that are special to the shell, it is best to quote ` command` in its entirety with double quotes.
 
-Note that there is a difference between “`python file`” and “`python `$`<`$`file`”. In the latter case, input requests from the program, such as calls to `input()` and `raw_input()`, are satisfied from *file*. Since this file has already been read until the end by the parser before the program starts executing, the program will encounter EOF immediately. In the former case (which is usually what you want) they are satisfied from whatever file or device is connected to standard input of the Python interpreter.
+Note that there is a difference between “`python file`” and “`python <file`”. In the latter case, input requests from the program, such as calls to `input()` and `raw_input()`, are satisfied from *file*. Since this file has already been read until the end by the parser before the program starts executing, the program will encounter EOF immediately. In the former case (which is usually what you want) they are satisfied from whatever file or device is connected to standard input of the Python interpreter.
 
 When a script file is used, it is sometimes useful to be able to run the script and enter interactive mode afterwards. This can be done by passing `-i` before the script. (This does not work if the script is read from standard input, for the same reason as explained in the previous paragraph.)
 
@@ -2191,7 +2191,7 @@ This chapter describes the major additions to the Python language and library in
 
   On non-Unix systems, these variables are meaningless.
 
-- While sites are strongly discouraged from modifying the standard Python library (like adding site-specific modules or functions), there is now a standard way to invoke site-specific features. The standard module `site`, when imported, appends two site-specific directories to the end of `sys.path`: `$prefix/lib/site-python` and `$exec_prefix/lib/site-python`, where `$prefix` and `$exec_prefix` are the directories `sys.prefix` and `sys.exec_prefix` mentioned above.
+- While sites are strongly discouraged from modifying the standard Python library (like adding site-specific modules or functions), there is now a standard way to invoke site-specific features. The standard module `site`, when imported, appends two site-specific directories to the end of `sys.path`: `$prefix/lib/site-python` and `_prefix/lib/site-python, where ` and `$exec_prefix` are the directories `sys.prefix` and `sys.exec_prefix` mentioned above.
 
   After this path manipulation has been performed, an attempt is made to import the module `sitecustomize`. Any `ImportError` exception raised by this attempt is silently ignored.
 

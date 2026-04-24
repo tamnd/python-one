@@ -115,7 +115,7 @@ the top-level directory of your source tree (or source distribution); the direct
 
 # Writing the Setup Script
 
-The setup script is the centre of all activity in building, distributing, and installing modules using the Distutils. The main purpose of the setup script is to describe your module distribution to the Distutils, so that the various commands that operate on your modules do the right thing. As we saw in section  above, the setup script consists mainly of a call to `setup()`, and most information supplied to the Distutils by the module developer is supplied as keyword arguments to `setup()`.
+The setup script is the centre of all activity in building, distributing, and installing modules using the Distutils. The main purpose of the setup script is to describe your module distribution to the Distutils, so that the various commands that operate on your modules do the right thing. As we saw in section above, the setup script consists mainly of a call to `setup()`, and most information supplied to the Distutils by the module developer is supplied as keyword arguments to `setup()`.
 
 Here’s a slightly more involved example, which we’ll follow for the next couple of sections: the Distutils’ own setup script. (Keep in mind that although the Distutils are included with Python 1.6 and later, they also have an independent existence so that Python 1.5.2 users can use them to install other module distributions. The Distutils’ own setup script, shown here, is used to install the package into Python 1.5.2.)
 
@@ -133,7 +133,7 @@ Here’s a slightly more involved example, which we’ll follow for the next cou
            packages = ['distutils', 'distutils.command'],
           )
 
-There are only two differences between this and the trivial one-file distribution presented in section : more meta-data, and the specification of pure Python modules by package, rather than by module. This is important since the Distutils consist of a couple of dozen modules split into (so far) two packages; an explicit list of every module would be tedious to generate and difficult to maintain.
+There are only two differences between this and the trivial one-file distribution presented in section: more meta-data, and the specification of pure Python modules by package, rather than by module. This is important since the Distutils consist of a couple of dozen modules split into (so far) two packages; an explicit list of every module would be tedious to generate and difficult to maintain.
 
 Note that any pathnames (files or directories) supplied in the setup script should be written using the Unix convention, i.e. slash-separated. The Distutils will take care of converting this platform-neutral representation into whatever is appropriate on your current platform before actually using the pathname. This makes your setup script portable across operating systems, which of course is one of the major goals of the Distutils. In this spirit, all pathnames in this document are slash-separated (Mac OS programmers should keep in mind that the *absence* of a leading slash indicates a relative path, the opposite of the Mac OS convention with colons).
 
@@ -155,7 +155,7 @@ A *`package`*`: `*`dir`* entry in the `package_dir` dictionary implicitly applie
 
 ## Listing individual modules
 
-For a small module distribution, you might prefer to list all modules rather than listing packages—especially the case of a single module that goes in the “root package” (i.e., no package at all). This simplest case was shown in section ; here is a slightly more involved example:
+For a small module distribution, you might prefer to list all modules rather than listing packages—especially the case of a single module that goes in the “root package” (i.e., no package at all). This simplest case was shown in section; here is a slightly more involved example:
 
     py_modules = ['mod1', 'pkg.mod2']
 
@@ -271,7 +271,7 @@ The preferred way to do this, of course, would be for you to tell the Distutils 
 
 # Creating a Source Distribution
 
-As shown in section , you use the `sdist` command to create a source distribution. In the simplest case,
+As shown in section, you use the `sdist` command to create a source distribution. In the simplest case,
 
     python setup.py sdist
 
@@ -323,7 +323,7 @@ The manifest template has one command per line, where each command specifies a s
     recursive-include examples *.txt *.py
     prune examples/sample?/build
 
-The meanings should be fairly clear: include all files in the distribution root matching `*.txt`, all files anywhere under the `examples` directory matching `*.txt` or `*.py`, and exclude all directories matching `examples/sample?/build`. There are several other commands available in the manifest template mini-language; see section .
+The meanings should be fairly clear: include all files in the distribution root matching `*.txt`, all files anywhere under the `examples` directory matching `*.txt` or `*.py`, and exclude all directories matching `examples/sample?/build`. There are several other commands available in the manifest template mini-language; see section.
 
 The order of commands in the manifest template very much matters: initially, we have the list of default files as described above, and each command in the template adds to or removes from that list of files. When we have fully processed the manifest template, we have our complete list of files. This list is written to the manifest for future reference, and then used to build the source distribution archive(s).
 
@@ -383,13 +383,13 @@ As a simple example, if I run the following command in the Distutils source tree
 
 then the Distutils builds my module distribution (the Distutils itself in this case), does a “fake” installation (also in the `build` directory), and creates the default type of built distribution for my platform. Currently, the default format for built distributions is a “dumb” archive—tarball on Unix, ZIP file on Windows. (These are called “dumb” built distributions, because they must be unpacked in a specific location to work.)
 
-Thus, the above command on a Unix system creates `Distutils-0.9.1..tar.gz`; unpacking this tarball from the root of the filesystemq installs the Distutils just as though you had downloaded the source distribution and run `python setup.py install`. (Assuming that the target system has their Python installation laid out the same as you do—another reason these are called “dumb” distributions.) Obviously, for pure Python distributions, this isn’t a huge win—but for non-pure distributions, which include extensions that would need to be compiled, it can mean the difference between someone being able to use your extensions or not.
+Thus, the above command on a Unix system creates `Distutils-0.9.1.`*`plat`*`.tar.gz`; unpacking this tarball from the root of the filesystemq installs the Distutils just as though you had downloaded the source distribution and run `python setup.py install`. (Assuming that the target system has their Python installation laid out the same as you do—another reason these are called “dumb” distributions.) Obviously, for pure Python distributions, this isn’t a huge win—but for non-pure distributions, which include extensions that would need to be compiled, it can mean the difference between someone being able to use your extensions or not.
 
 The `bdist` command has a `--format` option, similar to the `sdist` command, which you can use to select the types of built distribution to generate: for example,
 
     python setup.py bdist --format=zip
 
-would, when run on a Unix system, create `Distutils-0.8..zip`—again, this archive would be unpacked from the root directory to install the Distutils.
+would, when run on a Unix system, create `Distutils-0.8.`*`plat`*`.zip`—again, this archive would be unpacked from the root directory to install the Distutils.
 
 The available formats for built distributions are:
 

@@ -7,7 +7,7 @@ weight: 80
 
 The modules in this manual are available on the Apple Macintosh only.
 
-Aside from the modules described here there are also interfaces to various MacOS toolboxes, which are currently not extensively described. The toolboxes for which modules exist are: `AE` (Apple Events), `Cm` (Component Manager), `Ctl` (Control Manager), `Dlg` (Dialog Manager), `Evt` (Event Manager), `Fm` (Font Manager), `List` (List Manager), `Menu` (Moenu Manager), `Qd` (QuickDraw), `Qt` (QuickTime), `Res` (Resource Manager and Handles), `Scrap` (Scrap Manager), `Snd` (Sound Manager), `TE` (TextEdit), `Waste` (non-Apple replacement) and `Win` (Window Manager).
+Aside from the modules described here there are also interfaces to various MacOS toolboxes, which are currently not extensively described. The toolboxes for which modules exist are: `AE` (Apple Events), `Cm` (Component Manager), `Ctl` (Control Manager), `Dlg` (Dialog Manager), `Evt` (Event Manager), `Fm` (Font Manager), `List` (List Manager), `Menu` (Moenu Manager), `Qd` (QuickDraw), `Qt` (QuickTime), `Res` (Resource Manager and Handles), `Scrap` (Scrap Manager), `Snd` (Sound Manager), `TE` (TextEdit), `Waste` (non-Apple **TextEdit** replacement) and `Win` (Window Manager).
 
 If applicable the module will define a number of Python objects for the various structures declared by the toolbox, and operations will be implemented as methods of the object. Other operations will be implemented as functions in the module. Not all operations possible in C will also be possible in Python (callbacks are often a problem), and parameters will occasionally be different in Python (input and output buffers, especially). All methods and functions have a `__doc__` string describing their arguments and return values, and for additional description you are referred to Inside Macintosh or similar works.
 
@@ -227,7 +227,9 @@ Copy everything written to the window to the printer as well.
 
 *Interfaces to the Macintosh Domain Name Resolver.*
 
-This module provides an interface to the Macintosh Domain Name Resolver. It is usually used in conjunction with the `mactcp` module, to map hostnames to IP addresses. It may not be available in all Mac Python versions. The `macdnr` module defines the following functions:
+This module provides an interface to the Macintosh Domain Name Resolver. It is usually used in conjunction with the `mactcp` module, to map hostnames to IP addresses. It may not be available in all Mac Python versions.
+
+The `macdnr` module defines the following functions:
 
 ### `Open`()
 
@@ -255,7 +257,7 @@ Query the nameservers for a `HInfo` record for host *hostname*. These records co
 
 ### `MXInfo`(domain)
 
-Query the nameservers for a mail exchanger for *domain*. This is the hostname of a host willing to accept SMTPmail for the given domain. Returns a dnr result object of the “mx” variety.
+Query the nameservers for a mail exchanger for *domain*. This is the hostname of a host willing to accept SMTP mail for the given domain. Returns a dnr result object of the “mx” variety.
 
 ## DNR Result Objects 
 
@@ -306,9 +308,11 @@ The simplest way to use the module to convert names to dotted-decimal strings, w
 
 # `macfs` — Various file system services
 
-*Support for FSSpec, the Alias Manager, aliases, and the Standard File package.*
+*Support for FSSpec, the Alias Manager, **finder** aliases, and the Standard File package.*
 
-This module provides access to Macintosh FSSpec handling, the Alias Manager, aliases and the Standard File package. Whenever a function or method expects a *file* argument, this argument can be one of three things: (1) a full or partial Macintosh pathname, (2) an object or (3) a 3-tuple `(`*`wdRefNum`*`, `*`parID`*`, `*`name`*`)` as described in Inside Macintosh: Files. A description of aliases and the Standard File package can also be found there.
+This module provides access to Macintosh FSSpec handling, the Alias Manager, **finder** aliases and the Standard File package.
+
+Whenever a function or method expects a *file* argument, this argument can be one of three things: (1) a full or partial Macintosh pathname, (2) an object or (3) a 3-tuple `(`*`wdRefNum`*`, `*`parID`*`, `*`name`*`)` as described in Inside Macintosh: Files. A description of aliases and the Standard File package can also be found there.
 
 ### `FSSpec`(file)
 
@@ -460,9 +464,9 @@ The folder the file is in (as an integer).
 
 *Access to Internet Config.*
 
-This module provides access to Macintosh Internet Configpackage, which stores preferences for Internet programs such as mail address, default homepage, etc. Also, Internet Config contains an elaborate set of mappings from Macintosh creator/type codes to foreign filename extensions plus information on how to transfer files (binary, ascii, etc).
+This module provides access to Macintosh Internet Config package, which stores preferences for Internet programs such as mail address, default homepage, etc. Also, Internet Config contains an elaborate set of mappings from Macintosh creator/type codes to foreign filename extensions plus information on how to transfer files (binary, ascii, etc).
 
-There is a low-level companion module `icglue`which provides the basic Internet Config access functionality. This low-level module is not documented, but the docstrings of the routines document the parameters and the routine names are the same as for the Pascal or C API to Internet Config, so the standard IC programmers’ documentation can be used if this module is needed.
+There is a low-level companion module `icglue` which provides the basic Internet Config access functionality. This low-level module is not documented, but the docstrings of the routines document the parameters and the routine names are the same as for the Pascal or C API to Internet Config, so the standard IC programmers’ documentation can be used if this module is needed.
 
 The `ic` module defines the `error` exception and symbolic names for all error codes Internet Config can produce; see the source for details.
 
@@ -594,11 +598,11 @@ The buffer size for `copy`, default 1 megabyte.
 
 Note that the process of creating finder aliases is not specified in the Apple documentation. Hence, aliases created with `mkalias()` could conceivably have incompatible behaviour in some cases.
 
-# `findertools` — The ’s Apple Events interface
+# `findertools` — The **finder**’s Apple Events interface
 
-*Wrappers around the ’s Apple Events interface.*
+*Wrappers around the **finder**’s Apple Events interface.*
 
-This module contains routines that give Python programs access to some functionality provided by the finder. They are implemented as wrappers around the AppleEventinterface to the finder.
+This module contains routines that give Python programs access to some functionality provided by the finder. They are implemented as wrappers around the AppleEvent interface to the finder.
 
 All file and folder parameters can be specified either as full pathnames or as objects.
 
@@ -636,7 +640,7 @@ Tell the finder to perform an orderly shutdown of the machine.
 
 *The MacTCP interfaces.*
 
-This module provides an interface to the Macintosh TCP/IP driver MacTCP. There is an accompanying module, `macdnr`, which provides an interface to the name-server (allowing you to translate hostnames to IP addresses), a module `MACTCPconst`which has symbolic names for constants constants used by MacTCP. Since the built-in module `socket`is also available on the Macintosh it is usually easier to use sockets instead of the Macintosh-specific MacTCP API.
+This module provides an interface to the Macintosh TCP/IP driver MacTCP. There is an accompanying module, `macdnr`, which provides an interface to the name-server (allowing you to translate hostnames to IP addresses), a module `MACTCPconst` which has symbolic names for constants constants used by MacTCP. Since the built-in module `socket` is also available on the Macintosh it is usually easier to use sockets instead of the Macintosh-specific MacTCP API.
 
 A complete description of the MacTCP interface can be found in the Apple MacTCP API documentation.
 
@@ -750,7 +754,9 @@ Send *buf* as a datagram to IP-address *host*, port *port*.
 
 *Interface to the Macintosh Speech Manager.*
 
-This module provides an interface to the Macintosh Speech Manager, allowing you to let the Macintosh utter phrases. You need a version of the Speech Manager extension (version 1 and 2 have been tested) in your `Extensions` folder for this to work. The module does not provide full access to all features of the Speech Manager yet. It may not be available in all Mac Python versions.
+This module provides an interface to the Macintosh Speech Manager,
+
+allowing you to let the Macintosh utter phrases. You need a version of the Speech Manager extension (version 1 and 2 have been tested) in your `Extensions` folder for this to work. The module does not provide full access to all features of the Speech Manager yet. It may not be available in all Mac Python versions.
 
 ### `Available`()
 
@@ -820,7 +826,7 @@ Set the speech rate of the channel.
 
 *Basic Macintosh dialogs.*
 
-The `EasyDialogs` module contains some simple dialogs for the Macintosh, modelled after the `stdwin`dialogs with similar names. All routines have an optional parameter *id* with which you can override the DLOG resource used for the dialog, as long as the item numbers correspond. See the source for details.
+The `EasyDialogs` module contains some simple dialogs for the Macintosh, modelled after the `stdwin` dialogs with similar names. All routines have an optional parameter *id* with which you can override the DLOG resource used for the dialog, as long as the item numbers correspond. See the source for details.
 
 The `EasyDialogs` module defines the following functions:
 
@@ -1032,7 +1038,9 @@ Item number *item* was hit. You are responsible for redrawing toggle buttons, et
 
 *Support to act as an Open Scripting Architecture (OSA) server (“Apple Events”).*
 
-The module `MiniAEFrame` provides a framework for an application that can function as an Open Scripting Architecture (OSA) server, i.e. receive and process AppleEvents. It can be used in conjunction with `FrameWork`or standalone.
+The module `MiniAEFrame` provides a framework for an application that can function as an Open Scripting Architecture
+
+(OSA) server, i.e. receive and process AppleEvents. It can be used in conjunction with `FrameWork` or standalone.
 
 This module is temporary, it will eventually be replaced by a module that handles argument names better and possibly automates making your application scriptable.
 
@@ -1345,7 +1353,7 @@ Item number *item* was hit. You are responsible for redrawing toggle buttons, et
 
 The modules in this manual are available on the Apple Macintosh only.
 
-Aside from the modules described here there are also interfaces to various MacOS toolboxes, which are currently not extensively described. The toolboxes for which modules exist are: `AE` (Apple Events), `Cm` (Component Manager), `Ctl` (Control Manager), `Dlg` (Dialog Manager), `Evt` (Event Manager), `Fm` (Font Manager), `List` (List Manager), `Menu` (Moenu Manager), `Qd` (QuickDraw), `Qt` (QuickTime), `Res` (Resource Manager and Handles), `Scrap` (Scrap Manager), `Snd` (Sound Manager), `TE` (TextEdit), `Waste` (non-Apple replacement) and `Win` (Window Manager).
+Aside from the modules described here there are also interfaces to various MacOS toolboxes, which are currently not extensively described. The toolboxes for which modules exist are: `AE` (Apple Events), `Cm` (Component Manager), `Ctl` (Control Manager), `Dlg` (Dialog Manager), `Evt` (Event Manager), `Fm` (Font Manager), `List` (List Manager), `Menu` (Moenu Manager), `Qd` (QuickDraw), `Qt` (QuickTime), `Res` (Resource Manager and Handles), `Scrap` (Scrap Manager), `Snd` (Sound Manager), `TE` (TextEdit), `Waste` (non-Apple **TextEdit** replacement) and `Win` (Window Manager).
 
 If applicable the module will define a number of Python objects for the various structures declared by the toolbox, and operations will be implemented as methods of the object. Other operations will be implemented as functions in the module. Not all operations possible in C will also be possible in Python (callbacks are often a problem), and parameters will occasionally be different in Python (input and output buffers, especially). All methods and functions have a `__doc__` string describing their arguments and return values, and for additional description you are referred to Inside Macintosh or similar works.
 
@@ -1463,7 +1471,9 @@ Copy everything written to the window to the printer as well.
 
 *Interfaces to the Macintosh Domain Name Resolver.*
 
-This module provides an interface to the Macintosh Domain Name Resolver. It is usually used in conjunction with the `mactcp` module, to map hostnames to IP addresses. It may not be available in all Mac Python versions. The `macdnr` module defines the following functions:
+This module provides an interface to the Macintosh Domain Name Resolver. It is usually used in conjunction with the `mactcp` module, to map hostnames to IP addresses. It may not be available in all Mac Python versions.
+
+The `macdnr` module defines the following functions:
 
 ### `Open`()
 
@@ -1491,7 +1501,7 @@ Query the nameservers for a `HInfo` record for host *hostname*. These records co
 
 ### `MXInfo`(domain)
 
-Query the nameservers for a mail exchanger for *domain*. This is the hostname of a host willing to accept SMTPmail for the given domain. Returns a dnr result object of the “mx” variety.
+Query the nameservers for a mail exchanger for *domain*. This is the hostname of a host willing to accept SMTP mail for the given domain. Returns a dnr result object of the “mx” variety.
 
 ## DNR Result Objects 
 
@@ -1541,9 +1551,11 @@ The simplest way to use the module to convert names to dotted-decimal strings, w
     ...     return macdnr.AddrToStr(dnrr.ip0)
 # `macfs` — Various file system services
 
-*Support for FSSpec, the Alias Manager, aliases, and the Standard File package.*
+*Support for FSSpec, the Alias Manager, **finder** aliases, and the Standard File package.*
 
-This module provides access to Macintosh FSSpec handling, the Alias Manager, aliases and the Standard File package. Whenever a function or method expects a *file* argument, this argument can be one of three things: (1) a full or partial Macintosh pathname, (2) an object or (3) a 3-tuple `(`*`wdRefNum`*`, `*`parID`*`, `*`name`*`)` as described in Inside Macintosh: Files. A description of aliases and the Standard File package can also be found there.
+This module provides access to Macintosh FSSpec handling, the Alias Manager, **finder** aliases and the Standard File package.
+
+Whenever a function or method expects a *file* argument, this argument can be one of three things: (1) a full or partial Macintosh pathname, (2) an object or (3) a 3-tuple `(`*`wdRefNum`*`, `*`parID`*`, `*`name`*`)` as described in Inside Macintosh: Files. A description of aliases and the Standard File package can also be found there.
 
 ### `FSSpec`(file)
 
@@ -1694,9 +1706,9 @@ The folder the file is in (as an integer).
 
 *Access to Internet Config.*
 
-This module provides access to Macintosh Internet Configpackage, which stores preferences for Internet programs such as mail address, default homepage, etc. Also, Internet Config contains an elaborate set of mappings from Macintosh creator/type codes to foreign filename extensions plus information on how to transfer files (binary, ascii, etc).
+This module provides access to Macintosh Internet Config package, which stores preferences for Internet programs such as mail address, default homepage, etc. Also, Internet Config contains an elaborate set of mappings from Macintosh creator/type codes to foreign filename extensions plus information on how to transfer files (binary, ascii, etc).
 
-There is a low-level companion module `icglue`which provides the basic Internet Config access functionality. This low-level module is not documented, but the docstrings of the routines document the parameters and the routine names are the same as for the Pascal or C API to Internet Config, so the standard IC programmers’ documentation can be used if this module is needed.
+There is a low-level companion module `icglue` which provides the basic Internet Config access functionality. This low-level module is not documented, but the docstrings of the routines document the parameters and the routine names are the same as for the Pascal or C API to Internet Config, so the standard IC programmers’ documentation can be used if this module is needed.
 
 The `ic` module defines the `error` exception and symbolic names for all error codes Internet Config can produce; see the source for details.
 
@@ -1826,11 +1838,11 @@ The buffer size for `copy`, default 1 megabyte.
 
 Note that the process of creating finder aliases is not specified in the Apple documentation. Hence, aliases created with `mkalias()` could conceivably have incompatible behaviour in some cases.
 
-# `findertools` — The ’s Apple Events interface
+# `findertools` — The **finder**’s Apple Events interface
 
-*Wrappers around the ’s Apple Events interface.*
+*Wrappers around the **finder**’s Apple Events interface.*
 
-This module contains routines that give Python programs access to some functionality provided by the finder. They are implemented as wrappers around the AppleEventinterface to the finder.
+This module contains routines that give Python programs access to some functionality provided by the finder. They are implemented as wrappers around the AppleEvent interface to the finder.
 
 All file and folder parameters can be specified either as full pathnames or as objects.
 
@@ -1867,7 +1879,9 @@ Tell the finder to perform an orderly shutdown of the machine.
 
 *Interface to the Macintosh Speech Manager.*
 
-This module provides an interface to the Macintosh Speech Manager, allowing you to let the Macintosh utter phrases. You need a version of the Speech Manager extension (version 1 and 2 have been tested) in your `Extensions` folder for this to work. The module does not provide full access to all features of the Speech Manager yet. It may not be available in all Mac Python versions.
+This module provides an interface to the Macintosh Speech Manager,
+
+allowing you to let the Macintosh utter phrases. You need a version of the Speech Manager extension (version 1 and 2 have been tested) in your `Extensions` folder for this to work. The module does not provide full access to all features of the Speech Manager yet. It may not be available in all Mac Python versions.
 
 ### `Available`()
 
@@ -1936,7 +1950,7 @@ Set the speech rate of the channel.
 
 *The MacTCP interfaces.*
 
-This module provides an interface to the Macintosh TCP/IP driver MacTCP. There is an accompanying module, `macdnr`, which provides an interface to the name-server (allowing you to translate hostnames to IP addresses), a module `MACTCPconst`which has symbolic names for constants constants used by MacTCP. Since the built-in module `socket`is also available on the Macintosh it is usually easier to use sockets instead of the Macintosh-specific MacTCP API.
+This module provides an interface to the Macintosh TCP/IP driver MacTCP. There is an accompanying module, `macdnr`, which provides an interface to the name-server (allowing you to translate hostnames to IP addresses), a module `MACTCPconst` which has symbolic names for constants constants used by MacTCP. Since the built-in module `socket` is also available on the Macintosh it is usually easier to use sockets instead of the Macintosh-specific MacTCP API.
 
 A complete description of the MacTCP interface can be found in the Apple MacTCP API documentation.
 
@@ -2049,7 +2063,7 @@ Send *buf* as a datagram to IP-address *host*, port *port*.
 
 *Basic Macintosh dialogs.*
 
-The `EasyDialogs` module contains some simple dialogs for the Macintosh, modelled after the `stdwin`dialogs with similar names. All routines have an optional parameter *id* with which you can override the DLOG resource used for the dialog, as long as the item numbers correspond. See the source for details.
+The `EasyDialogs` module contains some simple dialogs for the Macintosh, modelled after the `stdwin` dialogs with similar names. All routines have an optional parameter *id* with which you can override the DLOG resource used for the dialog, as long as the item numbers correspond. See the source for details.
 
 The `EasyDialogs` module defines the following functions:
 
@@ -2076,7 +2090,9 @@ Note that `EasyDialogs` does not currently use the notification manager. This me
 
 *Support to act as an Open Scripting Architecture (OSA) server (“Apple Events”).*
 
-The module `MiniAEFrame` provides a framework for an application that can function as an Open Scripting Architecture (OSA) server, i.e. receive and process AppleEvents. It can be used in conjunction with `FrameWork`or standalone.
+The module `MiniAEFrame` provides a framework for an application that can function as an Open Scripting Architecture
+
+(OSA) server, i.e. receive and process AppleEvents. It can be used in conjunction with `FrameWork` or standalone.
 
 This module is temporary, it will eventually be replaced by a module that handles argument names better and possibly automates making your application scriptable.
 
