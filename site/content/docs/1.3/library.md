@@ -4931,6 +4931,102 @@ Returns a random element from the sequence (string, tuple or list) *s*.
 ### `srand`(seed)
 
 Initializes the random number generator with the given integral seed. When the module is first imported, the random number is initialized with the current time.
+# Built-in Module `regex`
+
+This module provides regular expression matching operations similar to those found in Emacs. It is always available.
+
+By default the patterns are Emacs-style regular expressions, with one exception. There is a way to change the syntax to match that of several well-known Unix utilities. The exception is that Emacs’ `s` pattern is not supported, since the original implementation references the Emacs syntax tables.
+
+This module is 8-bit clean: both patterns and strings may contain null bytes and characters whose high bit is set.
+
+**Please note:** There is a little-known fact about Python string literals which means that you don’t usually have to worry about doubling backslashes, even though they are used to escape special characters in string literals as well as in regular expressions. This is because Python doesn’t remove backslashes from string literals if they are followed by an unrecognized escape character. *However*, if you want to include a literal *backslash* in a regular expression represented as a string literal, you have to *quadruple* it. E.g. to extract LaTeX `section{ …}` headers from a document, you can use this pattern: `’section{(.*)}’`.
+
+The module defines these functions, and an exception:
+
+### `match`(pattern  string)
+
+Return how many characters at the beginning of *string* match the regular expression *pattern*. Return `-1` if the string does not match the pattern (this is different from a zero-length match!).
+
+### `search`(pattern  string)
+
+Return the first position in *string* that matches the regular expression *pattern*. Return -1 if no position in the string matches the pattern (this is different from a zero-length match anywhere!).
+
+### `compile`(pattern)
+
+Compile a regular expression pattern into a regular expression object, which can be used for matching using its `match` and `search` methods, described below. The optional argument *translate*, if present, must be a 256-character string indicating how characters (both of the pattern and of the strings to be matched) are translated before comparing them; the `i`-th element of the string gives the translation for the character with ASCII code `i`. This can be used to implement case-insensitive matching; see the `casefold` data item below.
+
+The sequence
+
+    prog = regex.compile(pat)
+    result = prog.match(str)
+
+is equivalent to
+
+    result = regex.match(pat, str)
+
+but the version using `compile()` is more efficient when multiple regular expressions are used concurrently in a single program. (The compiled version of the last pattern passed to `regex.match()` or `regex.search()` is cached, so programs that use only a single regular expression at a time needn’t worry about compiling regular expressions.)
+
+### `set_syntax`(flags)
+
+Set the syntax to be used by future calls to `compile`, `match` and `search`. (Already compiled expression objects are not affected.) The argument is an integer which is the OR of several flag bits. The return value is the previous value of the syntax flags. Names for the flags are defined in the standard module `regex_syntax`; read the file `regex_syntax.py` for more information.
+
+### `symcomp`(pattern)
+
+This is like `compile`, but supports symbolic group names: if a parenthesis-enclosed group begins with a group name in angular brackets, e.g. `’(<id>[a-z][a-z0-9]*)’`, the group can be referenced by its name in arguments to the `group` method of the resulting compiled regular expression object, like this: `p.group(’id’)`. Group names may contain alphanumeric characters and `’_’` only.
+
+### exception `error`
+
+Exception raised when a string passed to one of the functions here is not a valid regular expression (e.g., unmatched parentheses) or when some other error occurs during compilation or matching. (It is never an error if a string contains no match for a pattern.)
+
+### `casefold`
+
+A string suitable to pass as *translate* argument to `compile` to map all upper case characters to their lowercase equivalents.
+
+Compiled regular expression objects support these methods:
+
+### `match`(string)
+
+Return how many characters at the beginning of *string* match the compiled regular expression. Return `-1` if the string does not match the pattern (this is different from a zero-length match!).
+
+The optional second parameter *pos* gives an index in the string where the search is to start; it defaults to `0`. This is not completely equivalent to slicing the string; the `’'̂` pattern character matches at the real begin of the string and at positions just after a newline, not necessarily at the index where the search is to start.
+
+### `search`(string)
+
+Return the first position in *string* that matches the regular expression `pattern`. Return `-1` if no position in the string matches the pattern (this is different from a zero-length match anywhere!).
+
+The optional second parameter has the same meaning as for the `match` method.
+
+### `group`(index  index  ...)
+
+This method is only valid when the last call to the `match` or `search` method found a match. It returns one or more groups of the match. If there is a single *index* argument, the result is a single string; if there are multiple arguments, the result is a tuple with one item per argument. If the *index* is zero, the corresponding return value is the entire matching string; if it is in the inclusive range [1..99], it is the string matching the the corresponding parenthesized group (using the default syntax, groups are parenthesized using `\(` and `\)`). If no such group exists, the corresponding result is `None`.
+
+If the regular expression was compiled by `symcomp` instead of `compile`, the *index* arguments may also be strings identifying groups by their group name.
+
+Compiled regular expressions support these data attributes:
+
+### `regs`
+
+When the last call to the `match` or `search` method found a match, this is a tuple of pairs of indices corresponding to the beginning and end of all parenthesized groups in the pattern. Indices are relative to the string argument passed to `match` or `search`. The 0-th tuple gives the beginning and end or the whole pattern. When the last match or search failed, this is `None`.
+
+### `last`
+
+When the last call to the `match` or `search` method found a match, this is the string argument passed to that method. When the last match or search failed, this is `None`.
+
+### `translate`
+
+This is the value of the *translate* argument to `regex.compile` that created this regular expression object. If the *translate* argument was omitted in the `regex.compile` call, this is `None`.
+
+### `givenpat`
+
+The regular expression pattern as passed to `compile` or `symcomp`.
+
+### `realpat`
+
+The regular expression after stripping the group names for regular expressions compiled with `symcomp`. Same as `givenpat` otherwise.
+
+### `groupindex`
+
+A dictionary giving the mapping from symbolic group names to numerical group indices for regular expressions compiled with `symcomp`. `None` otherwise.
 # Standard Module `regsub`
 
 This module defines a number of functions useful for working with regular expressions (see built-in module `regex`).

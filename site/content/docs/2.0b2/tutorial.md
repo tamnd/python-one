@@ -392,13 +392,11 @@ The small `u` in front of the quote indicates that an Unicode string is supposed
     >>> u'Hello\\u0020World !'
     u'Hello World !'
 
-The escape sequence\
-`u0020` indicates to insert the Unicode character with the HEX ordinal 0x0020 (the space character) at the given position.
+The escape sequence `\u0020` indicates to insert the Unicode character with the HEX ordinal 0x0020 (the space character) at the given position.
 
 Other characters are interpreted by using their respective ordinal value directly as Unicode ordinal. Due to the fact that the lower 256 Unicode are the same as the standard Latin-1 encoding used in many western countries, the process of entering Unicode is greatly simplified.
 
-For experts, there is also a raw mode just like for normal strings. You have to prepend the string with a small ’r’ to have Python use the *Raw-Unicode-Escape* encoding. It will only apply the above\
-`uXXXX` conversion if there is an uneven number of backslashes in front of the small ’u’.
+For experts, there is also a raw mode just like for normal strings. You have to prepend the string with a small ’r’ to have Python use the *Raw-Unicode-Escape* encoding. It will only apply the above `\uXXXX` conversion if there is an uneven number of backslashes in front of the small ’u’.
 
     >>> ur'Hello\u0020World !'
     u'Hello World !'

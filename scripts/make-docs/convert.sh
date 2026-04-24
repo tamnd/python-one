@@ -53,8 +53,10 @@ _run_pandoc() {
         -e 's/ data-reference-type="[^"]*"//g' \
         -e 's/ data-reference="[^"]*"//g' \
         -e 's/\([a-zA-Z0-9_)]\)`\([a-zA-Z]\)/\1` \2/g' \
+        -e 's/``` `` ```/{__DBTICK__}/g' \
         -e 's/\([^`]\)``\([^`]\)/\1\2/g' \
         -e 's/\([^`]\)``\([^`]\)/\1\2/g' \
+        -e 's/{__DBTICK__}/``` `` ```/g' \
         -e 's/<div class="[a-z]*">//g' \
         -e 's|</div>||g' \
     || true

@@ -190,6 +190,13 @@ def strip_doc_structure(text: str) -> str:
     # markers. Replace with Unicode × so the math reads correctly.
     body = re.sub(r'\}\*(?=\\(?:var|emph|code|samp|kbd)\{)', '} × ', body)
 
+    # In inline \code{}/\samp{}/\kbd{} spans, \\ is a LaTeX line-break but the
+    # intent is a literal backslash (e.g. \code{\\u0020}, \code{\\(}, \code{\\n}).
+    # Replace \\ with \textbackslash{} so pandoc emits the backslash as code content.
+    def _fix_dbl_bs(m):
+        return m.group(1) + '{' + m.group(2).replace('\\\\', '\\textbackslash{}') + '}'
+    body = re.sub(r'(\\(?:code|samp|kbd))\{([^{}]*)\}', _fix_dbl_bs, body)
+
     return body
 
 

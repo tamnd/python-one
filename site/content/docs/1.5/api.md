@@ -867,8 +867,7 @@ System administrators will know how to configure the `mount` or `automount` prog
 
 #### `Py_GetPath`()
 
-Return the default module search path; this is computed from the program name (set by `Py_SetProgramName()` above) and some environment variables. The returned string consists of a series of directory names separated by a platform dependent delimiter character. The delimiter character is `’:’` on Unix, `’;’` on DOS/Windows, and `’`\
-`n’` (the ASCII newline character) on Macintosh. The returned string points into static storage; the caller should not modify its value. The value is available to Python code as the list `sys.path`, which may be modified to change the future search path for loaded modules.
+Return the default module search path; this is computed from the program name (set by `Py_SetProgramName()` above) and some environment variables. The returned string consists of a series of directory names separated by a platform dependent delimiter character. The delimiter character is `’:’` on Unix, `’;’` on DOS/Windows, and `’\n’` (the ASCII newline character) on Macintosh. The returned string points into static storage; the caller should not modify its value. The value is available to Python code as the list `sys.path`, which may be modified to change the future search path for loaded modules.
 
 #### `Py_GetVersion`()
 

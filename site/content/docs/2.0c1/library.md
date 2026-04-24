@@ -6047,8 +6047,7 @@ The optional *bufsize* argument specifies the file’s desired buffer size: 0 me
 
 ### `ord`(c)
 
-Return the ASCII value of a string of one character or a Unicode character. E.g., `ord(’a’)` returns the integer `97`, `ord(u’`\
-`u2020’)` returns `8224`. This is the inverse of `chr()` for strings and of `unichr()` for Unicode characters.
+Return the ASCII value of a string of one character or a Unicode character. E.g., `ord(’a’)` returns the integer `97`, `ord(u’\u2020’)` returns `8224`. This is the inverse of `chr()` for strings and of `unichr()` for Unicode characters.
 
 ### `pow`(x, y)
 
